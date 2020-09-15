@@ -93,6 +93,15 @@ module.exports = {
       // skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
     },
 
+    kovan: {
+      provider: () => new HDWalletProvider(process.env.PRIVATE_KEY, `https://kovan.infura.io/v3/${process.env.INFURA_APIKEY}`),
+      network_id: 42, // Kovan's id
+      // gas: 5500000,
+      // confirmations: 2,    // # of confs to wait between deployments. (default: 0)
+      // timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
+      // skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
+    },
+
     mainnet: {
       provider: () => new HDWalletProvider(process.env.PRIVATE_KEY, `https://mainnet.infura.io/v3/${process.env.INFURA_APIKEY}`),
       network_id: 1,

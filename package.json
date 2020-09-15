@@ -12,12 +12,14 @@
     "test": "truffle test",
     "deploy:mainnet": "truffle migrate --network mainnet",
     "deploy:ropsten": "truffle migrate --network ropsten",
+    "deploy:kovan": "truffle migrate --network kovan",
     "deploy:private": "truffle migrate --network private",
     "deploy:development": "truffle migrate --network development",
     "prebuild": "rimraf ./build/contracts/*",
     "postinstall": "cpr .env.example .env",
-    "verify:ropsten": "truffle run verify --network ropsten",
-    "verify:mainnet": "truffle run verify --network mainnet"
+    "verify:ropsten": "truffle run verify KiraToken --network ropsten",
+    "verify:kovan": "truffle run verify KiraToken --network kovan",
+    "verify:mainnet": "truffle run verify KiraToken --network mainnet"
   },
   "keywords": [],
   "private": true,

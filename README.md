@@ -19,10 +19,15 @@ Deploy the smart contract to the desired environment with the provided commands 
 
 ```
 
-$ npm run build && npm run deploy:development
+$ npm run build & npm run deploy:development
+[1] 67454
 
 > kex@1.0.0 prebuild /Kira/liquidity-program
 > rimraf ./build/contracts/*
+
+
+> kex@1.0.0 deploy:development /Kira/liquidity-program
+> truffle migrate --network development
 
 
 > kex@1.0.0 build /Kira/liquidity-program
@@ -36,17 +41,14 @@ Compiling your contracts...
 ===========================
 > Compiling ./contracts/KiraToken.sol
 > Compiling ./contracts/Migrations.sol
+> Compiling openzeppelin-solidity/contracts/GSN/Context.sol
 > Compiling openzeppelin-solidity/contracts/math/SafeMath.sol
 > Compiling openzeppelin-solidity/contracts/token/ERC20/ERC20.sol
-> Compiling openzeppelin-solidity/contracts/token/ERC20/ERC20Detailed.sol
 > Compiling openzeppelin-solidity/contracts/token/ERC20/IERC20.sol
+> Compiling openzeppelin-solidity/contracts/utils/Address.sol
 > Artifacts written to /Kira/liquidity-program/build/contracts
 > Compiled successfully using:
-   - solc: 0.5.2+commit.1df8f40c.Emscripten.clang
-
-
-> kex@1.0.0 deploy:development /Kira/liquidity-program
-> truffle migrate --network development
+   - solc: 0.6.2+commit.bacdbe57.Emscripten.clang
 
 Using env var PRIVATE_KEY conn...
 Using env var INFURA_APIKEY 7591...
@@ -70,23 +72,23 @@ Starting migrations...
 
    Deploying 'Migrations'
    ----------------------
-   > transaction hash:    0x0b34ba2c477f081cfed85e0afcf3d1015d929ece8ea96cb6808fd33be2e7ffe8
+   > transaction hash:    0x8d1a8ce11d910d4464d5bf98719ee11de23d4268b68aa612b0d2935ceec1f92b
    > Blocks: 0            Seconds: 0
-   > contract address:    0x22D5F43623Be7987c845AEFA3306Dc6eD845eE03
-   > block number:        1
-   > block timestamp:     1600134488
+   > contract address:    0x2215f6123a83e226cB8E39226F21F48534a932A3
+   > block number:        5
+   > block timestamp:     1600135273
    > account:             0x451eA00C0f19e4bf875663307662cA0E93DFFB77
-   > balance:             99.99610562
-   > gas used:            194719 (0x2f89f)
+   > balance:             99.9771631
+   > gas used:            168502 (0x29236)
    > gas price:           20 gwei
    > value sent:          0 ETH
-   > total cost:          0.00389438 ETH
+   > total cost:          0.00337004 ETH
 
 
    > Saving migration to chain.
    > Saving artifacts
    -------------------------------------
-   > Total cost:          0.00389438 ETH
+   > Total cost:          0.00337004 ETH
 
 
 2_deploy_contract.js
@@ -94,32 +96,32 @@ Starting migrations...
 
    Deploying 'KiraToken'
    ---------------------
-   > transaction hash:    0xfee12ceff5f3a135d515bfde8c144c446fcc17f11af04ad672c50e4c4d54638e
+   > transaction hash:    0x88a402f1e1144eaab993b4f95f8d86fbee663252961abb6cea96e6a66bd18a79
    > Blocks: 0            Seconds: 0
-   > contract address:    0xb9ad7385Af816A85F7C26492c52675b6b1B5aeAa
-   > block number:        3
-   > block timestamp:     1600134488
+   > contract address:    0xd4846C9B885374789Dc04076721dBDDa299D18Dd
+   > block number:        7
+   > block timestamp:     1600135273
    > account:             0x451eA00C0f19e4bf875663307662cA0E93DFFB77
-   > balance:             99.98107852
-   > gas used:            709086 (0xad1de)
+   > balance:             99.96087306
+   > gas used:            772223 (0xbc87f)
    > gas price:           20 gwei
    > value sent:          0 ETH
-   > total cost:          0.01418172 ETH
+   > total cost:          0.01544446 ETH
 
 
    > Saving migration to chain.
    > Saving artifacts
    -------------------------------------
-   > Total cost:          0.01418172 ETH
+   > Total cost:          0.01544446 ETH
 
 
 Summary
 =======
 > Total deployments:   2
-> Final cost:          0.0180761 ETH
+> Final cost:          0.0188145 ETH
 ```
 
-In this example the smart contract was deployed to the address `0xb9ad7385Af816A85F7C26492c52675b6b1B5aeAa` on the Ganache Development network. The address `0x451eA00C0f19e4bf875663307662cA0E93DFFB77` gained ownership to the smart contract and received 300000000 tokens.
+In this example the smart contract was deployed to the address `0xd4846C9B885374789Dc04076721dBDDa299D18Dd` on the Ganache Development network. The address `0x451eA00C0f19e4bf875663307662cA0E93DFFB77` gained ownership to the smart contract and received 300000000 tokens.
 
 ## Development network / Ganache
 

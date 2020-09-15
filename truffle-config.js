@@ -123,7 +123,7 @@ module.exports = {
   mocha: {},
   compilers: {
     solc: {
-      version: "0.5.2",
+      version: "0.6.2",
       docker: false,
       settings: {
         optimizer: {

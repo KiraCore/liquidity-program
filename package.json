@@ -9,6 +9,7 @@
   "scripts": {
     "start": "npm run build",
     "build": "truffle compile",
+    "test": "truffle test",
     "deploy:mainnet": "truffle migrate --network mainnet",
     "deploy:ropsten": "truffle migrate --network ropsten",
     "deploy:private": "truffle migrate --network private",
@@ -21,6 +22,9 @@
   "keywords": [],
   "private": true,
   "dependencies": {
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "chai-bn": "^0.2.1",
     "cpr": "^3.0.1",
     "dotenv": "^8.2.0",
     "openzeppelin-solidity": "^3.1.0",

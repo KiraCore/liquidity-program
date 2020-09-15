@@ -11,6 +11,10 @@ Each deployment environment has a different set of mandatory environment variabl
 
 Make sure to provide the 64 character long hexa-decimal `PRIVATE_KEY`. The associated address will inherit the tokens created by the contract deployment.
 
+# Testing
+
+Test the smart contract with provided commands (`npm run test` or `truffle test`). All testing should be passed
+
 # Deployment
 
 Make sure the private key has enough ether on the required network to fund the deployment transactions.

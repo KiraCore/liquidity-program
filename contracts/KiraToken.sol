@@ -31,7 +31,7 @@ contract KiraToken is ERC20, Ownable {
         _setupDecimals(DECIMALS);
         _mint(msg.sender, INITIAL_SUPPLY);
         emit Transfer(address(0x0), msg.sender, INITIAL_SUPPLY);
-        freezed = false;
+        freezed = true;
     }
 
     function freeze() external onlyOwner {

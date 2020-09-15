@@ -31,16 +31,16 @@ contract KiraToken is ERC20, Ownable {
         _setupDecimals(DECIMALS);
         _mint(msg.sender, INITIAL_SUPPLY);
         emit Transfer(address(0x0), msg.sender, INITIAL_SUPPLY);
-        freezed = true;
+        freezed = false;
     }
 
     function freeze() external onlyOwner {
-        require(freezed = false, "KEX: already freezed");
+        require(freezed == false, "KEX: already freezed");
         freezed = true;
     }
 
     function unfreeze() external onlyOwner {
-        require(freezed = true, "KEX: already unfreezed");
+        require(freezed == true, "KEX: already unfreezed");
         freezed = false;
     }
 }

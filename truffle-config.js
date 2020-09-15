@@ -17,36 +17,30 @@
  * phrase from a file you've .gitignored so it doesn't accidentally become public.
  *
  */
-require("dotenv").config()
-const HDWalletProvider = require("truffle-hdwallet-provider")
+require('dotenv').config()
+const HDWalletProvider = require('truffle-hdwallet-provider')
 const abbrv = (str) => `${str.substr(0, 4)}...`
 
 if (!process.env.PRIVATE_KEY) {
-  throw new Error("define PRIVATE_KEY in .env first!")
+  throw new Error('define PRIVATE_KEY in .env first!')
 } else {
-  console.log("Using env var PRIVATE_KEY", abbrv(process.env.PRIVATE_KEY))
+  console.log('Using env var PRIVATE_KEY', abbrv(process.env.PRIVATE_KEY))
 }
 if (process.env.INFURA_APIKEY) {
-  console.log("Using env var INFURA_APIKEY", abbrv(process.env.INFURA_APIKEY))
+  console.log('Using env var INFURA_APIKEY', abbrv(process.env.INFURA_APIKEY))
 }
 if (process.env.PRIVATE_NETWORK_URL) {
-  console.log("Using env var PRIVATE_NETWORK", process.env.PRIVATE_NETWORK_URL)
+  console.log('Using env var PRIVATE_NETWORK', process.env.PRIVATE_NETWORK_URL)
 }
 if (process.env.PRIVATE_NETWORK_ID) {
-  console.log(
-    "Using env var PRIVATE_NETWORK_ID",
-    process.env.PRIVATE_NETWORK_ID
-  )
+  console.log('Using env var PRIVATE_NETWORK_ID', process.env.PRIVATE_NETWORK_ID)
 }
 if (process.env.ETHERSCAN_APIKEY) {
-  console.log(
-    "Using env var process.env.ETHERSCAN_APIKEY",
-    abbrv(process.env.ETHERSCAN_APIKEY)
-  )
+  console.log('Using env var process.env.ETHERSCAN_APIKEY', abbrv(process.env.ETHERSCAN_APIKEY))
 }
 
 module.exports = {
-  plugins: ["truffle-plugin-verify"],
+  plugins: ['truffle-plugin-verify'],
   api_keys: {
     etherscan: process.env.ETHERSCAN_APIKEY,
   },
@@ -66,10 +60,10 @@ module.exports = {
     // tab if you use this network and you must also set the `host`, `port` and `network_id`
     // options below to some value.
     development: {
-      host: "localhost",
+      host: 'localhost',
       port: 7545,
       gas: 6700000,
-      network_id: "5777",
+      network_id: '5777',
     },
 
     // Useful for private networks
@@ -83,11 +77,7 @@ module.exports = {
     // production: true    // Treats this network as if it was a public net. (default: false)
     // },
     private: {
-      provider: () =>
-        new HDWalletProvider(
-          process.env.PRIVATE_KEY,
-          process.env.PRIVATE_NETWORK_URL
-        ),
+      provider: () => new HDWalletProvider(process.env.PRIVATE_KEY, process.env.PRIVATE_NETWORK_URL),
       gas: 0, // example settings for "ethereum-free" networks.
       gasPrice: 0,
       network_id: process.env.PRIVATE_NETWORK_ID,
@@ -95,11 +85,7 @@ module.exports = {
 
     // Useful for deploying to a public network.
     ropsten: {
-      provider: () =>
-        new HDWalletProvider(
-          process.env.PRIVATE_KEY,
-          `https://ropsten.infura.io/v3/${process.env.INFURA_APIKEY}`
-        ),
+      provider: () => new HDWalletProvider(process.env.PRIVATE_KEY, `https://ropsten.infura.io/v3/${process.env.INFURA_APIKEY}`),
       network_id: 3, // Ropsten's id
       // gas: 5500000,        // Ropsten has a lower block limit than mainnet
       // confirmations: 2,    // # of confs to wait between deployments. (default: 0)
@@ -108,11 +94,7 @@ module.exports = {
     },
 
     mainnet: {
-      provider: () =>
-        new HDWalletProvider(
-          process.env.PRIVATE_KEY,
-          `https://mainnet.infura.io/v3/${process.env.INFURA_APIKEY}`
-        ),
+      provider: () => new HDWalletProvider(process.env.PRIVATE_KEY, `https://mainnet.infura.io/v3/${process.env.INFURA_APIKEY}`),
       network_id: 1,
       gas: 6500000, // Default gas to send per transaction
       gasPrice: 10000000000, // 10 gwei
@@ -123,7 +105,7 @@ module.exports = {
   mocha: {},
   compilers: {
     solc: {
-      version: "0.6.2",
+      version: '0.6.2',
       docker: false,
       settings: {
         optimizer: {

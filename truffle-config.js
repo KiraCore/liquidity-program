@@ -59,12 +59,12 @@ module.exports = {
     // You should run a client (like ganache-cli, geth or parity) in a separate terminal
     // tab if you use this network and you must also set the `host`, `port` and `network_id`
     // options below to some value.
-    development: {
-      host: 'localhost',
-      port: 7545,
-      gas: 6700000,
-      network_id: '5777',
-    },
+    // development: {
+    //   host: 'localhost',
+    //   port: 7545,
+    //   gas: 6700000,
+    //   network_id: '5777',
+    // },
 
     // Useful for private networks
     // private: {

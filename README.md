@@ -36,6 +36,25 @@ $ git checkout LIP_1
 $ npm install
 ```
 
+- Install the desktop version of Ganache
+Ganache will provide a personal blockchain to be used for local development and testing of smart contracts.
+   1. Open a browser and navigate to https://github.com/trufflesuite/ganache/releases
+
+   2. Download the latest Linux release which will be the *.AppImage file.
+
+   3. For example ganache-2.4.0-linux-x86_64.AppImage.
+
+   4. Once the download is complete, open a new terminal and change into the directory with the *.AppImage file.
+   
+   5. Use chmod to make the file executable:
+      ```
+      chmod a+x ganache-1.3.0-x86_64.AppImage
+      ```
+   6. Now run the file
+      ```
+      ./ganache-1.3.0-x86_64.AppImage
+      ```
+
 ## Environment Variables (Accounts & Keys Setup)
 
 Each deployment environment has a different set of mandatory environment variables. Add the secrets required for the deployment environment to [.env](./.env)

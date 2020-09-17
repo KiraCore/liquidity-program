@@ -3,7 +3,7 @@
   <br/>  
 </div>
 
-# Dependency Setup
+# 1. Dependency Setup
 
 ## Install Node.js & NPM on Ubuntu 20.04
 
@@ -55,7 +55,7 @@ Ganache will provide a personal blockchain to be used for local development and 
     ./ganache-1.3.0-x86_64.AppImage
     ```
 
-# Environment Variables (Accounts & Keys Setup)
+# 2. Environment Variables (Accounts & Keys Setup)
 
 Each deployment environment has a different set of mandatory environment variables. Add the secrets required for the deployment environment to [.env](./.env)
 
@@ -87,7 +87,7 @@ Sign up for a free api key at https://infura.io/dashboard to deploy to public ne
 
 - Generate the Etherscan API Key for free at https://etherscan.io/myapikey.
 
-# Testnet used and faucet references
+# 3. Testnet used and faucet references
 
 ## Ropsten Testnet
 
@@ -97,7 +97,7 @@ You can instantly get 1 Ropsten Test Ether per 24h per account by visiting https
 
 You can instantly get 1 KEth per 24h per GitHub account by visiting https://faucet.kovan.network/ and submitting your Kovan address.
 
-# Compile and Unit Testing
+# 4. Compile and Unit Testing
 
 ## Compile the smart contract with the provided command
 
@@ -162,7 +162,7 @@ You can instantly get 1 KEth per 24h per GitHub account by visiting https://fauc
  5 passing (615ms)
 ```
 
-# Example Deployment and expected output
+# 5. Example Deployment and expected output
 
 ## Deploy to Kovan testnet
 
@@ -264,7 +264,7 @@ Successfully verified 1 contract(s).
 
 ![Contract](doc/contract.png)
 
-# Instructions for interacting with the contract
+# 6. Instructions for interacting with the contract
 
 ## Check if all tokens (300,000,000 KEX) is in the deployed account
 

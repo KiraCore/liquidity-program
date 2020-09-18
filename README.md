@@ -309,4 +309,5 @@ Add KEX token as a custom token in your MetaMask wallet
 2. Select token pairs (ETH & KEX). Select KEX token by searching with KEX contract address
    ![Uniswap_Select_Token](doc/uniswap_select_token.png)
 3. Our pool
+
    ![Uniswap_Pool](doc/uniswap_pool.png)

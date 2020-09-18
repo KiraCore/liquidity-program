@@ -299,3 +299,14 @@ Add KEX token as a custom token in your MetaMask wallet
     ![Contract_Whitelist](doc/contract_whitelist.png)
 3.  Should be able to transfer between whitelisted addresses even if the token transfer is freezed
     ![Contract_Transfer_Success_Whitelisted](doc/contract_transfer_success_whitelisted.png)
+
+## Compatibility with uniswap v2
+
+    Make sure the token transfer is not freezed
+
+1. Add Liquidity to Uniswap (https://app.uniswap.org/#/pool)
+   ![Uniswap](doc/uniswap_initial.png)
+2. Select token pairs (ETH & KEX). Select KEX token by searching with KEX contract address
+   ![Uniswap_Select_Token](doc/uniswap_select_token.png)
+3. Our pool
+   ![Uniswap_Pool](doc/uniswap_pool.png)

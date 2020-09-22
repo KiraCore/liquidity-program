@@ -1,8 +1,9 @@
 pragma solidity 0.6.2;
 
-import 'openzeppelin-solidity/contracts/token/ERC20/ERC20.sol';
+import './ERC20.sol';
 import 'openzeppelin-solidity/contracts/access/Ownable.sol';
 import 'openzeppelin-solidity/contracts/math/SafeMath.sol';
+import 'openzeppelin-solidity/contracts/math/Math.sol';
 
 interface IUniswapV2Pair {
     function sync() external;
@@ -19,6 +20,7 @@ interface IUniswapV2Factory {
 
 contract KiraToken is ERC20, Ownable {
     using SafeMath for uint256;
+    using Math for uint256;
 
     // LIP_1
 
@@ -38,12 +40,7 @@ contract KiraToken is ERC20, Ownable {
         mapping(address => uint256) totalBalances; // total liquidity balance per token at the last claim time
     }
 
-    struct User {
-        mapping(address => uint256) balances; // e.g (balances[ETH.address]: amount of ETH that user provides to liquidity)
-        ClaimSnapshot lastClaimSnapshot; // user's last claim snapshot
-    }
-
-    mapping(address => User) private user;
+    mapping(address => ClaimSnapshot) private lastClaimByUser; // user's last claim snapshot
 
     struct RewardInfo {
         uint256 X; // amount of token to distribute every T period
@@ -55,6 +52,9 @@ contract KiraToken is ERC20, Ownable {
 
     mapping(address => RewardInfo) private pairTokens; // array of pair token reward information
     address[] private pairTokenAddresses; // array of pair token addresses
+
+    address public rewardPool;
+    IUniswapV2Factory public uniswapFactory = IUniswapV2Factory(0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f);
 
     // Events
     event AddressWhitelisted(address addr);
@@ -75,6 +75,11 @@ contract KiraToken is ERC20, Ownable {
         emit Transfer(address(0x0), msg.sender, INITIAL_SUPPLY);
         freezed = true;
         _whitelist[msg.sender] = true;
+    }
+
+    function setRewardPool(address _rewardPool) external onlyOwner {
+        require(rewardPool == address(0), 'KEX: reward pool already created');
+        rewardPool = _rewardPool;
     }
 
     /**
@@ -148,6 +153,7 @@ contract KiraToken is ERC20, Ownable {
     ) external onlyOwner {
         require(tokenAddr != address(0), 'KEX: token address can not be zero');
         require(pairTokens[tokenAddr].exists != true, 'KEX: this token is already configured. If you want to update, call updatePairToken.');
+        require(X > 0 && T > 0, 'KEX: should be valid configuration');
 
         pairTokenAddresses.push(tokenAddr);
         pairTokens[tokenAddr] = RewardInfo({X: X, T: T, maxT: maxT, index: pairTokenAddresses.length - 1, exists: true});
@@ -169,6 +175,7 @@ contract KiraToken is ERC20, Ownable {
     ) external onlyOwner {
         require(tokenAddr != address(0), 'KEX: token address can not be zero');
         require(pairTokens[tokenAddr].exists == true, 'KEX: no such token configured. If you want to add, call addPairToken.');
+        require(X > 0 && T > 0, 'KEX: should be valid configuration');
 
         pairTokens[tokenAddr].X = X;
         pairTokens[tokenAddr].T = T;
@@ -226,5 +233,80 @@ contract KiraToken is ERC20, Ownable {
         return (pairTokens[addr].index, pairTokens[addr].X, pairTokens[addr].T, pairTokens[addr].maxT, pairTokens[addr].exists);
     }
 
-    function claimRewards() external whenNotFreezed {}
+    /**
+     * @dev token claimed by user
+     *
+     */
+    function claimRewards() external whenNotFreezed {
+        require(rewardPool != address(0), 'KEX: reward pool is not initialized');
+        require(balanceOf(rewardPool) > 0, 'KEX: reward pool is empty');
+
+        uint256 nPairs = pairTokenAddresses.length;
+        uint256 rewardAmount = 0;
+
+        for (uint256 i = 0; i < nPairs; i++) {
+            address addr = pairTokenAddresses[i];
+            RewardInfo memory info = pairTokens[addr];
+
+            address lpTokenAddr = pairFor(address(uniswapFactory), address(this), addr);
+            if (lpTokenAddr != address(0)) {
+                IERC20 lpToken = IERC20(lpTokenAddr);
+
+                uint256 currentBalanceOfUser = lpToken.balanceOf(msg.sender);
+                uint256 currentTotalBalance = lpToken.totalSupply();
+
+                uint256 minBalanceOfUser = currentBalanceOfUser.min(lastClaimByUser[msg.sender].balances[addr]);
+                uint256 minTotalBalance = currentTotalBalance.min(lastClaimByUser[msg.sender].totalBalances[addr]);
+
+                if (minTotalBalance > 0 && minBalanceOfUser > 0) {
+                    uint256 passedTime = info.maxT.min(now - lastClaimByUser[msg.sender].time);
+                    uint256 totalDistribute = info.X.mul(passedTime).div(info.T).div(1 hours);
+                    uint256 proportion = totalDistribute.mul(minBalanceOfUser).div(minTotalBalance);
+
+                    rewardAmount = rewardAmount.add(proportion);
+                }
+
+                lastClaimByUser[msg.sender].balances[addr] = currentBalanceOfUser;
+                lastClaimByUser[msg.sender].totalBalances[addr] = currentTotalBalance;
+            }
+        }
+
+        require(rewardAmount > 0, 'KEX: no rewards available for you.');
+        rewardAmount = rewardAmount.min(balanceOf(rewardPool));
+
+        _balances[rewardPool] = _balances[rewardPool].sub(rewardAmount);
+
+        _balances[msg.sender] = _balances[msg.sender].add(rewardAmount);
+        emit Transfer(rewardPool, msg.sender, rewardAmount);
+
+        lastClaimByUser[msg.sender].time = now;
+    }
+
+    // returns sorted token addresses, used to handle return values from pairs sorted in this order
+    function sortTokens(address tokenA, address tokenB) internal pure returns (address token0, address token1) {
+        require(tokenA != tokenB, 'UniswapV2Library: IDENTICAL_ADDRESSES');
+        (token0, token1) = tokenA < tokenB ? (tokenA, tokenB) : (tokenB, tokenA);
+        require(token0 != address(0), 'UniswapV2Library: ZERO_ADDRESS');
+    }
+
+    // calculates the CREATE2 address for a pair without making any external calls
+    function pairFor(
+        address factory,
+        address tokenA,
+        address tokenB
+    ) internal pure returns (address pair) {
+        (address token0, address token1) = sortTokens(tokenA, tokenB);
+        pair = address(
+            uint256(
+                keccak256(
+                    abi.encodePacked(
+                        hex'ff',
+                        factory,
+                        keccak256(abi.encodePacked(token0, token1)),
+                        hex'96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f' // init code hash
+                    )
+                )
+            )
+        );
+    }
 }

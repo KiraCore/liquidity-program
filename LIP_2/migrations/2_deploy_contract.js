@@ -1,11 +1,11 @@
-const KiraToken = artifacts.require("./KiraToken.sol")
+const KirKiraDropaToken = artifacts.require("./KiraDrop.sol")
 
 module.exports = function (deployer) {
   /**
    * add the desired token to the next line
    * @example
-   * deployer.deploy(KiraToken)
+   * deployer.deploy(KiraDrop)
    */
 
-  deployer.deploy(KiraToken)
+  deployer.deploy(KiraDrop)
 }

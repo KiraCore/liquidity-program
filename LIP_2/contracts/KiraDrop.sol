@@ -14,25 +14,18 @@ interface IUniswapV2Factory {
 }
 
 /**
- * @title KiraToken
- * @dev Simple ERC20 Token with freezing and whitelist feature.
+ * @title KiraDrop
+ * @dev Uniswap v2 Liquidity Rewards
  */
 
-contract KiraToken is ERC20, Ownable {
+contract KiraDrop is ERC20, Ownable {
     using SafeMath for uint256;
     using Math for uint256;
-
-    // LIP_1
 
     string public constant NAME = 'KIRA Network'; // modify token name
     string public constant SYMBOL = 'KEX'; // modify token symbol
     uint8 public constant DECIMALS = 6; // modify token decimals
     uint256 public constant INITIAL_SUPPLY = 300000000 * (10**uint256(DECIMALS)); // modify initial token supply // 300,000,000 tokens
-
-    bool public freezed; // indicate if the token is freezed or not
-    mapping(address => bool) private _whitelist; // represents if the address is whitelisted or not
-
-    // LIP_2
 
     struct ClaimSnapshot {
         uint256 time; // last claim time
@@ -56,16 +49,6 @@ contract KiraToken is ERC20, Ownable {
     address public rewardPool;
     IUniswapV2Factory public uniswapFactory = IUniswapV2Factory(0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f);
 
-    // Events
-    event AddressWhitelisted(address addr);
-    event AddressWhitelistRemoved(address addr);
-
-    // Modifiers
-    modifier whenNotFreezed() {
-        require(freezed == false, 'KEX: token is freezed');
-        _;
-    }
-
     /**
      * @dev Constructor that gives msg.sender all of existing tokens.
      */
@@ -73,68 +56,11 @@ contract KiraToken is ERC20, Ownable {
         _setupDecimals(DECIMALS);
         _mint(msg.sender, INITIAL_SUPPLY);
         emit Transfer(address(0x0), msg.sender, INITIAL_SUPPLY);
-        freezed = true;
-        _whitelist[msg.sender] = true;
     }
 
     function setRewardPool(address _rewardPool) external onlyOwner {
-        require(rewardPool == address(0), 'KEX: reward pool already created');
+        require(rewardPool == address(0), 'KiraDrop: reward pool already created');
         rewardPool = _rewardPool;
-    }
-
-    /**
-     * @dev freeze and unfreeze functions
-     */
-    function freeze() external onlyOwner {
-        require(freezed == false, 'KEX: already freezed');
-        freezed = true;
-    }
-
-    function unfreeze() external onlyOwner {
-        require(freezed == true, 'KEX: already unfreezed');
-        freezed = false;
-    }
-
-    /**
-     * @dev add an address to whitelist
-     */
-    function whitelistAdd(address addr) external onlyOwner returns (bool) {
-        _whitelist[addr] = true;
-        emit AddressWhitelisted(addr);
-        return true;
-    }
-
-    /**
-     * @dev remove an address from whitelist
-     * owner can not be removed from whitelist
-     * can not remote an addres which is not whitelisted
-     */
-    function whitelistRemove(address addr) external onlyOwner returns (bool) {
-        require(addr != owner(), "KEX: can not remove owner's whitelist");
-        require(_whitelist[addr] == true, 'KEX: the address is not whitelisted');
-        _whitelist[addr] = false;
-        emit AddressWhitelistRemoved(addr);
-        return true;
-    }
-
-    /**
-     * @dev Returns if the address is whitelisted or not.
-     */
-    function whitelisted(address addr) public view returns (bool) {
-        return _whitelist[addr];
-    }
-
-    /**
-     * @dev Hook before transfer
-     * check from and to are whitelisted when the token is freezed
-     */
-    function _beforeTokenTransfer(
-        address from,
-        address to,
-        uint256 amount
-    ) internal virtual override {
-        super._beforeTokenTransfer(from, to, amount);
-        require(!freezed || (_whitelist[from] && _whitelist[to]), 'KEX: token transfer while freezed and not whitelisted.');
     }
 
     /**
@@ -151,9 +77,9 @@ contract KiraToken is ERC20, Ownable {
         uint256 T,
         uint256 maxT
     ) external onlyOwner {
-        require(tokenAddr != address(0), 'KEX: token address can not be zero');
-        require(pairTokens[tokenAddr].exists != true, 'KEX: this token is already configured. If you want to update, call updatePairToken.');
-        require(X > 0 && T > 0, 'KEX: should be valid configuration');
+        require(tokenAddr != address(0), 'KiraDrop: token address can not be zero');
+        require(pairTokens[tokenAddr].exists != true, 'KiraDrop: this token is already configured. If you want to update, call updatePairToken.');
+        require(X > 0 && T > 0, 'KiraDrop: should be valid configuration');
 
         pairTokenAddresses.push(tokenAddr);
         pairTokens[tokenAddr] = RewardInfo({X: X, T: T, maxT: maxT, index: pairTokenAddresses.length - 1, exists: true});
@@ -173,9 +99,9 @@ contract KiraToken is ERC20, Ownable {
         uint256 T,
         uint256 maxT
     ) external onlyOwner {
-        require(tokenAddr != address(0), 'KEX: token address can not be zero');
-        require(pairTokens[tokenAddr].exists == true, 'KEX: no such token configured. If you want to add, call addPairToken.');
-        require(X > 0 && T > 0, 'KEX: should be valid configuration');
+        require(tokenAddr != address(0), 'KiraDrop: token address can not be zero');
+        require(pairTokens[tokenAddr].exists == true, 'KiraDrop: no such token configured. If you want to add, call addPairToken.');
+        require(X > 0 && T > 0, 'KiraDrop: should be valid configuration');
 
         pairTokens[tokenAddr].X = X;
         pairTokens[tokenAddr].T = T;
@@ -188,8 +114,8 @@ contract KiraToken is ERC20, Ownable {
      * @param tokenAddr address of the token which will be paired with KEX
      */
     function removePairToken(address tokenAddr) external onlyOwner {
-        require(tokenAddr != address(0), 'KEX: token address can not be zero');
-        require(pairTokens[tokenAddr].exists == true, 'KEX: no such token configured. If you want to add, call addPairToken.');
+        require(tokenAddr != address(0), 'KiraDrop: token address can not be zero');
+        require(pairTokens[tokenAddr].exists == true, 'KiraDrop: no such token configured. If you want to add, call addPairToken.');
 
         uint256 removeIndex = pairTokens[tokenAddr].index;
         uint256 totalCount = pairTokenAddresses.length;
@@ -237,9 +163,9 @@ contract KiraToken is ERC20, Ownable {
      * @dev token claimed by user
      *
      */
-    function claimRewards() external whenNotFreezed {
-        require(rewardPool != address(0), 'KEX: reward pool is not initialized');
-        require(balanceOf(rewardPool) > 0, 'KEX: reward pool is empty');
+    function claimRewards() external {
+        require(rewardPool != address(0), 'KiraDrop: reward pool is not initialized');
+        require(balanceOf(rewardPool) > 0, 'KiraDrop: reward pool is empty');
 
         uint256 nPairs = pairTokenAddresses.length;
         uint256 rewardAmount = 0;
@@ -271,7 +197,7 @@ contract KiraToken is ERC20, Ownable {
             }
         }
 
-        require(rewardAmount > 0, 'KEX: no rewards available for you.');
+        require(rewardAmount > 0, 'KiraDrop: no rewards available for you.');
         rewardAmount = rewardAmount.min(balanceOf(rewardPool));
 
         _balances[rewardPool] = _balances[rewardPool].sub(rewardAmount);

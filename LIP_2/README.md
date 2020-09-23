@@ -14,7 +14,6 @@ Check Common Guide's [Dependency Setup Section](../README.md#1.-Dependency-Setup
 ```
 $ git clone https://github.com/KiraCore/liquidity-program.git
 $ cd liquidity-program/
-$ git checkout LIP_2
 $ cd LIP_2
 $ npm install
 ```
@@ -47,7 +46,7 @@ Check Common Guide's [Testnet used and faucet references Section](../README.md#3
 
  Compiling your contracts...
  ===========================
- > Compiling ./contracts/KiraToken.sol
+ > Compiling ./contracts/KiraDrop.sol
  > Compiling ./contracts/Migrations.sol
  > Compiling openzeppelin-solidity/contracts/GSN/Context.sol
  > Compiling openzeppelin-solidity/contracts/access/Ownable.sol
@@ -64,32 +63,6 @@ Check Common Guide's [Testnet used and faucet references Section](../README.md#3
 
 ```
  $ npm run test
-
- > kex@1.0.0 test /Kira/liquidity-program/LIP_2
- > truffle test
-
- Using env var PRIVATE_KEY conn...
- Using env var INFURA_APIKEY 7591...
- Using env var process.env.ETHERSCAN_APIKEY 0987...
- Using network 'test'.
-
- Compiling your contracts...
- ===========================
- > Everything is up to date, there is nothing to compile.
-
- Contract: KiraToken Test
-    totalSupply
-       ✓ all tokens should be in my account (47ms)
-    freeze
-       ✓ should be freezed at first and the transfer should be rejected (74ms)
-    unfreeze
-       ✓ should be able to transfer freely once unfreezed (179ms)
-    whitelist
-       ✓ should be able to transfer between whitelisted accounts even if the token is freezed (197ms)
-    whitelistRemove
-       ✓ should not be able to remove owner from whitelist (54ms)
-
- 5 passing (615ms)
 ```
 
 # 5. Example Deployment and expected output
@@ -150,7 +123,7 @@ Starting migrations...
 2_deploy_contract.js
 ====================
 
-   Deploying 'KiraToken'
+   Deploying 'KiraDrop'
    ---------------------
    > transaction hash:    0xfd0dbea4735b36e4a59c2f2c48febd2d905e9b5a8405c5c6a7a69a5c6d8f5d1b
    > Blocks: 1            Seconds: 6
@@ -184,14 +157,14 @@ In this example the smart contract was deployed to the address `0x982D5EC2f486b7
 In order to verify your smart contract on etherscan.io execute the verification script immediately after the contract is successfully deployed and pass the contract name as the argument.
 
 ```
-$ npm run verify:kovan -- KiraToken
+$ npm run verify:kovan -- KiraDrop
 > kex@1.0.0 verify:kovan /home/mac/Desktop/liquidity-program/LIP_2
-> truffle run verify KiraToken --network kovan
+> truffle run verify KiraDrop --network kovan
 
 Using env var PRIVATE_KEY prai...
 Using env var INFURA_APIKEY 7591...
 Using env var process.env.ETHERSCAN_APIKEY SFP4...
-Verifying KiraToken
+Verifying KiraDrop
 Pass - Verified: https://kovan.etherscan.io/address/0x982D5EC2f486b7cd7C31BD1d2299e94cAfE036cf#contracts
 Successfully verified 1 contract(s).
 ```
@@ -213,13 +186,6 @@ Add KEX token as a custom token in your MetaMask wallet
 
 ![MetaMask](doc/metamask_initial.png)
 
-## The token should be freezed at first and the transfer should be rejected
-
-1.  Try to send any amount of tokens from the deployed account to other address
-    ![MetaMask_Try_Send_Freeze](doc/metamask_try_send_freeze.png)
-2.  The transaction should be failed because the token is freezed and the recipient address is not whitelisted. (The deployer address is whitelisted as default)
-    ![MetaMask_Fail_Transaction_1](doc/metamask_fail_transaction_1.png)
-
 Lets generate ABI so that we can interact with the contract:
 
 ```
@@ -235,31 +201,3 @@ Output should be a long peace of JSON formatted text:
 ```
 
 ABI we can now input into any wallet like MEW to interact with the contract
-
-## Once unfreeze the token, it should be able to transfer freely
-
-1.  Only token owner can unfreeze the token.
-    ![Contract_Unfreeze](doc/contract_unfreeze.png)
-2.  Try to send any amount of tokens between any accounts
-    ![Contract_Transfer_Success](doc/contract_transfer_success.png)
-
-## Freeze the token transfer and configure list of addresses to whitelist
-
-1.  Only token owner can freeze the token
-    ![Contract_Freeze](doc/contract_freeze.png)
-2.  Configure whitelist. (Only owner can add/remove whitelist)
-    ![Contract_Whitelist](doc/contract_whitelist.png)
-3.  Should be able to transfer between whitelisted addresses even if the token transfer is freezed
-    ![Contract_Transfer_Success_Whitelisted](doc/contract_transfer_success_whitelisted.png)
-
-## Compatibility with uniswap v2
-
-    Make sure the token transfer is not freezed
-
-1. Add Liquidity to Uniswap (https://app.uniswap.org/#/pool)
-   ![Uniswap](doc/uniswap_initial.png)
-2. Select token pairs (ETH & KEX). Select KEX token by searching with KEX contract address
-   ![Uniswap_Select_Token](doc/uniswap_select_token.png)
-3. Our pool
-
-   ![Uniswap_Pool](doc/uniswap_pool.png)

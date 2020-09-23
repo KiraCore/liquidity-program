@@ -23,12 +23,17 @@ contract KiraToken is ERC20, Ownable {
 
     // indicate if the token is freezed or not
     bool public freezed;
+
+    struct WhitelistInfo {
+        bool withdraw; // if withdraw is allowed
+        bool deposit; // if deposit is allowed
+    }
+
     // represents if the address is whitelisted or not
-    mapping(address => bool) private _whitelist;
+    mapping(address => WhitelistInfo) private _whitelist;
 
     // Events
-    event AddressWhitelisted(address addr);
-    event AddressWhitelistRemoved(address addr);
+    event WhitelistConfigured(address addr, bool withdraw, bool deposit);
 
     /**
      * @dev Constructor that gives msg.sender all of existing tokens.
@@ -38,7 +43,8 @@ contract KiraToken is ERC20, Ownable {
         _mint(msg.sender, INITIAL_SUPPLY);
         emit Transfer(address(0x0), msg.sender, INITIAL_SUPPLY);
         freezed = true;
-        _whitelist[msg.sender] = true;
+        _whitelist[msg.sender].withdraw = true;
+        _whitelist[msg.sender].deposit = true;
     }
 
     /**
@@ -55,32 +61,31 @@ contract KiraToken is ERC20, Ownable {
     }
 
     /**
-     * @dev add an address to whitelist
+     * @dev configure whitelist to an address
+     * @param addr the address to be whitelisted
+     * @param withdraw boolean variable to indicate if withdraw is allowed
+     * @param deposit boolean variable to indicate if deposit is allowed
      */
-    function whitelistAdd(address addr) external onlyOwner returns (bool) {
-        _whitelist[addr] = true;
-        emit AddressWhitelisted(addr);
-        return true;
-    }
+    function whitelist(
+        address addr,
+        bool withdraw,
+        bool deposit
+    ) external onlyOwner returns (bool) {
+        require(addr != owner(), "KEX: can not configure owner's whitelist");
+        require(addr != address(0), 'KEX: address should not be zero');
 
-    /**
-     * @dev remove an address from whitelist
-     * owner can not be removed from whitelist
-     * can not remote an addres which is not whitelisted
-     */
-    function whitelistRemove(address addr) external onlyOwner returns (bool) {
-        require(addr != owner(), "KEX: can not remove owner's whitelist");
-        require(_whitelist[addr] == true, 'KEX: the address is not whitelisted');
-        _whitelist[addr] = false;
-        emit AddressWhitelistRemoved(addr);
+        _whitelist[addr].withdraw = withdraw;
+        _whitelist[addr].deposit = deposit;
+
+        emit WhitelistConfigured(addr, withdraw, deposit);
         return true;
     }
 
     /**
      * @dev Returns if the address is whitelisted or not.
      */
-    function whitelisted(address addr) public view returns (bool) {
-        return _whitelist[addr];
+    function whitelisted(address addr) public view returns (bool, bool) {
+        return (_whitelist[addr].withdraw, _whitelist[addr].deposit);
     }
 
     /**
@@ -93,6 +98,6 @@ contract KiraToken is ERC20, Ownable {
         uint256 amount
     ) internal virtual override {
         super._beforeTokenTransfer(from, to, amount);
-        require(!freezed || (_whitelist[from] && _whitelist[to]), 'KEX: token transfer while freezed and not whitelisted.');
+        require(!freezed || (_whitelist[from].withdraw && _whitelist[to].deposit), 'KEX: token transfer while freezed and not whitelisted.');
     }
 }

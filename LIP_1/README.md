@@ -263,3 +263,8 @@ ABI we can now input into any wallet like MEW to interact with the contract
 3. Our pool
 
    ![Uniswap_Pool](doc/uniswap_pool.png)
+
+# TODO
+
+- [ ] TODO: Update readme as whitelist method changed
+- [ ] TODO: Add more unit testing

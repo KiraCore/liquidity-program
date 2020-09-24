@@ -33,7 +33,7 @@ contract KiraDrop is ERC20, Ownable {
         mapping(address => uint256) totalBalances; // total liquidity balance per token at the last claim time
     }
 
-    mapping(address => ClaimSnapshot) private lastClaimByUser; // user's last claim snapshot
+    mapping(address => ClaimSnapshot) public lastClaimByUser; // user's last claim snapshot
 
     struct RewardInfo {
         uint256 X; // amount of token to distribute every T period
@@ -48,6 +48,10 @@ contract KiraDrop is ERC20, Ownable {
 
     address public rewardPool;
     IUniswapV2Factory public uniswapFactory = IUniswapV2Factory(0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f);
+
+    // ERC20 internal WETH = ERC20(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);     // For Main Net
+    // ERC20 internal WETH = ERC20(0x0a180A76e4466bF68A7F86fB029BEd3cCcFaAac5);     // For Ropsten Testnet
+    // ERC20 internal WETH = ERC20(0xd0A1E359811322d97991E03f863a0C30C2cF029C); // For Kovan Testnet
 
     /**
      * @dev Constructor that gives msg.sender all of existing tokens.
@@ -82,7 +86,7 @@ contract KiraDrop is ERC20, Ownable {
         require(X > 0 && T > 0, 'KiraDrop: should be valid configuration');
 
         pairTokenAddresses.push(tokenAddr);
-        pairTokens[tokenAddr] = RewardInfo({X: X, T: T, maxT: maxT, index: pairTokenAddresses.length - 1, exists: true});
+        pairTokens[tokenAddr] = RewardInfo({X: X * (10**uint256(DECIMALS)), T: T, maxT: maxT, index: pairTokenAddresses.length - 1, exists: true});
     }
 
     /**
@@ -103,7 +107,7 @@ contract KiraDrop is ERC20, Ownable {
         require(pairTokens[tokenAddr].exists == true, 'KiraDrop: no such token configured. If you want to add, call addPairToken.');
         require(X > 0 && T > 0, 'KiraDrop: should be valid configuration');
 
-        pairTokens[tokenAddr].X = X;
+        pairTokens[tokenAddr].X = X * (10**uint256(DECIMALS));
         pairTokens[tokenAddr].T = T;
         pairTokens[tokenAddr].maxT = maxT;
     }
@@ -159,6 +163,18 @@ contract KiraDrop is ERC20, Ownable {
         return (pairTokens[addr].index, pairTokens[addr].X, pairTokens[addr].T, pairTokens[addr].maxT, pairTokens[addr].exists);
     }
 
+    function getLastSnapshotByUser(address userAddr, address tokenAddr)
+        public
+        view
+        returns (
+            uint256,
+            uint256,
+            uint256
+        )
+    {
+        return (lastClaimByUser[userAddr].time, lastClaimByUser[userAddr].balances[tokenAddr], lastClaimByUser[userAddr].totalBalances[tokenAddr]);
+    }
+
     /**
      * @dev token claimed by user
      *
@@ -181,15 +197,17 @@ contract KiraDrop is ERC20, Ownable {
                 uint256 currentBalanceOfUser = lpToken.balanceOf(msg.sender);
                 uint256 currentTotalBalance = lpToken.totalSupply();
 
-                uint256 minBalanceOfUser = currentBalanceOfUser.min(lastClaimByUser[msg.sender].balances[addr]);
-                uint256 minTotalBalance = currentTotalBalance.min(lastClaimByUser[msg.sender].totalBalances[addr]);
+                if (lastClaimByUser[msg.sender].time != 0) {
+                    uint256 minBalanceOfUser = currentBalanceOfUser.min(lastClaimByUser[msg.sender].balances[addr]);
+                    uint256 minTotalBalance = currentTotalBalance.min(lastClaimByUser[msg.sender].totalBalances[addr]);
 
-                if (minTotalBalance > 0 && minBalanceOfUser > 0) {
-                    uint256 passedTime = info.maxT.min(now - lastClaimByUser[msg.sender].time);
-                    uint256 totalDistribute = info.X.mul(passedTime).div(info.T).div(1 hours);
-                    uint256 proportion = totalDistribute.mul(minBalanceOfUser).div(minTotalBalance);
+                    if (minTotalBalance > 0 && minBalanceOfUser > 0) {
+                        uint256 passedTime = info.maxT.mul(1 hours).min(now - lastClaimByUser[msg.sender].time);
+                        uint256 totalDistribute = info.X.mul(passedTime).div(info.T).div(1 hours);
+                        uint256 proportion = totalDistribute.mul(minBalanceOfUser).div(minTotalBalance);
 
-                    rewardAmount = rewardAmount.add(proportion);
+                        rewardAmount = rewardAmount.add(proportion);
+                    }
                 }
 
                 lastClaimByUser[msg.sender].balances[addr] = currentBalanceOfUser;
@@ -197,7 +215,6 @@ contract KiraDrop is ERC20, Ownable {
             }
         }
 
-        require(rewardAmount > 0, 'KiraDrop: no rewards available for you.');
         rewardAmount = rewardAmount.min(balanceOf(rewardPool));
 
         _balances[rewardPool] = _balances[rewardPool].sub(rewardAmount);

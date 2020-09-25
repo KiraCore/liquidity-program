@@ -24,6 +24,9 @@
   "keywords": [],
   "private": true,
   "dependencies": {
+    "@truffle/contract": "^4.2.22",
+    "@uniswap/v2-core": "^1.0.1",
+    "@uniswap/v2-periphery": "^1.1.0-beta.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "chai-bn": "^0.2.1",

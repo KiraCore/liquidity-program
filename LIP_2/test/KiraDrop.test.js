@@ -31,7 +31,7 @@ const toKex = (count) => {
 }
 
 const fromKex = (count) => {
-  return parseInt(count.toString()) / (10 ** KEX_DECIMAL)
+  return parseInt(count.toNumber()) / (10 ** KEX_DECIMAL)
 }
 
 const afterMinutes = (minute) => {
@@ -73,7 +73,7 @@ contract('KiraDrop Test', async function (accounts) {
         ETH: 0.1
         KEX: 1,000
       - Configure the pair token (ETH/KEX).
-        X: 720000 * 10^8
+        X: 720000 * 10^6
         T: 1 (1hr)
         maxT: 1 (1hr)
       - Provider1 claims rewards and get 0
@@ -135,7 +135,7 @@ contract('KiraDrop Test', async function (accounts) {
 
       // /*
       //   Configure the pair token (ETH/KEX).
-      //     X: 720000 * 10^8
+      //     X: 720000 * 10^6
       //     T: 1 (1hr)
       //     maxT: 1 (1hr)
       // */
@@ -143,25 +143,35 @@ contract('KiraDrop Test', async function (accounts) {
       await expect(instance.addPairToken(ADDR_WETH, utils.toKex(720000), 1, 1)).to.eventually.be.fulfilled
       await expect(instance.getTotalPairs()).to.eventually.be.a.bignumber.equal(new BN(1)) // check if there is only one pair
 
-      // // Provider1 claims rewards and get 0
+      // Provider1 claims rewards and get 0
       let oldBalance = await instance.balanceOf(provider1)
       await expect(instance.claimRewards({ from: provider1 })).to.eventually.be.fulfilled
-      let newBalance = await instance.balanceOf(provider1)
-      expect(oldBalance.toString()).equal(newBalance.toString())
+
+      // let newBalance = await instance.balanceOf(provider1)
+      // expect(oldBalance.toNumber()).equal(newBalance.toNumber())
 
       // // Check the lastClaimByUser for the provider1
-      const snapshot = await instance.getLastSnapshotByUser(provider1, ADDR_WETH)
-      utils.displayLastSnapshot(snapshot)
+      // const snapshot = await instance.getLastSnapshotByUser(provider1, ADDR_WETH)
+      // utils.displayLastSnapshot(snapshot)
 
-      // // Wait 10 seconds.
+      // Wait 10 seconds.
       await waitSeconds(10)
 
-      // // Provider1 claims rewards and get approximately 2,000 KEX tokens.
-      oldBalance = await instance.balanceOf(provider1)
-      await expect(instance.claimRewards({ from: provider1 })).to.eventually.be.fulfilled
-      newBalance = await instance.balanceOf(provider1)
+      // Provider1 claims rewards and get approximately 2,000 KEX tokens. (1900 to 2100)
 
-      console.log('Old: ', oldBalance.toNumber(), 'newBlanace: ', newBalance.toNumber())
+      let oldPoolBalance = await instance.balanceOf(rewardPool.address)
+      oldBalance = await instance.balanceOf(provider1)
+
+      await expect(instance.claimRewards({ from: provider1 })).to.eventually.be.fulfilled
+
+      let newPoolBalance = await instance.balanceOf(rewardPool.address)
+      let newBalance = await instance.balanceOf(provider1)
+
+      console.log('Old: ', utils.fromKex(oldBalance), 'newBlanace: ', utils.fromKex(newBalance))
+      console.log('Old: ', utils.fromKex(oldPoolBalance), 'newBlanace: ', utils.fromKex(newPoolBalance))
+
+      await expect(instance.balanceOf(rewardPool.address)).to.eventually.be.a.bignumber.at.least(oldPoolBalance.sub(new BN(2200 * (10 ** 6)))).at.most(oldPoolBalance.sub(new BN(1800 * (10 ** 6))))
+      // await expect(instance.balanceOf(provider1)).to.eventually.be.a.bignumber.equal(oldBalance.add(new BN(2000)))
     })
   })
 })

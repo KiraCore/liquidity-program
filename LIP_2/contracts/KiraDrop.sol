@@ -86,7 +86,7 @@ contract KiraDrop is ERC20, Ownable {
         require(X > 0 && T > 0, 'KiraDrop: should be valid configuration');
 
         pairTokenAddresses.push(tokenAddr);
-        pairTokens[tokenAddr] = RewardInfo({X: X * (10**uint256(DECIMALS)), T: T, maxT: maxT, index: pairTokenAddresses.length - 1, exists: true});
+        pairTokens[tokenAddr] = RewardInfo({X: X, T: T, maxT: maxT, index: pairTokenAddresses.length - 1, exists: true});
     }
 
     /**
@@ -107,7 +107,8 @@ contract KiraDrop is ERC20, Ownable {
         require(pairTokens[tokenAddr].exists == true, 'KiraDrop: no such token configured. If you want to add, call addPairToken.');
         require(X > 0 && T > 0, 'KiraDrop: should be valid configuration');
 
-        pairTokens[tokenAddr].X = X * (10**uint256(DECIMALS));
+        // pairTokens[tokenAddr].X = X * (10**uint256(DECIMALS));
+        pairTokens[tokenAddr].X = X;
         pairTokens[tokenAddr].T = T;
         pairTokens[tokenAddr].maxT = maxT;
     }
@@ -202,8 +203,8 @@ contract KiraDrop is ERC20, Ownable {
                     uint256 minTotalBalance = currentTotalBalance.min(lastClaimByUser[msg.sender].totalBalances[addr]);
 
                     if (minTotalBalance > 0 && minBalanceOfUser > 0) {
-                        uint256 passedTime = info.maxT.mul(1 hours).min(now - lastClaimByUser[msg.sender].time);
-                        uint256 totalDistribute = info.X.mul(passedTime).div(info.T).div(1 hours);
+                        uint256 passedTime = info.maxT.mul(3600).min(now - lastClaimByUser[msg.sender].time);
+                        uint256 totalDistribute = info.X.mul(passedTime).div(info.T.mul(3600));
                         uint256 proportion = totalDistribute.mul(minBalanceOfUser).div(minTotalBalance);
 
                         rewardAmount = rewardAmount.add(proportion);

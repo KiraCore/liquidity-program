@@ -14,7 +14,7 @@ const { assert } = require('chai')
 chai.use(chaiAsPromised)
 
 const expect = chai.expect
-const { ADDR_UNISWAP, ADDR_WETH } = require('./constants')
+const { ADDR_UNISWAP, ADDR_WETH, KEX_DECIMAL } = require('./constants')
 
 UniswapV2Router02.setProvider(web3._provider)
 
@@ -24,6 +24,32 @@ const waitSeconds = (sec) => {
       resolve()
     }, sec * 1000)
   })
+}
+
+const toKex = (count) => {
+  return count * (10 ** KEX_DECIMAL)
+}
+
+const fromKex = (count) => {
+  return parseInt(count.toString()) / (10 ** KEX_DECIMAL)
+}
+
+const afterMinutes = (minute) => {
+  return (new Date()).getTime() + minute * 60
+}
+
+const displayLastSnapshot = (snapshot) => {
+  console.log('------------------------Snapshoot------------------------')
+  console.log(`user's liquidity: `, snapshot[1].toString())
+  console.log('total liquidity: ', snapshot[2].toString())
+  console.log('---------------------------------------------------------')
+}
+
+const utils = {
+  toKex,
+  fromKex,
+  afterMinutes,
+  displayLastSnapshot
 }
 
 contract('KiraDrop Test', async function (accounts) {
@@ -41,7 +67,7 @@ contract('KiraDrop Test', async function (accounts) {
     Testing Scenario
       - KiraDrop TotalSupply should be 300,000,000
       - Set Reward Pool Address (KiraRewardPool) and check.
-      - Send 100,000,000 to the rewardPool and check.
+      - Send 2,000,000 to the rewardPool and check.
       - Send 1,000 tokens to provider1 and check.
       - Add liquidity (ETH/KEX) to uniswap from provider1
         ETH: 0.1
@@ -51,9 +77,9 @@ contract('KiraDrop Test', async function (accounts) {
         T: 1 (1hr)
         maxT: 1 (1hr)
       - Provider1 claims rewards and get 0
-      - Check the lastClaimSnapshot for the provider1
-      - Wait 30 seconds.
-      - Provider1 claims rewards and get approximately 6,000 KEX tokens.
+      - Check the lastClaimByUser for the provider1
+      - Wait 10 seconds.
+      - Provider1 claims rewards and get 200 KEX tokens.
   */
 
   describe('claimReward', async function () {
@@ -67,18 +93,18 @@ contract('KiraDrop Test', async function (accounts) {
       await expect(instance.setRewardPool(rewardPool.address)).to.eventually.be.fulfilled
       await expect(instance.rewardPool()).to.eventually.be.equal(rewardPool.address)
 
-      // Send 100,000,000 to the rewardPool and check.
+      // Send 2,000,000 to the rewardPool and check.
       let oldFromBalance = await instance.balanceOf(deployerAccount)
       let oldToBalance = await instance.balanceOf(rewardPool.address)
-      let sendTokens = new BN(10000 * (10 ** 8))
+      let sendTokens = utils.toKex(2 * 10 ** 6)
       await expect(instance.transfer(rewardPool.address, sendTokens)).to.eventually.be.fulfilled
       await expect(instance.balanceOf(deployerAccount)).to.eventually.be.a.bignumber.equal(oldFromBalance.sub(new BN(sendTokens)))
       await expect(instance.balanceOf(rewardPool.address)).to.eventually.be.a.bignumber.equal(oldToBalance.add(new BN(sendTokens)))
 
-      // Send 1,000 tokens to provider1 and check.
+      // Send 2,000 tokens to provider1 and check.
       oldFromBalance = await instance.balanceOf(deployerAccount)
       oldToBalance = await instance.balanceOf(provider1)
-      sendTokens = new BN(2000 * (10 ** 8))
+      sendTokens = utils.toKex(2000)
       await expect(instance.transfer(provider1, sendTokens)).to.eventually.be.fulfilled
       await expect(instance.balanceOf(deployerAccount)).to.eventually.be.a.bignumber.equal(oldFromBalance.sub(new BN(sendTokens)))
       await expect(instance.balanceOf(provider1)).to.eventually.be.a.bignumber.equal(oldToBalance.add(new BN(sendTokens)))
@@ -89,16 +115,16 @@ contract('KiraDrop Test', async function (accounts) {
           KEX: 1,000
       */
 
-      const deadline = (new Date()).getTime() + 5 * 60
+      const deadline = utils.afterMinutes(5)
       let uniswapV2Router02Instance = await UniswapV2Router02.at(ADDR_UNISWAP)
 
-      await instance.approve(uniswapV2Router02Instance.address, 1000 * (10 ** 8), { from: provider1, gas: 4000000 });
+      await instance.approve(uniswapV2Router02Instance.address, toKex(1000), { from: provider1, gas: 4000000 });
       await uniswapV2Router02Instance.addLiquidityETH(
         instance.address,
-        1000 * (10 ** 8),
-        500 * (10 ** 8),
-        (0.1 * (10 ** 18)).toString(),
-        deployerAccount,
+        toKex(1000),  // amountTokenDesired
+        toKex(500), // amountTokenMin
+        (0.1 * (10 ** 18)).toString(), // amountETHMin
+        provider1,
         deadline,
         {
           from: provider1,
@@ -107,29 +133,35 @@ contract('KiraDrop Test', async function (accounts) {
         }
       )
 
-      /*
-        Configure the pair token (ETH/KEX).
-          X: 720000 * 10^8
-          T: 1 (1hr)
-          maxT: 1 (1hr)
-      */
+      // /*
+      //   Configure the pair token (ETH/KEX).
+      //     X: 720000 * 10^8
+      //     T: 1 (1hr)
+      //     maxT: 1 (1hr)
+      // */
 
-      await expect(instance.addPairToken(ADDR_WETH, 72000 * (10 ** 8), 1, 1)).to.eventually.be.fulfilled
+      await expect(instance.addPairToken(ADDR_WETH, utils.toKex(720000), 1, 1)).to.eventually.be.fulfilled
+      await expect(instance.getTotalPairs()).to.eventually.be.a.bignumber.equal(new BN(1)) // check if there is only one pair
 
-      // Provider1 claims rewards and get 0
+      // // Provider1 claims rewards and get 0
+      let oldBalance = await instance.balanceOf(provider1)
       await expect(instance.claimRewards({ from: provider1 })).to.eventually.be.fulfilled
+      let newBalance = await instance.balanceOf(provider1)
+      expect(oldBalance.toString()).equal(newBalance.toString())
 
-      // Check the lastClaimSnapshot for the provider1
+      // // Check the lastClaimByUser for the provider1
+      const snapshot = await instance.getLastSnapshotByUser(provider1, ADDR_WETH)
+      utils.displayLastSnapshot(snapshot)
 
-      // Wait 30 seconds.
+      // // Wait 10 seconds.
       await waitSeconds(10)
 
-      // Provider1 claims rewards and get approximately 6,000 KEX tokens.
-      const oldBalance = await instance.balanceOf(provider1)
+      // // Provider1 claims rewards and get approximately 2,000 KEX tokens.
+      oldBalance = await instance.balanceOf(provider1)
       await expect(instance.claimRewards({ from: provider1 })).to.eventually.be.fulfilled
+      newBalance = await instance.balanceOf(provider1)
 
-      const newBalance = await instance.balanceOf(provider1)
-      console.log('Old: ', oldBalance, 'newBlanace: ', newBalance)
+      console.log('Old: ', oldBalance.toNumber(), 'newBlanace: ', newBalance.toNumber())
     })
   })
 })

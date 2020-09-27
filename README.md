@@ -1,5 +1,12 @@
 <div align="center">
   <h1>Kira Liquidity Program</h1>
+  <h2>Improvement Proposals Guides</h2>
+  <br/>  
+</div>
+
+* [LIP_1](./LIP_1/README.md) - Ethereum ERC20 KEX Placeholder Token for easy market access
+
+<div align="center">
   <h2>Common Guide</h2>
   <br/>  
 </div>
@@ -20,10 +27,13 @@ $ npm -v
 v6.14.8
 ```
 
-## Install Git on Ubuntu 20.04
+## Install Git & Clone the repo on Ubuntu 20.04
 
 ```
-$ sudo apt install git
+sudo apt install git
+cd $HOME
+rm -rfv ./liquidity-program/
+git clone https://github.com/KiraCore/liquidity-program.git
 ```
 
 ## Install the desktop version of Ganache
@@ -74,7 +84,8 @@ Make sure to provide the 64 character long hexa-decimal `PRIVATE_KEY`. The assoc
 For example, To setup LIP_1's PRIVATE_KEY
 
 ```
-echo "PRIVATE_KEY=0xXXX...XXX" > $HOME/liquidity-program/LIP_1/.env
+LIP_ID="LIP_1"
+echo "PRIVATE_KEY=0xXXX...XXX" > $HOME/liquidity-program/$LIP_ID/.env
 ```
 
 ### `INFURA_APIKEY`
@@ -86,20 +97,16 @@ Sign up for a free api key at https://infura.io/dashboard to deploy to public ne
 - Go to Settings Tab
 - Use the Project ID as `INFURA_APIKEY`
 
-For example, To setup LIP_1's INFURA_APIKEY
-
 ```
-echo "INFURA_APIKEY=XXX...XXX" >> $HOME/liquidity-program/LIP_1/.env
+echo "INFURA_APIKEY=XXX...XXX" >> $HOME/liquidity-program/$LIP_ID/.env
 ```
 
 ### `ETHERSCAN_APIKEY`
 
 - Generate the Etherscan API Key for free at https://etherscan.io/myapikey.
 
-For example, To setup LIP_1's ETHERSCAN_APIKEY
-
 ```
-echo "ETHERSCAN_APIKEY=XXX...XXX" >> $HOME/liquidity-program/LIP_1/.env
+echo "ETHERSCAN_APIKEY=XXX...XXX" >> $HOME/liquidity-program/$LIP_ID/.env
 ```
 
 # 3. Testnet used and faucet references

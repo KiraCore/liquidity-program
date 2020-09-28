@@ -58,7 +58,7 @@ contract('KiraToken Test', async function (accounts) {
       const freezed = await instance.freezed()
       expect(freezed).to.equal(true)
 
-      await expect(instance.whitelist(recipient, true, true)).to.eventually.be.fulfilled
+      await expect(instance.whitelist([recipient], true, true)).to.eventually.be.fulfilled
 
       const sendTokens = 100
       const oldFromBalance = await instance.balanceOf(deployerAccount)
@@ -72,7 +72,7 @@ contract('KiraToken Test', async function (accounts) {
   describe('whitelistRemove', async function (done) {
     it('should not be able to remove owner from whitelist', async function () {
       let instance = await Token.deployed()
-      await expect(instance.whitelist(deployerAccount, false, false)).to.eventually.be.rejected
+      await expect(instance.whitelist([deployerAccount], false, false)).to.eventually.be.rejected
     })
   })
 })

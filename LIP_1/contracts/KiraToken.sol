@@ -33,7 +33,7 @@ contract KiraToken is ERC20, Ownable {
     mapping(address => WhitelistInfo) private _whitelist;
 
     // Events
-    event WhitelistConfigured(address addr, bool withdraw, bool deposit);
+    event WhitelistConfigured(address[] addrs, bool withdraw, bool deposit);
 
     /**
      * @dev Constructor that gives msg.sender all of existing tokens.
@@ -62,22 +62,41 @@ contract KiraToken is ERC20, Ownable {
 
     /**
      * @dev configure whitelist to an address
-     * @param addr the address to be whitelisted
+     * @param addrs the addresses to be whitelisted
      * @param withdraw boolean variable to indicate if withdraw is allowed
      * @param deposit boolean variable to indicate if deposit is allowed
      */
     function whitelist(
-        address addr,
+        address[] calldata addrs,
         bool withdraw,
         bool deposit
     ) external onlyOwner returns (bool) {
-        require(addr != owner(), "KEX: can not configure owner's whitelist");
-        require(addr != address(0), 'KEX: address should not be zero');
+        for (uint256 i = 0; i < addrs.length; i++) {
+            address addr = addrs[i];
+            require(addr != owner(), "KEX: can not configure owner's whitelist");
+            require(addr != address(0), 'KEX: address should not be zero');
 
-        _whitelist[addr].withdraw = withdraw;
-        _whitelist[addr].deposit = deposit;
+            _whitelist[addr].withdraw = withdraw;
+            _whitelist[addr].deposit = deposit;
+        }
 
-        emit WhitelistConfigured(addr, withdraw, deposit);
+        emit WhitelistConfigured(addrs, withdraw, deposit);
+
+        return true;
+    }
+
+    function transferMultiple(address[] calldata addrs, uint256 amount) external returns (bool) {
+        require(amount > 0, 'KEX: amount should not be zero');
+        require(balanceOf(msg.sender) >= amount.mul(addrs.length), 'KEX: amount should be less than the balance of the sender');
+
+        for (uint256 i = 0; i < addrs.length; i++) {
+            address addr = addrs[i];
+            require(addr != msg.sender, 'KEX: address should not be sender');
+            require(addr != address(0), 'KEX: address should not be zero');
+
+            transfer(addr, amount);
+        }
+
         return true;
     }
 

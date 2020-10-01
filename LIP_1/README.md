@@ -272,10 +272,11 @@ ABI we can now input into any wallet like MEW to interact with the contract
 
 1.  Only token owner can freeze the token
     ![Contract_Freeze](doc/contract_freeze.png)
-2.  Configure whitelist. (Only owner can add/remove whitelist)
+2.  Configure whitelist. (Only owner can configure whitelist)
     ![Contract_Whitelist](doc/contract_whitelist.png)
 3.  Should be able to transfer between whitelisted addresses even if the token transfer is freezed
     ![Contract_Transfer_Success_Whitelisted](doc/contract_transfer_success_whitelisted.png)
+    ![Contract_Transfer_Success_Whitelisted_2](doc/contract_transfer_success_whitelisted_2.png)
 
 ## Compatibility with uniswap v2
 
@@ -291,5 +292,5 @@ ABI we can now input into any wallet like MEW to interact with the contract
 
 # TODO
 
-- [ ] TODO: Update readme as whitelist method changed
+- [x] TODO: Update readme as whitelist method changed
 - [x] TODO: Add more unit testing

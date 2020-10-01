@@ -64,7 +64,7 @@ contract KiraToken is ERC20, Ownable {
         emit Transfer(address(0x0), msg.sender, INITIAL_SUPPLY);
         freezed = true;
 
-        // all whitelist options should be true for the deployer ??
+        // owner's whitelist
         _whitelist[msg.sender].allow_deposit = true;
         _whitelist[msg.sender].allow_transfer = true;
         _whitelist[msg.sender].allow_unconditional_deposit = true;
@@ -101,7 +101,6 @@ contract KiraToken is ERC20, Ownable {
     ) external onlyOwner returns (bool) {
         for (uint256 i = 0; i < addrs.length; i++) {
             address addr = addrs[i];
-            require(addr != owner(), "KEX: can not configure owner's whitelist");
             require(addr != address(0), 'KEX: address should not be zero');
 
             _whitelist[addr].allow_deposit = allow_deposit;
@@ -121,7 +120,6 @@ contract KiraToken is ERC20, Ownable {
     function addToBlacklist(address[] calldata addrs) external onlyOwner returns (bool) {
         for (uint256 i = 0; i < addrs.length; i++) {
             address addr = addrs[i];
-            require(addr != owner(), "KEX: can not configure owner's blacklist");
             require(addr != address(0), 'KEX: address should not be zero');
 
             _blacklist[addr] = true;
@@ -138,7 +136,6 @@ contract KiraToken is ERC20, Ownable {
     function removeFromBlacklist(address[] calldata addrs) external onlyOwner returns (bool) {
         for (uint256 i = 0; i < addrs.length; i++) {
             address addr = addrs[i];
-            require(addr != owner(), "KEX: can not configure owner's blacklist");
             require(addr != address(0), 'KEX: address should not be zero');
 
             _blacklist[addr] = false;
@@ -149,7 +146,7 @@ contract KiraToken is ERC20, Ownable {
         return true;
     }
 
-    function transferMultiple(address[] calldata addrs, uint256 amount) external returns (bool) {
+    function multiTransfer(address[] calldata addrs, uint256 amount) external returns (bool) {
         require(amount > 0, 'KEX: amount should not be zero');
         require(balanceOf(msg.sender) >= amount.mul(addrs.length), 'KEX: amount should be less than the balance of the sender');
 

@@ -25,15 +25,35 @@ contract KiraToken is ERC20, Ownable {
     bool public freezed;
 
     struct WhitelistInfo {
-        bool withdraw; // if withdraw is allowed
-        bool deposit; // if deposit is allowed
+        // if account has allow deposit permission then it should be possible to deposit tokens to that account
+        // as long as accounts depositing have allow_transfer permission
+        bool allow_deposit;
+        // if account has allow transfer permission then that account should be able to transfer tokens to other
+        // accounts with allow_deposit permission
+        bool allow_transfer;
+        // deposit to the account should be possible even if account depositing has no permission to transfer
+        bool allow_unconditional_deposit;
+        // transfer from the account should be possible to any account even if the destination account has no
+        // deposit permission
+        bool allow_unconditional_transfer;
     }
+
+    // represents if the address is blacklisted with the contract. Blacklist takes priority before all other permissions like whitelist
+    mapping(address => bool) private _blacklist;
 
     // represents if the address is whitelisted or not
     mapping(address => WhitelistInfo) private _whitelist;
 
     // Events
-    event WhitelistConfigured(address addr, bool withdraw, bool deposit);
+    event WhitelistConfigured(
+        address[] addrs,
+        bool allow_deposit,
+        bool allow_transfer,
+        bool allow_unconditional_deposit,
+        bool allow_unconditional_transfer
+    );
+    event AddedToBlacklist(address[] addrs);
+    event RemovedFromBlacklist(address[] addrs);
 
     /**
      * @dev Constructor that gives msg.sender all of existing tokens.
@@ -43,8 +63,12 @@ contract KiraToken is ERC20, Ownable {
         _mint(msg.sender, INITIAL_SUPPLY);
         emit Transfer(address(0x0), msg.sender, INITIAL_SUPPLY);
         freezed = true;
-        _whitelist[msg.sender].withdraw = true;
-        _whitelist[msg.sender].deposit = true;
+
+        // owner's whitelist
+        _whitelist[msg.sender].allow_deposit = true;
+        _whitelist[msg.sender].allow_transfer = true;
+        _whitelist[msg.sender].allow_unconditional_deposit = true;
+        _whitelist[msg.sender].allow_unconditional_transfer = true;
     }
 
     /**
@@ -62,30 +86,107 @@ contract KiraToken is ERC20, Ownable {
 
     /**
      * @dev configure whitelist to an address
-     * @param addr the address to be whitelisted
-     * @param withdraw boolean variable to indicate if withdraw is allowed
-     * @param deposit boolean variable to indicate if deposit is allowed
+     * @param addrs the addresses to be whitelisted
+     * @param allow_deposit boolean variable to indicate if deposit is allowed
+     * @param allow_transfer boolean variable to indicate if transfer is allowed
+     * @param allow_unconditional_deposit boolean variable to indicate if unconditional deposit is allowed
+     * @param allow_unconditional_transfer boolean variable to indicate if unconditional transfer is allowed
      */
     function whitelist(
-        address addr,
-        bool withdraw,
-        bool deposit
+        address[] calldata addrs,
+        bool allow_deposit,
+        bool allow_transfer,
+        bool allow_unconditional_deposit,
+        bool allow_unconditional_transfer
     ) external onlyOwner returns (bool) {
-        require(addr != owner(), "KEX: can not configure owner's whitelist");
-        require(addr != address(0), 'KEX: address should not be zero');
+        for (uint256 i = 0; i < addrs.length; i++) {
+            address addr = addrs[i];
+            require(addr != address(0), 'KEX: address should not be zero');
 
-        _whitelist[addr].withdraw = withdraw;
-        _whitelist[addr].deposit = deposit;
+            _whitelist[addr].allow_deposit = allow_deposit;
+            _whitelist[addr].allow_transfer = allow_transfer;
+            _whitelist[addr].allow_unconditional_deposit = allow_unconditional_deposit;
+            _whitelist[addr].allow_unconditional_transfer = allow_unconditional_transfer;
+        }
 
-        emit WhitelistConfigured(addr, withdraw, deposit);
+        emit WhitelistConfigured(addrs, allow_deposit, allow_transfer, allow_unconditional_deposit, allow_unconditional_transfer);
+
+        return true;
+    }
+
+    /**
+     * @dev add addresses to blacklist
+     */
+    function addToBlacklist(address[] calldata addrs) external onlyOwner returns (bool) {
+        for (uint256 i = 0; i < addrs.length; i++) {
+            address addr = addrs[i];
+            require(addr != address(0), 'KEX: address should not be zero');
+
+            _blacklist[addr] = true;
+        }
+
+        emit AddedToBlacklist(addrs);
+
+        return true;
+    }
+
+    /**
+     * @dev remove addresses from blacklist
+     */
+    function removeFromBlacklist(address[] calldata addrs) external onlyOwner returns (bool) {
+        for (uint256 i = 0; i < addrs.length; i++) {
+            address addr = addrs[i];
+            require(addr != address(0), 'KEX: address should not be zero');
+
+            _blacklist[addr] = false;
+        }
+
+        emit RemovedFromBlacklist(addrs);
+
+        return true;
+    }
+
+    function multiTransfer(address[] calldata addrs, uint256 amount) external returns (bool) {
+        require(amount > 0, 'KEX: amount should not be zero');
+        require(balanceOf(msg.sender) >= amount.mul(addrs.length), 'KEX: amount should be less than the balance of the sender');
+
+        for (uint256 i = 0; i < addrs.length; i++) {
+            address addr = addrs[i];
+            require(addr != msg.sender, 'KEX: address should not be sender');
+            require(addr != address(0), 'KEX: address should not be zero');
+
+            transfer(addr, amount);
+        }
+
         return true;
     }
 
     /**
      * @dev Returns if the address is whitelisted or not.
      */
-    function whitelisted(address addr) public view returns (bool, bool) {
-        return (_whitelist[addr].withdraw, _whitelist[addr].deposit);
+    function whitelisted(address addr)
+        public
+        view
+        returns (
+            bool,
+            bool,
+            bool,
+            bool
+        )
+    {
+        return (
+            _whitelist[addr].allow_deposit,
+            _whitelist[addr].allow_transfer,
+            _whitelist[addr].allow_unconditional_deposit,
+            _whitelist[addr].allow_unconditional_transfer
+        );
+    }
+
+    /**
+     * @dev Returns if the address is on the blacklist or not.
+     */
+    function blacklisted(address addr) public view returns (bool) {
+        return _blacklist[addr];
     }
 
     /**
@@ -98,6 +199,14 @@ contract KiraToken is ERC20, Ownable {
         uint256 amount
     ) internal virtual override {
         super._beforeTokenTransfer(from, to, amount);
-        require(!freezed || (_whitelist[from].withdraw && _whitelist[to].deposit), 'KEX: token transfer while freezed and not whitelisted.');
+        require(!_blacklist[from], 'KEX: sender is blacklisted.');
+        require(!_blacklist[to], 'KEX: receiver is blacklisted.');
+        require(
+            !freezed ||
+                _whitelist[from].allow_unconditional_transfer ||
+                _whitelist[to].allow_unconditional_deposit ||
+                (_whitelist[from].allow_transfer && _whitelist[to].allow_deposit),
+            'KEX: token transfer while freezed and not whitelisted.'
+        );
     }
 }

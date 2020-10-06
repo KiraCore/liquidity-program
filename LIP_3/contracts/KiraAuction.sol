@@ -22,36 +22,61 @@ import 'openzeppelin-solidity/contracts/math/SafeMath.sol';
 contract KiraAuction is Ownable {
     using SafeMath for uint256;
 
-    uint256 private constant MIN_WEI = 0 ether;
+    /* 
+        Configurable
+        P1, P2, T1, T2, Auction Start, Tx rate limiting, Tx size per time limit, whitelist
+    */
 
     address payable public wallet;
 
-    uint256 public startTime;
-    uint256 private P1; // price of ETH per 1 KEX
+    uint256 public startTime = 0;
+    uint256 private P1;
     uint256 private P2;
-    uint256 private P3;
     uint256 private T1;
     uint256 private T2;
+    uint256 private MAX_WEI = 0 ether;
+    uint256 private INTERVAL_LIMIT = 0;
 
-    mapping(address => bool) private whitelisted;
-    mapping(address => uint256) private claimed_wei;
-    address[] private contributors;
+    struct UserInfo {
+        bool whitelisted;
+        uint256 claimed_wei;
+        uint256 last_deposit_time;
+    }
+
+    mapping(address => UserInfo) private customers;
 
     IERC20 private kiraToken;
 
     uint256 private totalWeiAmount = 0;
-
-    /*
-        status
-        0 - before the start
-        1 - in the progress (exceed the start time & at least one sends ETH to the contract)
-        2 - after the auction end
-    */
-    uint256 private status = 0;
-    bool private isPriceConfigured = false;
+    uint256 private latestPrice = 0;
 
     // Events
+    event AuctionConfigured(uint256 _startTime);
     event AddedToWhitelist(address addr);
+    event ProcessedBuy(address addr, uint256 amount);
+    event ClaimedTokens(address addr, uint256 amount);
+    event WithdrawedFunds(address _wallet, uint256 amount);
+
+    // MODIFIERS
+
+    modifier onlyInProgress() {
+        require(startTime != 0, 'KiraAuction: start time is not configured yet. So not in progress.');
+        require((startTime <= now) && (now <= startTime + T1 + T2), 'KiraAuction: it is out of processing period.');
+        uint256 cap = _getCurrentCap();
+        require(cap >= totalWeiAmount, 'KiraAuction: overflows the cap, so it is ended');
+        _;
+    }
+
+    modifier onlyBeforeAuction() {
+        require(startTime == 0 || (now < startTime), 'KiraAuction: should be before auction starts');
+        _;
+    }
+
+    modifier onlyAfterAuction() {
+        uint256 cap = _getCurrentCap();
+        require(startTime != 0 && ((startTime + T1 + T2 < now) || (cap < totalWeiAmount)), 'KiraAuction: should be after auction ends');
+        _;
+    }
 
     // Constructor
 
@@ -60,63 +85,59 @@ contract KiraAuction is Ownable {
         wallet = msg.sender;
     }
 
-    function setStartTime(uint256 _startTime) external onlyOwner {
-        require(status == 0, 'KiraAuction: not be able to set start time because auction is already started.');
-        require(isPriceConfigured == false, 'KiraAuction: price should be configured before setting start time.');
-        startTime = _startTime;
+    // External Views
+
+    function getCurrentAuctionPrice() external view returns (uint256) {
+        return _getCurrentAuctionPrice();
     }
 
-    function setWallet(address payable _wallet) external onlyOwner {
-        require(status == 0 || (status == 1 && (startTime + T1 + T2 > now)), 'KiraAuction: not be able to config wallet after auction ended.');
-        wallet = _wallet;
+    function totalDeposited() external view returns (uint256) {
+        return totalWeiAmount;
     }
 
-    function setPrice(
-        uint256 _p1,
-        uint256 _p2,
-        uint256 _p3,
-        uint256 _t1,
-        uint256 _t2
-    ) external onlyOwner {
-        require(status == 0, 'KiraAuction: not be able to config the price because auction is already started.');
-        require((_p1 > _p2) && (_p2 > _p3) && (_p3 >= 0), 'KiraAuction: price should go decreasing.');
-        require(_t1 < _t2, 'KiraAuction: the first slope should have faster decreasing rate.');
-        require((_t1 > 0) && (_t2 > 0), 'KiraAuction: the period of each slope should be greater than zero.');
-
-        P1 = _p1;
-        P2 = _p2;
-        P3 = _p3;
-        T1 = _t1;
-        T2 = _t2;
-        isPriceConfigured = true;
+    function whitelisted(address addr) external view returns (bool) {
+        return customers[addr].whitelisted;
     }
 
-    function whitelist(address addr) external onlyOwner {
-        require(addr != address(0), 'KiraAuction: not be able to whitelist address(0).');
-        whitelisted[addr] = true;
-
-        emit AddedToWhitelist(addr);
+    function getCustomerInfo(address addr)
+        external
+        view
+        returns (
+            bool,
+            uint256,
+            uint256
+        )
+    {
+        return (customers[addr].whitelisted, customers[addr].claimed_wei, customers[addr].last_deposit_time);
     }
 
-    receive() external payable {
-        _processBuy(msg.sender, msg.value);
+    function getAuctionConfigInfo()
+        external
+        view
+        returns (
+            uint256,
+            uint256,
+            uint256,
+            uint256,
+            uint256,
+            uint256,
+            uint256
+        )
+    {
+        return (startTime, P1, P2, T1, T2, MAX_WEI, INTERVAL_LIMIT);
     }
 
-    function _processBuy(address beneficiary, uint256 weiAmount) private {
-        require(status != 0 && (startTime <= now), 'KiraAuction: auction is not started.');
-        require(status != 2 && (now <= startTime + T1 + T2), 'KiraAuction: auction was ended.');
+    function getWalletAddress() external view returns (address) {
+        return wallet;
+    }
 
-        if (status == 0) {
-            // first time when a client sends ETH after start time
-            // status should be updated as 'in-progress'
-            status = 1;
-        }
+    function getLatestPrice() external view returns (uint256) {
+        return latestPrice;
+    }
 
-        require(beneficiary != address(0), 'KiraAuction: Not zero address');
-        require(beneficiary != owner(), 'KiraAuction: Not owner');
-        require(weiAmount >= MIN_WEI, 'KiraAuction: That isnt enought');
-        require(whitelisted[beneficiary], "KiraAuction: You're not whitelisted, wait a moment");
+    // Internal Views
 
+    function _getCurrentAuctionPrice() internal view returns (uint256) {
         /*     ^
             P1 |        *
                |        '*
@@ -126,68 +147,130 @@ contract KiraAuction is Ownable {
                |        '   '   *
                |        '   '       *
                |        '   '           *
-            P3 |        '   '               *
-               |        '   '               '
-               |--------|---|---------------|------------------> Timeline
-                          T1        T2
-        Status  ----0---><--------1---------><--------2-------
+               |        '   '               *
+               |        '   '                   *
+               |--------|---|-----------------------|----------> Timeline
+                          T1           T2
         */
 
-        uint256 ethPerToken;
+        uint256 price = 0;
 
-        if (now < startTime + T1) {
+        if ((startTime <= now) && (now < startTime + T1)) {
             // Slope 1
+            // y = p1 - (x * (p1 - p2) / t1)
+
             uint256 x = now - startTime;
             uint256 delta = x.mul(P1 - P2).div(T1);
 
-            ethPerToken = P1.sub(delta);
-        } else {
+            price = P1.sub(delta);
+        } else if ((startTime + T1 <= now) && (now <= startTime + T1 + T2)) {
+            // Slope 2
+            // y = p2 - (x * p2 / t2)
             uint256 x = now - startTime - T1;
-            uint256 delta = x.mul(P2 - P3).div(T2);
+            uint256 delta = x.mul(P2).div(T2);
 
-            ethPerToken = P2.sub(delta);
+            price = P2.sub(delta);
         }
 
-        if (claimed_wei[beneficiary] == 0) {
-            contributors.push(beneficiary);
-        }
+        return price;
+    }
+
+    function _getCurrentCap() internal view returns (uint256) {
+        uint256 price = _getCurrentAuctionPrice();
+        uint256 numberOfTokens = kiraToken.balanceOf(address(this));
+        uint256 cap = price.mul(numberOfTokens);
+
+        return cap;
+    }
+
+    // Auction Config Method only for owner. only before auction
+
+    function setWallet(address payable _wallet) external onlyOwner onlyBeforeAuction {
+        wallet = _wallet;
+    }
+
+    function configAuction(
+        uint256 _startTime,
+        uint256 _p1,
+        uint256 _p2,
+        uint256 _t1,
+        uint256 _t2,
+        uint256 _txIntervalLimit,
+        uint256 _txMaxEthAmount
+    ) external onlyOwner onlyBeforeAuction {
+        require(_startTime > now, 'KiraAuction: start time should be greater than now');
+        require((_p1 > _p2) && (_p2 >= 0), 'KiraAuction: price should go decreasing.');
+        require(_t1 < _t2, 'KiraAuction: the first slope should have faster decreasing rate.');
+        require((_t1 > 0) && (_t2 > 0), 'KiraAuction: the period of each slope should be greater than zero.');
+        require(_txIntervalLimit >= 0, 'KiraAuction: the interval rate per tx should be valid');
+        require(_txMaxEthAmount > 0, 'KiraAuction: the maximum amount per tx should be valid');
+
+        startTime = _startTime;
+        P1 = _p1 * 1 ether;
+        P2 = _p2 * 1 ether;
+        T1 = _t1;
+        T2 = _t2;
+        INTERVAL_LIMIT = _txIntervalLimit;
+        MAX_WEI = _txMaxEthAmount * 1 ether;
+
+        emit AuctionConfigured(startTime);
+    }
+
+    function whitelist(address addr) external onlyOwner onlyBeforeAuction {
+        require(addr != address(0), 'KiraAuction: not be able to whitelist address(0).');
+        customers[addr].whitelisted = true;
+
+        emit AddedToWhitelist(addr);
+    }
+
+    // only in progress
+
+    receive() external payable {
+        _processBuy(msg.sender, msg.value);
+    }
+
+    function _processBuy(address beneficiary, uint256 weiAmount) private onlyInProgress {
+        require(beneficiary != address(0), 'KiraAuction: Not zero address');
+        require(beneficiary != owner(), 'KiraAuction: Not owner');
+        require(weiAmount > 0, 'KiraAuction: That is not enough.');
+        require(weiAmount <= MAX_WEI, 'KiraAuction: That is too much.');
+        require(customers[beneficiary].whitelisted, "KiraAuction: You're not whitelisted, wait a moment.");
+        require(now - customers[beneficiary].last_deposit_time >= INTERVAL_LIMIT, 'KiraAuction: it exceeds the tx rate limit');
+
+        uint256 cap = _getCurrentCap();
+
+        require(totalWeiAmount.add(weiAmount) < cap, 'KiraAuction: You contribution overflows the hard cap!');
+
+        customers[beneficiary].claimed_wei = customers[beneficiary].claimed_wei.add(weiAmount);
+        customers[beneficiary].last_deposit_time = now;
 
         totalWeiAmount = totalWeiAmount.add(weiAmount);
-        claimed_wei[beneficiary] = claimed_wei[beneficiary].add(weiAmount);
+
+        emit ProcessedBuy(beneficiary, weiAmount);
 
         uint256 numberOfTokens = kiraToken.balanceOf(address(this));
-        uint256 cap = ethPerToken.mul(numberOfTokens);
-
-        if (totalWeiAmount >= cap) {
-            status = 2;
-
-            _distribute();
-        }
+        latestPrice = totalWeiAmount.div(numberOfTokens);
     }
 
-    function _distribute() internal {
-        uint256 numberOfTokens = kiraToken.balanceOf(address(this));
-        uint256 price = totalWeiAmount.div(numberOfTokens);
+    // only after auction
 
-        uint256 numberOfContributors = contributors.length;
-        for (uint256 i = 0; i < numberOfContributors; i++) {
-            address addr = contributors[i];
-            uint256 tokensToSend = claimed_wei[addr].div(price);
+    function claimTokens() external onlyAfterAuction {
+        UserInfo memory customer = customers[msg.sender];
+        require(customer.whitelisted && customer.claimed_wei > 0, 'KiraAuction: you did not contribute.');
 
-            uint256 currentBalance = kiraToken.balanceOf(address(this));
+        uint256 amountToClaim = customer.claimed_wei.div(latestPrice);
 
-            if (currentBalance < tokensToSend) {
-                tokensToSend = currentBalance;
-            }
+        kiraToken.transfer(msg.sender, amountToClaim);
 
-            kiraToken.transfer(addr, tokensToSend);
-        }
-
-        wallet.transfer(totalWeiAmount);
+        emit ClaimedTokens(msg.sender, amountToClaim);
     }
 
-    function withdrawFunds() external onlyOwner {
-        address payable ownerWallet = msg.sender;
-        ownerWallet.transfer(totalWeiAmount);
+    function withdrawFunds() external onlyOwner onlyAfterAuction {
+        uint256 balance = address(this).balance;
+        require(balance > 0, 'KiraAuction: nothing left to withdraw');
+
+        wallet.transfer(balance);
+
+        emit WithdrawedFunds(wallet, balance);
     }
 }

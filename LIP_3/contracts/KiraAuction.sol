@@ -1,7 +1,6 @@
 pragma solidity 0.6.2;
 
 import 'openzeppelin-solidity/contracts/token/ERC20/IERC20.sol';
-import 'openzeppelin-solidity/contracts/token/ERC20/ERC20.sol';
 import 'openzeppelin-solidity/contracts/access/Ownable.sol';
 import 'openzeppelin-solidity/contracts/math/SafeMath.sol';
 
@@ -20,7 +19,7 @@ import 'openzeppelin-solidity/contracts/math/SafeMath.sol';
  * times out.
  */
 
-contract KiraAuction is ERC20, Ownable {
+contract KiraAuction is Ownable {
     using SafeMath for uint256;
 
     uint256 private constant MIN_WEI = 0 ether;
@@ -67,7 +66,7 @@ contract KiraAuction is ERC20, Ownable {
         startTime = _startTime;
     }
 
-    function setWallet(address _wallet) external onlyOwner {
+    function setWallet(address payable _wallet) external onlyOwner {
         require(status == 0 || (status == 1 && (startTime + T1 + T2 > now)), 'KiraAuction: not be able to config wallet after auction ended.');
         wallet = _wallet;
     }
@@ -77,7 +76,7 @@ contract KiraAuction is ERC20, Ownable {
         uint256 _p2,
         uint256 _p3,
         uint256 _t1,
-        _uint256 _t2
+        uint256 _t2
     ) external onlyOwner {
         require(status == 0, 'KiraAuction: not be able to config the price because auction is already started.');
         require((_p1 > _p2) && (_p2 > _p3) && (_p3 >= 0), 'KiraAuction: price should go decreasing.');
@@ -160,7 +159,7 @@ contract KiraAuction is ERC20, Ownable {
         uint256 cap = ethPerToken.mul(numberOfTokens);
 
         if (totalWeiAmount >= cap) {
-            statis = 2;
+            status = 2;
 
             _distribute();
         }

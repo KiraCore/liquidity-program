@@ -66,7 +66,7 @@ contract KiraAuction is Ownable {
         require(startTime != 0, 'KiraAuction: start time is not configured yet. So not in progress.');
         require((startTime <= now) && (now <= startTime + T1 + T2), 'KiraAuction: it is out of processing period.');
         uint256 cap = _getCurrentCap();
-        require(cap >= totalWeiAmount, 'KiraAuction: overflows the cap, so it is ended');
+        require(cap >= totalWeiAmount, 'KiraAuction: overflowed the cap, so it is ended');
         _;
     }
 
@@ -98,10 +98,6 @@ contract KiraAuction is Ownable {
     }
 
     // External Views
-
-    function getBlockTimestamp() external view returns (uint256) {
-        return block.timestamp;
-    }
 
     function getTokenContractAddress() external view returns (address) {
         return address(kiraToken);
@@ -210,6 +206,10 @@ contract KiraAuction is Ownable {
     }
 
     // Auction Config Method only for owner. only before auction
+
+    function setTokenContract(address _kiraTokenAddr) external onlyOwner onlyBeforeAuction {
+        kiraToken = ERC20(_kiraTokenAddr);
+    }
 
     function setWallet(address payable _wallet) external onlyOwner onlyBeforeAuction {
         wallet = _wallet;

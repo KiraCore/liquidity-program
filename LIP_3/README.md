@@ -17,6 +17,7 @@ cd $HOME/liquidity-program/
 git checkout $LIP_ID
 cd $LIP_ID
 npm install
+cp $HOME/liquidity-program/LIP_1/contracts/KiraToken.sol $HOME/liquidity-program/LIP_3/contracts
 ```
 
 # 2. Environment Variables (Accounts & Keys Setup)
@@ -33,14 +34,93 @@ Check Common Guide's [Testnet used and faucet references Section](../README.md#3
 
 ```
  $ npm run build
+> kira-auction@1.0.0 prebuild /Kira/liquidity-program/LIP_3
+> rimraf ./build/contracts/*
 
+> kira-auction@1.0.0 build /Kira/liquidity-program/LIP_3
+> truffle compile
+
+Using env var PRIVATE_KEY conn...
+Using env var INFURA_APIKEY 7591...
+Using env var process.env.ETHERSCAN_APIKEY SFP4...
+
+Compiling your contracts...
+===========================
+> Compiling ./contracts/KiraAuction.sol
+> Compiling ./contracts/KiraToken.sol
+> Compiling ./contracts/Migrations.sol
+> Compiling openzeppelin-solidity/contracts/GSN/Context.sol
+> Compiling openzeppelin-solidity/contracts/access/Ownable.sol
+> Compiling openzeppelin-solidity/contracts/math/SafeMath.sol
+> Compiling openzeppelin-solidity/contracts/token/ERC20/ERC20.sol
+> Compiling openzeppelin-solidity/contracts/token/ERC20/IERC20.sol
+> Compiling openzeppelin-solidity/contracts/utils/Address.sol
+> Artifacts written to /Users/mac/Documents/Work/Kira/liquidity-program/LIP_3/build/contracts
+> Compiled successfully using:
+   - solc: 0.6.2+commit.bacdbe57.Emscripten.clang
 ```
 
 ## Test the smart contract with the provided command. All testing should be passed
 
 ```
  $ npm run test
+> kira-auction@1.0.0 test /Kira/liquidity-program/LIP_3
+> truffle test
 
+Using env var PRIVATE_KEY abc...
+Using env var INFURA_APIKEY 123...
+Using env var process.env.ETHERSCAN_APIKEY 0987...
+Using network 'development'.
+
+
+Compiling your contracts...
+===========================
+> Compiling ./contracts/KiraAuction.sol
+> Artifacts written to /var/folders/m5/s6r4jc2n683grgxld0r1hgch0000gn/T/test--1387-Y60j8u54aM9J
+> Compiled successfully using:
+   - solc: 0.6.2+commit.bacdbe57.Emscripten.clang
+
+  Contract: KiraAuction Test
+    KiraAuction
+      ✓ KiraToken should be configured once deployed
+      ✓ wallet should be the owner once deployed
+    configAuction
+      ✓ should only be callable by the owner (51ms)
+      ✓ should only be callable before auction starts (2097ms)
+      ✓ can't set set the startTime as old time (65ms)
+      ✓ should set the auction price as decreasing (51ms)
+      ✓ first slope's decreasing rate should be bigger than the second one (42ms)
+      ✓ slope times should be valid (42ms)
+      ✓ max size per transaction should be valid (53ms)
+      ✓ should set the variables properly (should convert to the ether unit) (99ms)
+    setWallet
+      ✓ wallet should only be configurable by the owner (49ms)
+      ✓ wallet should only be configurable before auction starts (3089ms)
+      ✓ wallet should be set properly (1128ms)
+    whitelist
+      ✓ whitelist should only be called by the owner (39ms)
+      ✓ whitelist should only be called before auction starts (3121ms)
+      ✓ wallet should be set properly (82ms)
+    deposit
+      ✓ should be rejected before the auction (1174ms)
+      ✓ should be rejected after the auction (5100ms)
+      ✓ owner or address(0) should not be able to participate in the auction (1092ms)
+      ✓ should be rejected from not whitelisted account (1110ms)
+      ✓ amount should not exceed the MAX_WEI (1208ms)
+      ✓ should be rejected when it exceeds the tx rate limit (1333ms)
+      ✓ should be rejected if it exceeds the hard cap (3250ms)
+      ✓ should update the total deposited amount, latest price and user info properly (5320ms)
+    claimTokens
+      ✓ should only be called after auction ends (3126ms)
+      ✓ should be rejected if non-whitelisted user tries to claim (5093ms)
+      ✓ should be rejected if whitelisted & non-deposited user tries to claim (5185ms)
+      ✓ should transfer the proper amount of tokens to the claimer (7459ms)
+    withdrawFunds
+      ✓ should only be called from the owner (38ms)
+      ✓ should only be called after auction ends (3131ms)
+      ✓ should be rejected if there is no balance on the contract (5095ms)
+
+  31 passing (1m)
 ```
 
 # 5. Example Deployment and expected output
@@ -64,9 +144,32 @@ $ npm run build & npm run deploy:kovan
 In order to verify your smart contract on etherscan.io execute the verification script immediately after the contract is successfully deployed and pass the contract name as the argument.
 
 ```
-$ npm run verify:kovan -- KiraAuction
+$ npm run verify:kovan KiraAuction
+...
+$ npm run verify:kovan KiraToken
 ```
 
-## Screenshot on Etherscan
+- KiraToken: https://kovan.etherscan.io/address/0x750B2a9286f1b5b085E0dBfA911e9Dc4D23e7AdB#contracts
+- KiraAuction: https://kovan.etherscan.io/address/0x7AF53F569AB0AfcC58F56d47025bCF6c15Be6593#contractslink
 
 # 6. Instructions for interacting with the contract
+
+- Send 200 KEX tokens to the Auction contract
+  ![Transfer_200_KEX_To_Auction_Contract](doc/1.png)
+- Set Withdraw account for ETH
+  ![Set_Withdraw_account](doc/2.png)
+- Set whitelist for `User 1` and `User 2`
+  ![Whitelist_Accounts](doc/3.png)
+- Config Auction Parameters (start time: 1602159300)
+  ![Config_Auction](doc/4.png)
+- Wait until the auction starts
+- Wait 10 seconds and send 0.8 ether to the contract from `User 1`
+- Wait 60 seconds and send 0.6 ether to the contract from `User 2`
+- Wait 30 seconds and check `isFinished`
+  ![IsFinished](doc/isFinished.png)
+- Whitelist Token Transfer (allow unconditional transfer for the contract)
+  ![AllowUnconditionalTransfer](doc/allow_unconditional_transfer.png)
+- Claim KEX from `User 1` and get ~114.28 KEX
+- Claim KEX from `User 2` and get ~85.71 KEX
+- Withdraw Funds and get `1.4` ether
+  ![Withdraw](doc/withdraw.png)

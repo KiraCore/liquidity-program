@@ -1,120 +1,50 @@
 <div align="center">
   <h1>Kira Liquidity Program</h1>
-  <h2>Improvement Proposals Guides</h2>
+  <h2>Improvement Proposals & Documentation</h2>
   <br/>  
 </div>
 
-* [LIP_1](./LIP_1/README.md) - Ethereum ERC20 KEX Placeholder Token for easy market access
+## LIP_1
 
-<div align="center">
-  <h2>Common Guide</h2>
-  <br/>  
-</div>
+> Ethereum ERC20 KEX Placeholder Token for easy market access. 
 
-# 1. Dependency Setup
+* [Deployment Documentation](./LIP_1/README.md)
+* [Application Binary Interface](./LIP_1/ABI.json)
+* [Token Logo 256x256](./LIP_1/doc/KEX-256x256.png)
 
-## Install Node.js & NPM on Ubuntu 20.04
+![picture 1](./LIP_1/doc/KEX-256x256.png)  
 
-```
-$ sudo apt update
-$ sudo apt install curl
-$ curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh
-$ sudo bash nodesource_setup.sh
-$ sudo apt install nodejs
-$ node -v
-v14.11.0
-$ npm -v
-v6.14.8
-```
-
-## Install Git & Clone the repo on Ubuntu 20.04
+### Contract Address
 
 ```
-sudo apt install git
-cd $HOME
-rm -rfv ./liquidity-program/
-git clone https://github.com/KiraCore/liquidity-program.git
-```
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
 
-## Install the desktop version of Ganache
+KIRA Network Token Contract Address:
+0x16980b3B4a3f9D89E33311B5aa8f80303E5ca4F8
 
-Ganache will provide a personal blockchain to be used for local development and testing of smart contracts.
+ Network: Ethereum
+    Type: ERC20
+  Symbol: KEX
+Decimals: 6
 
-1.  Open a browser and navigate to https://github.com/trufflesuite/ganache/releases
+ABI SHA256 Checksum:
+fb5e62096b77a189c980629af882281de55f330ada0eae544c7df5adb086f560  ABI.json
 
-2.  Download the latest Linux release which will be the \*.AppImage file.
+NOTE: 
+* This token will be swapped for the mainnet KIRA Network Token 
+* Before interacting with the contract verify signature of the kiracore user at https://keybase.io/verify
+-----BEGIN PGP SIGNATURE-----
+Version: Keybase OpenPGP v2.1.13
+Comment: https://keybase.io/crypto
 
-3.  For example ganache-2.4.0-linux-x86_64.AppImage.
-
-4.  Once the download is complete, open a new terminal and change into the directory with the \*.AppImage file.
-
-5.  Use chmod to make the file executable:
-    ```
-    chmod a+x ganache-1.3.0-x86_64.AppImage
-    ```
-6.  Now run the file
-    ```
-    ./ganache-1.3.0-x86_64.AppImage
-    ```
-
-# 2. Environment Variables (Accounts & Keys Setup)
-
-### `PRIVATE_KEY`
-
-- Install Google Chrome
-  ```
-   $ sudo apt install gdebi-core wget
-   $ wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-   $ sudo gdebi google-chrome-stable_current_amd64.deb
-   $ google-chrome
-  ```
-
-Let's setup MetaMask account and we can use Seed Phrase of the MetaMask wallet with ganche testnet.
-
-- Install [MetaMask Google Chrome Extension](https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn)
-- Use the secret phrase of your MetaMask wallet as `PRIVATE_KEY`.
-- Enter MetaMask, create account and backup seed phrase
-- Click three dots in the top right of the main menu and enter Account details view
-- Click Export Private Key
-
-Each deployment environment has a different set of mandatory environment variables. Add the secrets required for the deployment environment to `.env` file of each working directory (e.g LIP_1, LIP_2, etc)
-
-Make sure to provide the 64 character long hexa-decimal `PRIVATE_KEY`. The associated address will inherit the tokens created by the contract deployment.
-
-For example, To setup LIP_1's PRIVATE_KEY
+wsBcBAABCgAGBQJfihOJAAoJEMd1XMN/y97LjYoH/i0dUWOzAA03Ij128A88IBW8
+UnqnG1F6pVqIoJEQ5W6mMktn2OXa6Z37utGdY53sLZDSvI25kTzT6HxLf7g6L2/F
+g3tUoyXLKP8N0mfrjWLDZTF6Trk6K4wspQfjnK+jYEmJP0Zi9W78NMbMgBy0kK+Q
+2wKinOVCj5A3/gbcs4pG45KWPwrDIHXT2k0HaIc2qeGO3qsNaJqZusZsb86llqqv
+qFniFaFo7S/n7tbPmu6rAcd9o3AjZoZ74M5wa7LpL0WK6KAdPbQXXvhDQFIDD1bx
+RWTopxNIGH2njxWuafRX8gi0AYlSTBmOaFtR9ztTZCVVWXTDrTIn73hkeNiBJAY=
+=a0YF
+-----END PGP SIGNATURE-----
 
 ```
-LIP_ID="LIP_1"
-echo "PRIVATE_KEY=0xXXX...XXX" > $HOME/liquidity-program/$LIP_ID/.env
-```
-
-### `INFURA_APIKEY`
-
-Sign up for a free api key at https://infura.io/dashboard to deploy to public networks.
-
-- Create an account on [infura.io](https://infura.io)
-- Create a new Project on your infura account
-- Go to Settings Tab
-- Use the Project ID as `INFURA_APIKEY`
-
-```
-echo "INFURA_APIKEY=XXX...XXX" >> $HOME/liquidity-program/$LIP_ID/.env
-```
-
-### `ETHERSCAN_APIKEY`
-
-- Generate the Etherscan API Key for free at https://etherscan.io/myapikey.
-
-```
-echo "ETHERSCAN_APIKEY=XXX...XXX" >> $HOME/liquidity-program/$LIP_ID/.env
-```
-
-# 3. Testnet used and faucet references
-
-## Ropsten Testnet
-
-You can instantly get 1 Ropsten Test Ether per 24h per account by visiting https://faucet.ropsten.be/
-
-## Kovan Testnet
-
-You can instantly get 1 KEth per 24h per GitHub account by visiting https://faucet.kovan.network/ and submitting your Kovan address.

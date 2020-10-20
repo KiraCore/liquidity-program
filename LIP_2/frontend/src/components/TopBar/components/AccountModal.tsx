@@ -24,7 +24,7 @@ const AccountModal: React.FC<ModalProps> = ({ onDismiss }) => {
   }, [onDismiss, reset])
 
   const kira = useKira()
-  const kiraBalance = useTokenBalance(getKiraAddress(kira))
+  const kexBalance = useTokenBalance(getKiraAddress(kira))
 
   return (
     <Modal>
@@ -38,8 +38,8 @@ const AccountModal: React.FC<ModalProps> = ({ onDismiss }) => {
               <span>🍣</span>
             </CardIcon>
             <StyledBalance>
-              <Value value={getBalanceNumber(kiraBalance)} />
-              <Label text="KIRA Balance" />
+              <Value value={getBalanceNumber(kexBalance)} />
+              <Label text="KEX Balance" />
             </StyledBalance>
           </StyledBalanceWrapper>
         </div>

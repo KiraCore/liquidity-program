@@ -39,8 +39,8 @@ export const addressMap = {
 }
 
 export const contractAddresses = {
-  kira: {
-    1: '0xE90b13eCA5Bb4fa0e5Ed3e54A85220058aeA80B5',
+  kira: {  // KEX Smart Contract Address
+    1: '0x16980b3B4a3f9D89E33311B5aa8f80303E5ca4F8',
   },
   kiraChef: {
     1: '0x1D456A3C71e969987F4463Da63f527f04AD83297',
@@ -53,6 +53,7 @@ export const contractAddresses = {
     1: '0x48B6244378929133E9507Ad0D93B99Cdbb68C987',
   }
 }
+
 // MainNet:
 // SquidToken : 0xE90b13eCA5Bb4fa0e5Ed3e54A85220058aeA80B5
 // SquidChef: 0x1D456A3C71e969987F4463Da63f527f04AD83297
@@ -65,6 +66,7 @@ export const contractAddresses = {
 // SquidChef: 0x25a3D71079F2DC26ea561166269ED5098847D441
 // SquidBar: 0x5006EcDfF7e0b31F5fbea0069398CAd5bD83FEAF
 /*
+
 SLP Address on mainnet for reference
 ==========================================
 0  USDT 0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852

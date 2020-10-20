@@ -73,7 +73,7 @@ const PendingRewards: React.FC = () => {
 const Balances: React.FC = () => {
   const [totalSupply, setTotalSupply] = useState<BigNumber>()
   const kira = useKira()
-  const kiraBalance = useTokenBalance(getKiraAddress(kira))
+  const kexBalance = useTokenBalance(getKiraAddress(kira))
   const { account, ethereum }: { account: any; ethereum: any } = useWallet()
 
   useEffect(() => {
@@ -97,7 +97,7 @@ const Balances: React.FC = () => {
               <div style={{ flex: 1 }}>
                 <Label text="Your KEX Balance" color='#e88f54'/>
                 <Value
-                  value={!!account ? getBalanceNumber(kiraBalance) : 'Locked'}
+                  value={!!account ? getBalanceNumber(kexBalance) : 'Locked'}
                 />
               </div>
             </StyledBalance>
@@ -106,7 +106,7 @@ const Balances: React.FC = () => {
         <Footnote>
           Pending harvest
           <FootnoteValue>
-            <PendingRewards /> KIRA
+            <PendingRewards /> KEX
           </FootnoteValue>
         </Footnote>
       </Card>
@@ -121,7 +121,7 @@ const Balances: React.FC = () => {
         </CardContent>
         <Footnote>
           New rewards per block
-          <FootnoteValue>1000 KIRA</FootnoteValue>
+          <FootnoteValue>1000 KEX</FootnoteValue>
         </Footnote>
       </Card>
     </StyledWrapper>

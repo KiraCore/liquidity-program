@@ -24,7 +24,7 @@ const Staking: React.FC = () => {
             <Route exact path={path}>
               <PageHeader
                 icon={<img src={chef} height="120"/>}
-                subtitle="Welcome to the Kira Staking, stake Kira to earn Kira."
+                subtitle="Welcome to the Kira Staking, stake KEX to earn KEX."
                 title="Select Your Favorite Pools!"
               />
             </Route>

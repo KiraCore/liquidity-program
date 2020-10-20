@@ -20,7 +20,7 @@ interface HarvestProps {
 
 const UnstakeXKira: React.FC<HarvestProps> = ({lpContract}) => {
 
-  const xkiraBalance = useTokenBalance(lpContract.options.address)
+  const xkexBalance = useTokenBalance(lpContract.options.address)
   const [pendingTx, setPendingTx] = useState(false)
 
   const {onLeave} = useLeave()
@@ -29,7 +29,7 @@ const UnstakeXKira: React.FC<HarvestProps> = ({lpContract}) => {
 
   const [onPresentLeave] = useModal(
     <WithdrawModal
-      max={xkiraBalance}
+      max={xkexBalance}
       onConfirm={onLeave}
       tokenName={tokenName}
     />,
@@ -41,12 +41,12 @@ const UnstakeXKira: React.FC<HarvestProps> = ({lpContract}) => {
         <StyledCardContentInner>
           <StyledCardHeader>
             <CardIcon>🦑</CardIcon>
-            <Value value={getBalanceNumber(xkiraBalance)}/>
+            <Value value={getBalanceNumber(xkexBalance)}/>
             <Label text="xKIRA Available"/>
           </StyledCardHeader>
           <StyledCardActions>
             <Button
-              disabled={!xkiraBalance.toNumber() || pendingTx}
+              disabled={!xkexBalance.toNumber() || pendingTx}
               text={pendingTx ? 'Converting to KIRA' : 'Convert to KIRA'}
               onClick={async () => {
                 setPendingTx(true)

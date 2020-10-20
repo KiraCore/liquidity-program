@@ -1,20 +1,20 @@
 import {useCallback, useEffect, useState} from 'react'
 
 import BigNumber from 'bignumber.js'
-import useSquid from './useSquid'
+import useKira from './useKira'
 import {useWallet} from 'use-wallet'
 import {provider} from 'web3-core'
 import {Contract} from 'web3-eth-contract'
 
 import {getAllowance} from '../utils/erc20'
-import {getSquidChefContract, getSquidContract, getXSquidStakingContract} from '../squid/utils'
+import {getKiraChefContract, getKiraContract, getXKiraStakingContract} from '../kira/utils'
 
 const useAllowanceStaking = () => {
   const [allowance, setAllowance] = useState(new BigNumber(0))
   const {account}: { account: string; ethereum: provider } = useWallet()
-  const squid = useSquid()
-  const lpContract = getSquidContract(squid)
-  const stakingContract = getXSquidStakingContract(squid)
+  const kira = useKira()
+  const lpContract = getKiraContract(kira)
+  const stakingContract = getXKiraStakingContract(kira)
 
   const fetchAllowance = useCallback(async () => {
     const allowance = await getAllowance(

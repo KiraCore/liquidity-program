@@ -4,32 +4,32 @@ import { provider } from 'web3-core'
 import BigNumber from 'bignumber.js'
 import { useWallet } from 'use-wallet'
 
-import { getEarned, getSquidChefContract, getFarms } from '../squid/utils'
-import useSquid from './useSquid'
+import { getEarned, getKiraChefContract, getFarms } from '../kira/utils'
+import useKira from './useKira'
 import useBlock from './useBlock'
 
 const useAllEarnings = () => {
   const [balances, setBalance] = useState([] as Array<BigNumber>)
   const { account }: { account: string; ethereum: provider } = useWallet()
-  const squid = useSquid()
-  const farms = getFarms(squid)
-  const squidChefContract = getSquidChefContract(squid)
+  const kira = useKira()
+  const farms = getFarms(kira)
+  const kiraChefContract = getKiraChefContract(kira)
   const block = useBlock()
 
   const fetchAllBalances = useCallback(async () => {
     const balances: Array<BigNumber> = await Promise.all(
       farms.map(({ pid }: { pid: number }) =>
-        getEarned(squidChefContract, pid, account),
+        getEarned(kiraChefContract, pid, account),
       ),
     )
     setBalance(balances)
-  }, [account, squidChefContract, squid])
+  }, [account, kiraChefContract, kira])
 
   useEffect(() => {
-    if (account && squidChefContract && squid) {
+    if (account && kiraChefContract && kira) {
       fetchAllBalances()
     }
-  }, [account, block, squidChefContract, setBalance, squid])
+  }, [account, block, kiraChefContract, setBalance, kira])
 
   return balances
 }

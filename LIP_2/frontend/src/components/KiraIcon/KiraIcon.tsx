@@ -1,13 +1,13 @@
 import React from 'react'
 
-interface SquidIconProps {
+interface KiraIconProps {
   size?: number
   v1?: boolean
   v2?: boolean
   v3?: boolean
 }
 
-const SquidIcon: React.FC<SquidIconProps> = ({ size = 36, v1, v2, v3 }) => (
+const KiraIcon: React.FC<KiraIconProps> = ({ size = 36, v1, v2, v3 }) => (
   <span
     role="img"
     style={{
@@ -19,4 +19,4 @@ const SquidIcon: React.FC<SquidIconProps> = ({ size = 36, v1, v2, v3 }) => (
   </span>
 )
 
-export default SquidIcon
+export default KiraIcon

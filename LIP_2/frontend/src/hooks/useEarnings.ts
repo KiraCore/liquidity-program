@@ -4,8 +4,8 @@ import { provider } from 'web3-core'
 import BigNumber from 'bignumber.js'
 import { useWallet } from 'use-wallet'
 
-import { getEarned, getSquidChefContract } from '../squid/utils'
-import useSquid from './useSquid'
+import { getEarned, getKiraChefContract } from '../kira/utils'
+import useKira from './useKira'
 import useBlock from './useBlock'
 
 const useEarnings = (pid: number) => {
@@ -14,20 +14,20 @@ const useEarnings = (pid: number) => {
     account,
     ethereum,
   }: { account: string; ethereum: provider } = useWallet()
-  const squid = useSquid()
-  const squidChefContract = getSquidChefContract(squid)
+  const kira = useKira()
+  const kiraChefContract = getKiraChefContract(kira)
   const block = useBlock()
 
   const fetchBalance = useCallback(async () => {
-    const balance = await getEarned(squidChefContract, pid, account)
+    const balance = await getEarned(kiraChefContract, pid, account)
     setBalance(new BigNumber(balance))
-  }, [account, squidChefContract, squid])
+  }, [account, kiraChefContract, kira])
 
   useEffect(() => {
-    if (account && squidChefContract && squid) {
+    if (account && kiraChefContract && kira) {
       fetchBalance()
     }
-  }, [account, block, squidChefContract, setBalance, squid])
+  }, [account, block, kiraChefContract, setBalance, kira])
 
   return balance
 }

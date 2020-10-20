@@ -13,30 +13,30 @@ const GAS_LIMIT = {
   },
 }
 
-export const getSquidChefAddress = (squid) => {
-  return squid && squid.squidChefAddress
+export const getKiraChefAddress = (kira) => {
+  return kira && kira.kiraChefAddress
 }
-export const getSquidAddress = (squid) => {
-  return squid && squid.squidAddress
+export const getKiraAddress = (kira) => {
+  return kira && kira.kiraAddress
 }
-export const getWethContract = (squid) => {
-  return squid && squid.contracts && squid.contracts.weth
-}
-
-export const getSquidChefContract = (squid) => {
-  return squid && squid.contracts && squid.contracts.squidChef
-}
-export const getSquidContract = (squid) => {
-  return squid && squid.contracts && squid.contracts.squid
+export const getWethContract = (kira) => {
+  return kira && kira.contracts && kira.contracts.weth
 }
 
-export const getXSquidStakingContract = (squid) => {
-  return squid && squid.contracts && squid.contracts.xSquidStaking
+export const getKiraChefContract = (kira) => {
+  return kira && kira.contracts && kira.contracts.kiraChef
+}
+export const getKiraContract = (kira) => {
+  return kira && kira.contracts && kira.contracts.kira
 }
 
-export const getFarms = (squid) => {
-  return squid
-    ? squid.contracts.pools.map(
+export const getXKiraStakingContract = (kira) => {
+  return kira && kira.contracts && kira.contracts.xKiraStaking
+}
+
+export const getFarms = (kira) => {
+  return kira
+    ? kira.contracts.pools.map(
         ({
           pid,
           name,
@@ -57,28 +57,28 @@ export const getFarms = (squid) => {
           tokenAddress,
           tokenSymbol,
           tokenContract,
-          earnToken: 'squid',
-          earnTokenAddress: squid.contracts.squid.options.address,
+          earnToken: 'kira',
+          earnTokenAddress: kira.contracts.kira.options.address,
           icon,
         }),
       )
     : []
 }
 
-export const getPoolWeight = async (squidChefContract, pid) => {
-  const { allocPoint } = await squidChefContract.methods.poolInfo(pid).call()
-  const totalAllocPoint = await squidChefContract.methods
+export const getPoolWeight = async (kiraChefContract, pid) => {
+  const { allocPoint } = await kiraChefContract.methods.poolInfo(pid).call()
+  const totalAllocPoint = await kiraChefContract.methods
     .totalAllocPoint()
     .call()
   return new BigNumber(allocPoint).div(new BigNumber(totalAllocPoint))
 }
 
-export const getEarned = async (squidChefContract, pid, account) => {
-  return squidChefContract.methods.pendingSquid(pid, account).call()
+export const getEarned = async (kiraChefContract, pid, account) => {
+  return kiraChefContract.methods.pendingSquid(pid, account).call()
 }
 
 export const getTotalLPWethValue = async (
-  squidChefContract,
+  kiraChefContract,
   wethContract,
   lpContract,
   tokenContract,
@@ -90,9 +90,9 @@ export const getTotalLPWethValue = async (
     .balanceOf(lpContract.options.address)
     .call()
   const tokenDecimals = await tokenContract.methods.decimals().call()
-  // Get the share of lpContract that squidChefContract owns
+  // Get the share of lpContract that kiraChefContract owns
   const balance = await lpContract.methods
-    .balanceOf(squidChefContract.options.address)
+    .balanceOf(kiraChefContract.options.address)
     .call()
   // Convert that into the portion of total lpContract = p1
   const totalSupply = await lpContract.methods.totalSupply().call()
@@ -117,13 +117,13 @@ export const getTotalLPWethValue = async (
     wethAmount,
     totalWethValue: totalLpWethValue.div(new BigNumber(10).pow(18)),
     tokenPriceInWeth: wethAmount.div(tokenAmount),
-    poolWeight: await getPoolWeight(squidChefContract, pid),
+    poolWeight: await getPoolWeight(kiraChefContract, pid),
   }
 }
 
-export const approve = async (lpContract, squidChefContract, account) => {
+export const approve = async (lpContract, kiraChefContract, account) => {
   return lpContract.methods
-    .approve(squidChefContract.options.address, ethers.constants.MaxUint256)
+    .approve(kiraChefContract.options.address, ethers.constants.MaxUint256)
     .send({ from: account })
 }
 
@@ -133,19 +133,19 @@ export const approveAddress = async (lpContract, address, account) => {
       .send({ from: account })
 }
 
-export const getSquidSupply = async (squid) => {
-  return new BigNumber(await squid.contracts.squid.methods.totalSupply().call())
+export const getKiraSupply = async (kira) => {
+  return new BigNumber(await kira.contracts.kira.methods.totalSupply().call())
 }
 
-export const getXSquidSupply = async (squid) => {
-  return new BigNumber(await squid.contracts.xSquidStaking.methods.totalSupply().call())
+export const getXKiraSupply = async (kira) => {
+  return new BigNumber(await kira.contracts.xKiraStaking.methods.totalSupply().call())
 }
 
-export const stake = async (squidChefContract, pid, amount, account) => {
+export const stake = async (kiraChefContract, pid, amount, account) => {
   console.log(pid, 
     new BigNumber(amount).times(new BigNumber(10).pow(18)).toString())
-    console.log(squidChefContract)
-  return squidChefContract.methods
+    console.log(kiraChefContract)
+  return kiraChefContract.methods
     .deposit(
       pid,
       new BigNumber(amount).times(new BigNumber(10).pow(18)).toString(),
@@ -157,8 +157,8 @@ export const stake = async (squidChefContract, pid, amount, account) => {
     })
 }
 
-export const unstake = async (squidChefContract, pid, amount, account) => {
-  return squidChefContract.methods
+export const unstake = async (kiraChefContract, pid, amount, account) => {
+  return kiraChefContract.methods
     .withdraw(
       pid,
       new BigNumber(amount).times(new BigNumber(10).pow(18)).toString(),
@@ -169,8 +169,8 @@ export const unstake = async (squidChefContract, pid, amount, account) => {
       return tx.transactionHash
     })
 }
-export const harvest = async (squidChefContract, pid, account) => {
-  return squidChefContract.methods
+export const harvest = async (kiraChefContract, pid, account) => {
+  return kiraChefContract.methods
     .deposit(pid, '0')
     .send({ from: account })
     .on('transactionHash', (tx) => {
@@ -179,9 +179,9 @@ export const harvest = async (squidChefContract, pid, account) => {
     })
 }
 
-export const getStaked = async (squidChefContract, pid, account) => {
+export const getStaked = async (kiraChefContract, pid, account) => {
   try {
-    const { amount } = await squidChefContract.methods
+    const { amount } = await kiraChefContract.methods
       .userInfo(pid, account)
       .call()
     return new BigNumber(amount)
@@ -190,10 +190,10 @@ export const getStaked = async (squidChefContract, pid, account) => {
   }
 }
 
-export const redeem = async (squidChefContract, account) => {
+export const redeem = async (kiraChefContract, account) => {
   let now = new Date().getTime() / 1000
   if (now >= 1597172400) {
-    return squidChefContract.methods
+    return kiraChefContract.methods
       .exit()
       .send({ from: account })
       .on('transactionHash', (tx) => {

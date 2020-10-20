@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js/bignumber'
 import ERC20Abi from './abi/erc20.json'
-import SquidChefAbi from './abi/squidchef.json'
-import XSquidAbi from './abi/xsquid.json'
-import SquidAbi from './abi/squid.json'
+import KiraChefAbi from './abi/kirachef.json'
+import XKiraAbi from './abi/xkira.json'
+import KiraAbi from './abi/kira.json'
 import UNIV2PairAbi from './abi/uni_v2_lp.json'
 import WETHAbi from './abi/weth.json'
 import {
@@ -22,9 +22,9 @@ export class Contracts {
     this.defaultGas = options.defaultGas
     this.defaultGasPrice = options.defaultGasPrice
 
-    this.squid = new this.web3.eth.Contract(SquidAbi)
-    this.squidChef = new this.web3.eth.Contract(SquidChefAbi)
-    this.xSquidStaking = new this.web3.eth.Contract(XSquidAbi)
+    this.kira = new this.web3.eth.Contract(KiraAbi)
+    this.kiraChef = new this.web3.eth.Contract(KiraChefAbi)
+    this.xKiraStaking = new this.web3.eth.Contract(XKiraAbi)
     this.weth = new this.web3.eth.Contract(WETHAbi)
 
     this.pools = supportedPools.map((pool) =>
@@ -47,9 +47,9 @@ export class Contracts {
       else console.error('Contract address not found in network', networkId)
     }
 
-    setProvider(this.squid, contractAddresses.squid[networkId])
-    setProvider(this.squidChef, contractAddresses.squidChef[networkId])
-    setProvider(this.xSquidStaking, contractAddresses.xSquid[networkId])
+    setProvider(this.kira, contractAddresses.kira[networkId])
+    setProvider(this.kiraChef, contractAddresses.kiraChef[networkId])
+    setProvider(this.xKiraStaking, contractAddresses.xKira[networkId])
     setProvider(this.weth, contractAddresses.weth[networkId])
 
     this.pools.forEach(
@@ -61,8 +61,8 @@ export class Contracts {
   }
 
   setDefaultAccount(account) {
-    this.squid.options.from = account
-    this.squidChef.options.from = account
+    this.kira.options.from = account
+    this.kiraChef.options.from = account
   }
 
   async callContractFunction(method, options) {

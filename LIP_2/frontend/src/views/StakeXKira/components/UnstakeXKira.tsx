@@ -18,18 +18,18 @@ interface HarvestProps {
   lpContract: Contract
 }
 
-const UnstakeXSquid: React.FC<HarvestProps> = ({lpContract}) => {
+const UnstakeXKira: React.FC<HarvestProps> = ({lpContract}) => {
 
-  const xSquidBalance = useTokenBalance(lpContract.options.address)
+  const xkiraBalance = useTokenBalance(lpContract.options.address)
   const [pendingTx, setPendingTx] = useState(false)
 
   const {onLeave} = useLeave()
 
-  const tokenName = "xSQUID"
+  const tokenName = "xKIRA"
 
   const [onPresentLeave] = useModal(
     <WithdrawModal
-      max={xSquidBalance}
+      max={xkiraBalance}
       onConfirm={onLeave}
       tokenName={tokenName}
     />,
@@ -41,12 +41,12 @@ const UnstakeXSquid: React.FC<HarvestProps> = ({lpContract}) => {
         <StyledCardContentInner>
           <StyledCardHeader>
             <CardIcon>🦑</CardIcon>
-            <Value value={getBalanceNumber(xSquidBalance)}/>
-            <Label text="xSQUID (SquidBar) Available"/>
+            <Value value={getBalanceNumber(xkiraBalance)}/>
+            <Label text="xKIRA Available"/>
           </StyledCardHeader>
           <StyledCardActions>
             <Button
-              disabled={!xSquidBalance.toNumber() || pendingTx}
+              disabled={!xkiraBalance.toNumber() || pendingTx}
               text={pendingTx ? 'Converting to KIRA' : 'Convert to KIRA'}
               onClick={async () => {
                 setPendingTx(true)
@@ -86,4 +86,4 @@ const StyledCardContentInner = styled.div`
   justify-content: space-between;
 `
 
-export default UnstakeXSquid
+export default UnstakeXKira

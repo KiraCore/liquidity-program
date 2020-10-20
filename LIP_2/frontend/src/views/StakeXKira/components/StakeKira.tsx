@@ -11,7 +11,7 @@ import useModal from '../../../hooks/useModal'
 import useTokenBalance from '../../../hooks/useTokenBalance'
 import {getBalanceNumber} from '../../../utils/formatBalance'
 import DepositModal from './DepositModal'
-import {contractAddresses} from '../../../squid/lib/constants'
+import {contractAddresses} from '../../../kira/lib/constants'
 import useEnter from "../../../hooks/useEnter";
 import useLeave from "../../../hooks/useLeave";
 import useAllowanceStaking from "../../../hooks/useAllowanceStaking";
@@ -20,14 +20,14 @@ import useApproveStaking from "../../../hooks/useApproveStaking";
 interface StakeProps {
 }
 
-const StakeSquid: React.FC<StakeProps> = ({}) => {
+const StakeKira: React.FC<StakeProps> = ({}) => {
   const tokenName = "KIRA"
   const [requestedApproval, setRequestedApproval] = useState(false)
 
   const allowance = useAllowanceStaking()
   const {onApprove} = useApproveStaking()
 
-  const tokenBalance = useTokenBalance(contractAddresses.squid[1])
+  const tokenBalance = useTokenBalance(contractAddresses.kira[1])
 
   const {onEnter} = useEnter()
   const {onLeave} = useLeave()
@@ -73,7 +73,7 @@ const StakeSquid: React.FC<StakeProps> = ({}) => {
               <>
                 <Button
                   disabled={tokenBalance.eq(new BigNumber(0))}
-                  text="Convert to xSQUID"
+                  text="Convert to xKIRA"
                   onClick={onPresentDeposit}
                 />
                 <StyledActionSpacer/>
@@ -111,4 +111,4 @@ const StyledCardContentInner = styled.div`
   justify-content: space-between;
 `
 
-export default StakeSquid
+export default StakeKira

@@ -1,24 +1,24 @@
 import {useCallback} from 'react'
 
-import useSquid from './useSquid'
+import useKira from './useKira'
 import {useWallet} from 'use-wallet'
 
-import {leave, getXSquidStakingContract} from '../squid/utils'
+import {leave, getXKiraStakingContract} from '../kira/utils'
 
 const useLeave = () => {
   const {account} = useWallet()
-  const squid = useSquid()
+  const kira = useKira()
 
   const handle = useCallback(
     async (amount: string) => {
       const txHash = await leave(
-        getXSquidStakingContract(squid),
+        getXKiraStakingContract(kira),
         amount,
         account,
       )
       console.log(txHash)
     },
-    [account, squid],
+    [account, kira],
   )
 
   return {onLeave: handle}

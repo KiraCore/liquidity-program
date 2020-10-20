@@ -232,7 +232,7 @@
   },
   {
     "inputs": [],
-    "name": "squid",
+    "name": "kira",
     "outputs": [
       {
         "internalType": "contract SquidToken",

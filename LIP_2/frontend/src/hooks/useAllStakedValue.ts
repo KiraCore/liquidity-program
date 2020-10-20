@@ -6,12 +6,12 @@ import { useWallet } from 'use-wallet'
 import { Contract } from 'web3-eth-contract'
 
 import {
-  getSquidChefContract,
+  getKiraChefContract,
   getWethContract,
   getFarms,
   getTotalLPWethValue,
-} from '../squid/utils'
-import useSquid from './useSquid'
+} from '../kira/utils'
+import useKira from './useKira'
 import useBlock from './useBlock'
 
 export interface StakedValue {
@@ -25,10 +25,10 @@ export interface StakedValue {
 const useAllStakedValue = () => {
   const [balances, setBalance] = useState([] as Array<StakedValue>)
   const { account }: { account: string; ethereum: provider } = useWallet()
-  const squid = useSquid()
-  const farms = getFarms(squid)
-  const squidChefContract = getSquidChefContract(squid)
-  const wethContact = getWethContract(squid)
+  const kira = useKira()
+  const farms = getFarms(kira)
+  const kiraChefContract = getKiraChefContract(kira)
+  const wethContact = getWethContract(kira)
   const block = useBlock()
 
   const fetchAllStakedValue = useCallback(async () => {
@@ -44,7 +44,7 @@ const useAllStakedValue = () => {
           tokenContract: Contract
         }) =>
           getTotalLPWethValue(
-            squidChefContract,
+            kiraChefContract,
             wethContact,
             lpContract,
             tokenContract,
@@ -54,13 +54,13 @@ const useAllStakedValue = () => {
     )
 
     setBalance(balances)
-  }, [account, squidChefContract, squid])
+  }, [account, kiraChefContract, kira])
 
   useEffect(() => {
-    if (account && squidChefContract && squid) {
+    if (account && kiraChefContract && kira) {
       fetchAllStakedValue()
     }
-  }, [account, block, squidChefContract, setBalance, squid])
+  }, [account, block, kiraChefContract, setBalance, kira])
 
   return balances
 }

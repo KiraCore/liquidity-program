@@ -10,7 +10,7 @@ import PageHeader from '../../components/PageHeader'
 import WalletProviderModal from '../../components/WalletProviderModal'
 
 import useModal from '../../hooks/useModal'
-import StakeXSquid from "../StakeXSquid";
+import StakeXKira from "../StakeXKira";
 
 const Staking: React.FC = () => {
   const {path} = useRouteMatch()
@@ -25,10 +25,10 @@ const Staking: React.FC = () => {
               <PageHeader
                 icon={<img src={chef} height="120"/>}
                 subtitle="Welcome to the Kira Staking, stake Kira to earn Kira."
-                title="Select Your Favorite Dishes!"
+                title="Select Your Favorite Pools!"
               />
             </Route>
-            <StakeXSquid/>
+            <StakeXKira/>
           </>
         ) : (
           <div

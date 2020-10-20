@@ -3,26 +3,26 @@ import styled from 'styled-components'
 import {useWallet} from 'use-wallet'
 import {provider} from 'web3-core'
 import Spacer from '../../components/Spacer'
-import useSquid from '../../hooks/useSquid'
+import useKira from '../../hooks/useKira'
 import {getContract} from '../../utils/erc20'
-import UnstakeXSquid from './components/UnstakeXSquid'
-import StakeSquid from "./components/StakeSquid";
+import UnstakeXKira from './components/UnstakeXKira'
+import StakeKira from "./components/StakeKira";
 
-import {contractAddresses} from '../../squid/lib/constants'
-import {getXSquidSupply} from "../../squid/utils";
+import {contractAddresses} from '../../kira/lib/constants'
+import {getXKiraSupply} from "../../kira/utils";
 import BigNumber from "bignumber.js";
 import {getBalanceNumber} from "../../utils/formatBalance";
 
-const StakeXSquid: React.FC = () => {
+const StakeXKira: React.FC = () => {
   const {
     tokenAddress,
   } = {
-    tokenAddress: contractAddresses.xSquid[1],
+    tokenAddress: contractAddresses.xKira[1],
   }
 
   const [totalSupply, setTotalSupply] = useState<BigNumber>()
 
-  const squid = useSquid()
+  const kira = useKira()
   const {ethereum} = useWallet()
 
   useEffect(() => {
@@ -31,13 +31,13 @@ const StakeXSquid: React.FC = () => {
 
   useEffect(() => {
     async function fetchTotalSupply() {
-      const supply = await getXSquidSupply(squid)
+      const supply = await getXKiraSupply(kira)
       setTotalSupply(supply)
     }
-    if (squid) {
+    if (kira) {
       fetchTotalSupply()
     }
-  }, [squid, setTotalSupply])
+  }, [kira, setTotalSupply])
 
 
 
@@ -50,13 +50,13 @@ const StakeXSquid: React.FC = () => {
       <StyledFarm>
         <StyledCardsWrapper>
           <StyledCardWrapper>
-            <UnstakeXSquid
+            <UnstakeXKira
               lpContract={lpContract}
             />
           </StyledCardWrapper>
           <Spacer/>
           <StyledCardWrapper>
-            <StakeSquid
+            <StakeKira
             />
           </StyledCardWrapper>
         </StyledCardsWrapper>
@@ -65,9 +65,9 @@ const StakeXSquid: React.FC = () => {
           <StyledCardWrapper>
             <StyledInfo>
               ℹ️️ You will earn a portion of the swaps fees based on the amount
-              of xSquid held relative the weight of the staking. xSquid can be minted
-              by staking Squid. To redeem Squid staked plus swap fees convert xSquid
-              back to Squid. {totalSupply ? `There are currently ${getBalanceNumber(totalSupply)} xSQUID in the whole pool.` : '' }
+              of xKira held relative the weight of the staking. xKira can be minted
+              by staking KEX. To redeem KEX staked plus swap fees convert xKira
+              back to KEX. {totalSupply ? `There are currently ${getBalanceNumber(totalSupply)} xKIRA in the whole pool.` : '' }
             </StyledInfo>
           </StyledCardWrapper>
         </StyledCardsWrapper>
@@ -114,4 +114,4 @@ const StyledInfo = styled.h3`
   text-align: center;
 `
 
-export default StakeXSquid
+export default StakeXKira

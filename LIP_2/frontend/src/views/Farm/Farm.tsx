@@ -7,8 +7,8 @@ import PageHeader from '../../components/PageHeader'
 import Spacer from '../../components/Spacer'
 import useFarm from '../../hooks/useFarm'
 import useRedeem from '../../hooks/useRedeem'
-import useSquid from '../../hooks/useSquid'
-import { getSquidChefContract } from '../../squid/utils'
+import useKira from '../../hooks/useKira'
+import { getKiraChefContract } from '../../kira/utils'
 import { getContract } from '../../utils/erc20'
 import Harvest from './components/Harvest'
 import Stake from './components/Stake'
@@ -37,14 +37,14 @@ const Farm: React.FC = () => {
     window.scrollTo(0, 0)
   }, [])
 
-  const squid = useSquid()
+  const kira = useKira()
   const { ethereum } = useWallet()
 
   const lpContract = useMemo(() => {
     return getContract(ethereum as provider, lpTokenAddress)
   }, [ethereum, lpTokenAddress])
 
-  const { onRedeem } = useRedeem(getSquidChefContract(squid))
+  const { onRedeem } = useRedeem(getKiraChefContract(kira))
 
   const lpTokenName = useMemo(() => {
     return lpToken

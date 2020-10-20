@@ -8,13 +8,13 @@ import CardContent from '../../../components/CardContent'
 import Label from '../../../components/Label'
 import Spacer from '../../../components/Spacer'
 import Value from '../../../components/Value'
-import SquidIcon from '../../../components/SquidIcon'
+import KiraIcon from '../../../components/KiraIcon'
 import useAllEarnings from '../../../hooks/useAllEarnings'
 import useAllStakedValue from '../../../hooks/useAllStakedValue'
 import useFarms from '../../../hooks/useFarms'
 import useTokenBalance from '../../../hooks/useTokenBalance'
-import useSquid from '../../../hooks/useSquid'
-import { getSquidAddress, getSquidSupply } from '../../../squid/utils'
+import useKira from '../../../hooks/useKira'
+import { getKiraAddress, getKiraSupply } from '../../../kira/utils'
 import { getBalanceNumber } from '../../../utils/formatBalance'
 import Kira_Img from '../../../assets/img/kira.png'
 
@@ -72,19 +72,19 @@ const PendingRewards: React.FC = () => {
 
 const Balances: React.FC = () => {
   const [totalSupply, setTotalSupply] = useState<BigNumber>()
-  const squid = useSquid()
-  const squidBalance = useTokenBalance(getSquidAddress(squid))
+  const kira = useKira()
+  const kiraBalance = useTokenBalance(getKiraAddress(kira))
   const { account, ethereum }: { account: any; ethereum: any } = useWallet()
 
   useEffect(() => {
     async function fetchTotalSupply() {
-      const supply = await getSquidSupply(squid)
+      const supply = await getKiraSupply(kira)
       setTotalSupply(supply)
     }
-    if (squid) {
+    if (kira) {
       fetchTotalSupply()
     }
-  }, [squid, setTotalSupply])
+  }, [kira, setTotalSupply])
 
   return (
     <StyledWrapper>
@@ -97,7 +97,7 @@ const Balances: React.FC = () => {
               <div style={{ flex: 1 }}>
                 <Label text="Your KEX Balance" color='#e88f54'/>
                 <Value
-                  value={!!account ? getBalanceNumber(squidBalance) : 'Locked'}
+                  value={!!account ? getBalanceNumber(kiraBalance) : 'Locked'}
                 />
               </div>
             </StyledBalance>
@@ -114,7 +114,7 @@ const Balances: React.FC = () => {
 
       <Card>
         <CardContent>
-          <Label text="Total KIRA Supply" color='#e88f54'/>
+          <Label text="Total KEX Supply" color='#e88f54'/>
           <Value
             value={totalSupply ? getBalanceNumber(totalSupply) : 'Locked'}
           />

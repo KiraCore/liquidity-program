@@ -6,5 +6,5 @@ BigNumber.config({
   DECIMAL_PLACES: 80,
 })
 
-export { Squid } from './Squid.js'
+export { Kira } from './Kira.js'
 export { Web3, BigNumber }

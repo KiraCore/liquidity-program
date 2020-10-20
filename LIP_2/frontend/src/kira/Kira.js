@@ -6,7 +6,7 @@ import { EVM } from './lib/evm.js'
 
 import { contractAddresses } from './lib/constants'
 
-export class Squid {
+export class Kira {
   constructor(provider, networkId, testing, options) {
     var realProvider
 
@@ -37,8 +37,8 @@ export class Squid {
       this.web3.eth.defaultAccount = options.defaultAccount
     }
     this.contracts = new Contracts(realProvider, networkId, this.web3, options)
-    this.squidAddress = contractAddresses.squid[networkId]
-    this.squidChefAddress = contractAddresses.squidChef[networkId]
+    this.kiraAddress = contractAddresses.kira[networkId]
+    this.kiraChefAddress = contractAddresses.kiraChef[networkId]
     this.wethAddress = contractAddresses.weth[networkId]
   }
 

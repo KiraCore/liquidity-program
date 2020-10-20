@@ -2,8 +2,8 @@ import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import { useWallet } from 'use-wallet'
 import useTokenBalance from '../../../hooks/useTokenBalance'
-import useSquid from '../../../hooks/useSquid'
-import { getSquidAddress } from '../../../squid/utils'
+import useKira from '../../../hooks/useKira'
+import { getKiraAddress } from '../../../kira/utils'
 import { getBalanceNumber } from '../../../utils/formatBalance'
 import Button from '../../Button'
 import CardIcon from '../../CardIcon'
@@ -23,8 +23,8 @@ const AccountModal: React.FC<ModalProps> = ({ onDismiss }) => {
     reset()
   }, [onDismiss, reset])
 
-  const squid = useSquid()
-  const squidBalance = useTokenBalance(getSquidAddress(squid))
+  const kira = useKira()
+  const kiraBalance = useTokenBalance(getKiraAddress(kira))
 
   return (
     <Modal>
@@ -38,7 +38,7 @@ const AccountModal: React.FC<ModalProps> = ({ onDismiss }) => {
               <span>🍣</span>
             </CardIcon>
             <StyledBalance>
-              <Value value={getBalanceNumber(squidBalance)} />
+              <Value value={getBalanceNumber(kiraBalance)} />
               <Label text="KIRA Balance" />
             </StyledBalance>
           </StyledBalanceWrapper>

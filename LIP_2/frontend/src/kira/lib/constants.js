@@ -39,17 +39,17 @@ export const addressMap = {
 }
 
 export const contractAddresses = {
-  squid: {
+  kira: {
     1: '0xE90b13eCA5Bb4fa0e5Ed3e54A85220058aeA80B5',
   },
-  squidChef: {
+  kiraChef: {
     1: '0x1D456A3C71e969987F4463Da63f527f04AD83297',
   },
   weth: {
     1: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
     3: '0x0a180a76e4466bf68a7f86fb029bed3cccfaaac5'
   },
-  xSquid: {
+  xKira: {
     1: '0x48B6244378929133E9507Ad0D93B99Cdbb68C987',
   }
 }

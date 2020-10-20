@@ -1,16 +1,16 @@
 import { useCallback } from 'react'
 import { useWallet } from 'use-wallet'
 import { Contract } from 'web3-eth-contract'
-import { redeem } from '../squid/utils'
+import { redeem } from '../kira/utils'
 
-const useRedeem = (squidChefContract: Contract) => {
+const useRedeem = (kiraChefContract: Contract) => {
   const { account } = useWallet()
 
   const handleRedeem = useCallback(async () => {
-    const txHash = await redeem(squidChefContract, account)
+    const txHash = await redeem(kiraChefContract, account)
     console.log(txHash)
     return txHash
-  }, [account, squidChefContract])
+  }, [account, kiraChefContract])
 
   return { onRedeem: handleRedeem }
 }

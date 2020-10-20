@@ -14,8 +14,8 @@ import useAllStakedValue, {
   StakedValue,
 } from '../../../hooks/useAllStakedValue'
 import useFarms from '../../../hooks/useFarms'
-import useSquid from '../../../hooks/useSquid'
-import { getEarned, getSquidChefContract } from '../../../squid/utils'
+import useKira from '../../../hooks/useKira'
+import { getEarned, getKiraChefContract } from '../../../kira/utils'
 import { bnToDec } from '../../../utils'
 
 interface FarmWithStakedValue extends Farm, StakedValue {
@@ -27,19 +27,19 @@ const FarmCards: React.FC = () => {
   const { account } = useWallet()
   const stakedValue = useAllStakedValue()
 
-  const squidIndex = farms.findIndex(
+  const kiraIndex = farms.findIndex(
     ({ tokenSymbol }) => tokenSymbol === 'KIRA',
   )
 
   console.log(stakedValue);
 
-  const squidPrice =
-    squidIndex >= 0 && stakedValue[squidIndex]
-      ? stakedValue[squidIndex].tokenPriceInWeth
+  const kiraPrice =
+    kiraIndex >= 0 && stakedValue[kiraIndex]
+      ? stakedValue[kiraIndex].tokenPriceInWeth
       : new BigNumber(0)
 
   const BLOCKS_PER_YEAR = new BigNumber(2336000)
-  const SQUID_PER_BLOCK = new BigNumber(100)
+  const KIRA_PER_BLOCK = new BigNumber(100)
 
   const rows = farms.reduce<FarmWithStakedValue[][]>(
     (farmRows, farm, i) => {
@@ -47,8 +47,8 @@ const FarmCards: React.FC = () => {
         ...farm,
         ...stakedValue[i],
         apy: stakedValue[i]
-          ? squidPrice
-              .times(SQUID_PER_BLOCK)
+          ? kiraPrice
+              .times(KIRA_PER_BLOCK)
               .times(BLOCKS_PER_YEAR)
               .times(stakedValue[i].poolWeight)
               .div(stakedValue[i].totalWethValue)
@@ -97,7 +97,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm }) => {
 
   const { account } = useWallet()
   const { lpTokenAddress } = farm
-  const squid = useSquid()
+  const kira = useKira()
 
   const renderer = (countdownProps: CountdownRenderProps) => {
     const { hours, minutes, seconds } = countdownProps
@@ -113,18 +113,18 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm }) => {
 
   useEffect(() => {
     async function fetchEarned() {
-      if (squid) return
+      if (kira) return
       const earned = await getEarned(
-        getSquidChefContract(squid),
+        getKiraChefContract(kira),
         lpTokenAddress,
         account,
       )
       setHarvestable(bnToDec(earned))
     }
-    if (squid && account) {
+    if (kira && account) {
       fetchEarned()
     }
-  }, [squid, lpTokenAddress, account, setHarvestable])
+  }, [kira, lpTokenAddress, account, setHarvestable])
 
   const poolActive = true // startTime * 1000 - Date.now() <= 0
 

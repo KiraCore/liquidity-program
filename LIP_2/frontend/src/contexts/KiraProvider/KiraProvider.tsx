@@ -2,35 +2,35 @@ import React, { createContext, useEffect, useState } from 'react'
 
 import { useWallet } from 'use-wallet'
 
-import { Squid } from '../../squid'
+import { Kira } from '../../kira'
 
-export interface SquidContext {
-  squid?: typeof Squid
+export interface KiraContext {
+  kira?: typeof Kira
 }
 
-export const Context = createContext<SquidContext>({
-  squid: undefined,
+export const Context = createContext<KiraContext>({
+  kira: undefined,
 })
 
 declare global {
   interface Window {
-    squidsauce: any
+    kirasauce: any
   }
 }
 
 const KiraProvider: React.FC = ({ children }) => {
   const { ethereum }: { ethereum: any } = useWallet()
-  const [squid, setSquid] = useState<any>()
+  const [kira, setKira] = useState<any>()
 
   // @ts-ignore
-  window.squid = squid
+  window.kira = kira
   // @ts-ignore
 
 
   useEffect(() => {
     if (ethereum) {
       const chainId = Number(ethereum.chainId)
-      const squidLib = new Squid(ethereum, chainId, false, {
+      const kiraLib = new Kira(ethereum, chainId, false, {
         defaultAccount: ethereum.selectedAddress,
         defaultConfirmations: 1,
         autoGasMultiplier: 1.5,
@@ -40,12 +40,12 @@ const KiraProvider: React.FC = ({ children }) => {
         accounts: [],
         ethereumNodeTimeout: 10000,
       })
-      setSquid(squidLib)
-      window.squidsauce = squidLib
+      setKira(kiraLib)
+      window.kirasauce = kiraLib
     }
   }, [ethereum])
 
-  return <Context.Provider value={{ squid }}>{children}</Context.Provider>
+  return <Context.Provider value={{ kira }}>{children}</Context.Provider>
 }
 
 export default KiraProvider

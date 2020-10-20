@@ -1,19 +1,19 @@
 import {useCallback} from 'react'
 
-import useSquid from './useSquid'
+import useKira from './useKira'
 import {useWallet} from 'use-wallet'
 import {provider} from 'web3-core'
 import {
   approve,
-  getSquidContract,
-  getXSquidStakingContract
-} from '../squid/utils'
+  getKiraContract,
+  getXKiraStakingContract
+} from '../kira/utils'
 
 const useApproveStaking = () => {
   const {account}: { account: string; ethereum: provider } = useWallet()
-  const squid = useSquid()
-  const lpContract = getSquidContract(squid)
-  const contract = getXSquidStakingContract(squid)
+  const kira = useKira()
+  const lpContract = getKiraContract(kira)
+  const contract = getXKiraStakingContract(kira)
 
   const handleApprove = useCallback(async () => {
     try {

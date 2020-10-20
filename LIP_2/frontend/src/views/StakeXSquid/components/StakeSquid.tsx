@@ -21,7 +21,7 @@ interface StakeProps {
 }
 
 const StakeSquid: React.FC<StakeProps> = ({}) => {
-  const tokenName = "SQUID"
+  const tokenName = "KIRA"
   const [requestedApproval, setRequestedApproval] = useState(false)
 
   const allowance = useAllowanceStaking()
@@ -60,14 +60,14 @@ const StakeSquid: React.FC<StakeProps> = ({}) => {
           <StyledCardHeader>
             <CardIcon>👨🏻‍🍳</CardIcon>
             <Value value={getBalanceNumber(tokenBalance)}/>
-            <Label text={`SQUID Tokens Available`}/>
+            <Label text={`KIRA Tokens Available`}/>
           </StyledCardHeader>
           <StyledCardActions>
             {!allowance.toNumber() ? (
               <Button
                 disabled={requestedApproval}
                 onClick={handleApprove}
-                text={`Approve SQUID`}
+                text={`Approve KIRA`}
               />
             ) : (
               <>

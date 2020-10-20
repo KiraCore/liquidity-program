@@ -95,7 +95,7 @@ const Balances: React.FC = () => {
               <img src={Kira_Img} alt="" style={{width: '60px', height: '60px'}}/>
               <Spacer />
               <div style={{ flex: 1 }}>
-                <Label text="Your SQUID Balance" color='#e88f54'/>
+                <Label text="Your KEX Balance" color='#e88f54'/>
                 <Value
                   value={!!account ? getBalanceNumber(squidBalance) : 'Locked'}
                 />
@@ -106,7 +106,7 @@ const Balances: React.FC = () => {
         <Footnote>
           Pending harvest
           <FootnoteValue>
-            <PendingRewards /> SQUID
+            <PendingRewards /> KIRA
           </FootnoteValue>
         </Footnote>
       </Card>
@@ -114,14 +114,14 @@ const Balances: React.FC = () => {
 
       <Card>
         <CardContent>
-          <Label text="Total SQUID Supply" color='#e88f54'/>
+          <Label text="Total KIRA Supply" color='#e88f54'/>
           <Value
             value={totalSupply ? getBalanceNumber(totalSupply) : 'Locked'}
           />
         </CardContent>
         <Footnote>
           New rewards per block
-          <FootnoteValue>1000 SQUID</FootnoteValue>
+          <FootnoteValue>1000 KIRA</FootnoteValue>
         </Footnote>
       </Card>
     </StyledWrapper>

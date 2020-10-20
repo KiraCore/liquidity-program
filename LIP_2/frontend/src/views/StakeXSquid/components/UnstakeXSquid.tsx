@@ -47,7 +47,7 @@ const UnstakeXSquid: React.FC<HarvestProps> = ({lpContract}) => {
           <StyledCardActions>
             <Button
               disabled={!xSquidBalance.toNumber() || pendingTx}
-              text={pendingTx ? 'Converting to SQUID' : 'Convert to SQUID'}
+              text={pendingTx ? 'Converting to KIRA' : 'Convert to KIRA'}
               onClick={async () => {
                 setPendingTx(true)
                 await onPresentLeave()

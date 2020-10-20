@@ -28,7 +28,7 @@ const FarmCards: React.FC = () => {
   const stakedValue = useAllStakedValue()
 
   const squidIndex = farms.findIndex(
-    ({ tokenSymbol }) => tokenSymbol === 'SQUID',
+    ({ tokenSymbol }) => tokenSymbol === 'KIRA',
   )
 
   console.log(stakedValue);
@@ -130,7 +130,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm }) => {
 
   return (
     <StyledCardWrapper>
-      {farm.tokenSymbol === 'SQUID' && <StyledCardAccent />}
+      {farm.tokenSymbol === 'KIRA' && <StyledCardAccent />}
       <Card>
         <CardContent>
           <StyledContent>
@@ -141,7 +141,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm }) => {
               <StyledDetail>Earn {farm.earnToken.toUpperCase()}</StyledDetail>
             </StyledDetails>
             <Spacer />
-            {farm.tokenSymbol === 'SQUID' &&
+            {farm.tokenSymbol === 'KIRA' &&
               <Button
                 text="Coming soon"
               >
@@ -153,7 +153,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm }) => {
                 )}
               </Button>
             }
-            {farm.tokenSymbol !== 'SQUID' &&
+            {farm.tokenSymbol !== 'KIRA' &&
               <Button
                 disabled={!poolActive}
                 text={poolActive ? 'Select' : undefined}

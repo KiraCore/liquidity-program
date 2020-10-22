@@ -1,5 +1,4 @@
 const KiraAuction = artifacts.require("./KiraAuction.sol")
-const KiraToken = artifacts.require("./KiraToken.sol");
 
 module.exports = function (deployer) {
   /**
@@ -8,8 +7,11 @@ module.exports = function (deployer) {
    * deployer.deploy(KiraAuction)
    */
 
-  deployer.deploy(KiraToken).then(function () {
-    return deployer.deploy(KiraAuction, KiraToken.address)
-  })
+  // deployer.deploy(KiraToken).then(function () {
+  //   return deployer.deploy(KiraAuction, KiraToken.address)
+  // })
 
+  console.log('Kira Token Address: ', process.env.KIRA_TOKEN_ADDRESS)
+
+  return deployer.deploy(KiraAuction, process.env.KIRA_TOKEN_ADDRESS)
 }

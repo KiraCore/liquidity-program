@@ -17,9 +17,9 @@
     "deploy:development": "truffle migrate --network development",
     "prebuild": "rimraf ./build/contracts/*",
     "postinstall": "cpr .env.example .env",
-    "verify:ropsten": "truffle run verify KiraDrop --network ropsten",
-    "verify:kovan": "truffle run verify KiraDrop --network kovan",
-    "verify:mainnet": "truffle run verify KiraDrop --network mainnet"
+    "verify:ropsten": "truffle run verify KiraStaking --network ropsten",
+    "verify:kovan": "truffle run verify KiraStaking --network kovan",
+    "verify:mainnet": "truffle run verify KiraStaking --network mainnet"
   },
   "keywords": [],
   "private": true,

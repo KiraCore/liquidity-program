@@ -1,26 +1,17 @@
-const KiraDrop = artifacts.require("./KiraDrop.sol")
-const KiraRewardPool = artifacts.require("./KiraRewardPool.sol")
-const contract = require('@truffle/contract');
-// const ERC20 = contract(require('@uniswap/v2-periphery/build/ERC20.json'))
-// const UniswapV2Factory = contract(require('@uniswap/v2-core/build/UniswapV2Factory.json'))
-// const UniswapV2Router02 = contract(require('@uniswap/v2-periphery/build/UniswapV2Router02.json'));
-
-// ERC20.setProvider(this.web3._provider)
-// UniswapV2Factory.setProvider(this.web3._provider)
-// UniswapV2Router02.setProvider(this.web3._provider)
-
+const KiraStaking = artifacts.require("./KiraStaking.sol")
+const KiraToken = artifacts.require("./KiraToken.sol")
 
 module.exports = async function (deployer, network, accounts) {
   /**
    * add the desired token to the next line
    * @example
-   * deployer.deploy(KiraDrop)
+   * deployer.deploy(KiraStaking)
    */
 
-  await deployer.deploy(KiraDrop)
-  await deployer.deploy(KiraRewardPool)
-  // const weth = await deployer.deploy(ERC20, "10000000000000000000", { from: accounts[0] })
-  // const factory = await deployer.deploy(UniswapV2Factory, accounts[0], { from: accounts[0] })
-  // const router = await deployer.deploy(UniswapV2Router02, factory.address, weth.address, { from: accounts[0] })
-  // console.log(router.address)
+  // await deployer.deploy(KiraToken)
+
+  const owner = "0x21A2CF2b1E84d9E9a38389F797F6087d94Ed3d86"
+  const rewardsToken = "0x41379EF961492a594F91bB0F966c2CeD32B49544"
+  const stakingToken = "0xb88B44F171d6fC4EF6eFcE313819067E62002D5c"
+  await deployer.deploy(KiraStaking, owner, rewardsToken, stakingToken)
 }

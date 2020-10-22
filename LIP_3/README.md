@@ -24,6 +24,14 @@ cp $HOME/liquidity-program/LIP_1/contracts/KiraToken.sol $HOME/liquidity-program
 
 Check Common Guide's [Setup Environment Variables Section](<../README.md#2.-Environment-Variables-(Accounts-&-Keys-Setup)>)
 
+### `KIRA_TOKEN_ADDRESS`
+
+- The contract address of Kira Network (KEX) which you deployed. (start with 0x)
+
+```
+echo "KIRA_TOKEN_ADDRESS=XXX...XXX" >> $HOME/liquidity-program/$LIP_ID/.env
+```
+
 # 3. Testnet used and faucet references
 
 Check Common Guide's [Testnet used and faucet references Section](../README.md#3.-Testnet-used-and-faucet-references)

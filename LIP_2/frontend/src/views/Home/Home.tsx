@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import chef from '../../assets/img/kira.png'
+import kira from '../../assets/img/kira.png'
 import Button from '../../components/Button'
 import Container from '../../components/Container'
 import Page from '../../components/Page'
@@ -12,7 +12,7 @@ const Home: React.FC = () => {
   return (
     <Page>
       <PageHeader
-        icon={<img src={chef} height={120} />}
+        icon={<img src={kira} height={120} />}
         title="KiraSWap is Ready"
         subtitle="Stake KiraSwap LP tokens to claim your very own tasty KEX!"
       />

@@ -16,6 +16,7 @@ import useEnter from "../../../hooks/useEnter";
 import useLeave from "../../../hooks/useLeave";
 import useAllowanceStaking from "../../../hooks/useAllowanceStaking";
 import useApproveStaking from "../../../hooks/useApproveStaking";
+import kira from '../../../assets/img/kira.png'
 
 interface StakeProps {
 }
@@ -58,7 +59,9 @@ const StakeKira: React.FC<StakeProps> = ({}) => {
       <CardContent>
         <StyledCardContentInner>
           <StyledCardHeader>
-            <CardIcon>👨🏻‍🍳</CardIcon>
+            <CardIcon>
+              <img src={kira} height="50"/>
+            </CardIcon>
             <Value value={getBalanceNumber(tokenBalance)}/>
             <Label text={`KIRA Tokens Available`}/>
           </StyledCardHeader>
@@ -67,7 +70,7 @@ const StakeKira: React.FC<StakeProps> = ({}) => {
               <Button
                 disabled={requestedApproval}
                 onClick={handleApprove}
-                text={`Approve KIRA`}
+                text={`Approve KEX`}
               />
             ) : (
               <>

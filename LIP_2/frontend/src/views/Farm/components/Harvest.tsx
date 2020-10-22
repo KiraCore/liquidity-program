@@ -8,6 +8,7 @@ import Label from '../../../components/Label'
 import Value from '../../../components/Value'
 import useEarnings from '../../../hooks/useEarnings'
 import useReward from '../../../hooks/useReward'
+import kira from '../../assets/img/kira.png'
 import { getBalanceNumber } from '../../../utils/formatBalance'
 
 interface HarvestProps {

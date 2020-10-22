@@ -47,7 +47,7 @@ const UnstakeXKira: React.FC<HarvestProps> = ({lpContract}) => {
           <StyledCardActions>
             <Button
               disabled={!xkexBalance.toNumber() || pendingTx}
-              text={pendingTx ? 'Converting to KIRA' : 'Convert to KIRA'}
+              text={pendingTx ? 'Converting to KEX' : 'Convert to KEX'}
               onClick={async () => {
                 setPendingTx(true)
                 await onPresentLeave()

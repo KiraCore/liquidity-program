@@ -67,7 +67,7 @@ const StakeXKira: React.FC = () => {
               ℹ️️ You will earn a portion of the swaps fees based on the amount
               of xKira held relative the weight of the staking. xKira can be minted
               by staking KEX. To redeem KEX staked plus swap fees convert xKira
-              back to KEX. {totalSupply ? `There are currently ${getBalanceNumber(totalSupply)} xKIRA in the whole pool.` : '' }
+              back to KEX. {totalSupply ? `There are currently ${getBalanceNumber(totalSupply)} xKEX in the whole pool.` : '' }
             </StyledInfo>
           </StyledCardWrapper>
         </StyledCardsWrapper>

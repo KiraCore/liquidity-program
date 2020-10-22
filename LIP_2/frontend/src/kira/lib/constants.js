@@ -1,4 +1,7 @@
+import React from 'react';
 import BigNumber from 'bignumber.js/bignumber'
+import kira from '../../assets/img/kira.png'
+
 
 export const SUBTRACT_GAS_LIMIT = 100000
 
@@ -89,17 +92,15 @@ export const supportedPools = [
   {
     pid: 0,
     lpAddresses: {
-      1: '0xce84867c3c02b05dc570d0135103d3fb9cc19433',
-      3: '0x20aFA75332dEdDa6140d0A48Bb6570721170d666',
+      3: '0xb88B44F171d6fC4EF6eFcE313819067E62002D5c',
     },
     tokenAddresses: {
-      1: '0xE90b13eCA5Bb4fa0e5Ed3e54A85220058aeA80B5',
-      3: '0x253F5A244aa8eDEcf5F0D5e4d2AAe9A1a48F31d8'
+      3: '0x41379EF961492a594F91bB0F966c2CeD32B49544'
     },
-    name: 'Kira Party!',
+    name: 'KEX-ETH',
     symbol: 'KEX-ETH UNI-V2 LP',
-    tokenSymbol: 'KEX',
-    icon: '🦑',
+    tokenSymbol: 'ETH',
+    icon: <img src={kira} height="50"/>,
   },
   {
     pid: 0,
@@ -109,61 +110,9 @@ export const supportedPools = [
     tokenAddresses: {
       1: '0x6b175474e89094c44da98b954eedeac495271d0f',
     },
-    name: 'DAI DOG',
-    symbol: 'DAI-ETH UNI-V2 LP',
-    tokenSymbol: 'DAI',
-    icon: '🐕',
-  },
-  {
-    pid: 1,
-    lpAddresses: {
-      1: '0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852',
-    },
-    tokenAddresses: {
-      1: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-    },
-    name: 'Tether Turkey',
-    symbol: 'USDT-ETH UNI-V2 LP',
+    name: 'KEX-USDT',
+    symbol: 'KEX-USDT UNI-V2 LP',
     tokenSymbol: 'USDT',
-    icon: '🦃',
-  },
-  {
-    pid: 2,
-    lpAddresses: {
-      1: '0xb4e16d0168e52d35cacd2c6185b44281ec28c9dc',
-    },
-    tokenAddresses: {
-      1: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-    },
-    name: 'Circle Snake',
-    symbol: 'USDC-ETH UNI-V2 LP',
-    tokenSymbol: 'USDC',
-    icon: '🐍',
-  },
-  {
-    pid: 3,
-    lpAddresses: {
-      1: '0xa2107fa5b38d9bbd2c461d6edf11b11a50f6b974',
-    },
-    tokenAddresses: {
-      1: '0x514910771af9ca656af840dff83e8264ecf986ca',
-    },
-    name: 'Link Lion',
-    symbol: 'LINK-ETH UNI-V2 LP',
-    tokenSymbol: 'LINK',
-    icon: '🦁',
-  },
-  {
-    pid: 4,
-    lpAddresses: {
-      1: '0xd3d2e2692501a5c9ca623199d38826e513033a17',
-    },
-    tokenAddresses: {
-      1: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-    },
-    name: 'Uni Unicorn',
-    symbol: 'UNI-ETH UNI-V2 LP',
-    tokenSymbol: 'UNI',
-    icon: '🦄',
+    icon: <img src={kira} height="50"/>,
   },
 ]

@@ -1,12 +1,12 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import chef from '../../assets/img/kira.png'
+import kira from '../../assets/img/kira.png'
 
 const Logo: React.FC = () => {
   return (
     <StyledLogo to="/">
-      <img src={chef} height="32" style={{ marginTop: -4 }} />
+      <img src={kira} height="32" style={{ marginTop: -4 }} />
       <StyledText>
         Kira Staking
       </StyledText>

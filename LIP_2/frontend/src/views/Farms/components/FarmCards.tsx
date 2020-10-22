@@ -28,7 +28,7 @@ const FarmCards: React.FC = () => {
   const stakedValue = useAllStakedValue()
 
   const kiraIndex = farms.findIndex(
-    ({ tokenSymbol }) => tokenSymbol === 'KIRA',
+    ({ tokenSymbol }) => tokenSymbol === 'KEX',
   )
 
   console.log(stakedValue);
@@ -73,7 +73,7 @@ const FarmCards: React.FC = () => {
             {farmRow.map((farm, j) => (
               <React.Fragment key={j}>
                 <FarmCard farm={farm} />
-                {(j === 0 || j === 1) && <StyledSpacer />}
+                {(j === 0) && <StyledSpacer />}
               </React.Fragment>
             ))}
           </StyledRow>
@@ -130,7 +130,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm }) => {
 
   return (
     <StyledCardWrapper>
-      {farm.tokenSymbol === 'KIRA' && <StyledCardAccent />}
+      {farm.tokenSymbol === 'KEX' && <StyledCardAccent />}
       <Card>
         <CardContent>
           <StyledContent>
@@ -141,7 +141,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm }) => {
               <StyledDetail>Earn {farm.earnToken.toUpperCase()}</StyledDetail>
             </StyledDetails>
             <Spacer />
-            {farm.tokenSymbol === 'KIRA' &&
+            {farm.tokenSymbol === 'KEX' &&
               <Button
                 text="Coming soon"
               >
@@ -153,7 +153,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm }) => {
                 )}
               </Button>
             }
-            {farm.tokenSymbol !== 'KIRA' &&
+            {farm.tokenSymbol !== 'KEX' &&
               <Button
                 disabled={!poolActive}
                 text={poolActive ? 'Select' : undefined}

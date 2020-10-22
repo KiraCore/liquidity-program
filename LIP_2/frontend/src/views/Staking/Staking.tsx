@@ -2,7 +2,7 @@ import React from 'react'
 import {Route, Switch, useRouteMatch} from 'react-router-dom'
 import {useWallet} from 'use-wallet'
 
-import chef from '../../assets/img/kira.png'
+import kira from '../../assets/img/kira.png'
 
 import Button from '../../components/Button'
 import Page from '../../components/Page'
@@ -23,7 +23,7 @@ const Staking: React.FC = () => {
           <>
             <Route exact path={path}>
               <PageHeader
-                icon={<img src={chef} height="120"/>}
+                icon={<img src={kira} height="120"/>}
                 subtitle="Welcome to the Kira Staking, stake KEX to earn KEX."
                 title="Select Your Favorite Pools!"
               />

@@ -1,6 +1,6 @@
 import React from 'react'
 import styled, { keyframes } from 'styled-components'
-
+import kira from '../../assets/img/kira.png'
 import CardIcon from '../CardIcon'
 
 interface LoaderProps {
@@ -11,7 +11,7 @@ const Loader: React.FC<LoaderProps> = ({ text }) => {
   return (
     <StyledLoader>
       <CardIcon>
-        <StyledKira>🦑</StyledKira>
+        <StyledKira><img src={kira} height="50"/></StyledKira>
       </CardIcon>
       {!!text && <StyledText>{text}</StyledText>}
     </StyledLoader>

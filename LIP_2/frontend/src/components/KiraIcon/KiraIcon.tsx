@@ -1,4 +1,5 @@
 import React from 'react'
+import kira from '../../assets/kira.png';
 
 interface KiraIconProps {
   size?: number
@@ -15,7 +16,7 @@ const KiraIcon: React.FC<KiraIconProps> = ({ size = 36, v1, v2, v3 }) => (
       filter: v1 ? 'saturate(0.5)' : undefined,
     }}
   >
-    🦑'
+    <img src={kira} height="50"/>
   </span>
 )
 

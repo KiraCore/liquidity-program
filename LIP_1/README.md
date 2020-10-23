@@ -7,7 +7,7 @@ Before start, make sure you are inside the LIP_1 directory on the terminal
 
 # 1. Dependency Setup
 
-Check Common Guide's [Dependency Setup Section](../README.md#1.-Dependency-Setup)
+Check Common Guide's [Dependency Setup Section](../setup.md#1.-Dependency-Setup)
 
 ## Install the dependencies
 

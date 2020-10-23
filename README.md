@@ -48,3 +48,16 @@ RWTopxNIGH2njxWuafRX8gi0AYlSTBmOaFtR9ztTZCVVWXTDrTIn73hkeNiBJAY=
 -----END PGP SIGNATURE-----
 
 ```
+
+## LIP_3
+
+> Liquidity Auction
+
+* [Deployment Documentation](./LIP_3/README.md)
+* [Application Binary Interface](./LIP_3/ABI.json)
+
+### Contract Address
+
+```
+TBD
+```

@@ -7,7 +7,7 @@ Before start, make sure you are inside the LIP_3 directory on the terminal
 
 # 1. Dependency Setup
 
-Check Common Guide's [Dependency Setup Section](../README.md#1.-Dependency-Setup)
+Check Common Guide's [Dependency Setup Section](../setup.md)
 
 ## Install the dependencies
 
@@ -158,6 +158,16 @@ $ npm run verify:kovan KiraAuction
 - KiraAuction: https://kovan.etherscan.io/address/0x7AF53F569AB0AfcC58F56d47025bCF6c15Be6593#contractslink
 
 # 6. Instructions for interacting with the contract
+
+> Generate ABI so that we can interact with the contract:
+
+```
+
+truffle-export-abi
+cat ./build/ABI.json | xclip -selection c
+```
+
+> Interact with the contract
 
 - Send 200 KEX tokens to the Auction contract
   ![Transfer_200_KEX_To_Auction_Contract](doc/1.png)

@@ -24,7 +24,7 @@ contract KiraAuction is Ownable {
 
     /* 
         Configurable
-        P1, P2, T1, T2, Auction Start, Tx rate limiting, Tx size per time limit, whitelist
+        P1, P2, P3, T1, T2, Auction Start, Tx rate limiting, Tx size per time limit, whitelist
     */
 
     address payable public wallet;
@@ -32,6 +32,7 @@ contract KiraAuction is Ownable {
     uint256 public startTime = 0;
     uint256 private P1;
     uint256 private P2;
+    uint256 private P3;
     uint256 private T1;
     uint256 private T2;
     uint256 private MAX_WEI = 0 ether;
@@ -55,7 +56,7 @@ contract KiraAuction is Ownable {
 
     // Events
     event AuctionConfigured(uint256 _startTime);
-    event AddedToWhitelist(address addr);
+    event WhitelistConfigured(address[] addrs, bool allow);
     event ProcessedBuy(address addr, uint256 amount);
     event ClaimedTokens(address addr, uint256 amount);
     event WithdrawedFunds(address _wallet, uint256 amount);
@@ -133,10 +134,11 @@ contract KiraAuction is Ownable {
             uint256,
             uint256,
             uint256,
+            uint256,
             uint256
         )
     {
-        return (startTime, P1, P2, T1, T2, INTERVAL_LIMIT, MAX_WEI);
+        return (startTime, P1, P2, P3, T1, T2, INTERVAL_LIMIT, MAX_WEI);
     }
 
     function getLatestPrice() external view returns (uint256) {
@@ -155,10 +157,10 @@ contract KiraAuction is Ownable {
                |        '   '   *
                |        '   '       *
                |        '   '           *
-               |        '   '               *
-               |        '   '                   *
-               |--------|---|-----------------------|----------> Timeline
-                          T1           T2
+            P3 |        '   '               *
+               |        '   '               '   
+               |--------|---|---------------|------------------> Timeline
+                          T1       T2
         */
 
         uint256 price = 0;
@@ -173,9 +175,9 @@ contract KiraAuction is Ownable {
             price = P1.sub(delta);
         } else if ((startTime + T1 <= now) && (now <= startTime + T1 + T2)) {
             // Slope 2
-            // y = p2 - (x * p2 / t2)
+            // y = p2 - (x * (p2 - p3) / t2)
             uint256 x = now - startTime - T1;
-            uint256 delta = x.mul(P2).div(T2);
+            uint256 delta = x.mul(P2 - P3).div(T2);
 
             price = P2.sub(delta);
         }
@@ -219,13 +221,14 @@ contract KiraAuction is Ownable {
         uint256 _startTime,
         uint256 _p1,
         uint256 _p2,
+        uint256 _p3,
         uint256 _t1,
         uint256 _t2,
         uint256 _txIntervalLimit,
         uint256 _txMaxWeiAmount
     ) external onlyOwner onlyBeforeAuction {
         require(_startTime > now, 'KiraAuction: start time should be greater than now');
-        require((_p1 > _p2) && (_p2 >= 0), 'KiraAuction: price should go decreasing.');
+        require((_p1 > _p2) && (_p2 > _p3) && (_p3 >= 0), 'KiraAuction: price should go decreasing.');
         require(_t1 < _t2, 'KiraAuction: the first slope should have faster decreasing rate.');
         require((_t1 > 0) && (_t2 > 0), 'KiraAuction: the period of each slope should be greater than zero.');
         require(_txMaxWeiAmount > 0, 'KiraAuction: the maximum amount per tx should be valid');
@@ -233,6 +236,7 @@ contract KiraAuction is Ownable {
         startTime = _startTime;
         P1 = _p1;
         P2 = _p2;
+        P3 = _p3;
         T1 = _t1;
         T2 = _t2;
         INTERVAL_LIMIT = _txIntervalLimit;
@@ -241,11 +245,15 @@ contract KiraAuction is Ownable {
         emit AuctionConfigured(startTime);
     }
 
-    function whitelist(address addr) external onlyOwner onlyBeforeAuction {
-        require(addr != address(0), 'KiraAuction: not be able to whitelist address(0).');
-        customers[addr].whitelisted = true;
+    function whitelist(address[] calldata addrs, bool allow) external onlyOwner onlyBeforeAuction {
+        for (uint256 i = 0; i < addrs.length; i++) {
+            address addr = addrs[i];
+            require(addr != address(0), 'KiraAuction: not be able to whitelist/blacklist address(0).');
 
-        emit AddedToWhitelist(addr);
+            customers[addr].whitelisted = allow;
+        }
+
+        emit WhitelistConfigured(addrs, allow);
     }
 
     // only in progress

@@ -153,11 +153,8 @@ In order to verify your smart contract on etherscan.io execute the verification 
 
 ```
 $ npm run verify:kovan KiraAuction
-...
-$ npm run verify:kovan KiraToken
 ```
 
-- KiraToken: https://kovan.etherscan.io/address/0x750B2a9286f1b5b085E0dBfA911e9Dc4D23e7AdB#contracts
 - KiraAuction: https://kovan.etherscan.io/address/0x7AF53F569AB0AfcC58F56d47025bCF6c15Be6593#contractslink
 
 # 6. Instructions for interacting with the contract

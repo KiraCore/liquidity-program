@@ -57,7 +57,7 @@ export const getFarms = (kira) => {
           tokenAddress,
           tokenSymbol,
           tokenContract,
-          earnToken: 'kira',
+          earnToken: 'KEX',
           earnTokenAddress: kira.contracts.kira.options.address,
           icon,
         }),

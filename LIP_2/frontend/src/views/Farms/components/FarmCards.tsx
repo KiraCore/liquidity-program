@@ -130,7 +130,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm }) => {
 
   return (
     <StyledCardWrapper>
-      {farm.tokenSymbol === 'KEX' && <StyledCardAccent />}
+      {farm.tokenSymbol == 'KEX' && <StyledCardAccent />}
       <Card>
         <CardContent>
           <StyledContent>
@@ -141,7 +141,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm }) => {
               <StyledDetail>Earn {farm.earnToken.toUpperCase()}</StyledDetail>
             </StyledDetails>
             <Spacer />
-            {farm.tokenSymbol === 'KEX' &&
+            {farm.tokenSymbol !== 'KEX' &&
               <Button
                 text="Coming soon"
               >
@@ -153,7 +153,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm }) => {
                 )}
               </Button>
             }
-            {farm.tokenSymbol !== 'KEX' &&
+            {farm.tokenSymbol === 'KEX' &&
               <Button
                 disabled={!poolActive}
                 text={poolActive ? 'Select' : undefined}
@@ -255,6 +255,7 @@ const StyledLoadingWrapper = styled.div`
 
 const StyledRow = styled.div`
   display: flex;
+  justify-content: center;
   margin-bottom: ${(props) => props.theme.spacing[4]}px;
   flex-flow: row wrap;
   @media (max-width: 768px) {

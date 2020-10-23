@@ -4,11 +4,11 @@ import Button from '../../../components/Button'
 import Card from '../../../components/Card'
 import CardContent from '../../../components/CardContent'
 import CardIcon from '../../../components/CardIcon'
+import Kira_Img from '../../../assets/img/kira.png'
 import Label from '../../../components/Label'
 import Value from '../../../components/Value'
 import useEarnings from '../../../hooks/useEarnings'
 import useReward from '../../../hooks/useReward'
-import kira from '../../assets/img/kira.png'
 import { getBalanceNumber } from '../../../utils/formatBalance'
 
 interface HarvestProps {
@@ -25,7 +25,7 @@ const Harvest: React.FC<HarvestProps> = ({ pid }) => {
       <CardContent>
         <StyledCardContentInner>
           <StyledCardHeader>
-            <CardIcon>🦑</CardIcon>
+            <CardIcon><img src={Kira_Img} height={50} /></CardIcon>
             <Value value={getBalanceNumber(earnings)} />
             <Label text="KEX Earned" />
           </StyledCardHeader>

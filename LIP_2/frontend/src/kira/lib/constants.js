@@ -86,7 +86,6 @@ SLP Address on mainnet for reference
 12 KIRA 0xce84867c3c02b05dc570d0135103d3fb9cc19433
 */
 
-
 export const supportedPools = [
   {
     pid: 0,
@@ -96,9 +95,9 @@ export const supportedPools = [
     tokenAddresses: {
       42: '0x41379EF961492a594F91bB0F966c2CeD32B49544'
     },
-    name: 'Apple Pool',
+    name: 'Apple (ETH) Pool',
     symbol: 'KEX-ETH UNI-V2 LP',
-    tokenSymbol: 'ETH',
+    tokenSymbol: 'KEX',
     icon: "🍎",
   },
   {
@@ -109,7 +108,7 @@ export const supportedPools = [
     tokenAddresses: {
       42: '0x41379EF961492a594F91bB0F966c2CeD32B49544',
     },
-    name: 'Melon Pool',
+    name: 'Melon (USDT) Pool',
     symbol: 'KEX-USDT UNI-V2 LP',
     tokenSymbol: 'USDT',
     icon: "🍋",

@@ -78,7 +78,7 @@ const Farm: React.FC = () => {
         <Spacer size="lg" />
         <StyledInfo>
           ⭐️ Every time you stake and unstake LP tokens, the contract will
-          automagically harvest KIRA rewards for you!
+          automagically harvest KEX rewards for you!
         </StyledInfo>
         <Spacer size="md" />
         <StyledLink

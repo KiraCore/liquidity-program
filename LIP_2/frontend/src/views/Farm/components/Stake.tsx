@@ -73,7 +73,12 @@ const Stake: React.FC<StakeProps> = ({ lpContract, pid, tokenName }) => {
       <CardContent>
         <StyledCardContentInner>
           <StyledCardHeader>
-            <CardIcon>👨🏻‍🍳</CardIcon>
+            {/* <StyledDetails>
+              <StyledDetail>Deposit {farm.lpToken}</StyledDetail>
+              <StyledDetail>Earn {farm.earnToken.toUpperCase()}</StyledDetail>
+            </StyledDetails> */}
+
+            <CardIcon>🍪</CardIcon>
             <Value value={getBalanceNumber(stakedBalance)} />
             <Label text={`${tokenName} Tokens Staked`} />
           </StyledCardHeader>
@@ -105,6 +110,8 @@ const Stake: React.FC<StakeProps> = ({ lpContract, pid, tokenName }) => {
 }
 
 const StyledCardHeader = styled.div`
+  justify-content: center;
+  text-align: center;
   align-items: center;
   display: flex;
   flex-direction: column;

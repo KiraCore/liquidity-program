@@ -43,17 +43,16 @@ export const addressMap = {
 
 export const contractAddresses = {
   kira: {  // KEX Smart Contract Address
-    1: '0x16980b3B4a3f9D89E33311B5aa8f80303E5ca4F8',
+    42: '0x41379EF961492a594F91bB0F966c2CeD32B49544',
   },
   kiraChef: {
-    1: '0x1D456A3C71e969987F4463Da63f527f04AD83297',
+    42: '0xb3b3abadb4C97C0a957F85D32fB23C6172e62Fdc',
   },
   weth: {
-    1: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-    3: '0x0a180a76e4466bf68a7f86fb029bed3cccfaaac5'
+    42: '0xd0A1E359811322d97991E03f863a0C30C2cF029C',
   },
   xKira: {
-    1: '0x48B6244378929133E9507Ad0D93B99Cdbb68C987',
+    42: '0x48B6244378929133E9507Ad0D93B99Cdbb68C987',
   }
 }
 
@@ -92,27 +91,27 @@ export const supportedPools = [
   {
     pid: 0,
     lpAddresses: {
-      3: '0xb88B44F171d6fC4EF6eFcE313819067E62002D5c',
+      42: '0xb88B44F171d6fC4EF6eFcE313819067E62002D5c',
     },
     tokenAddresses: {
-      3: '0x41379EF961492a594F91bB0F966c2CeD32B49544'
+      42: '0x41379EF961492a594F91bB0F966c2CeD32B49544'
     },
-    name: 'KEX-ETH',
+    name: 'Apple Pool',
     symbol: 'KEX-ETH UNI-V2 LP',
     tokenSymbol: 'ETH',
-    icon: <img src={kira} height="50"/>,
+    icon: "🍎",
   },
   {
-    pid: 0,
+    pid: 1,
     lpAddresses: {
-      1: '0xa478c2975ab1ea89e8196811f51a7b7ade33eb11',
+      42: '0xb88B44F171d6fC4EF6eFcE313819067E62002D5c',
     },
     tokenAddresses: {
-      1: '0x6b175474e89094c44da98b954eedeac495271d0f',
+      42: '0x41379EF961492a594F91bB0F966c2CeD32B49544',
     },
-    name: 'KEX-USDT',
+    name: 'Melon Pool',
     symbol: 'KEX-USDT UNI-V2 LP',
     tokenSymbol: 'USDT',
-    icon: <img src={kira} height="50"/>,
+    icon: "🍋",
   },
 ]

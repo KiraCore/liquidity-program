@@ -17,7 +17,7 @@ const StakeXKira: React.FC = () => {
   const {
     tokenAddress,
   } = {
-    tokenAddress: contractAddresses.xKira[1],
+    tokenAddress: contractAddresses.xKira['42'],
   }
 
   const [totalSupply, setTotalSupply] = useState<BigNumber>()

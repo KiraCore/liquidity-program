@@ -38,9 +38,9 @@ const App: React.FC = () => {
           <Route path="/farms">
             <Farms />
           </Route>
-          <Route path="/staking">
+          {/* <Route path="/staking">
             <Staking />
-          </Route>
+          </Route> */}
         </Switch>
       </Router>
       <Disclaimer />
@@ -52,9 +52,9 @@ const Providers: React.FC = ({ children }) => {
   return (
     <ThemeProvider theme={theme}>
       <UseWalletProvider
-        chainId={3}
+        chainId={42}
         connectors={{
-          walletconnect: { rpcUrl: 'https://kovan.eth.aragon.network/' },
+          walletconnect: { rpcUrl: 'https://api.infura.io/v1/jsonrpc/kovan' },
         }}
       >
         <KiraProvider>

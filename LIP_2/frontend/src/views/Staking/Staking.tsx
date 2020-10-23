@@ -16,6 +16,7 @@ const Staking: React.FC = () => {
   const {path} = useRouteMatch()
   const {account} = useWallet()
   const [onPresentWalletProviderModal] = useModal(<WalletProviderModal/>)
+  console.log("asdfasdfasdfasdfas----------");
   return (
     <Switch>
       <Page>
@@ -24,7 +25,7 @@ const Staking: React.FC = () => {
             <Route exact path={path}>
               <PageHeader
                 icon={<img src={kira} height="120"/>}
-                subtitle="Welcome to the Kira Staking, stake KEX to earn KEX."
+                subtitle="Welcome to the Kira Staking, stake LP to earn KEX."
                 title="Select Your Favorite Pools!"
               />
             </Route>

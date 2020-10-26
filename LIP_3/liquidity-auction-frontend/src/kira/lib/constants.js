@@ -45,14 +45,8 @@ export const contractAddresses = {
   kira: {  // KEX Smart Contract Address
     42: '0x41379EF961492a594F91bB0F966c2CeD32B49544',
   },
-  kiraChef: {
-    42: '0xb3b3abadb4C97C0a957F85D32fB23C6172e62Fdc',
-  },
-  weth: {
-    42: '0xd0A1E359811322d97991E03f863a0C30C2cF029C',
-  },
-  xKira: {
-    42: '0x48B6244378929133E9507Ad0D93B99Cdbb68C987',
+  kiraAuction: {
+    42: '0xa9C21f3201741b4d31C9b7934c21f671aA0Fd0B5',
   }
 }
 

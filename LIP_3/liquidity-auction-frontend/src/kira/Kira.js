@@ -38,8 +38,7 @@ export class Kira {
     }
     this.contracts = new Contracts(realProvider, networkId, this.web3, options)
     this.kiraAddress = contractAddresses.kira[networkId]
-    this.kiraChefAddress = contractAddresses.kiraChef[networkId]
-    this.wethAddress = contractAddresses.weth[networkId]
+    this.kiraAuctionAddress = contractAddresses.kiraAuction[networkId]
   }
 
   async resetEVM() {

@@ -3,7 +3,7 @@ import {useCallback} from 'react'
 import useKira from './useKira'
 import {useWallet} from 'use-wallet'
 
-import {enter, getXKiraStakingContract} from '../kira/utils'
+// import {enter, getXKiraStakingContract} from '../kira/utils'
 
 const useEnter = () => {
   const {account} = useWallet()
@@ -11,12 +11,11 @@ const useEnter = () => {
 
   const handle = useCallback(
     async (amount: string) => {
-      const txHash = await enter(
-        getXKiraStakingContract(kira),
-        amount,
-        account,
-      )
-      console.log(txHash)
+      // const txHash = await enter(
+      //   getXKiraStakingContract(kira),
+      //   amount,
+      //   account,
+      // )
     },
     [account, kira],
   )

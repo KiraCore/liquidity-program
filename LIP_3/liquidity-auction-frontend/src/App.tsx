@@ -3,15 +3,11 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { ThemeProvider } from 'styled-components'
 import { UseWalletProvider } from 'use-wallet'
 import DisclaimerModal from './components/DisclaimerModal'
-import MobileMenu from './components/MobileMenu'
 import TopBar from './components/TopBar'
-import FarmsProvider from './contexts/Farms'
 import ModalsProvider from './contexts/Modals'
-import TransactionProvider from './contexts/Transactions'
 import KiraProvider from './contexts/KiraProvider'
 import useModal from './hooks/useModal'
 import theme from './theme'
-import Farms from './views/Farms'
 import Home from './views/Home'
 
 const App: React.FC = () => {
@@ -54,11 +50,11 @@ const Providers: React.FC = ({ children }) => {
         }}
       >
         <KiraProvider>
-          <TransactionProvider>
-            <FarmsProvider>
+          {/* <TransactionProvider>
+            <FarmsProvider> */}
               <ModalsProvider>{children}</ModalsProvider>
-            </FarmsProvider>
-          </TransactionProvider>
+            {/* </FarmsProvider>
+          </TransactionProvider> */}
         </KiraProvider>
       </UseWalletProvider>
     </ThemeProvider>

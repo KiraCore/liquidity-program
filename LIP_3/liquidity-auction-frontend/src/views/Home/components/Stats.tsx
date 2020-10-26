@@ -9,12 +9,8 @@ import Label from '../../../components/Label'
 import Spacer from '../../../components/Spacer'
 import { CountUpValue } from '../../../components/Value/CountUpValue'
 import KiraIcon from '../../../components/KiraIcon'
-import useAllEarnings from '../../../hooks/useAllEarnings'
-import useAllStakedValue from '../../../hooks/useAllStakedValue'
-import useFarms from '../../../hooks/useFarms'
-import useTokenBalance from '../../../hooks/useTokenBalance'
 import useKira from '../../../hooks/useKira'
-import { getKiraAddress, getKiraSupply } from '../../../kira/utils'
+import { getKiraAddress, getTotalDeposited } from '../../../kira/utils'
 import { getBalanceNumber } from '../../../utils/formatBalance'
 import Kira_Img from '../../../assets/img/kira.png'
 
@@ -23,23 +19,7 @@ const RemainingTime: React.FC = () => {
   const [end, setEnd] = useState(0)
   const [scale, setScale] = useState(1)
 
-  const allEarnings = useAllEarnings()
   let sumEarning = 0
-  for (let earning of allEarnings) {
-    sumEarning += new BigNumber(earning)
-      .div(new BigNumber(10).pow(18))
-      .toNumber()
-  }
-
-  const [farms] = useFarms()
-  const allStakedValue = useAllStakedValue()
-
-  if (allStakedValue && allStakedValue.length) {
-    const sumWeth = farms.reduce(
-      (c, { id }, i) => c + (allStakedValue[i].totalWethValue.toNumber() || 0),
-      0,
-    )
-  }
 
   useEffect(() => {
     setStart(end)
@@ -73,7 +53,7 @@ const RemainingTime: React.FC = () => {
 const Stats: React.FC = () => {
   const [totalSupply, setTotalSupply] = useState<BigNumber>()
   const kira = useKira()
-  const kexBalance = useTokenBalance(getKiraAddress(kira))
+  // const kexBalance = useTokenBalance(getKiraAddress(kira))
   const { account, ethereum }: { account: any; ethereum: any } = useWallet()
   
   // TODO: Get Auction Status
@@ -81,18 +61,18 @@ const Stats: React.FC = () => {
   const [auctionEndTime, setAuctionEndTime] = useState<string>("29:11:00:00");
   const [auctionRemainingTime, setAuctionRemainingTime] = useState<number>(20);
   const [currentKexPrice, setCurrentKexPrice] = useState<number>(20);
-  const [ethDeposited, setEthDeposited] = useState<number>(50);
+  const [totalDeposited, setTotalDeposited] = useState<number>(50);
   const [totalKEXAmount, setTotalKexAmount] = useState<number>(10000);
   
   useEffect(() => {
-    async function fetchTotalSupply() {
-      const supply = await getKiraSupply(kira)
-      setTotalSupply(supply)
+    async function fetchTotalDeposited() {
+      const totalEth = await getTotalDeposited(kira)
+      setTotalDeposited(totalEth)
     }
     if (kira) {
-      fetchTotalSupply()
+      fetchTotalDeposited()
     }
-  }, [kira, setTotalSupply])
+  }, [kira, setTotalDeposited])
 
   return (
     <StyledWrapper>
@@ -153,7 +133,7 @@ const Stats: React.FC = () => {
                
                 <StyledAuctionTime>
                   <Label text="ETH Deposited" color='#523632'/>
-                  <StyledAuctionValue>{ethDeposited !== 0 ? ethDeposited + " ETH" : 'No Deposit'}</StyledAuctionValue>
+                  <StyledAuctionValue>{totalDeposited !== 0 ? totalDeposited + " ETH" : 'No Deposit'}</StyledAuctionValue>
                 </StyledAuctionTime>
 
               </div>

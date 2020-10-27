@@ -20,7 +20,7 @@ const Home: React.FC = () => {
       <Container>
         <Stats />
       </Container>
-      <Container>
+      <Container size="lg">
         <Chart />
       </Container>
       <Spacer size="lg" />

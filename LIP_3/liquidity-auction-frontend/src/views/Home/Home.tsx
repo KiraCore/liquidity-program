@@ -7,6 +7,7 @@ import Page from '../../components/Page'
 import PageHeader from '../../components/PageHeader'
 import Spacer from '../../components/Spacer'
 import Stats from './components/Stats'
+import Chart from './components/Chart'
 
 const Home: React.FC = () => {
   return (
@@ -18,6 +19,9 @@ const Home: React.FC = () => {
       />
       <Container>
         <Stats />
+      </Container>
+      <Container>
+        <Chart />
       </Container>
       <Spacer size="lg" />
       <StyledInfo>

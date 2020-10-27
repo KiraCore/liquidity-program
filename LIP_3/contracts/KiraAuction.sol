@@ -59,7 +59,7 @@ contract KiraAuction is Ownable {
     event WhitelistConfigured(address[] addrs, bool allow);
     event ProcessedBuy(address addr, uint256 amount);
     event ClaimedTokens(address addr, uint256 amount);
-    event WithdrawedFunds(address _wallet, uint256 amount);
+    event WithdrawedFunds(address _wallet, uint256 ethAmount, uint256 kexAmount);
 
     // MODIFIERS
 
@@ -284,6 +284,10 @@ contract KiraAuction is Ownable {
         uint256 exp = 10**uint256(kiraToken.decimals());
         uint256 numberOfTokens = kiraToken.balanceOf(address(this)).div(exp);
         latestPrice = totalWeiAmount.div(numberOfTokens);
+
+        if (latestPrice < P3) {
+            latestPrice = P3;
+        }
     }
 
     // only after auction
@@ -303,11 +307,17 @@ contract KiraAuction is Ownable {
     }
 
     function withdrawFunds() external onlyOwner onlyAfterAuction {
-        uint256 balance = address(this).balance;
-        require(balance > 0, 'KiraAuction: nothing left to withdraw');
+        uint256 ethBalance = address(this).balance;
+        uint256 kexBalance = kiraToken.balanceOf(address(this));
+        require(ethBalance > 0 || kexBalance > 0, 'KiraAuction: nothing left to withdraw');
 
-        wallet.transfer(balance);
+        if (ethBalance > 0) {
+            wallet.transfer(ethBalance);
+        }
+        if (kexBalance > 0) {
+            kiraToken.transfer(wallet, kexBalance);
+        }
 
-        emit WithdrawedFunds(wallet, balance);
+        emit WithdrawedFunds(wallet, ethBalance, kexBalance);
     }
 }

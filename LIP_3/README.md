@@ -88,47 +88,56 @@ Compiling your contracts...
 > Compiled successfully using:
    - solc: 0.6.2+commit.bacdbe57.Emscripten.clang
 
+  Network:  development
+  Predefined Address:  0xD9080E29a3CCD2eD6D7AC280Adc6c3bfC5316252
+
   Contract: KiraAuction Test
     KiraAuction
       ✓ KiraToken should be configured once deployed
       ✓ wallet should be the owner once deployed
     configAuction
-      ✓ should only be callable by the owner (51ms)
-      ✓ should only be callable before auction starts (2097ms)
-      ✓ can't set set the startTime as old time (65ms)
-      ✓ should set the auction price as decreasing (51ms)
-      ✓ first slope's decreasing rate should be bigger than the second one (42ms)
-      ✓ slope times should be valid (42ms)
-      ✓ max size per transaction should be valid (53ms)
-      ✓ should set the variables properly (should convert to the ether unit) (99ms)
+      ✓ should only be callable by the owner (58ms)
+      ✓ should only be callable before auction starts (2111ms)
+      ✓ can't set set the startTime as old time
+      ✓ should set the auction price as decreasing (44ms)
+      ✓ first slope's decreasing rate should be bigger than the second one
+      ✓ slope times should be valid
+      ✓ max size per transaction should be valid
+      ✓ should set the variables properly (should convert to the ether unit) (88ms)
     setWallet
-      ✓ wallet should only be configurable by the owner (49ms)
-      ✓ wallet should only be configurable before auction starts (3089ms)
-      ✓ wallet should be set properly (1128ms)
+      ✓ wallet should only be configurable by the owner
+      ✓ wallet should only be configurable before auction starts (3091ms)
+      ✓ wallet should be set properly (1142ms)
     whitelist
       ✓ whitelist should only be called by the owner (39ms)
-      ✓ whitelist should only be called before auction starts (3121ms)
-      ✓ wallet should be set properly (82ms)
+      ✓ whitelist should only be called before auction starts (3090ms)
+      ✓ wallet should be set properly (137ms)
     deposit
-      ✓ should be rejected before the auction (1174ms)
-      ✓ should be rejected after the auction (5100ms)
-      ✓ owner or address(0) should not be able to participate in the auction (1092ms)
-      ✓ should be rejected from not whitelisted account (1110ms)
-      ✓ amount should not exceed the MAX_WEI (1208ms)
-      ✓ should be rejected when it exceeds the tx rate limit (1333ms)
-      ✓ should be rejected if it exceeds the hard cap (3250ms)
-      ✓ should update the total deposited amount, latest price and user info properly (5320ms)
+      ✓ should be rejected before the auction (1159ms)
+      ✓ should be rejected after the auction (5091ms)
+      ✓ owner or address(0) should not be able to participate in the auction (1112ms)
+      ✓ should be rejected from not whitelisted account (1122ms)
+      ✓ amount should be greater than the MIN_WEI (1204ms)
+      ✓ amount should not exceed the MAX_WEI (1183ms)
+      ✓ should be rejected when it exceeds the tx rate limit (1399ms)
+      ✓ should be rejected if it exceeds the hard cap (3291ms)
+      ✓ should update the total deposited amount, latest price and user info properly (5305ms)
     claimTokens
-      ✓ should only be called after auction ends (3126ms)
-      ✓ should be rejected if non-whitelisted user tries to claim (5093ms)
-      ✓ should be rejected if whitelisted & non-deposited user tries to claim (5185ms)
-      ✓ should transfer the proper amount of tokens to the claimer (7459ms)
+      ✓ should only be called after auction ends (3133ms)
+      ✓ should be rejected if non-whitelisted user tries to claim (5123ms)
+      ✓ should be rejected if whitelisted & non-deposited user tries to claim (5182ms)
+      ✓ should transfer the proper amount of tokens to the claimer (7475ms)
+      ✓ should not be able to claim after distribution (7525ms)
+      ✓ should not be able to distribute after all claimed (7484ms)
+      ✓ should distribute proper amount of tokens to contributors (7516ms)
     withdrawFunds
-      ✓ should only be called from the owner (38ms)
-      ✓ should only be called after auction ends (3131ms)
-      ✓ should be rejected if there is no balance on the contract (5095ms)
+      ✓ should only be called from the owner (49ms)
+      ✓ should only be called after auction ends (3128ms)
+      ✓ should be rejected if there is no balance on the contract (5100ms)
+      ✓ should withdraw ETH and KEX correctly (10584ms)
 
-  31 passing (1m)
+
+  36 passing (2m)
 ```
 
 # 5. Example Deployment and expected output

@@ -35,6 +35,7 @@ contract KiraAuction is Ownable {
     uint256 private P3;
     uint256 private T1;
     uint256 private T2;
+    uint256 private MIN_WEI = 0 ether;
     uint256 private MAX_WEI = 0 ether;
     uint256 private INTERVAL_LIMIT = 0;
 
@@ -43,9 +44,11 @@ contract KiraAuction is Ownable {
         uint256 claimed_wei;
         uint256 last_deposit_time;
         bool claimed;
+        bool distributed;
     }
 
     mapping(address => UserInfo) private customers;
+    address[] private arrayAddress;
 
     ERC20 private kiraToken;
 
@@ -59,7 +62,8 @@ contract KiraAuction is Ownable {
     event WhitelistConfigured(address[] addrs, bool allow);
     event ProcessedBuy(address addr, uint256 amount);
     event ClaimedTokens(address addr, uint256 amount);
-    event WithdrawedFunds(address _wallet, uint256 amount);
+    event DistributeTokens(uint256 distributedAmount);
+    event WithdrawedFunds(address _wallet, uint256 ethAmount, uint256 kexAmount);
 
     // MODIFIERS
 
@@ -118,10 +122,18 @@ contract KiraAuction is Ownable {
         returns (
             bool,
             uint256,
-            uint256
+            uint256,
+            bool,
+            bool
         )
     {
-        return (customers[addr].whitelisted, customers[addr].claimed_wei, customers[addr].last_deposit_time);
+        return (
+            customers[addr].whitelisted,
+            customers[addr].claimed_wei,
+            customers[addr].last_deposit_time,
+            customers[addr].claimed,
+            customers[addr].distributed
+        );
     }
 
     function getAuctionConfigInfo()
@@ -135,10 +147,11 @@ contract KiraAuction is Ownable {
             uint256,
             uint256,
             uint256,
+            uint256,
             uint256
         )
     {
-        return (startTime, P1, P2, P3, T1, T2, INTERVAL_LIMIT, MAX_WEI);
+        return (startTime, P1, P2, P3, T1, T2, INTERVAL_LIMIT, MIN_WEI, MAX_WEI);
     }
 
     function getLatestPrice() external view returns (uint256) {
@@ -197,10 +210,8 @@ contract KiraAuction is Ownable {
     function getAvailableClaimAmount() external onlyAfterAuction returns (uint256) {
         UserInfo memory customer = customers[msg.sender];
         require(customer.whitelisted && (customer.claimed_wei > 0), 'KiraAuction: you did not contribute.');
-
-        if (customer.claimed == true) {
-            return 0;
-        }
+        require(!customer.claimed, 'KiraAuction: you already claimed.');
+        require(!customer.distributed, 'KiraAuction: we already sent to your wallet.');
 
         uint256 exp = 10**uint256(kiraToken.decimals());
         uint256 amountToClaim = customer.claimed_wei.mul(exp).div(latestPrice);
@@ -225,6 +236,7 @@ contract KiraAuction is Ownable {
         uint256 _t1,
         uint256 _t2,
         uint256 _txIntervalLimit,
+        uint256 _txMinWeiAmount,
         uint256 _txMaxWeiAmount
     ) external onlyOwner onlyBeforeAuction {
         require(_startTime > now, 'KiraAuction: start time should be greater than now');
@@ -240,6 +252,7 @@ contract KiraAuction is Ownable {
         T1 = _t1;
         T2 = _t2;
         INTERVAL_LIMIT = _txIntervalLimit;
+        MIN_WEI = _txMinWeiAmount;
         MAX_WEI = _txMaxWeiAmount;
 
         emit AuctionConfigured(startTime);
@@ -266,13 +279,17 @@ contract KiraAuction is Ownable {
         require(beneficiary != address(0), 'KiraAuction: Not zero address');
         require(beneficiary != owner(), 'KiraAuction: Not owner');
         require(customers[beneficiary].whitelisted, "KiraAuction: You're not whitelisted, wait a moment.");
-        require(weiAmount > 0, 'KiraAuction: That is not enough.');
+        require(weiAmount >= MIN_WEI, 'KiraAuction: That is not enough.');
         require(weiAmount <= MAX_WEI, 'KiraAuction: That is too much.');
         require(now - customers[beneficiary].last_deposit_time >= INTERVAL_LIMIT, 'KiraAuction: it exceeds the tx rate limit');
 
         uint256 cap = _getCurrentCap();
 
         require(totalWeiAmount.add(weiAmount) < cap, 'KiraAuction: Your contribution overflows the hard cap!');
+
+        if (customers[beneficiary].claimed_wei == 0) {
+            arrayAddress.push(beneficiary);
+        }
 
         customers[beneficiary].claimed_wei = customers[beneficiary].claimed_wei.add(weiAmount);
         customers[beneficiary].last_deposit_time = now;
@@ -284,13 +301,49 @@ contract KiraAuction is Ownable {
         uint256 exp = 10**uint256(kiraToken.decimals());
         uint256 numberOfTokens = kiraToken.balanceOf(address(this)).div(exp);
         latestPrice = totalWeiAmount.div(numberOfTokens);
+
+        if (latestPrice < P3) {
+            latestPrice = P3;
+        }
     }
 
     // only after auction
 
+    function distribute() external onlyOwner onlyAfterAuction {
+        uint256 totalDistributed = 0;
+        uint256 exp = 10**uint256(kiraToken.decimals());
+
+        uint256 numberOfContributors = arrayAddress.length;
+        for (uint256 i = 0; i < numberOfContributors; i++) {
+            address addr = arrayAddress[i];
+            UserInfo memory customer = customers[addr];
+
+            if (customer.claimed_wei > 0 && !customer.claimed && !customer.distributed) {
+                uint256 tokensToSend = customer.claimed_wei.mul(exp).div(latestPrice);
+                uint256 currentBalance = kiraToken.balanceOf(address(this));
+
+                customers[addr].distributed = true;
+
+                if (currentBalance < tokensToSend) {
+                    tokensToSend = currentBalance;
+                }
+
+                if (tokensToSend > 0) {
+                    totalDistributed = totalDistributed.add(tokensToSend);
+                    kiraToken.transfer(addr, tokensToSend);
+                }
+            }
+        }
+
+        require(totalDistributed > 0, 'KiraAuction: nothing to distribute. already claimed or distributed all!');
+
+        emit DistributeTokens(totalDistributed);
+    }
+
     function claimTokens() external onlyAfterAuction {
         UserInfo memory customer = customers[msg.sender];
         require(customer.claimed != true, 'KiraAuction: you claimed already.');
+        require(customer.distributed != true, 'KiraAuction: we already sent to your wallet.');
         require(customer.whitelisted && (customer.claimed_wei > 0), 'KiraAuction: you did not contribute.');
 
         customers[msg.sender].claimed = true;
@@ -303,11 +356,17 @@ contract KiraAuction is Ownable {
     }
 
     function withdrawFunds() external onlyOwner onlyAfterAuction {
-        uint256 balance = address(this).balance;
-        require(balance > 0, 'KiraAuction: nothing left to withdraw');
+        uint256 ethBalance = address(this).balance;
+        uint256 kexBalance = kiraToken.balanceOf(address(this));
+        require(ethBalance > 0 || kexBalance > 0, 'KiraAuction: nothing left to withdraw');
 
-        wallet.transfer(balance);
+        if (ethBalance > 0) {
+            wallet.transfer(ethBalance);
+        }
+        if (kexBalance > 0) {
+            kiraToken.transfer(wallet, kexBalance);
+        }
 
-        emit WithdrawedFunds(wallet, balance);
+        emit WithdrawedFunds(wallet, ethBalance, kexBalance);
     }
 }

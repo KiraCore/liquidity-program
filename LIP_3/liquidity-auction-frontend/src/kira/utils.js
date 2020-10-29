@@ -29,6 +29,11 @@ export const getStartTime = async (kira) => {
   return await kira.contracts.kiraAuction.methods.startTime().call()
 }
 
+export const getAuctionConfig = async (kira) => {
+  const data = await kira.contracts.kiraAuction.methods.getAuctionConfig().call()
+
+  console.log(data);
+}
 // export const getPoolWeight = async (kiraChefContract, pid) => {
 //   const { allocPoint } = await kiraChefContract.methods.poolInfo(pid).call()
 //   const totalAllocPoint = await kiraChefContract.methods

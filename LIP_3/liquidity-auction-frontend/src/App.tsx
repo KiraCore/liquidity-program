@@ -30,9 +30,6 @@ const App: React.FC = () => {
           <Route path="/" exact>
             <Home />
           </Route>
-          {/* <Route path="/farms">
-            <Farms />
-          </Route> */}
         </Switch>
       </Router>
       <Disclaimer />
@@ -44,17 +41,17 @@ const Providers: React.FC = ({ children }) => {
   return (
     <ThemeProvider theme={theme}>
       <UseWalletProvider
-        chainId={42}
+        chainId={1}
         connectors={{
-          walletconnect: { rpcUrl: 'https://api.infura.io/v1/jsonrpc/kovan' },
+          walletconnect: { rpcUrl: 'https://mainnet.eth.aragon.network/' },
+          // injected: true
+          // walletconnect: { rpcUrl: 'https://kovan.infura.io/v3/23988ae61b6d4e3f851fce20720dae12' },
         }}
       >
         <KiraProvider>
-          {/* <TransactionProvider>
-            <FarmsProvider> */}
-              <ModalsProvider>{children}</ModalsProvider>
-            {/* </FarmsProvider>
-          </TransactionProvider> */}
+          <KiraProvider>
+            <ModalsProvider>{children}</ModalsProvider>
+          </KiraProvider>
         </KiraProvider>
       </UseWalletProvider>
     </ThemeProvider>

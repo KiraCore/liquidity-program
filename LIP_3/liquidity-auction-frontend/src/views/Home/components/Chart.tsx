@@ -9,18 +9,13 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 // import am4themes_kelly from "@amcharts/amcharts4/themes/kelly";
 import am4themes_frozen from "@amcharts/amcharts4/themes/frozen";
 
+import useAuction from '../../../hooks/useAuction'
+
 am4core.useTheme(am4themes_frozen);
 am4core.useTheme(am4themes_animated);
 
-export interface AxisParam {
-  chart: any
-  field: string
-  name: string
-  opposite: boolean
-  bullet: string
-}
-
 const Chart: React.FC = () => {
+  const auction = useAuction();
   const currentChart = useRef(null);
   
   // generate some random data, quite different range
@@ -52,6 +47,10 @@ const Chart: React.FC = () => {
     return chartData;
   }
   
+  useEffect(() => {
+    // useAuction();
+  }, [])
+
   useLayoutEffect(() => {
     let chart = am4core.create("chartdiv", am4charts.XYChart);
 
@@ -113,6 +112,7 @@ const Chart: React.FC = () => {
     amountSeries.defaultState.transitionDuration = 0;
     amountSeries.tooltipText = "{name}: [bold]{valueY}[/]";
     amountSeries.tensionX = 0.8;
+    amountSeries.tensionY = 0.3;
 
     amountAxis.renderer.line.strokeOpacity = 1;
     amountAxis.renderer.line.strokeWidth = 2;

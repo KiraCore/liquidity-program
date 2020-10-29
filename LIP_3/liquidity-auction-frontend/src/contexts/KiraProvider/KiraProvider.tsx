@@ -12,12 +12,6 @@ export const Context = createContext<KiraContext>({
   kira: undefined,
 })
 
-declare global {
-  interface Window {
-    kirasauce: any
-  }
-}
-
 const KiraProvider: React.FC = ({ children }) => {
   const { ethereum }: { ethereum: any } = useWallet()
   const [kira, setKira] = useState<any>()
@@ -25,7 +19,6 @@ const KiraProvider: React.FC = ({ children }) => {
   // @ts-ignore
   window.kira = kira
   // @ts-ignore
-
 
   useEffect(() => {
     if (ethereum) {
@@ -41,7 +34,6 @@ const KiraProvider: React.FC = ({ children }) => {
         ethereumNodeTimeout: 10000,
       })
       setKira(kiraLib)
-      window.kirasauce = kiraLib
     }
   }, [ethereum])
 

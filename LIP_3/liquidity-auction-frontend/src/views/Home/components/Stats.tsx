@@ -7,11 +7,8 @@ import Card from '../../../components/Card'
 import CardContent from '../../../components/CardContent'
 import Label from '../../../components/Label'
 import Spacer from '../../../components/Spacer'
-import { CountUpValue } from '../../../components/Value/CountUpValue'
-import KiraIcon from '../../../components/KiraIcon'
 import useKira from '../../../hooks/useKira'
 import { getKiraAddress, getTotalDeposited } from '../../../kira/utils'
-import { getBalanceNumber } from '../../../utils/formatBalance'
 import Kira_Img from '../../../assets/img/kira.png'
 
 const RemainingTime: React.FC = () => {

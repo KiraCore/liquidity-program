@@ -294,7 +294,7 @@ contract KiraAuction is Ownable {
         require(customer.whitelisted && (customer.claimed_wei > 0), 'KiraAuction: you did not contribute.');
 
         customers[msg.sender].claimed = true;
-
+    
         uint256 exp = 10**uint256(kiraToken.decimals());
         uint256 amountToClaim = customer.claimed_wei.mul(exp).div(latestPrice);
         kiraToken.transfer(msg.sender, amountToClaim);

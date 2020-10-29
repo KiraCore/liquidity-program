@@ -45,38 +45,13 @@ export class Kira {
     this.testing.resetEVM(this.snapshot)
   }
 
-  addAccount(address, number) {
-    this.accounts.push(new Account(this.contracts, address, number))
-  }
-
   setProvider(provider, networkId) {
     this.web3.setProvider(provider)
     this.contracts.setProvider(provider, networkId)
-    this.operation.setNetworkId(networkId)
-  }
-
-  setDefaultAccount(account) {
-    this.web3.eth.defaultAccount = account
-    this.contracts.setDefaultAccount(account)
   }
 
   getDefaultAccount() {
     return this.web3.eth.defaultAccount
-  }
-
-  loadAccount(account) {
-    const newAccount = this.web3.eth.accounts.wallet.add(account.privateKey)
-
-    if (
-      !newAccount ||
-      (account.address &&
-        account.address.toLowerCase() !== newAccount.address.toLowerCase())
-    ) {
-      throw new Error(`Loaded account address mismatch.
-        Expected ${account.address}, got ${
-        newAccount ? newAccount.address : null
-      }`)
-    }
   }
 
   toBigN(a) {

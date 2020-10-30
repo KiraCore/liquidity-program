@@ -14,8 +14,8 @@ const CardIcon: React.FC<CardIconProps> = ({ children }) => (
 const StyledCardIcon = styled.div`
   background-color: ${props => props.theme.color.purple[200]};
   font-size: 36px;
-  height: 80px;
-  width: 80px;
+  height: 100px;
+  width: 100px;
   border-radius: 40px;
   align-items: center;
   display: flex;

@@ -9,6 +9,8 @@ import Spacer from '../../../components/Spacer'
 import useKira from '../../../hooks/useKira'
 import { getTotalDeposited, getLatestPrice } from '../../../kira/utils'
 import useAuction from '../../../hooks/useAuctionConfig'
+import useTokenBalance from '../../../hooks/useTokenBalance'
+import { getKiraAddress } from '../../../kira/utils'
 import Kira_Img from '../../../assets/img/kira.png'
 
 const RemainingTime: React.FC = () => {
@@ -61,16 +63,17 @@ const Stats: React.FC = () => {
   
   const kira = useKira()
   const auction = useAuction()
+  const kexBalance = useTokenBalance(getKiraAddress(kira))
 
   useEffect(() => {
     async function fetchTotalDeposited() {
       const totalEth = await getTotalDeposited(kira)
-      setTotalDeposited(totalEth)
+      setTotalDeposited(parseInt(totalEth))
     }
 
     async function fetchKEXPrice() {
       const ethPrice = await getLatestPrice(kira)
-      setCurrentKexPrice(ethPrice)
+      setCurrentKexPrice(parseInt(ethPrice))
     }
 
     if (kira) {
@@ -78,6 +81,10 @@ const Stats: React.FC = () => {
       fetchKEXPrice()
     }
   }, [kira])
+
+  useEffect(() => {
+    setTotalKexAmount(Math.min(kexBalance.toNumber(), totalDeposited / (currentKexPrice == 0 ? 1 : currentKexPrice)))
+  }, [totalDeposited, currentKexPrice, kexBalance])
 
   useEffect(() => {
     if (auction) {

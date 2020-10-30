@@ -28,31 +28,23 @@ const Chart: React.FC = () => {
   
   // generate some random data, quite different range
   useEffect(() => {
-    let chartData = [];
-    // current date
-    let firstDate = new Date();
-    // now set 500 minutes back
-    firstDate.setMinutes(firstDate.getDate() - 500);
-
-    // and generate 500 data items
-    let amount = 500;
-    let price = 0;
-    for (var i = 0; i < 100; i++) {
-        let newDate = new Date(firstDate);
-        // each time we add one minute
-        newDate.setMinutes(newDate.getMinutes() + i);
-        // some random number
-        amount = Math.round((Math.random()<0.5?2:1)*Math.random()*1000);
-        price = Math.round((Math.random()<0.5?2:1)*Math.random()*10);
-        // add data item to the array
-        chartData.push({
-            date: newDate,
-            amount: amount,
-            price: price,
-        });
+    if (auction) {
+      let chartData = [{
+        date: auction.startTime,
+        amount: 0,
+        price: 0
+      }, {
+        date: auction.T1,
+        amount: 300000000,
+        price: auction.P1
+      }, {
+        date: auction.T2,
+        amount: 500000000,
+        price: auction.P2
+      }]
+      
+      setChartData(chartData);
     }
-    
-    setChartData(chartData);
   }, [auction])
 
   useLayoutEffect(() => {
@@ -74,7 +66,7 @@ const Chart: React.FC = () => {
     let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
     dateAxis.baseInterval = {
       "timeUnit": "minute",
-      "count": 1
+      "count": 10
     };
     dateAxis.tooltipDateFormat = "HH:mm, d MMMM";
 
@@ -114,8 +106,8 @@ const Chart: React.FC = () => {
     amountSeries.interpolationDuration = 500;
     amountSeries.defaultState.transitionDuration = 0;
     amountSeries.tooltipText = "{name}: [bold]{valueY}[/]";
-    amountSeries.tensionX = 0.8;
-    amountSeries.tensionY = 0.3;
+    // amountSeries.tensionX = 0.8;
+    // amountSeries.tensionY = 0.3;
 
     amountAxis.renderer.line.strokeOpacity = 1;
     amountAxis.renderer.line.strokeWidth = 2;

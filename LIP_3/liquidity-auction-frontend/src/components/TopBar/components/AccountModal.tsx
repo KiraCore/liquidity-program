@@ -36,7 +36,7 @@ const AccountModal: React.FC<ModalProps> = ({ onDismiss }) => {
         <div style={{ display: 'flex' }}>
           <StyledBalanceWrapper>
             <CardIcon>
-              <img src={kexIcon} height="50"/>
+              <img src={kexIcon} height="80"/>
             </CardIcon>
             <StyledBalance>
               <CountUpValue value={getBalanceNumber(kexBalance)} />
@@ -50,16 +50,18 @@ const AccountModal: React.FC<ModalProps> = ({ onDismiss }) => {
           href={`https://etherscan.io/address/${account}`}
           text="View on Etherscan"
           variant="secondary"
+          size="sm"
         />
         <Spacer />
         <Button
           onClick={handleSignOutClick}
           text="Sign out"
           variant="secondary"
+          size="sm"
         />
       </ModalContent>
       <ModalActions>
-        <Button onClick={onDismiss} text="Cancel" />
+        <Button onClick={onDismiss} text="Cancel" size="sm"/>
       </ModalActions>
     </Modal>
   )

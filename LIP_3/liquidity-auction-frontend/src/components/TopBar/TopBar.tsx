@@ -19,10 +19,9 @@ const TopBar: React.FC<TopBarProps> = ({ onPresentMobileMenu }) => {
           <StyledLogoWrapper>
             <Logo />
           </StyledLogoWrapper>
-          {/* <Nav />
           <StyledAccountButtonWrapper>
             <AccountButton />
-          </StyledAccountButtonWrapper> */}
+          </StyledAccountButtonWrapper>
         </StyledTopBarInner>
       </Container>
     </StyledTopBar>

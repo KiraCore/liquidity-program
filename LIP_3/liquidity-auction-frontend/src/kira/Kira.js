@@ -36,6 +36,7 @@ export class Kira {
     if (options.defaultAccount) {
       this.web3.eth.defaultAccount = options.defaultAccount
     }
+    
     this.contracts = new Contracts(realProvider, networkId, this.web3, options)
     this.kiraAddress = contractAddresses.kira[networkId]
     this.kiraAuctionAddress = contractAddresses.kiraAuction[networkId]

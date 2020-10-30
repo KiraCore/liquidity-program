@@ -1,10 +1,8 @@
-import BigNumber from 'bignumber.js/bignumber'
 import KiraAbi from './abi/kira.json'
 import KiraAuctionAbi from './abi/kira_auction.json'
 
 import {
   contractAddresses,
-  SUBTRACT_GAS_LIMIT,
 } from './constants.js'
 import * as Types from './types.js'
 

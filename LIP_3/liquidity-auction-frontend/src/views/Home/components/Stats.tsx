@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import React, { useEffect, useState } from 'react'
 import CountUp from 'react-countup'
 import styled from 'styled-components'
@@ -8,7 +7,8 @@ import CardContent from '../../../components/CardContent'
 import Label from '../../../components/Label'
 import Spacer from '../../../components/Spacer'
 import useKira from '../../../hooks/useKira'
-import { getKiraAddress, getTotalDeposited } from '../../../kira/utils'
+import { getTotalDeposited, getLatestPrice } from '../../../kira/utils'
+import useAuction from '../../../hooks/useAuctionConfig'
 import Kira_Img from '../../../assets/img/kira.png'
 
 const RemainingTime: React.FC = () => {
@@ -48,28 +48,46 @@ const RemainingTime: React.FC = () => {
 }
 
 const Stats: React.FC = () => {
-  const [totalSupply, setTotalSupply] = useState<BigNumber>()
-  const kira = useKira()
   // const kexBalance = useTokenBalance(getKiraAddress(kira))
   const { account, ethereum }: { account: any; ethereum: any } = useWallet()
   
   // TODO: Get Auction Status
-  const [auctionStartTime, setAuctionStartTime] = useState<string>("20:12:00:00");
-  const [auctionEndTime, setAuctionEndTime] = useState<string>("29:11:00:00");
-  const [auctionRemainingTime, setAuctionRemainingTime] = useState<number>(20);
+  const [auctionStartTime, setAuctionStartTime] = useState<string>("00:00:00:00");
+  const [auctionEndTime, setAuctionEndTime] = useState<string>("00:00:00:00");
+  const [auctionRemainingTime, setAuctionRemainingTime] = useState<number>(0);
   const [currentKexPrice, setCurrentKexPrice] = useState<number>(20);
-  const [totalDeposited, setTotalDeposited] = useState<number>(50);
+  const [totalDeposited, setTotalDeposited] = useState<number>(0);
   const [totalKEXAmount, setTotalKexAmount] = useState<number>(10000);
   
+  const kira = useKira()
+  const auction = useAuction()
+
   useEffect(() => {
     async function fetchTotalDeposited() {
       const totalEth = await getTotalDeposited(kira)
       setTotalDeposited(totalEth)
     }
+
+    async function fetchKEXPrice() {
+      const ethPrice = await getLatestPrice(kira)
+      setCurrentKexPrice(ethPrice)
+    }
+
     if (kira) {
       fetchTotalDeposited()
+      fetchKEXPrice()
     }
-  }, [kira, setTotalDeposited])
+  }, [kira])
+
+  useEffect(() => {
+    if (auction) {
+      const day = auction.startTime.getUTCDate();
+      const hour = auction.startTime.getUTCHours();
+      const minute = auction.startTime.getUTCMinutes();
+      const second = auction.startTime.getUTCSeconds();
+      setAuctionStartTime([(day > 9 ? '' : '0') + day, (hour > 9 ? '' : '0') + hour, (minute > 9 ? '' : '0') + minute, (second > 9 ? '' : '0') + second].join(':'));
+    }
+  }, [auction])
 
   return (
     <StyledWrapper>
@@ -91,12 +109,12 @@ const Stats: React.FC = () => {
                 <Spacer size="sm"/>
 
                 <StyledAuctionTime>
-                  <Label text="Starts at" color='#523632'/>
+                  <Label text="Starts at (UTC)" color='#523632'/>
                   <StyledAuctionValue>{auctionStartTime !== "" ? auctionStartTime : 'Not started'}</StyledAuctionValue>
                 </StyledAuctionTime>
                
                 <StyledAuctionTime>
-                  <Label text="Ends at at" color='#523632'/>
+                  <Label text="Ends at at (UTC)" color='#523632'/>
                   <StyledAuctionValue>{auctionEndTime !== "" ? auctionEndTime : 'Not started'}</StyledAuctionValue>
                 </StyledAuctionTime>
               </div>
@@ -125,12 +143,12 @@ const Stats: React.FC = () => {
 
                 <StyledAuctionTime>
                   <Label text="KEX Price" color='#523632'/>
-                  <StyledAuctionValue>{currentKexPrice !== 0 ? "$" + currentKexPrice : 'No price'}</StyledAuctionValue>
+                  <StyledAuctionValue>{"$" + currentKexPrice}</StyledAuctionValue>
                 </StyledAuctionTime>
                
                 <StyledAuctionTime>
                   <Label text="ETH Deposited" color='#523632'/>
-                  <StyledAuctionValue>{totalDeposited !== 0 ? totalDeposited + " ETH" : 'No Deposit'}</StyledAuctionValue>
+                  <StyledAuctionValue>{totalDeposited + " ETH"}</StyledAuctionValue>
                 </StyledAuctionTime>
 
               </div>

@@ -9,17 +9,25 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 // import am4themes_kelly from "@amcharts/amcharts4/themes/kelly";
 import am4themes_frozen from "@amcharts/amcharts4/themes/frozen";
 
-import useAuction from '../../../hooks/useAuction'
+import WalletProviderModal from '../../../components/WalletProviderModal'
+import useAuction from '../../../hooks/useAuctionConfig'
+import useModal from '../../../hooks/useModal'
 
 am4core.useTheme(am4themes_frozen);
 am4core.useTheme(am4themes_animated);
 
 const Chart: React.FC = () => {
-  const auction = useAuction();
+  const [chartData, setChartData] = useState([]);
   const currentChart = useRef(null);
+  const auction = useAuction();
+
+  const [onPresentWalletProviderModal] = useModal(
+    <WalletProviderModal />,
+    'provider',
+  )
   
   // generate some random data, quite different range
-  const generateChartData = () => {
+  useEffect(() => {
     let chartData = [];
     // current date
     let firstDate = new Date();
@@ -43,17 +51,12 @@ const Chart: React.FC = () => {
             price: price,
         });
     }
-
-    return chartData;
-  }
-  
-  useEffect(() => {
-    // useAuction();
-  }, [])
+    
+    setChartData(chartData);
+  }, [auction])
 
   useLayoutEffect(() => {
     let chart = am4core.create("chartdiv", am4charts.XYChart);
-
     // Chart title
     let title = chart.titles.create();
     title.text = "Kira Liquidity Auction Status";
@@ -65,7 +68,7 @@ const Chart: React.FC = () => {
     chart.colors.step = 2;
 
     // Add data
-    chart.data = generateChartData();
+    chart.data = chartData;
 
     // Create axes
     let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
@@ -148,11 +151,11 @@ const Chart: React.FC = () => {
     return () => {
       chart.dispose();
     };
-  }, [])
+  }, [chartData])
 
   return (
     <StyledWrapper>
-      <div id="chartdiv" style={{ width: "100%", height: "500px" }}></div>
+      {!!auction && (<div id="chartdiv" style={{ width: "100%", height: "500px" }}></div>)}
     </StyledWrapper>
   )
 }

@@ -1,15 +1,20 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import kira from '../../assets/img/kira.png'
 import Button from '../../components/Button'
+import { useWallet } from 'use-wallet'
 import Container from '../../components/Container'
 import Page from '../../components/Page'
 import PageHeader from '../../components/PageHeader'
 import Spacer from '../../components/Spacer'
 import Stats from './components/Stats'
 import Chart from './components/Chart'
+import useAuction from '../../hooks/useAuctionConfig'
 
 const Home: React.FC = () => {
+  const [connected, setConnected] = useState(false);
+  const { account } = useWallet()
+
   return (
     <Page>
       <PageHeader
@@ -20,10 +25,19 @@ const Home: React.FC = () => {
       <Container>
         <Stats />
       </Container>
-      <Container size="lg">
-        <Chart />
-      </Container>
-      <Spacer size="lg" />
+      <Spacer size="md" />
+      {!!account ? (
+        <Container size="lg">
+          <Chart />
+        </Container>
+      ) : (
+        <StyledContainer>
+          <StyledText>
+            Please connect to your wallet
+          </StyledText>
+        </StyledContainer>
+      )}
+      <Spacer size="md" />
       <StyledInfo>
         💡<b>Pro Tip</b>: This auction is for distributing KEX amount to whom deposited ETH.
       </StyledInfo>
@@ -42,6 +56,28 @@ const StyledInfo = styled.h3`
   > b {
     color: ${(props) => props.theme.color.purple[600]};
   }
+`
+
+const StyledContainer = styled.div`
+  align-items: center;
+  display: flex;
+  width: 60%;
+  height: 150px;
+  justify-content: center;
+`
+// border-radius: 25px;
+// border-width: 2px;
+// border-color: ${props => props.theme.color.purple[800]};
+// background-color: ${props => props.theme.color.purple[100]};
+
+const StyledText = styled.h1`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100px;
+  font-size: 18;
+  color: ${props => props.theme.color.purple[500]};
 `
 
 export default Home

@@ -41,11 +41,9 @@ const Providers: React.FC = ({ children }) => {
   return (
     <ThemeProvider theme={theme}>
       <UseWalletProvider
-        chainId={1}
+        chainId={42}
         connectors={{
-          walletconnect: { rpcUrl: 'https://mainnet.eth.aragon.network/' },
-          // injected: true
-          // walletconnect: { rpcUrl: 'https://kovan.infura.io/v3/23988ae61b6d4e3f851fce20720dae12' },
+          walletconnect: { rpcUrl: 'https://kovan.infura.io/v3/23988ae61b6d4e3f851fce20720dae12' },
         }}
       >
         <KiraProvider>

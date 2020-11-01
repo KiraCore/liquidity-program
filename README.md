@@ -6,11 +6,14 @@
 
 ## LIP_1
 
-> Ethereum ERC20 KEX Placeholder Token for easy market access. 
+Ethereum ERC20 KEX Placeholder Token for easy market access.
+
+_NOTE: The owner of the contract has the privilege of whitelisting and blacklisting accounts, effectively enabling or disabling them from sending and receiving tokens. The operator also has the option of freezing token transfers for all accounts that are not explicitly whitelisted. To learn more about Transaction Ordering Dependence and    Allowance Double-Spend possibility see attached Audit Report_
 
 * [Deployment Documentation](./LIP_1/README.md)
 * [Application Binary Interface](./LIP_1/ABI.json)
 * [Token Logo 256x256](./LIP_1/doc/KEX-256x256.png)
+* [Audit Report](./LIP_1/audit.pdf)
 
 ![picture 1](./LIP_1/doc/KEX-256x256.png)  
 

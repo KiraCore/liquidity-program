@@ -61,6 +61,7 @@ contract KiraToken is ERC20, Ownable {
     constructor() public Ownable() ERC20(NAME, SYMBOL) {
         _setupDecimals(DECIMALS);
         _mint(msg.sender, INITIAL_SUPPLY);
+        emit Transfer(address(0x0), msg.sender, INITIAL_SUPPLY);
         freezed = true;
 
         // owner's whitelist

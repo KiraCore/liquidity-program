@@ -5,18 +5,20 @@
 
 # 1. Dependency Setup
 
-## Install Node.js & NPM on Ubuntu 20.04
+## Install Node.js, NPM and other dependencies
+
+_NOTE: Only Ubuntu 20.04 is supported_
 
 ```
-$ sudo apt update
-$ sudo apt install curl
-$ curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh
-$ sudo bash nodesource_setup.sh
-$ sudo apt install nodejs
-$ node -v
-v14.11.0
-$ npm -v
-v6.14.8
+sudo apt update
+sudo apt install curl
+curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh
+sudo bash nodesource_setup.sh
+sudo apt install nodejs
+node -v && npm -v
+
+apt-get install xclip
+npm install -g truffle-export-abi
 ```
 
 ## Install Git & Clone the repo on Ubuntu 20.04
@@ -99,6 +101,14 @@ echo "INFURA_APIKEY=XXX...XXX" >> $HOME/liquidity-program/$LIP_ID/.env
 
 ```
 echo "ETHERSCAN_APIKEY=XXX...XXX" >> $HOME/liquidity-program/$LIP_ID/.env
+```
+
+### `KIRA_TOKEN_ADDRESS`
+
+- This environment variable should be set when Kira Token ERC20 (LIP_1) is deployed
+
+```
+echo "KIRA_TOKEN_ADDRESS=0xZZZ...ZZZ" >> $HOME/liquidity-program/$LIP_ID/.env
 ```
 
 # 3. Testnet used and faucet references

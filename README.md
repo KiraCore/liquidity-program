@@ -6,12 +6,13 @@
 
 ## LIP_1
 
-Ethereum ERC20 KEX Placeholder Token for easy market access.
+**Ethereum ERC20 KEX Placeholder Token for easy market access**
 
 _NOTE: The owner of the contract has the privilege of whitelisting and blacklisting accounts, effectively enabling or disabling them from sending and receiving tokens. The operator also has the option of freezing token transfers for all accounts that are not explicitly whitelisted. To learn more about Transaction Ordering Dependence and    Allowance Double-Spend possibility see attached Audit Report_
 
 * [Deployment Documentation](./LIP_1/README.md)
 * [Application Binary Interface](./LIP_1/ABI.json)
+* [Improvement Proposal](https://github.com/KiraCore/docs/blob/master/spec/liquidity-program/lip_1.md)
 * [Token Logo 256x256](./LIP_1/doc/KEX-256x256.png)
 * [Audit Report](./LIP_1/audit.pdf)
 
@@ -52,11 +53,26 @@ RWTopxNIGH2njxWuafRX8gi0AYlSTBmOaFtR9ztTZCVVWXTDrTIn73hkeNiBJAY=
 
 ```
 
+## LIP_3
+
+**Liquidity Auction**
+
+* [Deployment Documentation](./LIP_3/README.md)
+* [Application Binary Interface](./LIP_3/ABI.json)
+* [Improvement Proposal](https://github.com/KiraCore/docs/blob/master/spec/liquidity-program/lip_1.md)
+
+### Contract Address
+
+```
+TBA
+```
+
 ## LIP_3.2
 
-Ethereum Balance Caching Service
+**Ethereum Address Balance Caching Service**
 
 _NOTE: Caching service is an AWS lambda function which stores information regarding ethereum account balances in the function of block height and time. Intended use of this service is besides the LIP_3.1 which is a static frontend application for the public auction._
 
 * [Deployment Documentation](./LIP_3.2/README.md)
 * [Public S3 Bucket](http://oracle.kira.network)
+* [Improvement Proposal](https://github.com/KiraCore/docs/blob/master/spec/liquidity-program/lip_3.2.md)

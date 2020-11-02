@@ -51,3 +51,12 @@ RWTopxNIGH2njxWuafRX8gi0AYlSTBmOaFtR9ztTZCVVWXTDrTIn73hkeNiBJAY=
 -----END PGP SIGNATURE-----
 
 ```
+
+## LIP_3.2
+
+Ethereum Balance Caching Service
+
+_NOTE: Caching service is an AWS lambda function which stores information regarding ethereum account balances in the function of block height and time. Intended use of this service is besides the LIP_3.1 which is a static frontend application for the public auction._
+
+* [Deployment Documentation](./LIP_3.2/README.md)
+* [Public S3 Bucket](http://oracle.kira.network)

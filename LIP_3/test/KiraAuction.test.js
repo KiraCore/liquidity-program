@@ -36,8 +36,8 @@ contract('KiraAuction Test', async function (accounts) {
     return Math.floor(new Date().getTime() / 1000)
   }
 
-  const doConfigAuction = async function (_deltaStartTime = 2, _p1 = 3, _p2 = 1, _p3 = 0, _t1 = 5, _t2 = 20, _txIntervalLimit = 1, _txMaxWeiAmount = 10) {
-    await instance.configAuction(getCurrentTimestamp() + _deltaStartTime, toWei(_p1), toWei(_p2), toWei(_p3), _t1, _t2, _txIntervalLimit, toWei(_txMaxWeiAmount))
+  const doConfigAuction = async function (_deltaStartTime = 2, _p1 = 3, _p2 = 1, _p3 = 0, _t1 = 5, _t2 = 20, _txIntervalLimit = 1, _txMinWeiAmount = 0.01, _txMaxWeiAmount = 10) {
+    await instance.configAuction(getCurrentTimestamp() + _deltaStartTime, toWei(_p1), toWei(_p2), toWei(_p3), _t1, _t2, _txIntervalLimit, toWei(_txMinWeiAmount), toWei(_txMaxWeiAmount))
   }
 
   const setupAuctionLiquidity = async function (amount) {
@@ -74,43 +74,43 @@ contract('KiraAuction Test', async function (accounts) {
     beforeEach(doDeploy)
 
     it('should only be callable by the owner', async function () {
-      await expect(instance.configAuction(getCurrentTimestamp() + 2, toWei(3), toWei(1), toWei(0), 5, 20, 1, toWei(10), { from: account1 })).to.eventually.be.rejected
+      await expect(instance.configAuction(getCurrentTimestamp() + 2, toWei(3), toWei(1), toWei(0), 5, 20, 1, toWei(0.01), toWei(10), { from: account1 })).to.eventually.be.rejected
     })
 
     it('should only be callable before auction starts', async function () {
       await doConfigAuction(1)
       await doWaitSeconds(2)
 
-      await expect(instance.configAuction(getCurrentTimestamp() + 2, toWei(3), toWei(1), toWei(0), 5, 20, 1, toWei(10))).to.eventually.be.rejectedWith('KiraAuction: should be before auction starts')
+      await expect(instance.configAuction(getCurrentTimestamp() + 2, toWei(3), toWei(1), toWei(0), 5, 20, 1, toWei(0.01), toWei(10))).to.eventually.be.rejectedWith('KiraAuction: should be before auction starts')
     })
 
     it("can't set set the startTime as old time", async function () {
-      await expect(instance.configAuction(getCurrentTimestamp() - 2, toWei(3), toWei(1), toWei(0), 5, 20, 1, toWei(10))).to.eventually.be.rejectedWith('KiraAuction: start time should be greater than now')
+      await expect(instance.configAuction(getCurrentTimestamp() - 2, toWei(3), toWei(1), toWei(0), 5, 20, 1, toWei(0.01), toWei(10))).to.eventually.be.rejectedWith('KiraAuction: start time should be greater than now')
     })
 
     it('should set the auction price as decreasing', async function () {
-      await expect(instance.configAuction(getCurrentTimestamp() + 2, toWei(2), toWei(3), toWei(0), 5, 20, 1, toWei(10))).to.eventually.be.rejectedWith('KiraAuction: price should go decreasing.')
+      await expect(instance.configAuction(getCurrentTimestamp() + 2, toWei(2), toWei(3), toWei(0), 5, 20, 1, toWei(0.01), toWei(10))).to.eventually.be.rejectedWith('KiraAuction: price should go decreasing.')
     })
 
     it("first slope's decreasing rate should be bigger than the second one", async function () {
-      await expect(instance.configAuction(getCurrentTimestamp() + 2, toWei(3), toWei(1), toWei(0), 10, 5, 1, toWei(10))).to.eventually.be.rejectedWith('KiraAuction: the first slope should have faster decreasing rate')
+      await expect(instance.configAuction(getCurrentTimestamp() + 2, toWei(3), toWei(1), toWei(0), 10, 5, 1, toWei(0.01), toWei(10))).to.eventually.be.rejectedWith('KiraAuction: the first slope should have faster decreasing rate')
     })
 
     it("slope times should be valid", async function () {
-      await expect(instance.configAuction(getCurrentTimestamp() + 2, toWei(3), toWei(1), toWei(0), 0, 5, 1, toWei(10))).to.eventually.be.rejectedWith('KiraAuction: the period of each slope should be greater than zero.')
+      await expect(instance.configAuction(getCurrentTimestamp() + 2, toWei(3), toWei(1), toWei(0), 0, 5, 1, toWei(0.01), toWei(10))).to.eventually.be.rejectedWith('KiraAuction: the period of each slope should be greater than zero.')
     })
 
     it("max size per transaction should be valid", async function () {
-      await expect(instance.configAuction(getCurrentTimestamp() + 2, toWei(3), toWei(1), toWei(0), 5, 20, 1, toWei(0))).to.eventually.be.rejectedWith('KiraAuction: the maximum amount per tx should be valid')
+      await expect(instance.configAuction(getCurrentTimestamp() + 2, toWei(3), toWei(1), toWei(0), 5, 20, 1, toWei(0), toWei(0))).to.eventually.be.rejectedWith('KiraAuction: the maximum amount per tx should be valid')
     })
 
     it("should set the variables properly (should convert to the ether unit)", async function () {
       const timestamp = getCurrentTimestamp() + 2
-      await expect(instance.configAuction(timestamp, toWei(3), toWei(1), toWei(0), 5, 20, 1, toWei(10))).to.eventually.be.fulfilled
+      await expect(instance.configAuction(timestamp, toWei(3), toWei(1), toWei(0), 5, 20, 1, toWei(0.01), toWei(10))).to.eventually.be.fulfilled
 
       const info = await instance.getAuctionConfigInfo()
       const infoDetail = Object.keys(info).map(key => info[key].toString())
-      assert.deepStrictEqual(infoDetail, [timestamp.toString(), toWei(3), toWei(1), toWei(0), "5", "20", "1", toWei(10)])
+      assert.deepStrictEqual(infoDetail, [timestamp.toString(), toWei(3), toWei(1), toWei(0), "5", "20", "1", toWei(0.01), toWei(10)])
     })
   })
 
@@ -175,6 +175,7 @@ contract('KiraAuction Test', async function (accounts) {
       - [x] should be rejected after the auction
       - [x] owner or address(0) should not be able to participate in the auction
       - [x] should be rejected from not whitelisted account
+      - [x] amount should be greater than the MIN_WEI
       - [x] amount should not exceed the MAX_WEI
       - [x] should be rejected when it exceeds the tx rate limit
       - [x] should be rejected if it exceeds the hard cap
@@ -191,7 +192,7 @@ contract('KiraAuction Test', async function (accounts) {
     })
 
     it('should be rejected after the auction', async function () {
-      await doConfigAuction(1, 3, 1, 0, 1, 2, 0, 10)
+      await doConfigAuction(1, 3, 1, 0, 1, 2, 0, 0.01, 10)
       await doWaitSeconds(5)
 
       await expect(instance.send(toWei(1), { from: account1 })).to.eventually.be.rejectedWith('KiraAuction: it is out of processing period')
@@ -211,6 +212,14 @@ contract('KiraAuction Test', async function (accounts) {
       await expect(instance.send(toWei(1), { from: account1 })).to.eventually.be.rejectedWith("KiraAuction: You're not whitelisted, wait a moment.")
     })
 
+    it('amount should be greater than the MIN_WEI', async function () {
+      await expect(instance.whitelist([account1], true)).to.eventually.be.fulfilled
+      await doConfigAuction(1)
+      await doWaitSeconds(1)
+
+      await expect(instance.send(toWei(0.001), { from: account1 })).to.eventually.be.rejectedWith("KiraAuction: That is not enough.")
+    })
+
     it('amount should not exceed the MAX_WEI', async function () {
       await expect(instance.whitelist([account1], true)).to.eventually.be.fulfilled
       await doConfigAuction(1)
@@ -224,7 +233,7 @@ contract('KiraAuction Test', async function (accounts) {
       await expect(instance.whitelist([account1], true)).to.eventually.be.fulfilled
 
       const txRateLimit = 2 // 2 seconds
-      await doConfigAuction(1, 3, 1, 0, 5, 20, txRateLimit, 10)
+      await doConfigAuction(1, 3, 1, 0, 5, 20, txRateLimit, 0.01, 10)
       await doWaitSeconds(1)
 
       await expect(instance.send(toWei(1), { from: account1 })).to.eventually.be.fulfilled
@@ -235,7 +244,7 @@ contract('KiraAuction Test', async function (accounts) {
       await setupAuctionLiquidity(1)
       await expect(instance.whitelist([account1], true)).to.eventually.be.fulfilled
 
-      await doConfigAuction(2, 3, 1, 0, 2, 3, 0, 30)
+      await doConfigAuction(2, 3, 1, 0, 2, 3, 0, 0.01, 30)
       await doWaitSeconds(3)
 
       await expect(instance.send(toWei(2.5), { from: account1 })).to.eventually.be.rejectedWith("KiraAuction: Your contribution overflows the hard cap!")
@@ -245,7 +254,7 @@ contract('KiraAuction Test', async function (accounts) {
       await setupAuctionLiquidity(10)
       await expect(instance.whitelist([account1], true)).to.eventually.be.fulfilled
 
-      await doConfigAuction(2, 3, 1, 0, 2, 5, 0, 30)
+      await doConfigAuction(2, 3, 1, 0, 2, 5, 0, 0.01, 30)
       await doWaitSeconds(5)
 
       const sendEth = toWei(0.5)
@@ -261,18 +270,21 @@ contract('KiraAuction Test', async function (accounts) {
       - [x] should be rejected if non-whitelisted user tries to claim
       - [x] should be rejected if whitelisted & non-deposited user tries to claim
       - [x] should transfer the proper amount of tokens to the claimer
+      - [x] should not be able to claim after distribution
+      - [x] should not be able to distribute after all claimed
+      - [x] should distribute proper amount of tokens to contributors
     */
     beforeEach(doDeploy)
 
     it('should only be called after auction ends', async function () {
-      await doConfigAuction(1, 3, 1, 0, 1, 2, 0, 10)
+      await doConfigAuction(1, 3, 1, 0, 1, 2, 0, 0.01, 10)
       await doWaitSeconds(3)
 
       await expect(instance.claimTokens(), { from: account1 }).to.eventually.be.rejectedWith('KiraAuction: should be after auction ends')
     })
 
     it('should be rejected if non-whitelisted user tries to claim', async function () {
-      await doConfigAuction(1, 3, 1, 0, 1, 2, 0, 10)
+      await doConfigAuction(1, 3, 1, 0, 1, 2, 0, 0.01, 10)
       await doWaitSeconds(5)
 
       await expect(instance.claimTokens(), { from: account1 }).to.eventually.be.rejectedWith('KiraAuction: you did not contribute.')
@@ -280,7 +292,7 @@ contract('KiraAuction Test', async function (accounts) {
 
     it('should be rejected if whitelisted & non-deposited user tries to claim', async function () {
       await expect(instance.whitelist([account1], true)).to.eventually.be.fulfilled
-      await doConfigAuction(1, 3, 1, 0, 1, 2, 0, 10)
+      await doConfigAuction(1, 3, 1, 0, 1, 2, 0, 0.01, 10)
       await doWaitSeconds(5)
 
       await expect(instance.claimTokens(), { from: account1 }).to.eventually.be.rejectedWith('KiraAuction: you did not contribute.')
@@ -291,7 +303,7 @@ contract('KiraAuction Test', async function (accounts) {
       await setupAuctionLiquidity(10)
       await expect(instance.whitelist([account1], true)).to.eventually.be.fulfilled
 
-      await doConfigAuction(2, 3, 1, 0, 2, 5, 0, 30)
+      await doConfigAuction(2, 3, 1, 0, 2, 5, 0, 0.01, 30)
       await doWaitSeconds(5)
 
       await expect(instance.send(toWei(5), { from: account1 })).to.eventually.be.fulfilled
@@ -306,6 +318,69 @@ contract('KiraAuction Test', async function (accounts) {
 
       await expect(token.balanceOf(account1)).to.eventually.be.a.bignumber.equal(new BN(10 * (10 ** tokenDecimals)))
     })
+
+    it('should not be able to claim after distribution', async function () {
+      await expect(token.whitelist([instance.address], false, false, false, true)).to.eventually.be.fulfilled
+      await setupAuctionLiquidity(10)
+      await expect(instance.whitelist([account1], true)).to.eventually.be.fulfilled
+
+      await doConfigAuction(2, 3, 1, 0, 2, 5, 0, 0.01, 30)
+      await doWaitSeconds(5)
+
+      await expect(instance.send(toWei(5), { from: account1 })).to.eventually.be.fulfilled
+      await doWaitSeconds(2)
+
+      const info = await instance.getCustomerInfo(account1)
+
+      assert.equal(info[0], true);
+      assert.equal(parseInt(info[1]), toWei(5));
+
+      await expect(instance.distribute()).to.eventually.be.fulfilled
+
+      await expect(instance.claimTokens({ from: account1 })).to.eventually.be.rejectedWith('KiraAuction: we already sent to your wallet.')
+    })
+
+    it('should not be able to distribute after all claimed', async function () {
+      await expect(token.whitelist([instance.address], false, false, false, true)).to.eventually.be.fulfilled
+      await setupAuctionLiquidity(10)
+      await expect(instance.whitelist([account1], true)).to.eventually.be.fulfilled
+
+      await doConfigAuction(2, 3, 1, 0, 2, 5, 0, 0.01, 30)
+      await doWaitSeconds(5)
+
+      await expect(instance.send(toWei(5), { from: account1 })).to.eventually.be.fulfilled
+      await doWaitSeconds(2)
+
+      const info = await instance.getCustomerInfo(account1)
+
+      assert.equal(info[0], true);
+      assert.equal(parseInt(info[1]), toWei(5));
+
+      await expect(instance.claimTokens({ from: account1 })).to.eventually.be.fulfilled
+
+      await expect(instance.distribute()).to.eventually.be.rejectedWith('KiraAuction: nothing to distribute. already claimed or distributed all!')
+    })
+
+    it('should distribute proper amount of tokens to contributors', async function () {
+      await expect(token.whitelist([instance.address], false, false, false, true)).to.eventually.be.fulfilled
+      await setupAuctionLiquidity(10)
+      await expect(instance.whitelist([account1], true)).to.eventually.be.fulfilled
+
+      await doConfigAuction(2, 3, 1, 0, 2, 5, 0, 0.01, 30)
+      await doWaitSeconds(5)
+
+      await expect(instance.send(toWei(5), { from: account1 })).to.eventually.be.fulfilled
+      await doWaitSeconds(2)
+
+      const info = await instance.getCustomerInfo(account1)
+
+      assert.equal(info[0], true);
+      assert.equal(parseInt(info[1]), toWei(5));
+
+      await expect(instance.distribute()).to.eventually.be.fulfilled
+
+      await expect(token.balanceOf(account1)).to.eventually.be.a.bignumber.equal(new BN(10 * (10 ** tokenDecimals)))
+    })
   })
 
   describe('withdrawFunds', function () {
@@ -313,6 +388,7 @@ contract('KiraAuction Test', async function (accounts) {
       - [x] should only be called from the owner
       - [x] should only be called after auction ends
       - [x] should be rejected if there is no balance on the contract
+      - [x] should withdraw ETH and KEX correctly
     */
     beforeEach(doDeploy)
 
@@ -321,17 +397,48 @@ contract('KiraAuction Test', async function (accounts) {
     })
 
     it('should only be called after auction ends', async function () {
-      await doConfigAuction(1, 3, 1, 0, 1, 2, 0, 10)
+      await doConfigAuction(1, 3, 1, 0, 1, 2, 0, 0.01, 10)
       await doWaitSeconds(3)
 
       await expect(instance.withdrawFunds()).to.eventually.be.rejectedWith('KiraAuction: should be after auction ends')
     })
 
     it('should be rejected if there is no balance on the contract', async function () {
-      await doConfigAuction(1, 3, 1, 0, 1, 2, 0, 10)
+      await doConfigAuction(1, 3, 1, 0, 1, 2, 0, 0.01, 10)
       await doWaitSeconds(5)
 
       await expect(instance.withdrawFunds()).to.eventually.be.rejectedWith('KiraAuction: nothing left to withdraw')
+    })
+
+    it('should withdraw ETH and KEX correctly', async function () {
+      await expect(token.whitelist([instance.address], false, false, false, true)).to.eventually.be.fulfilled
+      await setupAuctionLiquidity(10)
+      await expect(instance.whitelist([account1], true)).to.eventually.be.fulfilled
+
+      await doConfigAuction(2, 3, 2, 1, 2, 5, 0, 0.01, 30)
+      await doWaitSeconds(5)
+
+      await expect(instance.send(toWei(5), { from: account1 })).to.eventually.be.fulfilled
+      await doWaitSeconds(5)
+
+      const info = await instance.getCustomerInfo(account1)
+
+      assert.equal(info[0], true);
+      assert.equal(parseInt(info[1]), toWei(5));
+
+      await expect(instance.distribute()).to.eventually.be.fulfilled
+
+      const oldWalletEthBalance = await web3.eth.getBalance(deployerAccount)
+      const oldWalletKexBalance = await token.balanceOf(deployerAccount)
+
+      await expect(instance.withdrawFunds()).to.eventually.be.fulfilled
+
+      await expect(token.balanceOf(account1)).to.eventually.be.a.bignumber.equal(new BN(5 * (10 ** tokenDecimals)))
+
+      const newWalletEthBalance = await web3.eth.getBalance(deployerAccount)
+
+      assert.isAtLeast(parseInt(newWalletEthBalance), parseInt(oldWalletEthBalance), 'ETH amount should be increased')
+      await expect(token.balanceOf(deployerAccount)).to.eventually.be.a.bignumber.equal(oldWalletKexBalance.add(new BN(5 * (10 ** tokenDecimals))))
     })
   })
 })

@@ -8,7 +8,7 @@ import Label from '../../../components/Label'
 import Spacer from '../../../components/Spacer'
 import useKira from '../../../hooks/useKira'
 import { getTotalDeposited, getLatestPrice } from '../../../kira/utils'
-import useAuction from '../../../hooks/useAuctionConfig'
+import useAuctionConfig from '../../../hooks/useAuctionConfig'
 import useTokenBalance from '../../../hooks/useTokenBalance'
 import { getKiraAddress } from '../../../kira/utils'
 import Kira_Img from '../../../assets/img/kira.png'
@@ -62,7 +62,7 @@ const Stats: React.FC = () => {
   const [totalKEXAmount, setTotalKexAmount] = useState<number>(10000);
   
   const kira = useKira()
-  const auction = useAuction()
+  const auctionConfig = useAuctionConfig()
   const kexBalance = useTokenBalance(getKiraAddress(kira))
 
   useEffect(() => {
@@ -87,14 +87,14 @@ const Stats: React.FC = () => {
   }, [totalDeposited, currentKexPrice, kexBalance])
 
   useEffect(() => {
-    if (auction) {
-      const day = auction.startTime.getUTCDate();
-      const hour = auction.startTime.getUTCHours();
-      const minute = auction.startTime.getUTCMinutes();
-      const second = auction.startTime.getUTCSeconds();
+    if (auctionConfig) {
+      const day = auctionConfig.startTime.getUTCDate();
+      const hour = auctionConfig.startTime.getUTCHours();
+      const minute = auctionConfig.startTime.getUTCMinutes();
+      const second = auctionConfig.startTime.getUTCSeconds();
       setAuctionStartTime([(day > 9 ? '' : '0') + day, (hour > 9 ? '' : '0') + hour, (minute > 9 ? '' : '0') + minute, (second > 9 ? '' : '0') + second].join(':'));
     }
-  }, [auction])
+  }, [auctionConfig])
 
   return (
     <StyledWrapper>

@@ -5,13 +5,17 @@ import Container from '../Container'
 import Logo from '../Logo'
 
 import AccountButton from './components/AccountButton'
+import Button from '../Button'
+import useModal from '../../hooks/useModal'
 import Nav from './components/Nav'
+import AboutModal from '../AboutModal'
 
 interface TopBarProps {
   onPresentMobileMenu: () => void
 }
 
 const TopBar: React.FC<TopBarProps> = ({ onPresentMobileMenu }) => {
+  const [onAboutModal] = useModal(<AboutModal />)
   return (
     <StyledTopBar>
       <Container size="lg">
@@ -19,9 +23,14 @@ const TopBar: React.FC<TopBarProps> = ({ onPresentMobileMenu }) => {
           <StyledLogoWrapper>
             <Logo />
           </StyledLogoWrapper>
-          <StyledAccountButtonWrapper>
-            <AccountButton />
-          </StyledAccountButtonWrapper>
+          <StyledButtonWrapper>
+            <StyledAccountButtonWrapper>
+              <AccountButton />
+            </StyledAccountButtonWrapper>
+            <StyledAboutButtonWrapper>
+              <Button onClick={onAboutModal} size="sm" text="About KLA" />
+            </StyledAboutButtonWrapper>
+          </StyledButtonWrapper>
         </StyledTopBarInner>
       </Container>
     </StyledTopBar>
@@ -45,6 +54,7 @@ const StyledTopBarInner = styled.div`
   max-width: ${(props) => props.theme.siteWidth}px;
   width: 100%;
 `
+
 const StyledNavWrapper = styled.div`
   display: flex;
   flex: 1;
@@ -54,16 +64,41 @@ const StyledNavWrapper = styled.div`
   }
 `
 
-const StyledAccountButtonWrapper = styled.div`
+const StyledButtonWrapper = styled.div`
   align-items: center;
   display: flex;
   justify-content: flex-end;
-  width: 156px;
+
   @media (max-width: 400px) {
     justify-content: center;
     width: auto;
   }
 `
+
+const StyledAccountButtonWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 156px;
+  margin: 10px;
+  @media (max-width: 400px) {
+    justify-content: center;
+    width: auto;
+  }
+`
+
+const StyledAboutButtonWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 110px;
+  margin: 10px;
+  @media (max-width: 400px) {
+    justify-content: center;
+    width: auto;
+  }
+`
+
 
 const StyledMenuButton = styled.button`
   background: none;

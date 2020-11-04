@@ -10,7 +10,8 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import am4themes_frozen from "@amcharts/amcharts4/themes/frozen";
 
 import WalletProviderModal from '../../../components/WalletProviderModal'
-import useAuction from '../../../hooks/useAuctionConfig'
+import useAuctionConfig from '../../../hooks/useAuctionConfig'
+import useAuctionData from '../../../hooks/useAuctionData'
 import useModal from '../../../hooks/useModal'
 
 am4core.useTheme(am4themes_frozen);
@@ -19,7 +20,8 @@ am4core.useTheme(am4themes_animated);
 const Chart: React.FC = () => {
   const [chartData, setChartData] = useState([]);
   const currentChart = useRef(null);
-  const auction = useAuction();
+  const auctionConfig = useAuctionConfig();
+  const auctionData = useAuctionData();
 
   const [onPresentWalletProviderModal] = useModal(
     <WalletProviderModal />,
@@ -28,24 +30,10 @@ const Chart: React.FC = () => {
   
   // generate some random data, quite different range
   useEffect(() => {
-    if (auction) {
-      let chartData = [{
-        date: auction.startTime,
-        amount: 0,
-        price: 0
-      }, {
-        date: auction.T1,
-        amount: 300000000,
-        price: auction.P1
-      }, {
-        date: auction.T2,
-        amount: 500000000,
-        price: auction.P2
-      }]
-      
-      setChartData(chartData);
+    if (auctionData) {
+      setChartData(auctionData);
     }
-  }, [auction])
+  }, [auctionData])
 
   useLayoutEffect(() => {
     let chart = am4core.create("chartdiv", am4charts.XYChart);
@@ -121,10 +109,10 @@ const Chart: React.FC = () => {
       { "number": 1e+9, "suffix": "B" }
     ];
 
-    let bullet = amountSeries.bullets.push(new am4charts.CircleBullet());
-    bullet.circle.radius = 3;
-    bullet.circle.strokeWidth = 1;
-    bullet.circle.fill = am4core.color("#fff");
+    // let bullet = amountSeries.bullets.push(new am4charts.CircleBullet());
+    // bullet.circle.radius = 3;
+    // bullet.circle.strokeWidth = 1;
+    // bullet.circle.fill = am4core.color("#fff");
 
     chart.legend = new am4charts.Legend();
     chart.legend.position = "bottom";
@@ -133,10 +121,10 @@ const Chart: React.FC = () => {
     chart.cursor = new am4charts.XYCursor();
 
     // Add scrollbar
-    // let scrollbarX = new am4charts.XYChartScrollbar();
-    // scrollbarX.series.push(priceSeries);
-    // scrollbarX.parent = chart.bottomAxesContainer;
-    // chart.scrollbarX = scrollbarX;
+    let scrollbarX = new am4charts.XYChartScrollbar();
+    scrollbarX.series.push(priceSeries);
+    scrollbarX.parent = chart.bottomAxesContainer;
+    chart.scrollbarX = scrollbarX;
 
     currentChart.current = chart;
 
@@ -147,7 +135,7 @@ const Chart: React.FC = () => {
 
   return (
     <StyledWrapper>
-      {!!auction && (<div id="chartdiv" style={{ width: "100%", height: "500px" }}></div>)}
+      {!!auctionConfig && (<div id="chartdiv" style={{ width: "100%", height: "500px" }}></div>)}
     </StyledWrapper>
   )
 }

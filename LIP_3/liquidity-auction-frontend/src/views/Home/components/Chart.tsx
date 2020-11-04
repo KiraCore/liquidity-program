@@ -29,14 +29,21 @@ const Chart: React.FC = () => {
   const timeInterval = 60 * 60 * 5; // 1 hour
 
   const options: object = {
+    title: {
+      display: true,
+      text: "Kira Liquidity Auction"
+    },  
     scales: {
       yAxes: [
         {
           id: 'price',
           type: 'linear',
           position: 'left',
-          display: true,
-          labelString: 'Price / KEX (USD)',
+          beginAtZero: true,
+          scaleLabel: {
+            display: true,
+            labelString: 'Price / KEX (USD)',
+          },
           ticks: {
             beginAtZero: true,
           },
@@ -48,8 +55,10 @@ const Chart: React.FC = () => {
           id: 'amount',
           type: 'linear',
           position: 'right',
-          display: true,
-          labelString: 'Amount Raised [USD]',
+          scaleLabel: {
+            display: true,
+            labelString: 'Amount Raised [USD]',
+          },
           gridLines: {
             drawOnArea: false,
           },
@@ -97,11 +106,11 @@ const Chart: React.FC = () => {
     if (auctionConfig) {
       fetchData()
     }
-  }, [auctionConfig, changed])
+  }, [auctionConfig])
 
   useInterval(async () => {
     fetchData()
-  }, 50000);
+  }, 5000);
 
   const fetchData = useCallback(async () => {
     // Your custom logic here

@@ -10,7 +10,7 @@ import useInterval from 'use-interval'
 const useAuctionData = () => {
   const [data, setData] = useState([])
   const auctionConfig = useAuctionConfig();
-  const timeInterval = 60 * 5; // 5 seconds
+  const timeInterval = 60 * 60; // 1 hour
 
 //   const {
 //     account,

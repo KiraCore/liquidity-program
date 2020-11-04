@@ -1,141 +1,146 @@
-import React, { useEffect, useState, useRef, useLayoutEffect } from 'react'
+import React, { useEffect, useState, useRef, useLayoutEffect, useCallback } from 'react'
 import styled from 'styled-components'
-
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-// import am4themes_material from "@amcharts/amcharts4/themes/material";
-// import am4themes_dataviz from "@amcharts/amcharts4/themes/dataviz";
-// import am4themes_kelly from "@amcharts/amcharts4/themes/kelly";
-import am4themes_frozen from "@amcharts/amcharts4/themes/frozen";
+import useInterval from 'use-interval'
+import { Bar } from 'react-chartjs-2'
 
 import WalletProviderModal from '../../../components/WalletProviderModal'
 import useAuctionConfig from '../../../hooks/useAuctionConfig'
 import useAuctionData from '../../../hooks/useAuctionData'
 import useModal from '../../../hooks/useModal'
-
-am4core.useTheme(am4themes_frozen);
-am4core.useTheme(am4themes_animated);
+import { getBalance } from '../../../utils/auction'
 
 const Chart: React.FC = () => {
-  const [chartData, setChartData] = useState([]);
-  const currentChart = useRef(null);
+  const rand = () => Math.floor(Math.random() * 255)
+  const timeInterval = 60 * 60 * 5; // 1 hour
+
+  const options: object = {
+    scales: {
+      yAxes: [
+        {
+          id: 'price',
+          type: 'linear',
+          position: 'left',
+          ticks: {
+            beginAtZero: true,
+          },
+          gridLines: {
+            drawOnArea: false,
+          },
+        },
+        {
+          id: 'amount',
+          type: 'linear',
+          position: 'right',
+          gridLines: {
+            drawOnArea: false,
+          },
+          ticks: {
+            callback: (value: number, index: number, values: number) => {
+              return '$' + value;
+            }
+          }
+        }
+      ],
+    },
+  }
+
+  const [changed, setChanged] = useState(false);
+  const [chartData, setChartData] = useState({
+    labels: [] as string[],
+    datasets: [
+      {
+        type: 'line',
+        label: 'Price',
+        backgroundColor: `rgb(88, 201, 62)`,
+        borderColor: `rgb(88, 201, 62)`,
+        borderWidth: 2,
+        fill: false,
+        yAxisID: 'price',
+        data: [] as number[],
+      },
+      {
+        type: 'bar',
+        label: 'Amount Raised',
+        backgroundColor: `rgba(199, 75, 64)`,
+        borderColor: 'rgba(199, 75, 64)',
+        borderWidth: 2,
+        fill: false,
+        yAxisID: 'amount',
+        data: [] as number[],
+      },
+    ],
+  });
+
+  // const currentChart = useRef(null);
   const auctionConfig = useAuctionConfig();
-  const auctionData = useAuctionData();
-
-  const [onPresentWalletProviderModal] = useModal(
-    <WalletProviderModal />,
-    'provider',
-  )
   
-  // generate some random data, quite different range
   useEffect(() => {
-    if (auctionData) {
-      setChartData(auctionData);
+    if (auctionConfig) {
+      fetchData()
     }
-  }, [auctionData])
+  }, [auctionConfig, changed])
 
-  useLayoutEffect(() => {
-    let chart = am4core.create("chartdiv", am4charts.XYChart);
-    // Chart title
-    let title = chart.titles.create();
-    title.text = "Kira Liquidity Auction Status";
-    title.fill = am4core.color("purple");
-    title.fontSize = 20;
-    title.paddingBottom = 10;
+  useInterval(async () => {
+    fetchData()
+  }, 5000);
 
-    // Increase contrast by taking evey second color
-    chart.colors.step = 2;
+  const fetchData = useCallback(async () => {
+    // Your custom logic here
+    const resData = await getBalance("mainnet", "0x3f5ce5fbfe3e9af3971dd833d26ba9b5c936f0be");
 
-    // Add data
-    chart.data = chartData;
+    const T1M = auctionConfig.epochTime + auctionConfig.T1;
+    const T2M = auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2;
+    const priceOffsetP1P2 = (auctionConfig.P1 - auctionConfig.P2) / auctionConfig.T1;
+    const priceOffsetP2P3 = (auctionConfig.P2 - auctionConfig.P3) / auctionConfig.T2;
 
-    // Create axes
-    let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-    dateAxis.baseInterval = {
-      "timeUnit": "minute",
-      "count": 10
-    };
-    dateAxis.tooltipDateFormat = "HH:mm, d MMMM";
+    let labels = [] as string[]
+    let prices = [] as number[]
+    let amounts = [] as number[]
+    const now = Date.now() / 1000;
 
-    let priceAxis = chart.yAxes.push(new am4charts.ValueAxis());
-    priceAxis.title.text = "Price / KEX (USD)"
-    priceAxis.title.fontWeight = "bold";
-    priceAxis.tooltip.disabled = true;
+    for (let currentTime = auctionConfig.epochTime; currentTime < now; currentTime += timeInterval) {
+      let amountRaised = 0;
+      let price = 0;
 
-    let amountAxis = chart.yAxes.push(new am4charts.ValueAxis());
-    amountAxis.title.text = "Amount Raised [USD]"
-    priceAxis.title.fontWeight = "bold";
-    amountAxis.tooltip.disabled = true;
-    amountAxis.renderer.opposite = true;
-    amountAxis.renderer.grid.template.disabled = true;
+      Object.keys(resData['balances']).forEach((time) => {
+          const blockTime = parseInt(time);
+          if (blockTime >= auctionConfig.epochTime && blockTime <= currentTime) {
+              amountRaised += parseInt(resData['balances'][time]['amount']);
+          }
+        });
 
-    let priceSeries = chart.series.push(new am4charts.ColumnSeries());
-    priceSeries.dataFields.dateX = "date";
-    priceSeries.dataFields.valueY = "price";
-    priceSeries.yAxis = priceAxis;
-    priceSeries.defaultState.transitionDuration = 0;
-    priceSeries.strokeWidth = 1;
-    priceSeries.name = "KEX Price";
-    priceSeries.tooltipText = "{name}: [bold]{valueY}[/]";
-    priceSeries.showOnInit = true;
+      let currentTimeO = new Date(0);
+      currentTimeO.setUTCSeconds(currentTime);
+      const hour = currentTimeO.getUTCHours();
+      const minute = currentTimeO.getUTCMinutes();
+      
+      // If the time is in T1 range
+      if (currentTime < T1M) {
+          price = auctionConfig.P1 - priceOffsetP1P2 * (currentTime - auctionConfig.epochTime)
+      } else if (currentTime >= T1M && currentTime <= T2M) {
+          price = auctionConfig.P2 - priceOffsetP2P3 * (currentTime - T1M)
+      } else {
+          price = auctionConfig.P3
+      }
 
-    priceAxis.renderer.line.strokeOpacity = 1;
-    priceAxis.renderer.line.strokeWidth = 2;
-    priceAxis.renderer.line.stroke = priceSeries.stroke;
-    priceAxis.renderer.labels.template.fill = am4core.color("green");
+      labels.push([(hour > 9 ? '' : '0') + hour, (minute > 9 ? '' : '0') + minute].join(':'));
+      prices.push(price);
+      amounts.push(amountRaised);
+    }
 
-    let amountSeries = chart.series.push(new am4charts.LineSeries());
-    amountSeries.dataFields.dateX = "date";
-    amountSeries.dataFields.valueY = "amount";
-    amountSeries.name = "Amount";
-    amountSeries.yAxis = amountAxis;
-    amountSeries.strokeWidth = 2;
-    amountSeries.interpolationDuration = 500;
-    amountSeries.defaultState.transitionDuration = 0;
-    amountSeries.tooltipText = "{name}: [bold]{valueY}[/]";
-    // amountSeries.tensionX = 0.8;
-    // amountSeries.tensionY = 0.3;
+    chartData.labels = labels;
+    chartData.datasets[0].data = prices;
+    chartData.datasets[1].data = amounts
 
-    amountAxis.renderer.line.strokeOpacity = 1;
-    amountAxis.renderer.line.strokeWidth = 2;
-    amountAxis.renderer.line.stroke = amountSeries.stroke;
-    amountAxis.renderer.labels.template.fill = am4core.color("red");
+    setChartData(chartData)  
+    setChanged(!changed)
+  }, [auctionConfig, chartData, changed])
 
-    amountSeries.numberFormatter.numberFormat = "#.#a";
-    amountSeries.numberFormatter.bigNumberPrefixes = [
-      { "number": 1e+3, "suffix": "K" },
-      { "number": 1e+6, "suffix": "M" },
-      { "number": 1e+9, "suffix": "B" }
-    ];
-
-    // let bullet = amountSeries.bullets.push(new am4charts.CircleBullet());
-    // bullet.circle.radius = 3;
-    // bullet.circle.strokeWidth = 1;
-    // bullet.circle.fill = am4core.color("#fff");
-
-    chart.legend = new am4charts.Legend();
-    chart.legend.position = "bottom";
-
-    // Add cursor
-    chart.cursor = new am4charts.XYCursor();
-
-    // Add scrollbar
-    let scrollbarX = new am4charts.XYChartScrollbar();
-    scrollbarX.series.push(priceSeries);
-    scrollbarX.parent = chart.bottomAxesContainer;
-    chart.scrollbarX = scrollbarX;
-
-    currentChart.current = chart;
-
-    return () => {
-      chart.dispose();
-    };
-  }, [chartData])
 
   return (
     <StyledWrapper>
-      {!!auctionConfig && (<div id="chartdiv" style={{ width: "100%", height: "500px" }}></div>)}
+      {/* {!!auctionConfig && (<div id="chartdiv" style={{ width: "100%", height: "500px" }}></div>)} */}
+      {!!auctionConfig && <Bar data={chartData} options={options} type="bar"/>}
     </StyledWrapper>
   )
 }

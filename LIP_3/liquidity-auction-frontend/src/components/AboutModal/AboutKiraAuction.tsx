@@ -1,30 +1,17 @@
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import { useWallet } from 'use-wallet'
-
-import metamaskLogo from '../../assets/img/metamask-fox.svg'
 
 import Button from '../Button'
 import Modal, { ModalProps } from '../Modal'
 import ModalActions from '../ModalActions'
 import ModalContent from '../ModalContent'
 import ModalTitle from '../ModalTitle'
-import Spacer from '../Spacer'
 
 import Card from '../Card'
 import CardContent from '../CardContent'
-import CardIcon from '../CardIcon'
 import CardTitle from '../CardTitle'
 
 const AboutKiraAuction: React.FC<ModalProps> = ({ onDismiss }) => {
-  const { account, connect } = useWallet()
-
-  useEffect(() => {
-    if (account) {
-      onDismiss()
-    }
-  }, [account, onDismiss])
-
   return (
     <Modal>
       <ModalTitle text="About Kira Liquidity Auction" />

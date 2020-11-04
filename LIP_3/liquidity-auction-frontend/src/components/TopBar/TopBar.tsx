@@ -8,14 +8,14 @@ import AccountButton from './components/AccountButton'
 import Button from '../Button'
 import useModal from '../../hooks/useModal'
 import Nav from './components/Nav'
-import AboutModal from '../AboutModal'
+import AboutKiraAuction from '../AboutModal'
 
 interface TopBarProps {
   onPresentMobileMenu: () => void
 }
 
 const TopBar: React.FC<TopBarProps> = ({ onPresentMobileMenu }) => {
-  const [onAboutModal] = useModal(<AboutModal />)
+  const [onAboutModal] = useModal(<AboutKiraAuction />)
   return (
     <StyledTopBar>
       <Container size="lg">

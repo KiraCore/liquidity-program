@@ -32,7 +32,20 @@ const Chart: React.FC = () => {
     title: {
       display: true,
       text: "Kira Liquidity Auction"
-    },  
+    },
+    tooltips: {
+      callbacks: {
+          label: (tooltipItem: any, data: any) => {
+              var label = data.datasets[tooltipItem.datasetIndex].label || '';
+
+              if (label) {
+                  label += ': ';
+              }
+              label += Math.round(tooltipItem.yLabel * 100) / 100;
+              return label;
+          }
+      }
+    },
     scales: {
       yAxes: [
         {

@@ -3,14 +3,29 @@ import styled from 'styled-components'
 import useInterval from 'use-interval'
 import { Bar } from 'react-chartjs-2'
 
-import WalletProviderModal from '../../../components/WalletProviderModal'
 import useAuctionConfig from '../../../hooks/useAuctionConfig'
-import useAuctionData from '../../../hooks/useAuctionData'
-import useModal from '../../../hooks/useModal'
+// import useAuctionData from '../../../hooks/useAuctionData'
 import { getBalance } from '../../../utils/auction'
 
+const abbreviateNumber = (value: number)  => {
+  let newValue;
+  if (value < 1000) return value;
+  if (value >= 1000) {
+      var suffixes = ["", "K", "M", "B", "T"];
+      var suffixNum = Math.floor( (""+value).length/3 );
+      var shortValue;
+      for (var precision = 2; precision >= 1; precision--) {
+          shortValue = parseFloat( (suffixNum != 0 ? (value / Math.pow(1000,suffixNum) ) : value).toPrecision(precision));
+          var dotLessShortValue = (shortValue + '').replace(/[^a-zA-Z 0-9]+/g,'');
+          if (dotLessShortValue.length <= 2) { break; }
+      }
+      if (shortValue % 1 != 0)  shortValue = shortValue.toFixed(1);
+      newValue = shortValue+suffixes[suffixNum];
+  } 
+  return newValue;
+}
+
 const Chart: React.FC = () => {
-  const rand = () => Math.floor(Math.random() * 255)
   const timeInterval = 60 * 60 * 5; // 1 hour
 
   const options: object = {
@@ -20,6 +35,8 @@ const Chart: React.FC = () => {
           id: 'price',
           type: 'linear',
           position: 'left',
+          display: true,
+          labelString: 'Price / KEX (USD)',
           ticks: {
             beginAtZero: true,
           },
@@ -31,12 +48,14 @@ const Chart: React.FC = () => {
           id: 'amount',
           type: 'linear',
           position: 'right',
+          display: true,
+          labelString: 'Amount Raised [USD]',
           gridLines: {
             drawOnArea: false,
           },
           ticks: {
             callback: (value: number, index: number, values: number) => {
-              return '$' + value;
+              return '$' + abbreviateNumber(value);
             }
           }
         }
@@ -50,7 +69,7 @@ const Chart: React.FC = () => {
     datasets: [
       {
         type: 'line',
-        label: 'Price',
+        label: 'Price / KEX (USD)',
         backgroundColor: `rgb(88, 201, 62)`,
         borderColor: `rgb(88, 201, 62)`,
         borderWidth: 2,
@@ -60,7 +79,7 @@ const Chart: React.FC = () => {
       },
       {
         type: 'bar',
-        label: 'Amount Raised',
+        label: 'Amount Raised [USD]',
         backgroundColor: `rgba(199, 75, 64)`,
         borderColor: 'rgba(199, 75, 64)',
         borderWidth: 2,
@@ -82,7 +101,7 @@ const Chart: React.FC = () => {
 
   useInterval(async () => {
     fetchData()
-  }, 5000);
+  }, 50000);
 
   const fetchData = useCallback(async () => {
     // Your custom logic here

@@ -22,5 +22,7 @@ export interface AuctionData {
   labels?: string[]
   prices?: number[]
   amounts?: number[]
-  auctionFinished?: boolean
+  ethDeposited?: number
+  totalAmount?: number
+  kexPrice?: number
 }

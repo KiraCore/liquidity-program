@@ -12,11 +12,11 @@ const abbreviateNumber = (value: number)  => {
       var suffixNum = Math.floor(("" + value).length / 3);
       var shortValue;
       for (var precision = 2; precision >= 1; precision--) {
-          shortValue = parseFloat((suffixNum != 0 ? (value / Math.pow(1000, suffixNum)) : value).toPrecision(precision));
+          shortValue = parseFloat((suffixNum !== 0 ? (value / Math.pow(1000, suffixNum)) : value).toPrecision(precision));
           var dotLessShortValue = (shortValue + '').replace(/[^a-zA-Z 0-9]+/g,'');
           if (dotLessShortValue.length <= 2) { break; }
       }
-      if (shortValue % 1 != 0)  shortValue = shortValue.toFixed(1);
+      if (shortValue % 1 !== 0)  shortValue = shortValue.toFixed(1);
       newValue = shortValue + suffixes[suffixNum];
   } 
   return newValue;
@@ -28,15 +28,16 @@ const Chart: React.FC = () => {
   const options: object = {
     title: {
       display: true,
+      fontSize: 25,
       text: "Kira Liquidity Auction"
     },
     tooltips: {
       callbacks: {
         label: (tooltipItem: any, data: any) => {
-          var label = tooltipItem.datasetIndex == 0 ? "Price" : tooltipItem.datasetIndex == 1 ? "Amount" : "";
+          var label = tooltipItem.datasetIndex === 0 ? "Price" : tooltipItem.datasetIndex === 1 ? "Amount" : "";
           if (label) label += ": $";
           
-          // label += tooltipItem.datasetIndex == 1 ? abbreviateNumber(tooltipItem.yLabel) : tooltipItem.yLabel;
+          // label += tooltipItem.datasetIndex === 1 ? abbreviateNumber(tooltipItem.yLabel) : tooltipItem.yLabel;
           label += tooltipItem.yLabel;
           return label;
         }
@@ -115,7 +116,7 @@ const Chart: React.FC = () => {
 
       setChartData(chartData);
     }
-  }, [auctionData])
+  }, [auctionData, chartData])
 
   return (
     <StyledWrapper>

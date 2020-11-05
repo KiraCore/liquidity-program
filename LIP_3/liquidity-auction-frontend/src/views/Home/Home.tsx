@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import kira from '../../assets/img/kira.png'
-import Button from '../../components/Button'
 import { useWallet } from 'use-wallet'
 import Container from '../../components/Container'
 import Page from '../../components/Page'
@@ -9,10 +8,12 @@ import PageHeader from '../../components/PageHeader'
 import Spacer from '../../components/Spacer'
 import Stats from './components/Stats'
 import Chart from './components/Chart'
-import useAuction from '../../hooks/useAuctionConfig'
+import useAuctionData from '../../hooks/useAuctionData'
+
 
 const Home: React.FC = () => {
   const [connected, setConnected] = useState(false);
+  // const auctionData = useAuctionData()
   const { account } = useWallet()
 
   return (

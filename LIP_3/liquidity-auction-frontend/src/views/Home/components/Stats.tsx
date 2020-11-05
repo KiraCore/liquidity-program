@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import CountUp from 'react-countup'
 import styled from 'styled-components'
-import { useWallet } from 'use-wallet'
 import Card from '../../../components/Card'
 import CardContent from '../../../components/CardContent'
 import Label from '../../../components/Label'
 import Spacer from '../../../components/Spacer'
 import useKira from '../../../hooks/useKira'
-import { getTotalDeposited, getLatestPrice } from '../../../kira/utils'
 import useAuctionConfig from '../../../hooks/useAuctionConfig'
+import useAuctionData from '../../../hooks/useAuctionData'
 import useTokenBalance from '../../../hooks/useTokenBalance'
 import { getKiraAddress } from '../../../kira/utils'
 import Kira_Img from '../../../assets/img/kira.png'
@@ -50,41 +49,32 @@ const RemainingTime: React.FC = () => {
 }
 
 const Stats: React.FC = () => {
-  // const kexBalance = useTokenBalance(getKiraAddress(kira))
-  const { account, ethereum }: { account: any; ethereum: any } = useWallet()
   
   // TODO: Get Auction Status
   const [auctionStartTime, setAuctionStartTime] = useState<string>("00:00:00:00");
   const [auctionEndTime, setAuctionEndTime] = useState<string>("00:00:00:00");
   const [auctionRemainingTime, setAuctionRemainingTime] = useState<number>(0);
-  const [currentKexPrice, setCurrentKexPrice] = useState<number>(20);
+  const [currentKexPrice, setCurrentKexPrice] = useState<number>(0);
   const [totalDeposited, setTotalDeposited] = useState<number>(0);
-  const [totalKEXAmount, setTotalKexAmount] = useState<number>(10000);
+  const [totalKEXAmount, setTotalKexAmount] = useState<number>(0);
   
   const kira = useKira()
   const auctionConfig = useAuctionConfig()
+  const auctionData = useAuctionData()
   const kexBalance = useTokenBalance(getKiraAddress(kira))
 
   useEffect(() => {
-    async function fetchTotalDeposited() {
-      const totalEth = await getTotalDeposited(kira)
-      setTotalDeposited(parseInt(totalEth))
+    if (auctionData) {
+      setTotalDeposited(auctionData.ethDeposited)
+      setCurrentKexPrice(auctionData.kexPrice)
     }
-
-    async function fetchKEXPrice() {
-      const ethPrice = await getLatestPrice(kira)
-      setCurrentKexPrice(parseInt(ethPrice))
-    }
-
-    if (kira) {
-      fetchTotalDeposited()
-      fetchKEXPrice()
-    }
-  }, [kira])
+  }, [auctionData])
 
   useEffect(() => {
-    setTotalKexAmount(Math.min(kexBalance.toNumber(), totalDeposited / (currentKexPrice == 0 ? 1 : currentKexPrice)))
-  }, [totalDeposited, currentKexPrice, kexBalance])
+    if (auctionData && kexBalance) {
+      setTotalKexAmount(Math.min(kexBalance.toNumber(), auctionData.totalAmount / (auctionData.kexPrice === 0 ? 1 : auctionData.kexPrice)));
+    }
+  }, [auctionData, currentKexPrice, kexBalance])
 
   useEffect(() => {
     if (auctionConfig) {

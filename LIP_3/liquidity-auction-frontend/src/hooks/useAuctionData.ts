@@ -18,8 +18,10 @@ const useAuctionData = () => {
     }
   }, [auctionConfig])
 
+  // fetch new data every 5 seconds
   useInterval(async () => {
     fetchData()
+    console.log("---------");
   }, 5000);
 
   const fetchData = useCallback(async () => {
@@ -30,13 +32,16 @@ const useAuctionData = () => {
     const T2M = auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2;
     const priceOffsetP1P2 = (auctionConfig.P1 - auctionConfig.P2) / auctionConfig.T1;
     const priceOffsetP2P3 = (auctionConfig.P2 - auctionConfig.P3) / auctionConfig.T2;
+    const now = Date.now() / 1000;
 
     let labels = [] as string[]
     let prices = [] as number[]
     let amounts = [] as number[]
-    const now = Date.now() / 1000;
+    let kexPrice = 0
+    let totalEthDeposited = 0
+    let totalAmount = 0
 
-    for (let currentTime = auctionConfig.epochTime; currentTime < now; currentTime += timeInterval) {
+    for (let currentTime = auctionConfig.epochTime; currentTime <= now; currentTime += timeInterval) {
       let amountRaised = 0;
       let price = 0;
 
@@ -63,14 +68,22 @@ const useAuctionData = () => {
 
       labels.push([(hour > 9 ? '' : '0') + hour, (minute > 9 ? '' : '0') + minute].join(':'));
       prices.push(price);
-      amounts.push(amountRaised);
+      amounts.push(amountRaised * parseInt(resData['usd']));
+
+      if (currentTime === now) {
+        kexPrice = price
+        totalEthDeposited = amountRaised
+        totalAmount = amountRaised * parseInt(resData['usd'])
+      }
     }
 
     setAuctionData({
       labels: labels,
       prices: prices,
       amounts: amounts,
-      auctionFinished: false
+      kexPrice: kexPrice,
+      ethDeposited: totalEthDeposited,
+      totalAmount: totalAmount
     })
   }, [auctionConfig])
 

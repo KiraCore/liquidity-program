@@ -1,32 +1,29 @@
-import React, { useEffect, useState, useRef, useLayoutEffect, useCallback } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import useInterval from 'use-interval'
 import { Bar } from 'react-chartjs-2'
 
-import useAuctionConfig from '../../../hooks/useAuctionConfig'
-// import useAuctionData from '../../../hooks/useAuctionData'
-import { getBalance } from '../../../utils/auction'
+import useAuctionData from '../../../hooks/useAuctionData'
 
 const abbreviateNumber = (value: number)  => {
   let newValue;
   if (value < 1000) return value;
   if (value >= 1000) {
       var suffixes = ["", "K", "M", "B", "T"];
-      var suffixNum = Math.floor( (""+value).length/3 );
+      var suffixNum = Math.floor(("" + value).length / 3);
       var shortValue;
       for (var precision = 2; precision >= 1; precision--) {
-          shortValue = parseFloat( (suffixNum != 0 ? (value / Math.pow(1000,suffixNum) ) : value).toPrecision(precision));
+          shortValue = parseFloat((suffixNum != 0 ? (value / Math.pow(1000, suffixNum)) : value).toPrecision(precision));
           var dotLessShortValue = (shortValue + '').replace(/[^a-zA-Z 0-9]+/g,'');
           if (dotLessShortValue.length <= 2) { break; }
       }
       if (shortValue % 1 != 0)  shortValue = shortValue.toFixed(1);
-      newValue = shortValue+suffixes[suffixNum];
+      newValue = shortValue + suffixes[suffixNum];
   } 
   return newValue;
 }
 
 const Chart: React.FC = () => {
-  const timeInterval = 60 * 60 * 5; // 1 hour
+  const auctionData = useAuctionData();
 
   const options: object = {
     title: {
@@ -35,15 +32,14 @@ const Chart: React.FC = () => {
     },
     tooltips: {
       callbacks: {
-          label: (tooltipItem: any, data: any) => {
-              var label = data.datasets[tooltipItem.datasetIndex].label || '';
-
-              if (label) {
-                  label += ': ';
-              }
-              label += Math.round(tooltipItem.yLabel * 100) / 100;
-              return label;
-          }
+        label: (tooltipItem: any, data: any) => {
+          var label = tooltipItem.datasetIndex == 0 ? "Price" : tooltipItem.datasetIndex == 1 ? "Amount" : "";
+          if (label) label += ": $";
+          
+          // label += tooltipItem.datasetIndex == 1 ? abbreviateNumber(tooltipItem.yLabel) : tooltipItem.yLabel;
+          label += tooltipItem.yLabel;
+          return label;
+        }
       }
     },
     scales: {
@@ -55,7 +51,7 @@ const Chart: React.FC = () => {
           beginAtZero: true,
           scaleLabel: {
             display: true,
-            labelString: 'Price / KEX (USD)',
+            labelString: 'Price / KEX [USD]',
           },
           ticks: {
             beginAtZero: true,
@@ -85,7 +81,6 @@ const Chart: React.FC = () => {
     },
   }
 
-  const [changed, setChanged] = useState(false);
   const [chartData, setChartData] = useState({
     labels: [] as string[],
     datasets: [
@@ -111,77 +106,21 @@ const Chart: React.FC = () => {
       },
     ],
   });
-
-  // const currentChart = useRef(null);
-  const auctionConfig = useAuctionConfig();
   
   useEffect(() => {
-    if (auctionConfig) {
-      fetchData()
+    if(auctionData) {
+      chartData.labels = auctionData.labels;
+      chartData.datasets[0].data = auctionData.prices;
+      chartData.datasets[1].data = auctionData.amounts;
+
+      setChartData(chartData);
     }
-  }, [auctionConfig])
-
-  useInterval(async () => {
-    fetchData()
-  }, 5000);
-
-  const fetchData = useCallback(async () => {
-    // Your custom logic here
-    const resData = await getBalance("mainnet", "0x3f5ce5fbfe3e9af3971dd833d26ba9b5c936f0be");
-
-    const T1M = auctionConfig.epochTime + auctionConfig.T1;
-    const T2M = auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2;
-    const priceOffsetP1P2 = (auctionConfig.P1 - auctionConfig.P2) / auctionConfig.T1;
-    const priceOffsetP2P3 = (auctionConfig.P2 - auctionConfig.P3) / auctionConfig.T2;
-
-    let labels = [] as string[]
-    let prices = [] as number[]
-    let amounts = [] as number[]
-    const now = Date.now() / 1000;
-
-    for (let currentTime = auctionConfig.epochTime; currentTime < now; currentTime += timeInterval) {
-      let amountRaised = 0;
-      let price = 0;
-
-      Object.keys(resData['balances']).forEach((time) => {
-          const blockTime = parseInt(time);
-          if (blockTime >= auctionConfig.epochTime && blockTime <= currentTime) {
-              amountRaised += parseInt(resData['balances'][time]['amount']);
-          }
-        });
-
-      let currentTimeO = new Date(0);
-      currentTimeO.setUTCSeconds(currentTime);
-      const hour = currentTimeO.getUTCHours();
-      const minute = currentTimeO.getUTCMinutes();
-      
-      // If the time is in T1 range
-      if (currentTime < T1M) {
-          price = auctionConfig.P1 - priceOffsetP1P2 * (currentTime - auctionConfig.epochTime)
-      } else if (currentTime >= T1M && currentTime <= T2M) {
-          price = auctionConfig.P2 - priceOffsetP2P3 * (currentTime - T1M)
-      } else {
-          price = auctionConfig.P3
-      }
-
-      labels.push([(hour > 9 ? '' : '0') + hour, (minute > 9 ? '' : '0') + minute].join(':'));
-      prices.push(price);
-      amounts.push(amountRaised);
-    }
-
-    chartData.labels = labels;
-    chartData.datasets[0].data = prices;
-    chartData.datasets[1].data = amounts
-
-    setChartData(chartData)  
-    setChanged(!changed)
-  }, [auctionConfig, chartData, changed])
-
+  }, [auctionData])
 
   return (
     <StyledWrapper>
       {/* {!!auctionConfig && (<div id="chartdiv" style={{ width: "100%", height: "500px" }}></div>)} */}
-      {!!auctionConfig && <Bar data={chartData} options={options} type="bar"/>}
+      {<Bar data={chartData} options={options} type="bar"/>}
     </StyledWrapper>
   )
 }

@@ -1,22 +1,17 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import BigNumber from 'bignumber.js'
-import { useWallet } from 'use-wallet'
-import { provider } from 'web3-core'
 import useAuctionConfig from './useAuctionConfig'
 import { getBalance } from '../utils/auction'
+import { AuctionData } from '../contexts/Auction'
 import useInterval from 'use-interval'
 
 const useAuctionData = () => {
-  const [data, setData] = useState([])
+  // const currentChart = useRef(null);
+
+  const timeInterval = 60 * 60 * 5; // 1 hour
   const auctionConfig = useAuctionConfig();
-  const timeInterval = 60 * 60; // 1 hour
-
-//   const {
-//     account,
-//     ethereum,
-//   }: { account: string; ethereum: provider } = useWallet()
-
+  const [auctionData, setAuctionData] = useState<AuctionData>();
+  
   useEffect(() => {
     if (auctionConfig) {
       fetchData()
@@ -24,7 +19,7 @@ const useAuctionData = () => {
   }, [auctionConfig])
 
   useInterval(async () => {
-    // fetchData()
+    fetchData()
   }, 5000);
 
   const fetchData = useCallback(async () => {
@@ -36,13 +31,10 @@ const useAuctionData = () => {
     const priceOffsetP1P2 = (auctionConfig.P1 - auctionConfig.P2) / auctionConfig.T1;
     const priceOffsetP2P3 = (auctionConfig.P2 - auctionConfig.P3) / auctionConfig.T2;
 
-    let auctionData = []
+    let labels = [] as string[]
+    let prices = [] as number[]
+    let amounts = [] as number[]
     const now = Date.now() / 1000;
-    console.log(auctionConfig.epochTime, now);
-
-    if (!resData) {
-        setData([]);
-    }
 
     for (let currentTime = auctionConfig.epochTime; currentTime < now; currentTime += timeInterval) {
       let amountRaised = 0;
@@ -57,6 +49,8 @@ const useAuctionData = () => {
 
       let currentTimeO = new Date(0);
       currentTimeO.setUTCSeconds(currentTime);
+      const hour = currentTimeO.getUTCHours();
+      const minute = currentTimeO.getUTCMinutes();
       
       // If the time is in T1 range
       if (currentTime < T1M) {
@@ -67,17 +61,20 @@ const useAuctionData = () => {
           price = auctionConfig.P3
       }
 
-      auctionData.push({
-          date: currentTimeO,
-          price: price,
-          amount: amountRaised
-      })
+      labels.push([(hour > 9 ? '' : '0') + hour, (minute > 9 ? '' : '0') + minute].join(':'));
+      prices.push(price);
+      amounts.push(amountRaised);
     }
-    
-    setData(auctionData)
+
+    setAuctionData({
+      labels: labels,
+      prices: prices,
+      amounts: amounts,
+      auctionFinished: false
+    })
   }, [auctionConfig])
 
-  return data
+  return auctionData;
 }
 
 export default useAuctionData

@@ -1,17 +1,26 @@
 import { Contract } from 'web3-eth-contract'
 
-export interface Auction {
-  startTime: number
-  p1: number
-  p2: number
-  p3: number
-  t1: number
-  t2: number
-  intervalLimit: number
-  maxWei: number
+export interface AuctionInfo {
+  epochTime?: number,
+  startTime?: Date
+  P1?: number
+  P2?: number
+  P3?: number
+  T1?: number
+  T2?: number
+  intervalLimit?: number
+  minEther?: number
+  maxEther?: number
 }
 
 export interface AuctionContext {
-  auction: Auction
+  auction: AuctionInfo
   auctionStarted: boolean
+}
+
+export interface AuctionData { 
+  labels?: string[]
+  prices?: number[]
+  amounts?: number[]
+  auctionFinished?: boolean
 }

@@ -4,20 +4,9 @@ import { useWallet } from 'use-wallet'
 import { provider } from 'web3-core'
 import { getAuctionConfig } from '../utils/auction'
 import { getKiraAuctionAddress } from '../kira/utils'
+import { AuctionInfo } from '../contexts/Auction'
 import useKira from '../hooks/useKira'
 import BigNumber from 'bignumber.js'
-
-interface AuctionInfo {
-  epochTime?: number,
-  startTime?: Date
-  P1?: number
-  P2?: number
-  P3?: number
-  T1?: number
-  T2?: number
-  intervalLimit?: number
-  maxEther?: number
-}
 
 const useAuctionConfig = () => {
   const kira = useKira();

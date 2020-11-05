@@ -13,7 +13,7 @@ import useAuctionData from '../../hooks/useAuctionData'
 
 const Home: React.FC = () => {
   const [connected, setConnected] = useState(false);
-  // const auctionData = useAuctionData()
+  const auctionData = useAuctionData()
   const { account } = useWallet()
 
   return (
@@ -24,12 +24,12 @@ const Home: React.FC = () => {
         subtitle="Take part in kira liquidity auction to claim your own KEX!"
       />
       <Container>
-        <Stats />
+        <Stats auctionData={auctionData}/>
       </Container>
       <Spacer size="md" />
-      {!!account ? (
+      {!!account && auctionData ? (
         <Container size="lg">
-          <Chart />
+          <Chart auctionData={auctionData}/>
         </Container>
       ) : (
         <StyledContainer>

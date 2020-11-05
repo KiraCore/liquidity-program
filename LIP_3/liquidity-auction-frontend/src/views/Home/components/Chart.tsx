@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Bar } from 'react-chartjs-2'
 
-import useAuctionData from '../../../hooks/useAuctionData'
+import { AuctionData } from '../../../contexts/Auction'
 
 const abbreviateNumber = (value: number)  => {
   let newValue;
@@ -22,8 +22,11 @@ const abbreviateNumber = (value: number)  => {
   return newValue;
 }
 
-const Chart: React.FC = () => {
-  const auctionData = useAuctionData();
+interface ChartProps {
+  auctionData?: AuctionData
+}
+
+const Chart: React.FC<ChartProps> = ({ auctionData }) => {
 
   const options: object = {
     title: {

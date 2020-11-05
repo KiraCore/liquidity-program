@@ -7,7 +7,8 @@ import Label from '../../../components/Label'
 import Spacer from '../../../components/Spacer'
 import useKira from '../../../hooks/useKira'
 import useAuctionConfig from '../../../hooks/useAuctionConfig'
-import useAuctionData from '../../../hooks/useAuctionData'
+// import useAuctionData from '../../../hooks/useAuctionData'
+import { AuctionData } from '../../../contexts/Auction'
 import useTokenBalance from '../../../hooks/useTokenBalance'
 import { getKiraAddress } from '../../../kira/utils'
 import Kira_Img from '../../../assets/img/kira.png'
@@ -48,8 +49,11 @@ const RemainingTime: React.FC = () => {
   )
 }
 
-const Stats: React.FC = () => {
-  
+interface StatsProps {
+  auctionData?: AuctionData
+}
+
+const Stats: React.FC<StatsProps> = ({ auctionData }) => {
   // TODO: Get Auction Status
   const [auctionStartTime, setAuctionStartTime] = useState<string>("00:00:00:00");
   const [auctionEndTime, setAuctionEndTime] = useState<string>("00:00:00:00");
@@ -60,7 +64,7 @@ const Stats: React.FC = () => {
   
   const kira = useKira()
   const auctionConfig = useAuctionConfig()
-  const auctionData = useAuctionData()
+  // const auctionData = useAuctionData()
   const kexBalance = useTokenBalance(getKiraAddress(kira))
 
   useEffect(() => {

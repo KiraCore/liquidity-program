@@ -1,4 +1,4 @@
-const KiraDrop = artifacts.require('KiraDrop')
+const KiraStaking = artifacts.require('KiraStaking')
 const KiraRewardPool = artifacts.require('KiraRewardPool')
 
 const truffleContract = require('@truffle/contract');
@@ -52,12 +52,12 @@ const utils = {
   displayLastSnapshot
 }
 
-contract('KiraDrop Test', async function (accounts) {
+contract('KiraStaking Test', async function (accounts) {
   const [deployerAccount, provider1, provider2] = accounts
 
   describe('totalSupply', function () {
     it('all tokens should be in my account', async function () {
-      let instance = await KiraDrop.deployed()
+      let instance = await KiraStaking.deployed()
       let totalSupply = await instance.totalSupply()
       await expect(instance.balanceOf(deployerAccount)).to.eventually.be.a.bignumber.equal(totalSupply)
     })
@@ -65,7 +65,7 @@ contract('KiraDrop Test', async function (accounts) {
 
   /*
     Testing Scenario
-      - KiraDrop TotalSupply should be 300,000,000
+      - KiraStaking TotalSupply should be 300,000,000
       - Set Reward Pool Address (KiraRewardPool) and check.
       - Send 2,000,000 to the rewardPool and check.
       - Send 1,000 tokens to provider1 and check.
@@ -84,7 +84,7 @@ contract('KiraDrop Test', async function (accounts) {
 
   describe('claimReward', async function () {
     it('should give correct rewards to a liquidity provider according to the proportion of LP tokens', async function () {
-      let instance = await KiraDrop.deployed()
+      let instance = await KiraStaking.deployed()
       let rewardPool = await KiraRewardPool.deployed()
 
       // Set Reward Pool Address (KiraRewardPool) and check.

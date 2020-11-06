@@ -64,19 +64,20 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
   
   const kira = useKira()
   const auctionConfig = useAuctionConfig()
-  // const auctionData = useAuctionData()
   const kexBalance = useTokenBalance(getKiraAddress(kira))
 
   useEffect(() => {
     if (auctionData) {
       setTotalDeposited(auctionData.ethDeposited)
-      setCurrentKexPrice(auctionData.kexPrice)
+      setCurrentKexPrice(+auctionData.kexPrice.toFixed(6))
     }
   }, [auctionData])
 
   useEffect(() => {
     if (auctionData && kexBalance) {
-      setTotalKexAmount(Math.min(kexBalance.toNumber(), auctionData.totalAmount / (auctionData.kexPrice === 0 ? 1 : auctionData.kexPrice)));
+      let kexCalculated = auctionData.totalAmount / (auctionData.kexPrice === 0 ? 1 : auctionData.kexPrice);
+      let totalKex = kexBalance.toNumber() == 0 ? kexCalculated : Math.min(kexBalance.toNumber(), kexCalculated);
+      setTotalKexAmount(+totalKex.toFixed(0));
     }
   }, [auctionData, currentKexPrice, kexBalance])
 
@@ -158,7 +159,7 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
         </CardContent>
 
         <Footnote>
-          KEX amount to be distributed
+          KEX amount distributed
           <FootnoteValue>{totalKEXAmount} KEX</FootnoteValue>
         </Footnote>
       </Card>

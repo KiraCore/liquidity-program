@@ -86,7 +86,7 @@ const useAuctionData = () => {
       let nAmountRaised: number = +resData['balances'][epoches[0]].amount
       amounts[index] = nAmountRaised * +resData['usd'];
       amountRaised = nAmountRaised;
-      kexPrice = auctionData.amounts[index];
+      kexPrice = auctionData.prices[index];
     }
 
     setAuctionData({

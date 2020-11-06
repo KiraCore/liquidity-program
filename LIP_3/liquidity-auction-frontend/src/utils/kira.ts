@@ -27,3 +27,18 @@ export const getBalance = async (
     return '0'
   }
 }
+
+export const getInitialSupply = async (
+  provider: provider,
+  tokenAddress: string,
+): Promise<string> => {
+  const kiraTokenContract = getContract(provider, tokenAddress)
+  try {
+    const balance: string = await kiraTokenContract.methods
+      .INITIAL_SUPPLY()
+      .call()
+    return balance
+  } catch (e) {
+    return '0'
+  }
+}

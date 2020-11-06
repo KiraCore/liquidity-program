@@ -2,7 +2,11 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Bar } from 'react-chartjs-2'
 
+import useKira from '../../../hooks/useKira'
+import useAuctionConfig from '../../../hooks/useAuctionConfig'
 import { AuctionData } from '../../../contexts/Auction'
+import { getKiraAddress } from '../../../kira/utils'
+import useTokenInitialSupply from '../../../hooks/useTokenInitialSupply'
 
 const abbreviateNumber = (value: number)  => {
   let newValue;
@@ -27,8 +31,9 @@ interface ChartProps {
 }
 
 const Chart: React.FC<ChartProps> = ({ auctionData }) => {
-
+  const [tick, setTick] = useState(100);
   const options: object = {
+    // maintainAspectRatio: false,
     title: {
       display: true,
       fontSize: 25,
@@ -39,7 +44,6 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
         label: (tooltipItem: any, data: any) => {
           var label = tooltipItem.datasetIndex === 0 ? "Price" : tooltipItem.datasetIndex === 1 ? "Amount" : "";
           if (label) label += ": $";
-          // label += tooltipItem.datasetIndex === 1 ? abbreviateNumber(tooltipItem.yLabel) : tooltipItem.yLabel;
           label += tooltipItem.yLabel;
           return label;
         }
@@ -76,7 +80,7 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
           },
           ticks: {
             min: 0,
-            max: 10000,
+            max: tick,
             callback: (value: number, index: number, values: number) => {
               return '$' + abbreviateNumber(value);
             }
@@ -112,6 +116,25 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
     ],
   });
   
+  // const kira = useKira()
+  // const auctionConfig = useAuctionConfig();
+  // const kexAmount = useTokenInitialSupply(getKiraAddress(kira))
+
+  useEffect(() => {
+    if (auctionData) {
+      let tick = 1;
+      let totalPrice = auctionData.totalAmount
+      
+      while (totalPrice > 1) {
+        totalPrice /= 10;
+        tick *= 10;
+      }
+
+      console.log(tick)
+      setTick(tick)
+    }
+  }, [auctionData])
+
   useEffect(() => {
     if(auctionData) {
       chartData.labels = auctionData.labels;
@@ -125,7 +148,11 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
   return (
     <StyledWrapper>
       {/* {!!auctionConfig && (<div id="chartdiv" style={{ width: "100%", height: "500px" }}></div>)} */}
-      {<Bar data={chartData} options={options} type="bar"/>}
+      {<Bar 
+        data={chartData} 
+        options={options} 
+        type="bar" 
+      />}
     </StyledWrapper>
   )
 }

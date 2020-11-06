@@ -53,6 +53,20 @@ RWTopxNIGH2njxWuafRX8gi0AYlSTBmOaFtR9ztTZCVVWXTDrTIn73hkeNiBJAY=
 
 ```
 
+## LIP_2
+
+**Liquidity Incentivization Program**
+
+* [Deployment Documentation](./LIP_2/README.md)
+* [Application Binary Interface](./LIP_2/ABI.json)
+* [Improvement Proposal](https://github.com/KiraCore/docs/blob/master/spec/liquidity-program/lip_2.md)
+
+### Contract Address
+
+```
+TBA
+```
+
 ## LIP_3
 
 **Liquidity Auction**

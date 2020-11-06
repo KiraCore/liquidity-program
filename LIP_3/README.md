@@ -178,22 +178,31 @@ cat ./build/ABI.json | xclip -selection c
 
 > Interact with the contract
 
-- Send 200 KEX tokens to the Auction contract
+* Send 200 KEX tokens to the Auction contract
   ![Transfer_200_KEX_To_Auction_Contract](doc/1.png)
-- Set Withdraw account for ETH
+* Set Withdraw account for ETH
   ![Set_Withdraw_account](doc/2.png)
-- Set whitelist for `User 1` and `User 2`
+* Set whitelist for `User 1` and `User 2`
   ![Whitelist_Accounts](doc/3.png)
-- Config Auction Parameters (start time: 1602159300)
+* Config Auction Parameters (start time: 1602159300)
+   * Start Time: [unix timestamp](https://www.unixtimestamp.com/index.php), e.g: `1604674800` 
+   * Initial Price (P1): `(3/ETH_USD)*10^18`  e.g. `6756756756756757`
+   * Drop Price (P2): `(1/ETH_USD)*10^18`  e.g. `2252252252252253`
+   * Final Price (P3): `(0.075/ETH_USD)*10^18` e.g. `168918918918919`
+   * Time To Drop (T1): `1h` e.g. `3600`
+   * Time From Drop To End (T2): `23h` e.g. `82800`
+   * Interval Limit: `1m` e.g. `60`
+   * Min Amount: `1 KEX` e.g. `168918918918919`
+   * Max Amount: `1ETH` e.g. `1000000000000000000`
   ![Config_Auction](doc/4.png)
-- Wait until the auction starts
-- Wait 10 seconds and send 0.8 ether to the contract from `User 1`
-- Wait 60 seconds and send 0.6 ether to the contract from `User 2`
-- Wait 30 seconds and check `isFinished`
+    * Wait until the auction starts
+    * Wait 10 seconds and send 0.8 ether to the contract from `User 1`
+    * Wait 60 seconds and send 0.6 ether to the contract from `User 2`
+    * Wait 30 seconds and check `isFinished`
   ![IsFinished](doc/isFinished.png)
-- Whitelist Token Transfer (allow unconditional transfer for the contract)
+* Whitelist Token Transfer (allow unconditional transfer for the contract)
   ![AllowUnconditionalTransfer](doc/allow_unconditional_transfer.png)
-- Claim KEX from `User 1` and get ~114.28 KEX
-- Claim KEX from `User 2` and get ~85.71 KEX
-- Withdraw Funds and get `1.4` ether
+* Claim KEX from `User 1` and get ~114.28 KEX
+* Claim KEX from `User 2` and get ~85.71 KEX
+* Withdraw Funds and get `1.4` ether
   ![Withdraw](doc/withdraw.png)

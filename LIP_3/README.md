@@ -168,11 +168,11 @@ $ npm run verify:kovan KiraAuction
 
 # 6. Instructions for interacting with the contract
 
-> Generate ABI so that we can interact with the contract:
+> You can copy generated ABI as follows so that you can interact with the contract:
 
 ```
-
-truffle-export-abi
+cd $HOME/liquidity-program/$LIP_ID
+jq -r ".abi" ./build/contracts/KiraAuction.json > ./build/ABI.json 
 cat ./build/ABI.json | xclip -selection c
 ```
 

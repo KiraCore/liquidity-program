@@ -26,6 +26,30 @@ Check Common Guide's [Setup Environment Variables Section](<../README.md#2.-Envi
 
 Check Common Guide's [Testnet used and faucet references Section](../README.md#3.-Testnet-used-and-faucet-references)
 
+### `OWNER_ADDRESS`
+
+- Owner's address (start with 0x)
+
+```
+echo "OWNER_ADDRESS=XXX...XXX" >> $HOME/liquidity-program/$LIP_ID/.env
+```
+
+### `KIRA_TOKEN_ADDRESS`
+
+- The contract address of Kira Network (KEX) which you deployed. (start with 0x)
+
+```
+echo "KIRA_TOKEN_ADDRESS=XXX...XXX" >> $HOME/liquidity-program/$LIP_ID/.env
+```
+
+### `STAKING_TOKEN_ADDRESS`
+
+- The contract address of staking token. This can be ETH, USDT, LP token or whatever else (start with 0x)
+
+```
+echo "STAKING_TOKEN_ADDRESS=XXX...XXX" >> $HOME/liquidity-program/$LIP_ID/.env
+```
+
 # 4. Compile and Unit Testing
 
 ## Compile the smart contract with the provided command

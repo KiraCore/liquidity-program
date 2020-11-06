@@ -69,18 +69,21 @@ echo "STAKING_TOKEN_ADDRESS=XXX...XXX" >> $HOME/liquidity-program/$LIP_ID/.env
  Using env var process.env.ETHERSCAN_APIKEY 0987...
 
  Compiling your contracts...
- ===========================
- > Compiling ./contracts/KiraDrop.sol
- > Compiling ./contracts/Migrations.sol
- > Compiling openzeppelin-solidity/contracts/GSN/Context.sol
- > Compiling openzeppelin-solidity/contracts/access/Ownable.sol
- > Compiling openzeppelin-solidity/contracts/math/SafeMath.sol
- > Compiling openzeppelin-solidity/contracts/token/ERC20/ERC20.sol
- > Compiling openzeppelin-solidity/contracts/token/ERC20/IERC20.sol
- > Compiling openzeppelin-solidity/contracts/utils/Address.sol
- > Artifacts written to /Users/mac/Documents/Work/Kira/liquidity-program/LIP_2/build/contracts
- > Compiled successfully using:
-    - solc: 0.6.2+commit.bacdbe57.Emscripten.clang
+===========================
+> Compiling ./contracts/KiraStaking.sol
+> Compiling ./contracts/Migrations.sol
+> Compiling ./contracts/Owned.sol
+> Compiling ./contracts/Pausable.sol
+> Compiling ./contracts/interfaces/IKiraStaking.sol
+> Compiling openzeppelin-solidity/contracts/math/Math.sol
+> Compiling openzeppelin-solidity/contracts/math/SafeMath.sol
+> Compiling openzeppelin-solidity/contracts/token/ERC20/IERC20.sol
+> Compiling openzeppelin-solidity/contracts/token/ERC20/SafeERC20.sol
+> Compiling openzeppelin-solidity/contracts/utils/Address.sol
+> Compiling openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol
+> Artifacts written to /Kira/liquidity-program/LIP_2/build/contracts
+> Compiled successfully using:
+   - solc: 0.6.2+commit.bacdbe57.Emscripten.clang
 ```
 
 ## Test the smart contract with the provided command. All testing should be passed
@@ -147,7 +150,7 @@ Starting migrations...
 2_deploy_contract.js
 ====================
 
-   Deploying 'KiraDrop'
+   Deploying 'KiraStaking'
    ---------------------
    > transaction hash:    0xfd0dbea4735b36e4a59c2f2c48febd2d905e9b5a8405c5c6a7a69a5c6d8f5d1b
    > Blocks: 1            Seconds: 6
@@ -181,14 +184,14 @@ In this example the smart contract was deployed to the address `0x982D5EC2f486b7
 In order to verify your smart contract on etherscan.io execute the verification script immediately after the contract is successfully deployed and pass the contract name as the argument.
 
 ```
-$ npm run verify:kovan -- KiraDrop
+$ npm run verify:kovan
 > kex@1.0.0 verify:kovan /home/mac/Desktop/liquidity-program/LIP_2
-> truffle run verify KiraDrop --network kovan
+> truffle run verify KiraStaking --network kovan
 
 Using env var PRIVATE_KEY prai...
 Using env var INFURA_APIKEY 7591...
 Using env var process.env.ETHERSCAN_APIKEY SFP4...
-Verifying KiraDrop
+Verifying KiraStaking
 Pass - Verified: https://kovan.etherscan.io/address/0x982D5EC2f486b7cd7C31BD1d2299e94cAfE036cf#contracts
 Successfully verified 1 contract(s).
 ```

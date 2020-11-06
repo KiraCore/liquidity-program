@@ -14,11 +14,11 @@ interface IUniswapV2Factory {
 }
 
 /**
- * @title KiraDrop
+ * @title KiraStaking
  * @dev Uniswap v2 Liquidity Rewards
  */
 
-contract KiraDrop is ERC20, Ownable {
+contract KiraStaking is ERC20, Ownable {
     using SafeMath for uint256;
     using Math for uint256;
 
@@ -63,7 +63,7 @@ contract KiraDrop is ERC20, Ownable {
     }
 
     function setRewardPool(address _rewardPool) external onlyOwner {
-        require(rewardPool == address(0), 'KiraDrop: reward pool already created');
+        require(rewardPool == address(0), 'KiraStaking: reward pool already created');
         rewardPool = _rewardPool;
     }
 
@@ -81,9 +81,9 @@ contract KiraDrop is ERC20, Ownable {
         uint256 T,
         uint256 maxT
     ) external onlyOwner {
-        require(tokenAddr != address(0), 'KiraDrop: token address can not be zero');
-        require(pairTokens[tokenAddr].exists != true, 'KiraDrop: this token is already configured. If you want to update, call updatePairToken.');
-        require(X > 0 && T > 0, 'KiraDrop: should be valid configuration');
+        require(tokenAddr != address(0), 'KiraStaking: token address can not be zero');
+        require(pairTokens[tokenAddr].exists != true, 'KiraStaking: this token is already configured. If you want to update, call updatePairToken.');
+        require(X > 0 && T > 0, 'KiraStaking: should be valid configuration');
 
         pairTokenAddresses.push(tokenAddr);
         pairTokens[tokenAddr] = RewardInfo({X: X, T: T, maxT: maxT, index: pairTokenAddresses.length - 1, exists: true});
@@ -103,9 +103,9 @@ contract KiraDrop is ERC20, Ownable {
         uint256 T,
         uint256 maxT
     ) external onlyOwner {
-        require(tokenAddr != address(0), 'KiraDrop: token address can not be zero');
-        require(pairTokens[tokenAddr].exists == true, 'KiraDrop: no such token configured. If you want to add, call addPairToken.');
-        require(X > 0 && T > 0, 'KiraDrop: should be valid configuration');
+        require(tokenAddr != address(0), 'KiraStaking: token address can not be zero');
+        require(pairTokens[tokenAddr].exists == true, 'KiraStaking: no such token configured. If you want to add, call addPairToken.');
+        require(X > 0 && T > 0, 'KiraStaking: should be valid configuration');
 
         // pairTokens[tokenAddr].X = X * (10**uint256(DECIMALS));
         pairTokens[tokenAddr].X = X;
@@ -119,8 +119,8 @@ contract KiraDrop is ERC20, Ownable {
      * @param tokenAddr address of the token which will be paired with KEX
      */
     function removePairToken(address tokenAddr) external onlyOwner {
-        require(tokenAddr != address(0), 'KiraDrop: token address can not be zero');
-        require(pairTokens[tokenAddr].exists == true, 'KiraDrop: no such token configured. If you want to add, call addPairToken.');
+        require(tokenAddr != address(0), 'KiraStaking: token address can not be zero');
+        require(pairTokens[tokenAddr].exists == true, 'KiraStaking: no such token configured. If you want to add, call addPairToken.');
 
         uint256 removeIndex = pairTokens[tokenAddr].index;
         uint256 totalCount = pairTokenAddresses.length;
@@ -181,8 +181,8 @@ contract KiraDrop is ERC20, Ownable {
      *
      */
     function claimRewards() external {
-        require(rewardPool != address(0), 'KiraDrop: reward pool is not initialized');
-        require(balanceOf(rewardPool) > 0, 'KiraDrop: reward pool is empty');
+        require(rewardPool != address(0), 'KiraStaking: reward pool is not initialized');
+        require(balanceOf(rewardPool) > 0, 'KiraStaking: reward pool is empty');
 
         uint256 nPairs = pairTokenAddresses.length;
         uint256 rewardAmount = 0;

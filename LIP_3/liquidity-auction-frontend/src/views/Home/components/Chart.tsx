@@ -39,7 +39,6 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
         label: (tooltipItem: any, data: any) => {
           var label = tooltipItem.datasetIndex === 0 ? "Price" : tooltipItem.datasetIndex === 1 ? "Amount" : "";
           if (label) label += ": $";
-          
           // label += tooltipItem.datasetIndex === 1 ? abbreviateNumber(tooltipItem.yLabel) : tooltipItem.yLabel;
           label += tooltipItem.yLabel;
           return label;
@@ -76,6 +75,8 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
             drawOnArea: false,
           },
           ticks: {
+            min: 0,
+            max: 10000,
             callback: (value: number, index: number, values: number) => {
               return '$' + abbreviateNumber(value);
             }

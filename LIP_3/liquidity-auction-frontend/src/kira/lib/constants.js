@@ -22,12 +22,14 @@ export const INTEGERS = {
   INTEREST_RATE_BASE: new BigNumber('1e18'),
 }
 
+// New Contract: 0x1De160a97879e4E8D98864219A2A32FdDaBf2851
+// Old Contract: 0xa9C21f3201741b4d31C9b7934c21f671aA0Fd0B5
 export const contractAddresses = {
   kira: {  // KEX Smart Contract Address
     42: '0x41379EF961492a594F91bB0F966c2CeD32B49544',
   },
   kiraAuction: {
-    42: '0xa9C21f3201741b4d31C9b7934c21f671aA0Fd0B5',
-    //42: '0xdc965F9E041fB6f29d82062F47Ff8DBbA4CB9764'
+    // 42: '0xa9C21f3201741b4d31C9b7934c21f671aA0Fd0B5',
+    42: '0x1De160a97879e4E8D98864219A2A32FdDaBf2851'
   }
 }

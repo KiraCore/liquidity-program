@@ -32,10 +32,9 @@ export const getBalance = async (
   address: string
 ): Promise<any> => {
   try { 
-    const proxyURL = 'https://cors-anywhere.herokuapp.com/';
     const targetURL = `https://oracle-kira-network.s3.eu-central-1.amazonaws.com/balances/eth/${networkId}/${address}/cache.json`;
-    // const targetURL = "https://oracle.kira.network/balances/eth/mainnet/0x3f5ce5fbfe3e9af3971dd833d26ba9b5c936f0be/cache.json"
-    const response = await fetch(proxyURL + targetURL, {
+    // const targetURL = "https://oracle.kira.network/balances/eth/kovan/0x3f5ce5fbfe3e9af3971dd833d26ba9b5c936f0be/cache.json"
+    const response = await fetch(targetURL, {
       headers: {
         'Accept': 'application/json',
         'Access-Control-Allow-Origin': '*',

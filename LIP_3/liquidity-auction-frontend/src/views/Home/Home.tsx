@@ -8,13 +8,28 @@ import PageHeader from '../../components/PageHeader'
 import Spacer from '../../components/Spacer'
 import Stats from './components/Stats'
 import Chart from './components/Chart'
+import Button from '../../components/Button'
 import useAuctionData from '../../hooks/useAuctionData'
 
 
 const Home: React.FC = () => {
   const [connected, setConnected] = useState(false);
+  const [auctionFinished, setAuctionFinished] = useState<boolean>(false);
+
   const auctionData = useAuctionData()
   const { account } = useWallet()
+
+  useEffect(() => {
+    if (auctionData) {
+      if (auctionData.auctionFinished) {
+        setAuctionFinished(true);
+      }
+    }
+  }, [auctionData])
+
+  const onClaim = () => {
+    console.log("claim")
+  }
 
   return (
     <Page>
@@ -27,17 +42,32 @@ const Home: React.FC = () => {
         <Stats auctionData={auctionData}/>
       </Container>
       <Spacer size="md" />
-      {!!account && auctionData ? (
+
+      {!!account && auctionData && !auctionFinished && (
         <Container size="lg">
           <Chart auctionData={auctionData}/>
         </Container>
-      ) : (
+      )}
+
+      {(!account || !auctionData) && (
         <StyledContainer>
           <StyledText>
             Please connect to your wallet
           </StyledText>
         </StyledContainer>
       )}
+
+      {!!account && auctionData && auctionFinished && (
+        <StyledContainer>
+          <StyledText>
+            Auction Finished
+          </StyledText>
+          <StyledSubText>
+            Please go to your wallet and claim your own KEX.
+          </StyledSubText>
+        </StyledContainer>
+      )}
+
       <Spacer size="md" />
       <StyledInfo>
         💡<b>Pro Tip</b>: This auction is for distributing KEX amount to whom deposited ETH.
@@ -60,24 +90,28 @@ const StyledInfo = styled.h3`
 `
 
 const StyledContainer = styled.div`
-  align-items: center;
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   width: 60%;
   height: 150px;
-  justify-content: center;
 `
-// border-radius: 25px;
-// border-width: 2px;
-// border-color: ${props => props.theme.color.purple[800]};
-// background-color: ${props => props.theme.color.purple[100]};
 
 const StyledText = styled.h1`
   display: flex;
   justify-content: center;
-  align-items: center;
   width: 100%;
-  height: 100px;
   font-size: 18;
+  color: ${props => props.theme.color.purple[500]};
+`
+
+const StyledSubText = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  font-size: 15;
+  margin-top: 20px;
   color: ${props => props.theme.color.purple[500]};
 `
 

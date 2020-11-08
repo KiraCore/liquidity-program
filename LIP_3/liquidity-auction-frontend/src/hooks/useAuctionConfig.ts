@@ -18,19 +18,13 @@ const useAuctionConfig = () => {
  
   const fetchAuctionInfo = useCallback(async () => {
     const config = await getAuctionConfig(ethereum, auctionAddress);
-    let startTime = new Date(0);
-    startTime.setUTCSeconds(parseInt(config[0]));
     let price1 = new BigNumber(parseInt(config[1])).shiftedBy(-18).toNumber();
     let price2 = new BigNumber(parseInt(config[2])).shiftedBy(-18).toNumber();
     let price3 = new BigNumber(parseInt(config[3])).shiftedBy(-18).toNumber();
-    // let ts1 = new Date(0);
-    // ts1.setUTCSeconds(parseInt(config[0]) + parseInt(config[4]));
-    // let ts2 = new Date(0);
-    // ts2.setUTCSeconds(parseInt(config[0]) + parseInt(config[5]));
     let maxEther = new BigNumber(parseInt(config[7])).shiftedBy(-18).toNumber();
+
     setAuction({
       epochTime: parseInt(config[0]),
-      startTime: startTime,
       P1: price1,
       P2: price2,
       P3: price3,

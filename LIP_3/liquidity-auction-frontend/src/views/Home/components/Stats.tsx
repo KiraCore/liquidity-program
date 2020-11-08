@@ -55,13 +55,13 @@ interface StatsProps {
 
 const Stats: React.FC<StatsProps> = ({ auctionData }) => {
   // TODO: Get Auction Status
-  const [auctionStartTime, setAuctionStartTime] = useState<string>("00:00:00:00");
-  const [auctionEndTime, setAuctionEndTime] = useState<string>("00:00:00:00");
+  const [auctionStartTime, setAuctionStartTime] = useState<string>("");
+  const [auctionEndTime, setAuctionEndTime] = useState<string>("");
   const [auctionRemainingTime, setAuctionRemainingTime] = useState<number>(0);
   const [currentKexPrice, setCurrentKexPrice] = useState<number>(0);
   const [totalDeposited, setTotalDeposited] = useState<number>(0);
   const [totalKEXAmount, setTotalKexAmount] = useState<number>(0);
-  
+
   const kira = useKira()
   const auctionConfig = useAuctionConfig()
   const kexBalance = useTokenBalance(getKiraAddress(kira))
@@ -70,12 +70,27 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
     if (auctionData) {
       setTotalDeposited(auctionData.ethDeposited)
       setCurrentKexPrice(+auctionData.kexPrice.toFixed(6))
+      
+      if (auctionData.auctionFinished) {
+        setAuctionEndTime("Finished");
+        setAuctionRemainingTime(0);
+      } else {
+        setAuctionRemainingTime(auctionData.auctionEndTimeLeft);
+
+        let endTime = new Date(0);
+        endTime.setUTCSeconds(auctionConfig.epochTime + auctionData.auctionEndTimeLeft);
+        const day = endTime.getUTCDate();
+        const hour = endTime.getUTCHours();
+        const minute = endTime.getUTCMinutes();
+        const second = endTime.getUTCSeconds();
+        setAuctionEndTime([(day > 9 ? '' : '0') + day, (hour > 9 ? '' : '0') + hour, (minute > 9 ? '' : '0') + minute, (second > 9 ? '' : '0') + second].join(':'));
+      }
     }
   }, [auctionData])
 
   useEffect(() => {
     if (auctionData && kexBalance) {
-      let kexCalculated = auctionData.totalAmount / (auctionData.kexPrice === 0 ? 1 : auctionData.kexPrice);
+      let kexCalculated = auctionData.totalRaisedInUSD / (auctionData.kexPrice === 0 ? 1 : auctionData.kexPrice);
       let totalKex = kexBalance.toNumber() == 0 ? kexCalculated : Math.min(kexBalance.toNumber(), kexCalculated);
       setTotalKexAmount(+totalKex.toFixed(0));
     }
@@ -83,10 +98,12 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
 
   useEffect(() => {
     if (auctionConfig) {
-      const day = auctionConfig.startTime.getUTCDate();
-      const hour = auctionConfig.startTime.getUTCHours();
-      const minute = auctionConfig.startTime.getUTCMinutes();
-      const second = auctionConfig.startTime.getUTCSeconds();
+      let startTime = new Date(0);
+      startTime.setUTCSeconds(auctionConfig.epochTime);
+      const day = startTime.getUTCDate();
+      const hour = startTime.getUTCHours();
+      const minute = startTime.getUTCMinutes();
+      const second = startTime.getUTCSeconds();
       setAuctionStartTime([(day > 9 ? '' : '0') + day, (hour > 9 ? '' : '0') + hour, (minute > 9 ? '' : '0') + minute, (second > 9 ? '' : '0') + second].join(':'));
     }
   }, [auctionConfig])
@@ -112,12 +129,12 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
 
                 <StyledAuctionTime>
                   <Label text="Starts at (UTC)" color='#523632'/>
-                  <StyledAuctionValue>{auctionStartTime !== "" ? auctionStartTime : 'Not started'}</StyledAuctionValue>
+                  <StyledAuctionValue>{auctionStartTime !== "" ? auctionStartTime : '00:00:00:00'}</StyledAuctionValue>
                 </StyledAuctionTime>
                
                 <StyledAuctionTime>
                   <Label text="Ends at at (UTC)" color='#523632'/>
-                  <StyledAuctionValue>{auctionEndTime !== "" ? auctionEndTime : 'Not started'}</StyledAuctionValue>
+                  <StyledAuctionValue>{auctionEndTime !== "" ? auctionEndTime : '00:00:00:00'}</StyledAuctionValue>
                 </StyledAuctionTime>
               </div>
             </StyledBalance>
@@ -127,7 +144,7 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
         <Footnote>
           Remaining Time
           <FootnoteValue>
-            <RemainingTime /> Seconds
+            {auctionRemainingTime} Seconds
           </FootnoteValue>
         </Footnote>
       </Card>
@@ -159,7 +176,7 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
         </CardContent>
 
         <Footnote>
-          KEX amount distributed
+          KEX amount to be distributed
           <FootnoteValue>{totalKEXAmount} KEX</FootnoteValue>
         </Footnote>
       </Card>

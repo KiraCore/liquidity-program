@@ -2,7 +2,6 @@ import { Contract } from 'web3-eth-contract'
 
 export interface AuctionInfo {
   epochTime?: number,
-  startTime?: Date
   P1?: number
   P2?: number
   P3?: number
@@ -22,7 +21,9 @@ export interface AuctionData {
   labels?: string[]
   prices?: number[]
   amounts?: number[]
-  ethDeposited?: number
-  totalAmount?: number
   kexPrice?: number
+  ethDeposited?: number
+  totalRaisedInUSD?: number
+  auctionEndTimeLeft?: number,
+  auctionFinished?: boolean,
 }

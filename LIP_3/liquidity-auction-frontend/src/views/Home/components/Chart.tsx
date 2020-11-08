@@ -123,14 +123,13 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
   useEffect(() => {
     if (auctionData) {
       let tick = 1;
-      let totalPrice = auctionData.totalAmount
+      let totalPrice = auctionData.totalRaisedInUSD
       
       while (totalPrice > 1) {
         totalPrice /= 10;
         tick *= 10;
       }
 
-      console.log(tick)
       setTick(tick)
     }
   }, [auctionData])

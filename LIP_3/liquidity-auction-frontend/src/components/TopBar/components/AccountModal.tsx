@@ -27,6 +27,10 @@ const AccountModal: React.FC<ModalProps> = ({ onDismiss }) => {
   const kira = useKira()
   const kexBalance = useTokenBalance(getKiraAddress(kira))
 
+  const onClaim = () => {
+    console.log("claim")
+  }
+
   return (
     <Modal>
       <ModalTitle text="My Account" />
@@ -45,6 +49,14 @@ const AccountModal: React.FC<ModalProps> = ({ onDismiss }) => {
           </StyledBalanceWrapper>
         </div>
 
+        <Spacer />
+
+        <Button 
+          onClick={onClaim} 
+          text="Claim my KEX" 
+          size="sm" 
+          variant="secondary"
+        />
         <Spacer />
         <Button
           href={`https://etherscan.io/address/${account}`}

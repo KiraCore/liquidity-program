@@ -12,7 +12,3 @@ export const getKiraAddress = (kira) => {
 export const getKiraAuctionAddress = (kira) => {
   return kira && kira.kiraAuctionAddress
 }
-
-export const getStartTime = async (kira) => {
-  return await kira && kira.contracts.kiraAuction.methods.startTime().call()
-}

@@ -1,15 +1,23 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import useAuctionConfig from './useAuctionConfig'
-import { getBalance } from '../utils/auction'
+import { getBalanceData } from '../utils/auction'
 import { AuctionData } from '../contexts/Auction'
+import { getKiraAddress } from '../kira/utils'
+import useKira from './useKira'
+
 import useInterval from 'use-interval'
+import useTokenInitialSupply from './useTokenInitialSupply'
 
 const useAuctionData = () => {
   const timeInterval = 60 * 10; // 10 minutes
   const auctionConfig = useAuctionConfig();
   const [auctionData, setAuctionData] = useState<AuctionData>();
+  const [intervalAllowed, setIntervalAllowed] = useState(true);
   
+  const kira = useKira()
+  const kexInitialSupply = useTokenInitialSupply(getKiraAddress(kira))
+
   useEffect(() => {
     if (auctionConfig) {
       generateInitialData()
@@ -18,41 +26,69 @@ const useAuctionData = () => {
 
   // fetch new data every 5 seconds
   useInterval(async () => {
-    if (!!auctionConfig && !!auctionData) {
+    if (!!auctionConfig && !!auctionData && intervalAllowed) {
       fetchData()
     }
   }, 5000);
 
+  const getCurrentPrice = (currentTime: number) => {
+    let currentPrice: number = 0;
+    const TC1: number = currentTime - auctionConfig.epochTime
+
+    if (TC1 >= 0 && TC1 <= auctionConfig.T1) {  // If in T1
+      currentPrice = auctionConfig.P2 + (auctionConfig.T1 - TC1) * (auctionConfig.P1 - auctionConfig.P2) / auctionConfig.T1;
+    } else if (TC1 > auctionConfig.T1 && TC1 <= auctionConfig.T1 + auctionConfig.T2) { // If in T1 ~ T2
+      currentPrice = auctionConfig.P3 + (auctionConfig.T2 + auctionConfig.T1 - TC1) * (auctionConfig.P2 - auctionConfig.P3) / auctionConfig.T2;
+    }
+
+    return currentPrice
+  }
+
+  const getEstimatedEndTime = (totalRaisedInUSD:number, currentTime: number) => {
+    if (!auctionConfig) return;
+    if (!kexInitialSupply) return;
+
+    let remainingTime: number = 0;
+    const CAP1 = kexInitialSupply.multipliedBy(auctionConfig.P1).toNumber();
+    const CAP2 = kexInitialSupply.multipliedBy(auctionConfig.P2).toNumber();
+    const CAP3 = kexInitialSupply.multipliedBy(auctionConfig.P3).toNumber();
+    const P = getCurrentPrice(currentTime)
+
+    if (totalRaisedInUSD <= CAP3) {
+      remainingTime = auctionConfig.T1 + auctionConfig.T2;
+    } else if (totalRaisedInUSD <= CAP2) {
+      const X2 = (P - auctionConfig.P3) * auctionConfig.T2 / (auctionConfig.P2 - auctionConfig.P3);
+      remainingTime = auctionConfig.T1 + (auctionConfig.T2 - X2);
+    } else if (totalRaisedInUSD <= CAP1) {
+      const X1 = (P - auctionConfig.P2) * auctionConfig.T1 / (auctionConfig.P1 - auctionConfig.P2)
+      remainingTime = auctionConfig.T1 - X1;
+    }
+
+    return remainingTime;
+  }
+
   const generateInitialData = () => {
-    const T1M = auctionConfig.epochTime + auctionConfig.T1;
     const T2M = auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2;
-    const priceOffsetP1P2 = (auctionConfig.P1 - auctionConfig.P2) / auctionConfig.T1;
-    const priceOffsetP2P3 = (auctionConfig.P2 - auctionConfig.P3) / auctionConfig.T2;
 
     let labels = [] as string[]
     let prices = [] as number[]
     let amounts = [] as number[]
 
-    for (let currentTime = auctionConfig.epochTime; currentTime <= T2M; currentTime += timeInterval) {
-      let price: number = 0
+    const now = Date.now() / 1000;
 
-      let currentTimeO = new Date(0);
-      currentTimeO.setUTCSeconds(currentTime);
+    if (now > T2M) {
+      setIntervalAllowed(false)
+    }
+    
+    for (let epochT = auctionConfig.epochTime; epochT <= T2M; epochT += timeInterval) {
+      let T = new Date(0);
+      T.setUTCSeconds(epochT);
 
-      const hour = currentTimeO.getUTCHours();
-      const minute = currentTimeO.getUTCMinutes();
-      
-      // If the time is in T1 range
-      if (currentTime < T1M) {
-        price = auctionConfig.P1 - priceOffsetP1P2 * (currentTime - auctionConfig.epochTime)
-      } else if (currentTime >= T1M && currentTime < T2M) {
-        price = auctionConfig.P2 - priceOffsetP2P3 * (currentTime - T1M)
-      } else {
-        price = auctionConfig.P3
-      }
+      const hour = T.getUTCHours();
+      const minute = T.getUTCMinutes();
 
       labels.push([(hour > 9 ? '' : '0') + hour, (minute > 9 ? '' : '0') + minute].join(':'));
-      prices.push(price);
+      prices.push(getCurrentPrice(epochT));
       amounts.push(0);
     }
 
@@ -62,40 +98,63 @@ const useAuctionData = () => {
       amounts: amounts,
       kexPrice: 0,
       ethDeposited: 0,
-      totalAmount: 0
+      totalRaisedInUSD: 0,
+      auctionFinished: now > T2M ? true : false
     })
   }
 
   const fetchData = async () => {
-    // Your custom logic here
-    const resData = await getBalance("kovan", "0xb0913b5b545fb29a9878d3350ab8e3346e4a08be");
+    let amounts = auctionData.amounts;
+    let ethDeposited: number = 0;
+    let totalRaisedAmount: number = 0;
+
     const now = Date.now() / 1000;
+    const T2M = auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2;
 
-    let amounts = auctionData.amounts
-    let kexPrice: number = 0
-    let amountRaised: number = 0
+    if (now > T2M) {
+      setIntervalAllowed(false);
+    }
 
-    for (let currentTime = auctionConfig.epochTime, index = 0; currentTime <= now; currentTime += timeInterval, index ++) {
+    const resData = await getBalanceData("kovan", "0xb0913b5b545fb29a9878d3350ab8e3346e4a08be");
+
+    if (!resData) {
+      console.log("Can't fetch API data");
+      setIntervalAllowed(false);
+      return;
+    }
+
+    if (Object.entries(resData['balances']).length == 0) {
+      console.log("No balance data");
+      setIntervalAllowed(false);
+      return;
+    }
+    
+
+    for (let T = auctionConfig.epochTime, index = 0; T <= now; T += timeInterval, index ++) {
       // Sort by epoch difference
       let epoches = Object.keys(resData['balances']);
+      
       epoches.sort((key1, key2) => {
-        return Math.abs(+key1 - currentTime) - Math.abs(+key2 - currentTime)
+        return Math.abs(+key1 - T) - Math.abs(+key2 - T)
       })
 
       // Find the cloest epoch timestamp
-      let nAmountRaised: number = +resData['balances'][epoches[0]].amount
-      amounts[index] = nAmountRaised * +resData['usd'];
-      amountRaised = nAmountRaised;
-      kexPrice = auctionData.prices[index];
+      let ethAmountRaised: number = Math.abs(+epoches[0] - T) < timeInterval ? +resData['balances'][epoches[0]].amount : 0
+      amounts[index] = ethAmountRaised * +resData['usd'];
+      ethDeposited = ethAmountRaised;
     }
 
+    totalRaisedAmount = ethDeposited * +resData['usd'];
+    
     setAuctionData({
       labels: auctionData.labels,
       prices: auctionData.prices,
       amounts: amounts,
-      kexPrice: kexPrice,
-      ethDeposited: amountRaised,
-      totalAmount: amountRaised * +resData['usd']
+      kexPrice: getCurrentPrice(now),
+      ethDeposited: ethDeposited,
+      totalRaisedInUSD: totalRaisedAmount,
+      auctionEndTimeLeft: getEstimatedEndTime(totalRaisedAmount, now),
+      auctionFinished: now > auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2 ? true : false
     })
   }
 

@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { Bar } from 'react-chartjs-2'
 
 import { AuctionData } from '../../../contexts/Auction'
+import useAuctionConfig from '../../../hooks/useAuctionConfig'
 
 const abbreviateNumber = (value: number)  => {
   let newValue;
@@ -27,6 +28,7 @@ interface ChartProps {
 }
 
 const Chart: React.FC<ChartProps> = ({ auctionData }) => {
+  const auctionConfig = useAuctionConfig();
   const [tick, setTick] = useState(100);
   const options: object = {
     // maintainAspectRatio: false,
@@ -49,8 +51,8 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
       xAxes: [
         {
           gridLines: {
-            display: true,
-            color: "rgba(33, 33, 33, 0.2)",
+            display: false,
+            color: "rgba(33, 33, 33, 0.1)",
           },
           scaleLabel: {
             display: true,
@@ -62,19 +64,33 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
         {
           id: 'price',
           position: 'left',
-          type: 'linear',
+          type: 'logarithmic',
           scaleLabel: {
             display: true,
             labelString: 'Max Projected Price [KEX/USD]',
             fontColor: "rgba(88, 201, 62)",
           },
           ticks: {
-            max: 3,
+            max: auctionConfig && auctionConfig.P1,
             beginAtZero: false,
+            callback: (value: number, index: number, values: number) => {
+              if (auctionConfig) {
+                if (Math.abs(value - auctionConfig.P1) < 0.005) {
+                  return '$' + auctionConfig.P1;
+                }
+                if (Math.abs(value - auctionConfig.P2) < 0.005) {
+                  return '$' + auctionConfig.P2;
+                }
+                if (Math.abs(value - auctionConfig.P3) < 0.005) {
+                  return '$' + auctionConfig.P3;
+                }
+              }
+            }
           },
           gridLines: {
+            display: false,
             drawOnArea: false,
-            color: "rgba(88, 201, 62, 0.2)",
+            color: "rgba(88, 201, 62, 0.1)",
           },
         },
         {
@@ -87,8 +103,9 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
             fontColor: "rgba(199, 75, 64)",
           },
           gridLines: {
+            display: true,
             drawOnArea: false,
-            color: `rgba(199, 75, 64, 0.2)`,
+            color: `rgba(199, 75, 64, 0.1)`,
           },
           ticks: {
             min: 0,
@@ -128,10 +145,6 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
     ],
   });
   
-  // const kira = useKira()
-  // const auctionConfig = useAuctionConfig();
-  // const kexAmount = useTokenInitialSupply(getKiraAddress(kira))
-
   useEffect(() => {
     if (auctionData) {
       let tick = 1;

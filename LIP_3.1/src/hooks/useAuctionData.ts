@@ -118,8 +118,8 @@ const useAuctionData = () => {
       setIntervalAllowed(false);
     }
     
-    // const resData = await getBalanceData("kovan", "0x4d097024c88b710e5c4d4207fdc190029db8b91e");
-    const resData: any = testData; // Test Data
+    const resData = await getBalanceData("kovan", "0x4d097024c88b710e5c4d4207fdc190029db8b91e");
+    // const resData: any = testData; // Test Data
 
     if (!resData) {
       console.log("Can't fetch API data");

@@ -14,6 +14,8 @@ const useAuctionData = () => {
   const timeInterval = 60 * 10; // 10 minutes
   const auctionConfig = useAuctionConfig();
   const [auctionData, setAuctionData] = useState<AuctionData>();
+  const [xLabels, setLabels] = useState([]);
+  const [pPrices, setPrices] = useState([]);
   const [intervalAllowed, setIntervalAllowed] = useState(true);
   
   const kira = useKira()
@@ -94,6 +96,9 @@ const useAuctionData = () => {
       amounts.push(0);
     }
     
+    setPrices(prices);
+    setLabels(labels);
+
     setAuctionData({
       labels: labels,
       prices: prices,
@@ -107,12 +112,17 @@ const useAuctionData = () => {
   }
 
   const fetchData = async () => {
-    let amounts = auctionData.amounts;
+    let labels = [] as string[]
+    let prices = [] as number[]
+    let amounts = [] as number[]
+    
     let ethDeposited: number = 0;
     let totalRaisedAmount: number = 0;
 
     const now = Date.now() / 1000;
     const T2M = auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2;
+    const currentKexPrice = getCurrentPrice(now);
+    const CAP3 = kexInitialSupply.multipliedBy(auctionConfig.P3).toNumber();
 
     if (now > T2M) {
       setIntervalAllowed(false);
@@ -146,7 +156,11 @@ const useAuctionData = () => {
       // Find the cloest epoch timestamp
       // let ethAmountRaised: number = Math.abs(+epoches[0] - T) < timeInterval ? +resData['balances'][epoches[0]].amount : 0
       let ethAmountRaised = +resData['balances'][epoches[0]].amount;
-      amounts[index] = ethAmountRaised * +resData['usd'];
+      if (auctionData.prices[index] >= currentKexPrice) {
+        amounts[index] = ethAmountRaised * +resData['usd'];
+        prices[index] = pPrices && pPrices[index];
+        labels[index] = labels && xLabels[index];
+      }
       if (ethAmountRaised > 0) {
         ethDeposited = ethAmountRaised
       }
@@ -155,10 +169,10 @@ const useAuctionData = () => {
     totalRaisedAmount = ethDeposited * +resData['usd'];
     
     setAuctionData({
-      labels: auctionData.labels,
-      prices: auctionData.prices,
+      labels: totalRaisedAmount > CAP3 ? labels : xLabels,
+      prices: totalRaisedAmount > CAP3 ? prices : pPrices,
       amounts: amounts,
-      kexPrice: getCurrentPrice(now),
+      kexPrice: currentKexPrice,
       ethDeposited: ethDeposited,
       totalRaisedInUSD: totalRaisedAmount,
       auctionEndTimeLeft: getEstimatedEndTime(totalRaisedAmount, now),

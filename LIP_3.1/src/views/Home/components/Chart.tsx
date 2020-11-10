@@ -73,16 +73,16 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
           ticks: {
             max: auctionConfig && auctionConfig.P1,
             beginAtZero: false,
-            callback: (value: number, index: number, values: number) => {
+            callback: (value: number, index: number, values: []) => {
               if (auctionConfig) {
-                if (Math.abs(value - auctionConfig.P1) < 0.005) {
+                if (Math.abs(value - auctionConfig.P1) <= 0.005) {
                   return '$' + auctionConfig.P1;
                 }
-                if (Math.abs(value - auctionConfig.P2) < 0.005) {
+                if (Math.abs(value - auctionConfig.P2) <= 0.005) {
                   return '$' + auctionConfig.P2;
                 }
-                if (Math.abs(value - auctionConfig.P3) < 0.005) {
-                  return '$' + auctionConfig.P3;
+                if (Math.abs(value - auctionConfig.P3) <= 0.005) {
+                  return '$' + value;
                 }
               }
             }

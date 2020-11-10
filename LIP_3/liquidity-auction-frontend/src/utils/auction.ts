@@ -30,11 +30,13 @@ export const getAuctionConfig = async (
 export const claimTokens = async (
   provider: provider,
   contractAddress: string,
-): Promise<boolean> => {
+): Promise<any> => {
   const auctionContract = getContract(provider, contractAddress)
   try {
-    await auctionContract.methods.claimTokens().call()
+    const result = await auctionContract.methods.claimTokens().call()
+    return result;
   } catch (e) {
+    console.log(e);
     return false;
   }
 }

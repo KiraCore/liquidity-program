@@ -74,7 +74,7 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
   const [currentKexPrice, setCurrentKexPrice] = useState<number>(0);
   const [totalDeposited, setTotalDeposited] = useState<number>(0);
   const [totalKEXAmount, setTotalKexAmount] = useState<number>(0);
-  const [remainingPercent, setRemainingPercent] = useState<string>("");
+  const [remainingPercent, setRemainingPercent] = useState<string>("100.000");
 
   const kira = useKira()
   const auctionConfig = useAuctionConfig()

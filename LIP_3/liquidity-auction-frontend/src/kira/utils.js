@@ -12,3 +12,11 @@ export const getKiraAddress = (kira) => {
 export const getKiraAuctionAddress = (kira) => {
   return kira && kira.kiraAuctionAddress
 }
+
+export const getKiraWeb3Provider = (kira) => {
+  return kira && kira.web3;
+}
+
+export const getKiraAuctionContract = (kira) => {
+  return kira && kira.contracts.kiraAuction
+}

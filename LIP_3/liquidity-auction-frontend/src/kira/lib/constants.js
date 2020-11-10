@@ -30,6 +30,6 @@ export const contractAddresses = {
   },
   kiraAuction: {
     // 42: '0x1De160a97879e4E8D98864219A2A32FdDaBf2851',
-    42: '0x5AEfE8F79f7F1333d5C934c881eDAcEd22950d5B'
+    42: '0xDAcD7D4654bae5937CDe48e526eEC911c7502f68'
   }
 }

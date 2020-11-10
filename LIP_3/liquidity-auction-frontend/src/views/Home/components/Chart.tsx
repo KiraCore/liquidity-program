@@ -46,13 +46,27 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
       }
     },
     scales: {
+      xAxes: [
+        {
+          gridLines: {
+            display: true,
+            color: "rgba(33, 33, 33, 0.2)",
+          },
+          scaleLabel: {
+            display: true,
+            labelString: "Time",
+          }
+        }
+      ],
       yAxes: [
         {
           id: 'price',
           position: 'left',
+          type: 'linear',
           scaleLabel: {
             display: true,
             labelString: 'Max Projected Price [KEX/USD]',
+            fontColor: "rgba(88, 201, 62)",
           },
           ticks: {
             max: 3,
@@ -60,6 +74,7 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
           },
           gridLines: {
             drawOnArea: false,
+            color: "rgba(88, 201, 62, 0.2)",
           },
         },
         {
@@ -69,9 +84,11 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
           scaleLabel: {
             display: true,
             labelString: 'Current Amount Raised [USD]',
+            fontColor: "rgba(199, 75, 64)",
           },
           gridLines: {
             drawOnArea: false,
+            color: `rgba(199, 75, 64, 0.2)`,
           },
           ticks: {
             min: 0,

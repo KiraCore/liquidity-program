@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useWallet } from 'use-wallet'
+import useTokenBalance from '../../../hooks/useTokenBalance'
 import useKira from '../../../hooks/useKira'
 import BigNumber from 'bignumber.js'
 import Button from '../../Button'
@@ -14,7 +15,7 @@ import Spacer from '../../Spacer'
 import { CountUpValue } from '../../Value/CountUpValue'
 import kexIcon from '../../../assets/img/kira.png'
 import { provider } from 'web3-core'
-import { getKiraAuctionContract } from '../../../kira/utils'
+import { getKiraAuctionContract, getKiraAddress } from '../../../kira/utils'
 
 const AccountModal: React.FC<ModalProps> = ({ onDismiss }) => {
   const {
@@ -28,6 +29,7 @@ const AccountModal: React.FC<ModalProps> = ({ onDismiss }) => {
 
   const kira = useKira()
   const auctionContract = getKiraAuctionContract(kira);
+  const kexBalance = useTokenBalance(getKiraAddress(kira))
   const [balance, setBalance] = useState<number>(0);
 
   useEffect(() => {
@@ -36,10 +38,11 @@ const AccountModal: React.FC<ModalProps> = ({ onDismiss }) => {
     }).on('data', (event: string, returnValues: any) => {
       console.log("data : ", event);
       if (returnValues) {
-        setBalance(new BigNumber(returnValues.amount).dividedBy(new BigNumber(10).pow(6)).toNumber())
+        const myBalance = new BigNumber(returnValues.amount).dividedBy(new BigNumber(10).pow(6)).toNumber();
+        setBalance(Math.max(myBalance, kexBalance.toNumber()))
       }
     });
-  }, [auctionContract]);
+  }, [auctionContract, kexBalance]);
 
   const claimMyKex = useCallback(async () => {
     try {

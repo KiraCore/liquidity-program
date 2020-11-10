@@ -8,12 +8,10 @@ import PageHeader from '../../components/PageHeader'
 import Spacer from '../../components/Spacer'
 import Stats from './components/Stats'
 import Chart from './components/Chart'
-import Button from '../../components/Button'
 import useAuctionData from '../../hooks/useAuctionData'
 
 
 const Home: React.FC = () => {
-  const [connected, setConnected] = useState(false);
   const [auctionFinished, setAuctionFinished] = useState<boolean>(false);
 
   const auctionData = useAuctionData()
@@ -26,10 +24,6 @@ const Home: React.FC = () => {
       }
     }
   }, [auctionData])
-
-  const onClaim = () => {
-    console.log("claim")
-  }
 
   return (
     <Page>

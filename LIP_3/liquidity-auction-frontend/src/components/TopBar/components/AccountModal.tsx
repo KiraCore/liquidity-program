@@ -48,9 +48,7 @@ const AccountModal: React.FC<ModalProps> = ({ onDismiss }) => {
             </StyledBalance>
           </StyledBalanceWrapper>
         </div>
-
         <Spacer />
-
         <Button 
           onClick={onClaim} 
           text="Claim my KEX" 

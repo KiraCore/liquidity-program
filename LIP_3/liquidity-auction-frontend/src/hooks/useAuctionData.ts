@@ -19,10 +19,10 @@ const useAuctionData = () => {
   const kexInitialSupply = useTokenInitialSupply(getKiraAddress(kira))
 
   useEffect(() => {
-    if (auctionConfig) {
+    if (auctionConfig && kexInitialSupply) {
       generateInitialData()
     }
-  }, [auctionConfig])
+  }, [auctionConfig, kexInitialSupply])
 
   // fetch new data every 5 seconds
   useInterval(async () => {
@@ -69,6 +69,7 @@ const useAuctionData = () => {
 
   const generateInitialData = () => {
     const T2M = auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2;
+    const CAP1 = kexInitialSupply.multipliedBy(auctionConfig.P1).toNumber();
 
     let labels = [] as string[]
     let prices = [] as number[]
@@ -91,7 +92,7 @@ const useAuctionData = () => {
       prices.push(getCurrentPrice(epochT));
       amounts.push(0);
     }
-
+    
     setAuctionData({
       labels: labels,
       prices: prices,
@@ -99,6 +100,7 @@ const useAuctionData = () => {
       kexPrice: 0,
       ethDeposited: 0,
       totalRaisedInUSD: 0,
+      initialMarketCap: CAP1,
       auctionFinished: now > T2M ? true : false
     })
   }
@@ -114,8 +116,9 @@ const useAuctionData = () => {
     if (now > T2M) {
       setIntervalAllowed(false);
     }
-
-    const resData = await getBalanceData("kovan", "0xb0913b5b545fb29a9878d3350ab8e3346e4a08be");
+    
+    //0x4d097024c88b710e5c4d4207fdc190029db8b91e
+    const resData = await getBalanceData("kovan", "0x4d097024c88b710e5c4d4207fdc190029db8b91e");
 
     if (!resData) {
       console.log("Can't fetch API data");
@@ -123,12 +126,13 @@ const useAuctionData = () => {
       return;
     }
 
-    if (Object.entries(resData['balances']).length == 0) {
+    if (Object.entries(resData['balances']).length === 0) {
       console.log("No balance data");
       setIntervalAllowed(false);
       return;
     }
     
+    // console.log(resData['balances'], now);
 
     for (let T = auctionConfig.epochTime, index = 0; T <= now; T += timeInterval, index ++) {
       // Sort by epoch difference
@@ -139,9 +143,12 @@ const useAuctionData = () => {
       })
 
       // Find the cloest epoch timestamp
-      let ethAmountRaised: number = Math.abs(+epoches[0] - T) < timeInterval ? +resData['balances'][epoches[0]].amount : 0
+      // let ethAmountRaised: number = Math.abs(+epoches[0] - T) < timeInterval ? +resData['balances'][epoches[0]].amount : 0
+      let ethAmountRaised = +resData['balances'][epoches[0]].amount;
       amounts[index] = ethAmountRaised * +resData['usd'];
-      ethDeposited = ethAmountRaised;
+      if (ethAmountRaised > 0) {
+        ethDeposited = ethAmountRaised
+      }
     }
 
     totalRaisedAmount = ethDeposited * +resData['usd'];

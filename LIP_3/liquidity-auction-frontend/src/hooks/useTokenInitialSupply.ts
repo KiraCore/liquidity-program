@@ -13,8 +13,8 @@ const useTokenInitialSupply = (tokenAddress: string) => {
   }: { account: string; ethereum: provider } = useWallet()
 
   const fetchInitialSupply = useCallback(async () => {
-    const initialSupply = await getInitialSupply(ethereum, tokenAddress)
-    setInitialSupply(new BigNumber(initialSupply))
+    const initialSupply: BigNumber = await getInitialSupply(ethereum, tokenAddress)
+    setInitialSupply(initialSupply.dividedBy(new BigNumber(10).pow(6)))
   }, [account, ethereum, tokenAddress])
 
   useEffect(() => {

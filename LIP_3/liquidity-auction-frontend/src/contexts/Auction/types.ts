@@ -26,4 +26,5 @@ export interface AuctionData {
   totalRaisedInUSD?: number
   auctionEndTimeLeft?: number,
   auctionFinished?: boolean,
+  initialMarketCap?: number,
 }

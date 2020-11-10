@@ -2,6 +2,7 @@ import Web3 from 'web3'
 import { provider } from 'web3-core'
 import { AbiItem } from 'web3-utils'
 import KiraABI from '../kira/lib/abi/kira.json'
+import { BigNumber } from '../kira'
 
 export const getContract = (provider: provider, address: string) => {
   const web3 = new Web3(provider)
@@ -31,14 +32,14 @@ export const getBalance = async (
 export const getInitialSupply = async (
   provider: provider,
   tokenAddress: string,
-): Promise<string> => {
+): Promise<BigNumber> => {
   const kiraTokenContract = getContract(provider, tokenAddress)
   try {
     const balance: string = await kiraTokenContract.methods
       .INITIAL_SUPPLY()
       .call()
-    return balance
+    return new BigNumber(+balance)
   } catch (e) {
-    return '0'
+    return new BigNumber(0)
   }
 }

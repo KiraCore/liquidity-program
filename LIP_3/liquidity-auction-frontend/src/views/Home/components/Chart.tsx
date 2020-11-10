@@ -2,11 +2,7 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Bar } from 'react-chartjs-2'
 
-import useKira from '../../../hooks/useKira'
-import useAuctionConfig from '../../../hooks/useAuctionConfig'
 import { AuctionData } from '../../../contexts/Auction'
-import { getKiraAddress } from '../../../kira/utils'
-import useTokenInitialSupply from '../../../hooks/useTokenInitialSupply'
 
 const abbreviateNumber = (value: number)  => {
   let newValue;
@@ -41,7 +37,7 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
     },
     tooltips: {
       callbacks: {
-        label: (tooltipItem: any, data: any) => {
+        label: (tooltipItem: any) => {
           var label = tooltipItem.datasetIndex === 0 ? "Price" : tooltipItem.datasetIndex === 1 ? "Amount" : "";
           if (label) label += ": $";
           label += tooltipItem.yLabel;
@@ -53,15 +49,14 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
       yAxes: [
         {
           id: 'price',
-          type: 'linear',
           position: 'left',
-          beginAtZero: true,
           scaleLabel: {
             display: true,
-            labelString: 'Price / KEX [USD]',
+            labelString: 'Max Projected Price [KEX/USD]',
           },
           ticks: {
-            beginAtZero: true,
+            max: 3,
+            beginAtZero: false,
           },
           gridLines: {
             drawOnArea: false,
@@ -73,7 +68,7 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
           position: 'right',
           scaleLabel: {
             display: true,
-            labelString: 'Amount Raised [USD]',
+            labelString: 'Current Amount Raised [USD]',
           },
           gridLines: {
             drawOnArea: false,
@@ -95,7 +90,7 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
     datasets: [
       {
         type: 'line',
-        label: 'Price / KEX (USD)',
+        label: 'Max Projected Price [KEX/USD]',
         backgroundColor: `rgb(88, 201, 62)`,
         borderColor: `rgb(88, 201, 62)`,
         borderWidth: 2,
@@ -105,7 +100,7 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
       },
       {
         type: 'bar',
-        label: 'Amount Raised [USD]',
+        label: 'Current Amount Raised [USD]',
         backgroundColor: `rgba(199, 75, 64)`,
         borderColor: 'rgba(199, 75, 64)',
         borderWidth: 2,

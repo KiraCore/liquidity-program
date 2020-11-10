@@ -8,6 +8,7 @@ import useKira from './useKira'
 
 import useInterval from 'use-interval'
 import useTokenInitialSupply from './useTokenInitialSupply'
+import testData from './test.json';
 
 const useAuctionData = () => {
   const timeInterval = 60 * 10; // 10 minutes
@@ -117,8 +118,8 @@ const useAuctionData = () => {
       setIntervalAllowed(false);
     }
     
-    //0x4d097024c88b710e5c4d4207fdc190029db8b91e
-    const resData = await getBalanceData("kovan", "0x4d097024c88b710e5c4d4207fdc190029db8b91e");
+    // const resData = await getBalanceData("kovan", "0x4d097024c88b710e5c4d4207fdc190029db8b91e");
+    const resData: any = testData; // Test Data
 
     if (!resData) {
       console.log("Can't fetch API data");

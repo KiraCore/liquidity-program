@@ -5,6 +5,14 @@ After the auction finishes, the user can claim his kex amount in `My Wallet` dia
 
 ## - Installation
 
+```
+npm install -g yarn
+
+git clone https://github.com/KiraCore/liquidity-program.git -b LIP_3.1
+
+cd ./liquidity-program/LIP_3.1
+```
+
 #### `yarn start`
 
 Runs the app in the development mode.

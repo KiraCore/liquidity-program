@@ -6,12 +6,27 @@ After the auction finishes, the user can claim his kex amount in `My Wallet` dia
 ## - Installation
 
 ```
-npm install -g yarn
+
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+apt update
+apt install build-essential
+apt install npm
+apt install yarn
 
 git clone https://github.com/KiraCore/liquidity-program.git -b LIP_3.1
 
 cd ./liquidity-program/LIP_3.1
 ```
+
+### `yarn`
+Install all dependencies
+
+#### `yarn build`
+
+Builds the app for production to the `build` folder.
+It correctly bundles React in production mode and optimizes the build for the best performance.
+You can use this for static deployment.
 
 #### `yarn start`
 
@@ -22,12 +37,6 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 Launches the test runner in the interactive watch mode. 
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-#### `yarn build`
-
-Builds the app for production to the `build` folder.
-It correctly bundles React in production mode and optimizes the build for the best performance.
-You can use this for static deployment.
 
 ## - Deployment
 

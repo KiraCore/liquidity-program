@@ -22,18 +22,18 @@ cd ./liquidity-program/LIP_3.1
 ### `yarn`
 Install all dependencies
 
-#### `yarn build`
+### `yarn build`
 
 Builds the app for production to the `build` folder.
 It correctly bundles React in production mode and optimizes the build for the best performance.
 You can use this for static deployment.
 
-#### `yarn start`
+### `yarn start`
 
 Runs the app in the development mode.
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-#### `yarn test`
+### `yarn test`
 
 Launches the test runner in the interactive watch mode. 
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
@@ -42,3 +42,12 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 
 Create an AWS S3 bucket and copy the files in build folder. 
 Make the S3 bucket public and access via url.
+
+## - Development
+
+Data mock can be found in the `/src/hooks/test.json`. To enable testing using data mock navigate to `/src/hooks/useAuctionData.ts` and switch to the `LOCAL TESTING` in the `fetchData` code block.
+
+Time frames utilize UNIX Timestamp, `https://www.epochconverter.com` can be used to mock data.
+
+
+

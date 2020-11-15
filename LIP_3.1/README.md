@@ -45,7 +45,7 @@ Make the S3 bucket public and access via url.
 
 ## - Development
 
-Data mock can be found in the `/src/hooks/test.json`.
+Data mock can be found in the `/src/test.json`.
 Configuration file can be found in the `/src/config.json`
 Time frames utilize UNIX Timestamp, `https://www.epochconverter.com` can be used to mock data.
 

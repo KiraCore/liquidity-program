@@ -37,13 +37,13 @@ const Home: React.FC = () => {
       </Container>
       <Spacer size="md" />
 
-      {!!account && auctionData && !auctionFinished && (
+      {auctionData && !auctionFinished && (
         <Container size="lg">
           <Chart auctionData={auctionData}/>
         </Container>
       )}
 
-      {(!account || !auctionData) && (
+      {(!auctionData) && (
         <StyledContainer>
           <StyledText>
             Please connect to your wallet
@@ -51,20 +51,20 @@ const Home: React.FC = () => {
         </StyledContainer>
       )}
 
-      {!!account && auctionData && auctionFinished && (
+      {auctionData && auctionFinished && (
         <StyledContainer>
           <StyledText>
             Auction Finished
           </StyledText>
           <StyledSubText>
-            You can now claim KEX from the contract or await automatic distribution within 24 hours.
+            Click "My Wallet" button and claim your KEX now!, or await automatic distribution within 48 hours.
           </StyledSubText>
         </StyledContainer>
       )}
 
       <Spacer size="md" />
       <StyledInfo>
-        💡<b>Pro Tip</b>: You can click on the Auction Contract button and deposit ETH directly to that address when the auction starts.
+        💡<b>Pro Tip</b>: Click "Connect Wallet" if you didn't yet : )
       </StyledInfo>
     </Page>
   )

@@ -29,7 +29,7 @@ const AccountModal: React.FC<ModalProps> = ({ onDismiss }) => {
 
   const kira = useKira()
   const auctionContract = getKiraAuctionContract(kira);
-  const kexBalance = useTokenBalance(getKiraAddress(kira))
+  const kexBalance = useTokenBalance();
   const [balance, setBalance] = useState<number>(0);
 
   useEffect(() => {

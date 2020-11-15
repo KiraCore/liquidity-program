@@ -8,8 +8,8 @@ import useKira from './useKira'
 
 import useInterval from 'use-interval'
 import useTokenInitialSupply from './useTokenInitialSupply'
-import testData from './test.json';
 import cfgData from '../config.json';
+import testData from '../test.json';
 
 const useAuctionData = () => {
   const timeInterval = 60 * 10; // 10 minutes
@@ -20,7 +20,7 @@ const useAuctionData = () => {
   const [intervalAllowed, setIntervalAllowed] = useState(true);
   
   const kira = useKira()
-  const kexInitialSupply = useTokenInitialSupply(getKiraAddress(kira))
+  const kexInitialSupply = useTokenInitialSupply()
 
   useEffect(() => {
     if (auctionConfig && kexInitialSupply) {

@@ -26,7 +26,7 @@ const useAuctionConfig = () => {
       throw new Error("ERROR: Can't fetch Configuration Data");
     }
 
-    if(resCnf['test'] == true){ // LOCAL TESTING DATA ./test.json
+    if(resCnf['test'] == true){ // LOCAL TESTING DATA ../config.json
       console.log("INFO: Fetching contract mock data...");
       config = {
         0: `${resCnf['start']}`, 

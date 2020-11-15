@@ -14,6 +14,7 @@ import useTokenInitialSupply from '../../../hooks/useTokenInitialSupply'
 import { getKiraAddress } from '../../../kira/utils'
 import Kira_Img from '../../../assets/img/kira.png'
 import BigNumber from 'bignumber.js'
+import cfgData from '../../../config.json';
 
 const RemainingTime: React.FC = () => {
   const [start, setStart] = useState(0)
@@ -78,8 +79,9 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
 
   const kira = useKira()
   const auctionConfig = useAuctionConfig()
-  const kexBalance = useTokenBalance(getKiraAddress(kira))
-  const kexInitialSupply = useTokenInitialSupply(getKiraAddress(kira))
+  const kexBalance = useTokenBalance()
+  const kexInitialSupply = useTokenInitialSupply()
+  const resCnf: any = cfgData; // Config Data
 
   useEffect(() => {
     if (auctionData) {
@@ -197,8 +199,8 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
                 </StyledAuctionTime>
 
                 <StyledAuctionTime>
-                  <Label text="Current Cap" color='#523632'/>
-                  <StyledAuctionValue>${abbreviateNumber(new BigNumber(12483333).multipliedBy(currentKexPrice).toNumber())}</StyledAuctionValue>
+                  <Label text="Circulation CAP" color='#523632'/>
+                  <StyledAuctionValue>${abbreviateNumber(new BigNumber(resCnf["circulation"]).multipliedBy(currentKexPrice).toNumber())}</StyledAuctionValue>
                 </StyledAuctionTime>
               </div>
             </StyledBalance>

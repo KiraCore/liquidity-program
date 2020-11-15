@@ -9,6 +9,7 @@ import useKira from './useKira'
 import useInterval from 'use-interval'
 import useTokenInitialSupply from './useTokenInitialSupply'
 import testData from './test.json';
+import cfgData from '../config.json';
 
 const useAuctionData = () => {
   const timeInterval = 60 * 10; // 10 minutes
@@ -127,12 +128,23 @@ const useAuctionData = () => {
     if (now > T2M) {
       setIntervalAllowed(false);
     }
-    
-    //*// PRODUCTION DATA
-    const resData = await getBalanceData("kovan", "0x4d097024c88b710e5c4d4207fdc190029db8b91e");
-    /*///  LOCAL TESTING DATA ./test.json
-    const resData: any = testData; // Test Data
-    /**/
+
+    const resCnf: any = cfgData; // Config Data
+    let fetchResult;
+
+    if (!resCnf) {
+      throw new Error("ERROR: Can't fetch Configuration Data");
+    }
+
+    if(resCnf['test'] == true){ // LOCAL TESTING DATA ./test.json
+      console.log("INFO: Fetching mock data...");
+      fetchResult = testData;
+    } else { // PRODUCTION DATA
+      console.log(`INFO: Fetching production data from ${resCnf['oracle']}, network ${resCnf['network']}, addr: ${resCnf['deposit']}...`);
+      fetchResult = await getBalanceData(resCnf['oracle'], resCnf['network'], resCnf['deposit']);
+    }
+
+    const resData: any = fetchResult;
 
     if (!resData) {
       console.log("Can't fetch API data");
@@ -146,8 +158,8 @@ const useAuctionData = () => {
       return;
     }
     
-    // console.log(resData['balances'], now);
-
+    console.log(`INFO: Current account balance: ${resData['latest']['amount']}ETH`);
+    
     for (let T = auctionConfig.epochTime, index = 0; T <= now; T += timeInterval, index ++) {
       // Sort by epoch difference
       let epoches = Object.keys(resData['balances']);

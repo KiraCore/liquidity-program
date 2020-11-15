@@ -42,13 +42,12 @@ export const claimTokens = async (
 }
 
 export const getBalanceData = async (
+  oracle: string,
   networkId: string,
   address: string
 ): Promise<any> => {
   try { 
-    const targetURL = `https://oracle-kira-network.s3.eu-central-1.amazonaws.com/balances/eth/${networkId}/${address}/cache.json`;
-    // 0x4d097024c88b710e5c4d4207fdc190029db8b91e
-    // const targetURL = "https://oracle.kira.network/balances/eth/kovan/0x4d097024c88b710e5c4d4207fdc190029db8b91e/cache.json"
+    const targetURL = `${oracle}/balances/eth/${networkId}/${address.toLowerCase()}/cache.json`;
     const response = await fetch(targetURL, {
       headers: {
         'Accept': 'application/json',

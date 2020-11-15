@@ -1,0 +1,16 @@
+{
+    "network": "kovan",
+    "deposit": "0x4d097024c88b710e5c4d4207fdc190029db8b91e",
+    "token": "0x41379EF961492a594F91bB0F966c2CeD32B49544",
+    "auction": "0xDAcD7D4654bae5937CDe48e526eEC911c7502f68",
+    "oracle": "https://oracle-kira-network.s3.eu-central-1.amazonaws.com",
+    "test": true,
+    "start": "1605446115",
+    "p1": "3000000000000000000",
+    "p2": "1000000000000000000",
+    "p3": "75000000000000000",
+    "t1": "3600",
+    "t2": "82800",
+    "delay": "180",
+    "limit": "500000000000000000"
+}

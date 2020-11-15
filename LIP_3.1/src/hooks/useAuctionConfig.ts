@@ -7,6 +7,7 @@ import { getKiraAuctionAddress } from '../kira/utils'
 import { AuctionInfo } from '../contexts/Auction'
 import useKira from '../hooks/useKira'
 import BigNumber from 'bignumber.js'
+import cfgData from '../config.json';
 
 const useAuctionConfig = () => {
   const kira = useKira();
@@ -17,7 +18,33 @@ const useAuctionConfig = () => {
   }: { account: string; ethereum: provider } = useWallet()
  
   const fetchAuctionInfo = useCallback(async () => {
-    const config = await getAuctionConfig(ethereum, auctionAddress);
+
+    const resCnf: any = cfgData; // Config Data
+    let config;
+
+    if (!resCnf) {
+      throw new Error("ERROR: Can't fetch Configuration Data");
+    }
+
+    if(resCnf['test'] == true){ // LOCAL TESTING DATA ./test.json
+      console.log("INFO: Fetching contract mock data...");
+      config = {
+        0: `${resCnf['start']}`, 
+        1: `${resCnf['p1']}`,
+        2: `${resCnf['p2']}`,
+        3: `${resCnf['p3']}`,
+        4: `${resCnf['t1']}`,
+        5: `${resCnf['t2']}`,
+        6: `${resCnf['delay']}`, // min time delta between consecutive ETH transfers
+        7: `${resCnf['limit']}`} // max ETH limit per transaction
+    } else { // PRODUCTION DATA
+      console.log(`INFO: Fetching contract data ${auctionAddress}...`);
+      config = await getAuctionConfig(ethereum, auctionAddress);
+    }
+
+    console.log("INFO: Contract data:");
+    console.log(config);
+
     let price1 = new BigNumber(parseInt(config[1])).shiftedBy(-18).toNumber();
     let price2 = new BigNumber(parseInt(config[2])).shiftedBy(-18).toNumber();
     let price3 = new BigNumber(parseInt(config[3])).shiftedBy(-18).toNumber();

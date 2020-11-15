@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js/bignumber'
+import config from '../../config.json'
 
 export const SUBTRACT_GAS_LIMIT = 100000
 
@@ -22,14 +23,11 @@ export const INTEGERS = {
   INTEREST_RATE_BASE: new BigNumber('1e18'),
 }
 
-// New Contract: 0x1De160a97879e4E8D98864219A2A32FdDaBf2851
-// Old Contract: 0xa9C21f3201741b4d31C9b7934c21f671aA0Fd0B5
 export const contractAddresses = {
   kira: {  // KEX Smart Contract Address
-    42: '0x41379EF961492a594F91bB0F966c2CeD32B49544',
+    42: `${config['token']}`,
   },
-  kiraAuction: {
-    // 42: '0x1De160a97879e4E8D98864219A2A32FdDaBf2851',
-    42: '0xDAcD7D4654bae5937CDe48e526eEC911c7502f68'
+  kiraAuction: { // Kira Liquidity Auction  Smart Contract Address
+    42: `${config['auction']}`
   }
 }

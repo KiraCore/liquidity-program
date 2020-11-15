@@ -18,17 +18,17 @@ const AboutKiraAuction: React.FC<ModalProps> = ({ onDismiss }) => {
       <ModalContent>
         <StyledWalletsWrapper>
           <Card>
-            <CardTitle text={"Kira Auction"} />
+            <CardTitle text={"How Does This Work ?"} />
             <CardContent>
               <StyledText>
-                {"Kira liquidity auction Description"}
+                {"Connect your MetaMask wallet and deposit ETH, that's all there is to it. Everyone gets the same price and the price depends on when the auction starts. To prevent auction from ending too fast and everyone having a chance to making it in time, the initial price is high and then rapidly descends. You can either send ETH right away or await until the KEX price reaches a lower level. However! if you wait too long you might not be able to make it. The auction ends instantly when the red bar indicating amount of ETH deposited by participants touches the green line indicting pice of KEX and the corresponding CAP."}
               </StyledText>
             </CardContent>
           </Card>
         </StyledWalletsWrapper>
       </ModalContent>
       <ModalActions>
-        <Button text="Cancel" variant="secondary" onClick={onDismiss} size="md" />
+        <Button text="Cool, Thanks" variant="secondary" onClick={onDismiss} size="md" />
       </ModalActions>
     </Modal>
   )

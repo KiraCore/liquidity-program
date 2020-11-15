@@ -7,7 +7,7 @@ const Nav: React.FC = () => {
       <StyledLink
         target="_blank"
         href="https://lip3.kira.network">
-        KIRA Auction Contract
+        Auction Contract
       </StyledLink>
       <StyledLink target="_blank" href="https://tg.kira.network">
         Telegram

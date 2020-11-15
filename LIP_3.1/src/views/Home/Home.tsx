@@ -29,8 +29,8 @@ const Home: React.FC = () => {
     <Page>
       <PageHeader
         icon={<img src={kira} height={100} />}
-        title="Kira Liquidity Auction Frontend"
-        subtitle="Take part in kira liquidity auction to claim your own KEX!"
+        title="Kira Liquidity Auction"
+        subtitle="Take part in the Kira Liquidity Auction to buy KEX!"
       />
       <Container>
         <Stats auctionData={auctionData}/>
@@ -57,14 +57,14 @@ const Home: React.FC = () => {
             Auction Finished
           </StyledText>
           <StyledSubText>
-            Please go to your wallet and claim your own KEX.
+            You can now claim KEX from the contract or await automatic distribution within 24 hours.
           </StyledSubText>
         </StyledContainer>
       )}
 
       <Spacer size="md" />
       <StyledInfo>
-        💡<b>Pro Tip</b>: This auction is for distributing KEX amount to whom deposited ETH.
+        💡<b>Pro Tip</b>: You can click on the Auction Contract button and deposit ETH directly to that address when the auction starts.
       </StyledInfo>
     </Page>
   )

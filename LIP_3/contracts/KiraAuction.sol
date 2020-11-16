@@ -228,8 +228,10 @@ contract KiraAuction is Ownable {
     ) external onlyOwner onlyBeforeAuction {
         require(_startTime > now, 'KiraAuction: start time should be greater than now');
         require((_p1 > _p2) && (_p2 > _p3) && (_p3 >= 0), 'KiraAuction: price should go decreasing.');
-        require(_t1 < _t2, 'KiraAuction: the first slope should have faster decreasing rate.');
-        require((_t1 > 0) && (_t2 > 0), 'KiraAuction: the period of each slope should be greater than zero.');
+        require(
+            _t2 > _t1 && _t1 > 0,
+            'KiraAuction: the first slope should have faster decreasing rate and the period of each slope should be greater than zero'
+        );
         require(_txMaxWeiAmount > 0, 'KiraAuction: the maximum amount per tx should be valid');
 
         startTime = _startTime;

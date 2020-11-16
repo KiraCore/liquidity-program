@@ -15,19 +15,19 @@ contract KiraStaking is IKiraStaking, ReentrancyGuard, Pausable {
 
     /* ========== STATE VARIABLES ========== */
 
-    IERC20 public rewardsToken;
-    IERC20 public stakingToken;
-    uint256 public periodFinish = 0;
-    uint256 public rewardRate = 0;
-    uint256 public rewardsDuration = 0;
+    uint256 public periodFinish;
+    uint256 public rewardRate;
+    uint256 public rewardsDuration;
     uint256 public lastUpdateTime;
     uint256 public rewardPerTokenStored;
-    uint256 public lastBalance = 0;
+    uint256 public lastBalance;
+    uint256 public totalSupply;
 
-    mapping(address => uint256) public userRewardPerTokenPaid;
-    mapping(address => uint256) public rewards;
+    IERC20 public rewardsToken;
+    IERC20 public stakingToken;
 
-    uint256 private _totalSupply;
+    mapping(address => uint256) private userRewardPerTokenPaid;
+    mapping(address => uint256) private rewards;
     mapping(address => uint256) private _balances;
 
     /* ========== CONSTRUCTOR ========== */
@@ -43,10 +43,6 @@ contract KiraStaking is IKiraStaking, ReentrancyGuard, Pausable {
 
     /* ========== VIEWS ========== */
 
-    function totalSupply() external override view returns (uint256) {
-        return _totalSupply;
-    }
-
     function balanceOf(address account) external override view returns (uint256) {
         return _balances[account];
     }
@@ -56,10 +52,10 @@ contract KiraStaking is IKiraStaking, ReentrancyGuard, Pausable {
     }
 
     function rewardPerToken() public override view returns (uint256) {
-        if (_totalSupply == 0) {
+        if (totalSupply == 0) {
             return rewardPerTokenStored;
         }
-        return rewardPerTokenStored.add(lastTimeRewardApplicable().sub(lastUpdateTime).mul(rewardRate).mul(1e18).div(_totalSupply));
+        return rewardPerTokenStored.add(lastTimeRewardApplicable().sub(lastUpdateTime).mul(rewardRate).mul(1e18).div(totalSupply));
     }
 
     function earned(address account) public override view returns (uint256) {
@@ -70,7 +66,7 @@ contract KiraStaking is IKiraStaking, ReentrancyGuard, Pausable {
 
     function stake(uint256 amount) external override nonReentrant notPaused updateReward(msg.sender) {
         require(amount > 0, 'Cannot stake 0');
-        _totalSupply = _totalSupply.add(amount);
+        totalSupply = totalSupply.add(amount);
         _balances[msg.sender] = _balances[msg.sender].add(amount);
         stakingToken.safeTransferFrom(msg.sender, address(this), amount);
         emit Staked(msg.sender, amount);
@@ -78,7 +74,7 @@ contract KiraStaking is IKiraStaking, ReentrancyGuard, Pausable {
 
     function withdraw(uint256 amount) public override nonReentrant updateReward(msg.sender) {
         require(amount > 0, 'Cannot withdraw 0');
-        _totalSupply = _totalSupply.sub(amount);
+        totalSupply = totalSupply.sub(amount);
         _balances[msg.sender] = _balances[msg.sender].sub(amount);
         stakingToken.safeTransfer(msg.sender, amount);
         emit Withdrawn(msg.sender, amount);

@@ -301,17 +301,17 @@ contract KiraAuction is Ownable {
     function distribute() external onlyOwner onlyAfterAuction {
         uint256 totalDistributed;
         uint256 exp = 10**uint256(kiraToken.decimals());
-
         uint256 numberOfContributors = arrayAddress.length;
+
         for (uint256 i = 0; i < numberOfContributors; i++) {
             address addr = arrayAddress[i];
-            UserInfo memory customer = customers[addr];
+            UserInfo storage customer = customers[addr];
 
             if (customer.claimed_wei > 0 && !customer.claimed && !customer.distributed) {
                 uint256 tokensToSend = customer.claimed_wei.mul(exp).div(latestPrice);
                 uint256 currentBalance = kiraToken.balanceOf(address(this));
 
-                customers[addr].distributed = true;
+                customer.distributed = true;
 
                 if (currentBalance < tokensToSend) {
                     tokensToSend = currentBalance;

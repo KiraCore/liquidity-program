@@ -24,8 +24,8 @@ contract KiraStaking is IKiraStaking, ReentrancyGuard, Pausable {
     uint256 public rewardPerTokenStored;
     uint256 public lastBalance;
 
-    mapping(address => uint256) public userRewardPerTokenPaid;
-    mapping(address => uint256) public rewards;
+    mapping(address => uint256) private userRewardPerTokenPaid;
+    mapping(address => uint256) private rewards;
 
     uint256 public totalSupply;
     mapping(address => uint256) private _balances;

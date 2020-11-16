@@ -27,7 +27,13 @@ contract KiraAuction is Ownable {
         P1, P2, P3, T1, T2, Auction Start, Tx rate limiting, Tx size per time limit, whitelist
     */
 
-    address payable public wallet;
+    struct UserInfo {
+        bool whitelisted;
+        uint256 claimed_wei;
+        uint256 last_deposit_time;
+        bool claimed;
+        bool distributed;
+    }
 
     uint256 public startTime;
     uint256 private P1;
@@ -38,24 +44,14 @@ contract KiraAuction is Ownable {
     uint256 private MIN_WEI;
     uint256 private MAX_WEI;
     uint256 private INTERVAL_LIMIT;
-
-    struct UserInfo {
-        bool whitelisted;
-        uint256 claimed_wei;
-        uint256 last_deposit_time;
-        bool claimed;
-        bool distributed;
-    }
-
-    mapping(address => UserInfo) private customers;
-    address[] private arrayAddress;
-
-    ERC20 private kiraToken;
-
     uint256 private totalWeiAmount;
     uint256 private latestPrice;
 
+    address payable public wallet;
     bool public isFinished;
+    ERC20 private kiraToken;
+    mapping(address => UserInfo) private customers;
+    address[] private arrayAddress;
 
     // Events
     event AuctionConfigured(uint256 _startTime);

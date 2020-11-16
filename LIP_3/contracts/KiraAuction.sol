@@ -330,12 +330,12 @@ contract KiraAuction is Ownable {
     }
 
     function claimTokens() external onlyAfterAuction {
-        UserInfo memory customer = customers[msg.sender];
-        require(customer.claimed != true, 'KiraAuction: you claimed already.');
-        require(customer.distributed != true, 'KiraAuction: we already sent to your wallet.');
+        UserInfo storage customer = customers[msg.sender];
+        require(!customer.claimed, 'KiraAuction: you claimed already.');
+        require(!customer.distributed, 'KiraAuction: we already sent to your wallet.');
         require(customer.whitelisted && (customer.claimed_wei > 0), 'KiraAuction: you did not contribute.');
 
-        customers[msg.sender].claimed = true;
+        customer.claimed = true;
 
         uint256 exp = 10**uint256(kiraToken.decimals());
         uint256 amountToClaim = customer.claimed_wei.mul(exp).div(latestPrice);

@@ -5,13 +5,14 @@ import { getBalanceData } from '../utils/auction'
 import { AuctionData } from '../contexts/Auction'
 import { getKiraAddress } from '../kira/utils'
 import useKira from './useKira'
-
+import BigNumber from 'bignumber.js'
 import useInterval from 'use-interval'
 import useTokenInitialSupply from './useTokenInitialSupply'
 import cfgData from '../config.json';
 import testData from '../test.json';
 
 const useAuctionData = () => {
+  const resCnf: any = cfgData; // Config Data
   const timeInterval = 60 * 10; // 10 minutes
   const auctionConfig = useAuctionConfig();
   const [auctionData, setAuctionData] = useState<AuctionData>();
@@ -21,6 +22,7 @@ const useAuctionData = () => {
   
   const kira = useKira()
   const kexInitialSupply = useTokenInitialSupply()
+  const availableKEX: number = +resCnf["available"]; // Maximum number of KEX available for distribution via the Liquidity Auction
 
   useEffect(() => {
     if (auctionConfig && kexInitialSupply) {
@@ -37,33 +39,54 @@ const useAuctionData = () => {
 
   const getCurrentPrice = (currentTime: number) => {
     let currentPrice: number = 0;
-    const TC1: number = currentTime - auctionConfig.epochTime
 
-    if (TC1 >= 0 && TC1 <= auctionConfig.T1) {  // If in T1
-      currentPrice = auctionConfig.P2 + (auctionConfig.T1 - TC1) * (auctionConfig.P1 - auctionConfig.P2) / auctionConfig.T1;
-    } else if (TC1 > auctionConfig.T1 && TC1 <= auctionConfig.T1 + auctionConfig.T2) { // If in T1 ~ T2
-      currentPrice = auctionConfig.P3 + (auctionConfig.T2 + auctionConfig.T1 - TC1) * (auctionConfig.P2 - auctionConfig.P3) / auctionConfig.T2;
+    // time delta between start of the auction and current time
+    const dT: number = currentTime - auctionConfig.epochTime
+
+    if (dT <= 0) { // if auction didn't started yet then current price is MAX
+        return auctionConfig.P1; // edge cases must be explicit
+    }
+
+    if (dT >= (auctionConfig.T1 + auctionConfig.T2)) { // at the auction ended then price is MIN
+      return auctionConfig.P3;  // edge cases must be explicit
+    }
+
+    if (dT > 0 && dT <= auctionConfig.T1) { // If in T1
+      currentPrice = auctionConfig.P2 + (((auctionConfig.T1 - dT) * (auctionConfig.P1 - auctionConfig.P2)) / auctionConfig.T1);
+    } else if (dT > auctionConfig.T1) { // If in T1 ~ T2
+      currentPrice = auctionConfig.P3 + (((auctionConfig.T2 + (dT - auctionConfig.T1)) * (auctionConfig.P2 - auctionConfig.P3)) / auctionConfig.T2);
     }
 
     return currentPrice
   }
 
-  const getEstimatedEndTime = (totalRaisedInUSD:number, currentTime: number) => {
+  const getEstimatedEndCAP = (currentTime: number) => {
+    return (availableKEX * getCurrentPrice(currentTime));
+  }
+
+  const getEstimatedTimeLeft = (totalRaisedETH:number, currentTime: number) => {
     if (!auctionConfig) return;
-    if (!kexInitialSupply) return;
+    const dT: number = currentTime - auctionConfig.epochTime
+    if (dT <= 0) { // if auction didn't started yet then time remaining is MAX possible
+        return (auctionConfig.T1 + auctionConfig.T2); // edge cases must be explicit
+    }
+
+    if (dT >= (auctionConfig.T1 + auctionConfig.T2)) { // at the auction ended then time remaining is 0
+      return 0;  // edge cases must be explicit
+    }
 
     let remainingTime: number = 0;
-    const CAP1 = kexInitialSupply.multipliedBy(auctionConfig.P1).toNumber();
-    const CAP2 = kexInitialSupply.multipliedBy(auctionConfig.P2).toNumber();
-    const CAP3 = kexInitialSupply.multipliedBy(auctionConfig.P3).toNumber();
-    const P = getCurrentPrice(currentTime)
+    const CAP1 = availableKEX * auctionConfig.P1; // absolute maximum that can be sold (ETH)
+    const CAP2 = availableKEX * auctionConfig.P2; 
+    const CAP3 = availableKEX * auctionConfig.P3; // lowest possible hard cap for the auction
+    const P = getCurrentPrice(currentTime);       // current Hard CAP price KEX/ETH
 
-    if (totalRaisedInUSD <= CAP3) {
+    if (totalRaisedETH <= CAP3) {
       remainingTime = auctionConfig.T1 + auctionConfig.T2;
-    } else if (totalRaisedInUSD <= CAP2) {
-      const X2 = (P - auctionConfig.P3) * auctionConfig.T2 / (auctionConfig.P2 - auctionConfig.P3);
+    } else if (totalRaisedETH <= CAP2) {
+      const X2 = ((P - auctionConfig.P3) * auctionConfig.T2) / (auctionConfig.P2 - auctionConfig.P3);
       remainingTime = auctionConfig.T1 + (auctionConfig.T2 - X2);
-    } else if (totalRaisedInUSD <= CAP1) {
+    } else if (totalRaisedETH <= CAP1) {
       const X1 = (P - auctionConfig.P2) * auctionConfig.T1 / (auctionConfig.P1 - auctionConfig.P2)
       remainingTime = auctionConfig.T1 - X1;
     }
@@ -72,14 +95,13 @@ const useAuctionData = () => {
   }
 
   const generateInitialData = () => {
+    const now = Date.now() / 1000;
     const T2M = auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2;
-    const CAP1 = kexInitialSupply.multipliedBy(auctionConfig.P1).toNumber();
+    const CAP1 = availableKEX * auctionConfig.P1;
 
     let labels = [] as string[]
     let prices = [] as number[]
     let amounts = [] as number[]
-
-    const now = Date.now() / 1000;
 
     if (now > T2M) {
       setIntervalAllowed(false)
@@ -123,19 +145,14 @@ const useAuctionData = () => {
     const now = Date.now() / 1000;
     const T2M = auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2;
     const currentKexPrice = getCurrentPrice(now);
-    const CAP3 = kexInitialSupply.multipliedBy(auctionConfig.P3).toNumber();
+    const timeLeft = getEstimatedTimeLeft(ethDeposited, now);
+    const CAP3 = availableKEX * auctionConfig.P3;
 
     if (now > T2M) {
       setIntervalAllowed(false);
     }
 
-    const resCnf: any = cfgData; // Config Data
     let fetchResult;
-
-    if (!resCnf) {
-      throw new Error("ERROR: Can't fetch Configuration Data");
-    }
-
     if(resCnf['test'] == true){ // LOCAL TESTING DATA ./test.json
       console.log("INFO: Fetching mock data...");
       fetchResult = testData;
@@ -159,8 +176,10 @@ const useAuctionData = () => {
     }
     
     console.log(`INFO: Current account balance: ${resData['latest']['amount']}ETH`);
-    
-    for (let T = auctionConfig.epochTime, index = 0; T <= now; T += timeInterval, index ++) {
+
+    let startTime = auctionConfig.epochTime; // auction start
+    let endTime = Math.min(auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2, now + timeLeft) // auction end
+    for (let T = startTime, index = 0; T < (endTime + timeInterval); T += timeInterval, index ++) { // (endTime + timeInterval) is used to include latest frame - otherwise we will have empty screen for the first 10 minutes
       // Sort by epoch difference
       let epoches = Object.keys(resData['balances']);
       
@@ -172,16 +191,16 @@ const useAuctionData = () => {
       // let ethAmountRaised: number = Math.abs(+epoches[0] - T) < timeInterval ? +resData['balances'][epoches[0]].amount : 0
       let ethAmountRaised = +resData['balances'][epoches[0]].amount;
       if (auctionData.prices[index] >= currentKexPrice) {
-        amounts[index] = ethAmountRaised * +resData['usd'];
+        amounts[index] = ethAmountRaised * +resCnf['ethusd'];
         prices[index] = pPrices && pPrices[index];
         labels[index] = labels && xLabels[index];
       }
-      if (ethAmountRaised > 0) {
+      if (ethAmountRaised > ethDeposited) { // lets find the largest sum of ETH that was ever deposited 
         ethDeposited = ethAmountRaised
       }
     }
 
-    totalRaisedAmount = ethDeposited * +resData['usd'];
+    totalRaisedAmount = ethDeposited * +resCnf['ethusd'];
     
     setAuctionData({
       labels: totalRaisedAmount > CAP3 ? labels : xLabels,
@@ -190,7 +209,8 @@ const useAuctionData = () => {
       kexPrice: currentKexPrice,
       ethDeposited: ethDeposited,
       totalRaisedInUSD: totalRaisedAmount,
-      auctionEndTimeLeft: getEstimatedEndTime(totalRaisedAmount, now),
+      auctionEndTimeLeft: getEstimatedTimeLeft(ethDeposited, now),
+      auctionEndCAP: getEstimatedEndCAP(now), // ETH
       auctionFinished: now > auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2 ? true : false
     })
   }

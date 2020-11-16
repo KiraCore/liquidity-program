@@ -16,6 +16,7 @@ import { CountUpValue } from '../../Value/CountUpValue'
 import kexIcon from '../../../assets/img/kira.png'
 import { provider } from 'web3-core'
 import { getKiraAuctionContract, getKiraAddress } from '../../../kira/utils'
+import cfgData from '../../../config.json';
 
 const AccountModal: React.FC<ModalProps> = ({ onDismiss }) => {
   const {
@@ -27,6 +28,7 @@ const AccountModal: React.FC<ModalProps> = ({ onDismiss }) => {
     reset()
   }, [onDismiss, reset])
 
+  const resCnf: any = cfgData; // Config Data
   const kira = useKira()
   const auctionContract = getKiraAuctionContract(kira);
   const kexBalance = useTokenBalance();

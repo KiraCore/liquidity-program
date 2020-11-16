@@ -15,6 +15,7 @@ import { getKiraAddress } from '../../../kira/utils'
 import Kira_Img from '../../../assets/img/kira.png'
 import BigNumber from 'bignumber.js'
 import cfgData from '../../../config.json';
+import { exception } from 'react-ga'
 
 const RemainingTime: React.FC = () => {
   const [start, setStart] = useState(0)
@@ -74,14 +75,15 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
   const [auctionRemainingTime, setAuctionRemainingTime] = useState<number>(0);
   const [currentKexPrice, setCurrentKexPrice] = useState<number>(0);
   const [totalDeposited, setTotalDeposited] = useState<number>(0);
-  const [totalKEXAmount, setTotalKexAmount] = useState<number>(0);
-  const [remainingPercent, setRemainingPercent] = useState<string>("100.000");
+  const [filledPercent, setFilledPercent] = useState<string>("0.00"); // % of the CAP remaining to be filled by the public
 
   const kira = useKira()
   const auctionConfig = useAuctionConfig()
-  const kexBalance = useTokenBalance()
-  const kexInitialSupply = useTokenInitialSupply()
+  //const kexBalance = useTokenBalance()
+  //const kexInitialSupply = useTokenInitialSupply()
   const resCnf: any = cfgData; // Config Data
+  const kexAvailable = resCnf["available"] // max amount of KEX available for distribution
+  const kexCirculating = resCnf["circulation"] // max circulating supply after auction end
 
   useEffect(() => {
     if (auctionData) {
@@ -110,14 +112,20 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
   }, [auctionData])
 
   useEffect(() => {
-    if (auctionData && kexBalance) {
-      let kexCalculated = auctionData.totalRaisedInUSD / (auctionData.kexPrice === 0 ? 1 : auctionData.kexPrice);
-      let totalKex = kexBalance.toNumber() === 0 ? kexCalculated : Math.min(kexBalance.toNumber(), kexCalculated);
-      setTotalKexAmount(+totalKex.toFixed(0));
-      let remainingKex = new BigNumber(kexInitialSupply).minus(+totalKex.toFixed(0));
-      setRemainingPercent(new BigNumber(remainingKex).dividedBy(kexInitialSupply).multipliedBy(100).toNumber().toFixed(3))
+    if (auctionData) {
+      if (auctionData.ethDeposited <= 0) { // if raised nothing 
+         setFilledPercent(new BigNumber(100).toNumber().toFixed(2)); // 0% was filled
+      }
+
+      if(auctionData.auctionEndCAP <= 0) {
+          console.warn("Invalid data within auction data: ");
+          console.warn(auctionData);
+          throw new Error(`End CAP can't be less or equal 0, but was ${auctionData.kexPrice}`);
+      }
+
+      setFilledPercent((auctionData.ethDeposited/auctionData.auctionEndCAP).toFixed(2)) // what % of the current hard cap was deposited
     }
-  }, [auctionData, currentKexPrice, kexBalance])
+  }, [auctionData, currentKexPrice])
 
   useEffect(() => {
     if (auctionConfig) {
@@ -161,8 +169,8 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
                 </StyledAuctionTime>
 
                 <StyledAuctionTime>
-                  <Label text="Kex Remaining" color='#523632'/>
-                  <StyledAuctionValue>{remainingPercent}%</StyledAuctionValue>
+                  <Label text="Hard CAP Reached" color='#523632'/>
+                  <StyledAuctionValue>{filledPercent}%</StyledAuctionValue>
                 </StyledAuctionTime>
               </div>
             </StyledBalance>
@@ -199,7 +207,7 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
                 </StyledAuctionTime>
 
                 <StyledAuctionTime>
-                  <Label text="Circulation CAP" color='#523632'/>
+                  <Label text="Projected CMC" color='#523632'/>
                   <StyledAuctionValue>${abbreviateNumber(new BigNumber(resCnf["circulation"]).multipliedBy(currentKexPrice).toNumber())}</StyledAuctionValue>
                 </StyledAuctionTime>
               </div>
@@ -208,8 +216,8 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
         </CardContent>
 
         <Footnote>
-          KEX amount to be distributed
-          <FootnoteValue>{totalKEXAmount} KEX</FootnoteValue>
+           Total KEX Allocated For Liquidity Auction
+          <FootnoteValue>{resCnf["available"]} KEX</FootnoteValue>
         </Footnote>
       </Card>
     </StyledWrapper>

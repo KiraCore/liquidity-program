@@ -30,9 +30,9 @@ const useAuctionConfig = () => {
       console.log("INFO: Fetching contract mock data...");
       config = {
         0: `${resCnf['start']}`, 
-        1: `${resCnf['p1']}`,
-        2: `${resCnf['p2']}`,
-        3: `${resCnf['p3']}`,
+        1: `${resCnf['p1']}`, // PRICE IN KEX/ETH
+        2: `${resCnf['p2']}`, // PRICE IN KEX/ETH
+        3: `${resCnf['p3']}`, // PRICE IN KEX/ETH
         4: `${resCnf['t1']}`,
         5: `${resCnf['t2']}`,
         6: `${resCnf['delay']}`, // min time delta between consecutive ETH transfers
@@ -45,9 +45,9 @@ const useAuctionConfig = () => {
     console.log("INFO: Contract data:");
     console.log(config);
 
-    let price1 = new BigNumber(parseInt(config[1])).shiftedBy(-18).toNumber();
-    let price2 = new BigNumber(parseInt(config[2])).shiftedBy(-18).toNumber();
-    let price3 = new BigNumber(parseInt(config[3])).shiftedBy(-18).toNumber();
+    let price1 = new BigNumber(parseInt(config[1])).shiftedBy(-18).toNumber(); // PRICE IN KEX/ETH
+    let price2 = new BigNumber(parseInt(config[2])).shiftedBy(-18).toNumber(); // PRICE IN KEX/ETH
+    let price3 = new BigNumber(parseInt(config[3])).shiftedBy(-18).toNumber(); // PRICE IN KEX/ETH
     let maxEther = new BigNumber(parseInt(config[7])).shiftedBy(-18).toNumber();
 
     setAuction({

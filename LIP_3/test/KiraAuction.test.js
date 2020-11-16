@@ -260,7 +260,7 @@ contract('KiraAuction Test', async function (accounts) {
       const sendEth = toWei(0.5)
       await expect(instance.send(sendEth, { from: account1 })).to.eventually.be.fulfilled
       await expect(instance.totalDeposited()).to.eventually.be.a.bignumber.equal(new BN(sendEth))
-      await expect(instance.getLatestPrice()).to.eventually.be.a.bignumber.equal(new BN(toWei(0.05)))
+      await expect(instance.latestPrice.call()).to.eventually.be.a.bignumber.equal(new BN(toWei(0.05)))
     })
   })
 

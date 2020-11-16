@@ -123,13 +123,8 @@ contract KiraAuction is Ownable {
             bool
         )
     {
-        return (
-            customers[addr].whitelisted,
-            customers[addr].claimed_wei,
-            customers[addr].last_deposit_time,
-            customers[addr].claimed,
-            customers[addr].distributed
-        );
+        UserInfo storage customer = customers[addr];
+        return (customer.whitelisted, customer.claimed_wei, customer.last_deposit_time, customer.claimed, customer.distributed);
     }
 
     function getAuctionConfigInfo()

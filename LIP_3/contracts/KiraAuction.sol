@@ -29,15 +29,15 @@ contract KiraAuction is Ownable {
 
     address payable public wallet;
 
-    uint256 public startTime = 0;
+    uint256 public startTime;
     uint256 private P1;
     uint256 private P2;
     uint256 private P3;
     uint256 private T1;
     uint256 private T2;
-    uint256 private MIN_WEI = 0 ether;
-    uint256 private MAX_WEI = 0 ether;
-    uint256 private INTERVAL_LIMIT = 0;
+    uint256 private MIN_WEI;
+    uint256 private MAX_WEI;
+    uint256 private INTERVAL_LIMIT;
 
     struct UserInfo {
         bool whitelisted;
@@ -52,10 +52,10 @@ contract KiraAuction is Ownable {
 
     ERC20 private kiraToken;
 
-    uint256 private totalWeiAmount = 0;
-    uint256 private latestPrice = 0;
+    uint256 private totalWeiAmount;
+    uint256 private latestPrice;
 
-    bool public isFinished = false;
+    bool public isFinished;
 
     // Events
     event AuctionConfigured(uint256 _startTime);
@@ -81,7 +81,7 @@ contract KiraAuction is Ownable {
     }
 
     modifier onlyAfterAuction() {
-        uint256 cap = 0;
+        uint256 cap;
         if (isFinished == false) {
             cap = _getCurrentCap();
         }
@@ -310,7 +310,7 @@ contract KiraAuction is Ownable {
     // only after auction
 
     function distribute() external onlyOwner onlyAfterAuction {
-        uint256 totalDistributed = 0;
+        uint256 totalDistributed;
         uint256 exp = 10**uint256(kiraToken.decimals());
 
         uint256 numberOfContributors = arrayAddress.length;

@@ -17,12 +17,12 @@ contract KiraStaking is IKiraStaking, ReentrancyGuard, Pausable {
 
     IERC20 public rewardsToken;
     IERC20 public stakingToken;
-    uint256 public periodFinish = 0;
-    uint256 public rewardRate = 0;
-    uint256 public rewardsDuration = 0;
+    uint256 public periodFinish;
+    uint256 public rewardRate;
+    uint256 public rewardsDuration;
     uint256 public lastUpdateTime;
     uint256 public rewardPerTokenStored;
-    uint256 public lastBalance = 0;
+    uint256 public lastBalance;
 
     mapping(address => uint256) public userRewardPerTokenPaid;
     mapping(address => uint256) public rewards;

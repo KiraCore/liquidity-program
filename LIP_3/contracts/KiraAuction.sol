@@ -45,7 +45,7 @@ contract KiraAuction is Ownable {
     uint256 private MAX_WEI;
     uint256 private INTERVAL_LIMIT;
     uint256 private totalWeiAmount;
-    uint256 private latestPrice;
+    uint256 public latestPrice;
 
     address payable public wallet;
     bool public isFinished;
@@ -148,10 +148,6 @@ contract KiraAuction is Ownable {
         )
     {
         return (startTime, P1, P2, P3, T1, T2, INTERVAL_LIMIT, MIN_WEI, MAX_WEI);
-    }
-
-    function getLatestPrice() external view returns (uint256) {
-        return latestPrice;
     }
 
     // Internal

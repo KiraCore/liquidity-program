@@ -18,21 +18,23 @@ const useAuctionData = () => {
   const [auctionData, setAuctionData] = useState<AuctionData>();
   const [xLabels, setLabels] = useState([]);
   const [pPrices, setPrices] = useState([]);
+  const [genFinished, setGenFinished] = useState(false);
   const [intervalAllowed, setIntervalAllowed] = useState(true);
   
-  const kira = useKira()
   const kexInitialSupply = useTokenInitialSupply()
   const availableKEX: number = +resCnf["available"]; // Maximum number of KEX available for distribution via the Liquidity Auction
 
   useEffect(() => {
-    if (auctionConfig && kexInitialSupply) {
+    console.log("Fetch Auction Data...");
+    if (auctionConfig && kexInitialSupply && !genFinished && intervalAllowed) {
       generateInitialData()
     }
-  }, [auctionConfig, kexInitialSupply])
+  }, [auctionConfig, kexInitialSupply, genFinished])
 
   // fetch new data every 5 seconds
   useInterval(async () => {
-    if (!!auctionConfig && !!auctionData && intervalAllowed) {
+    console.log("Interval running...");
+    if (!!auctionConfig && !!auctionData) {
       fetchData()
     }
   }, 5000);
@@ -47,14 +49,14 @@ const useAuctionData = () => {
         return auctionConfig.P1; // edge cases must be explicit
     }
 
-    if (dT >= (auctionConfig.T1 + auctionConfig.T2)) { // at the auction ended then price is MIN
+    if (dT > (auctionConfig.T1 + auctionConfig.T2)) { // at the auction ended then price is MIN
       return auctionConfig.P3;  // edge cases must be explicit
     }
 
     if (dT > 0 && dT <= auctionConfig.T1) { // If in T1
       currentPrice = auctionConfig.P2 + (((auctionConfig.T1 - dT) * (auctionConfig.P1 - auctionConfig.P2)) / auctionConfig.T1);
     } else if (dT > auctionConfig.T1) { // If in T1 ~ T2
-      currentPrice = auctionConfig.P3 + (((auctionConfig.T2 + (dT - auctionConfig.T1)) * (auctionConfig.P2 - auctionConfig.P3)) / auctionConfig.T2);
+      currentPrice = auctionConfig.P3 + (((auctionConfig.T2 + auctionConfig.T1 - dT) * (auctionConfig.P2 - auctionConfig.P3)) / auctionConfig.T2);
     }
 
     return currentPrice
@@ -67,6 +69,7 @@ const useAuctionData = () => {
   const getEstimatedTimeLeft = (totalRaisedETH:number, currentTime: number) => {
     if (!auctionConfig) return;
     const dT: number = currentTime - auctionConfig.epochTime
+
     if (dT <= 0) { // if auction didn't started yet then time remaining is MAX possible
         return (auctionConfig.T1 + auctionConfig.T2); // edge cases must be explicit
     }
@@ -109,19 +112,25 @@ const useAuctionData = () => {
     
     for (let epochT = auctionConfig.epochTime; epochT <= T2M; epochT += timeInterval) {
       let T = new Date(0);
+      console.log(epochT, auctionConfig.epochTime);
       T.setUTCSeconds(epochT);
-
-      const hour = T.getUTCHours();
-      const minute = T.getUTCMinutes();
-
-      labels.push([(hour > 9 ? '' : '0') + hour, (minute > 9 ? '' : '0') + minute].join(':'));
-      prices.push(getCurrentPrice(epochT));
+      let month = T.getMonth();
+      let day = T.getUTCDate();
+      let hour = T.getUTCHours();
+      let minute =T.getUTCMinutes();
+      let second = T.getUTCSeconds();
+      day = day ? day : 0;
+      hour = hour ? hour : 0;
+      minute = minute ? minute : 0;
+      second = second ? second : 0;
+      console.log(month);
+      labels.push((day > 9 ? '' : '0') + day + "/" + (month) + " " + [(hour > 9 ? '' : '0') + hour, (minute > 9 ? '' : '0') + minute, (second > 9 ? '' : '0') + second].join(':'));
+      prices.push(getCurrentPrice(epochT) * +resCnf['ethusd']);
       amounts.push(0);
     }
     
     setPrices(prices);
     setLabels(labels);
-
     setAuctionData({
       labels: labels,
       prices: prices,
@@ -132,6 +141,7 @@ const useAuctionData = () => {
       initialMarketCap: CAP1,
       auctionFinished: now > T2M ? true : false
     })
+    setGenFinished(true);
   }
 
   const fetchData = async () => {
@@ -145,6 +155,7 @@ const useAuctionData = () => {
     const now = Date.now() / 1000;
     const T2M = auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2;
     const currentKexPrice = getCurrentPrice(now);
+    const estimatedEndCAP = getEstimatedEndCAP(now) * +resCnf['ethusd']; // IN USD
     const timeLeft = getEstimatedTimeLeft(ethDeposited, now);
     const CAP3 = availableKEX * auctionConfig.P3;
 
@@ -188,30 +199,35 @@ const useAuctionData = () => {
       })
 
       // Find the cloest epoch timestamp
-      // let ethAmountRaised: number = Math.abs(+epoches[0] - T) < timeInterval ? +resData['balances'][epoches[0]].amount : 0
-      let ethAmountRaised = +resData['balances'][epoches[0]].amount;
-      if (auctionData.prices[index] >= currentKexPrice) {
-        amounts[index] = ethAmountRaised * +resCnf['ethusd'];
-        prices[index] = pPrices && pPrices[index];
-        labels[index] = labels && xLabels[index];
-      }
+      let ethAmountRaised: number = Math.abs(+epoches[0] - T) < timeInterval ? +resData['balances'][epoches[0]].amount : 0
+      // let ethAmountRaised = +resData['balances'][epoches[0]].amount;
+
+      amounts[index] = ethAmountRaised;
+      prices[index] = pPrices && pPrices[index];
+      labels[index] = labels && xLabels[index];
+
       if (ethAmountRaised > ethDeposited) { // lets find the largest sum of ETH that was ever deposited 
         ethDeposited = ethAmountRaised
       }
     }
 
     totalRaisedAmount = ethDeposited * +resCnf['ethusd'];
+
+    if (totalRaisedAmount > estimatedEndCAP) { // Finishes the auction when raised amount is over the estimated end cap
+      setIntervalAllowed(false);
+      console.log("Finished", currentKexPrice);
+    }
     
     setAuctionData({
       labels: totalRaisedAmount > CAP3 ? labels : xLabels,
       prices: totalRaisedAmount > CAP3 ? prices : pPrices,
       amounts: amounts,
-      kexPrice: currentKexPrice,
+      kexPrice: currentKexPrice * +resCnf['ethusd'],
       ethDeposited: ethDeposited,
       totalRaisedInUSD: totalRaisedAmount,
       auctionEndTimeLeft: getEstimatedTimeLeft(ethDeposited, now),
-      auctionEndCAP: getEstimatedEndCAP(now), // ETH
-      auctionFinished: now > auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2 ? true : false
+      auctionEndCAP: estimatedEndCAP, // IN USD
+      auctionFinished: now > auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2 || totalRaisedAmount > estimatedEndCAP ? true : false
     })
   }
 

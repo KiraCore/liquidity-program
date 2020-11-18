@@ -4,6 +4,7 @@ import { Bar } from 'react-chartjs-2'
 
 import { AuctionData } from '../../../contexts/Auction'
 import useAuctionConfig from '../../../hooks/useAuctionConfig'
+import cfgData from '../../../config.json';
 
 const abbreviateNumber = (value: number)  => {
   let newValue;
@@ -29,7 +30,8 @@ interface ChartProps {
 
 const Chart: React.FC<ChartProps> = ({ auctionData }) => {
   const auctionConfig = useAuctionConfig();
-  const [tick, setTick] = useState(100);
+  const resCnf: any = cfgData; // Config Data
+  const kexAvailable = resCnf["available"] // max amount of KEX available for distribution
   const options: object = {
     // maintainAspectRatio: false,
     title: {
@@ -41,8 +43,11 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
       callbacks: {
         label: (tooltipItem: any) => {
           var label = tooltipItem.datasetIndex === 0 ? "Price" : tooltipItem.datasetIndex === 1 ? "Amount" : "";
-          if (label) label += ": $";
-          label += tooltipItem.yLabel;
+          if (tooltipItem.datasetIndex === 0) {
+            label += ": $" + +tooltipItem.yLabel.toFixed(5);
+          } else if (tooltipItem.datasetIndex === 1) {
+            label += ": " + tooltipItem.yLabel.toFixed(3) + " ETH";
+          }
           return label;
         }
       }
@@ -64,27 +69,18 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
         {
           id: 'price',
           position: 'left',
-          type: 'logarithmic',
+          type: 'linear',
           scaleLabel: {
             display: true,
             labelString: 'Max Projected Price [KEX/USD]',
             fontColor: "rgba(88, 201, 62)",
           },
           ticks: {
-            max: auctionConfig && auctionConfig.P1,
+            min: 0,
+            max: auctionConfig && auctionConfig.P1 * +resCnf['ethusd'],
             beginAtZero: false,
             callback: (value: number, index: number, values: []) => {
-              if (auctionConfig) {
-                if (Math.abs(value - auctionConfig.P1) <= 0.005) {
-                  return '$' + auctionConfig.P1;
-                }
-                if (Math.abs(value - auctionConfig.P2) <= 0.005) {
-                  return '$' + auctionConfig.P2;
-                }
-                if (Math.abs(value - auctionConfig.P3) <= 0.005) {
-                  return '$' + value;
-                }
-              }
+              return '$' + value.toFixed(3);
             }
           },
           gridLines: {
@@ -99,7 +95,7 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
           position: 'right',
           scaleLabel: {
             display: true,
-            labelString: 'Current Amount Raised [USD]',
+            labelString: 'Current Amount Raised [ETH]',
             fontColor: "rgba(199, 75, 64)",
           },
           gridLines: {
@@ -109,9 +105,9 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
           },
           ticks: {
             min: 0,
-            max: tick,
+            max: auctionConfig && kexAvailable * auctionConfig.P1,
             callback: (value: number, index: number, values: number) => {
-              return '$' + abbreviateNumber(value);
+              return value.toFixed(2) + ' ETH';
             }
           }
         }
@@ -134,7 +130,7 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
       },
       {
         type: 'bar',
-        label: 'Current Amount Raised [USD]',
+        label: 'Current Amount Raised [ETH]',
         backgroundColor: `rgba(199, 75, 64)`,
         borderColor: 'rgba(199, 75, 64)',
         borderWidth: 2,
@@ -145,20 +141,6 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
     ],
   });
   
-  useEffect(() => {
-    if (auctionData) {
-      let tick = 1;
-      let totalPrice = auctionData.totalRaisedInUSD
-      
-      while (totalPrice > 1) {
-        totalPrice /= 10;
-        tick *= 10;
-      }
-
-      setTick(tick)
-    }
-  }, [auctionData])
-
   useEffect(() => {
     if(auctionData) {
       chartData.labels = auctionData.labels;

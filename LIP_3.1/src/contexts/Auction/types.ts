@@ -1,5 +1,3 @@
-import { Contract } from 'web3-eth-contract'
-
 export interface AuctionInfo {
   epochTime?: number,
   P1?: number
@@ -9,7 +7,7 @@ export interface AuctionInfo {
   T2?: number
   intervalLimit?: number
   minEther?: number
-  maxEther?: number
+  maxEther?: number,
 }
 
 export interface AuctionContext {

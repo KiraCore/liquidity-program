@@ -26,24 +26,16 @@ const useAuctionConfig = () => {
       throw new Error("ERROR: Can't fetch Configuration Data");
     }
 
-    if(resCnf['test'] == true){ // LOCAL TESTING DATA ../config.json
-      console.log("INFO: Fetching contract mock data...");
-      config = {
-        0: `${resCnf['start']}`, 
-        1: `${resCnf['p1']}`, // PRICE IN KEX/ETH
-        2: `${resCnf['p2']}`, // PRICE IN KEX/ETH
-        3: `${resCnf['p3']}`, // PRICE IN KEX/ETH
-        4: `${resCnf['t1']}`,
-        5: `${resCnf['t2']}`,
-        6: `${resCnf['delay']}`, // min time delta between consecutive ETH transfers
-        7: `${resCnf['limit']}`} // max ETH limit per transaction
-    } else { // PRODUCTION DATA
-      console.log(`INFO: Fetching contract data ${auctionAddress}...`);
-      config = await getAuctionConfig(ethereum, auctionAddress);
-    }
-
-    console.log("INFO: Contract data:");
-    console.log(config);
+    console.log("INFO: Reading config data...");
+    config = {
+      0: `${resCnf['start']}`, 
+      1: `${resCnf['p1']}`, // PRICE IN KEX/ETH
+      2: `${resCnf['p2']}`, // PRICE IN KEX/ETH
+      3: `${resCnf['p3']}`, // PRICE IN KEX/ETH
+      4: `${resCnf['t1']}`,
+      5: `${resCnf['t2']}`,
+      6: `${resCnf['delay']}`, // min time delta between consecutive ETH transfers
+      7: `${resCnf['limit']}`} // max ETH limit per transaction
 
     let price1 = new BigNumber(parseInt(config[1])).shiftedBy(-18).toNumber(); // PRICE IN KEX/ETH
     let price2 = new BigNumber(parseInt(config[2])).shiftedBy(-18).toNumber(); // PRICE IN KEX/ETH
@@ -52,9 +44,9 @@ const useAuctionConfig = () => {
 
     setAuction({
       epochTime: parseInt(config[0]),
-      P1: price1,
-      P2: price2,
-      P3: price3,
+      P1: price1, // IN ETH FOR PRICE CALCULATION
+      P2: price2, // IN ETH FOR PRICE CALCULATION
+      P3: price3, // IN ETH FOR PRICE CALCULATION
       T1: parseInt(config[4]),
       T2: parseInt(config[5]),
       intervalLimit: parseInt(config[6]),
@@ -63,7 +55,14 @@ const useAuctionConfig = () => {
   }, [ethereum, auctionAddress])
 
   useEffect(() => {
-    if (ethereum && auctionAddress) {
+    console.log("Fetch Auction Config...");
+    const resCnf: any = cfgData; // Config Data
+    
+    if (!resCnf) {
+      throw new Error("ERROR: Can't fetch Configuration Data");
+    }
+
+    if (ethereum && auctionAddress || resCnf['test'] == true) {
       fetchAuctionInfo()
     }
   }, [ethereum, auctionAddress])

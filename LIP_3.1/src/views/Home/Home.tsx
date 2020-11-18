@@ -37,19 +37,19 @@ const Home: React.FC = () => {
       </Container>
       <Spacer size="md" />
 
-      {auctionData && !auctionFinished && (
+      {!auctionFinished && (
         <Container size="lg">
           <Chart auctionData={auctionData}/>
         </Container>
       )}
-
+{/* 
       {(!auctionData) && (
         <StyledContainer>
           <StyledText>
             Please connect to your wallet
           </StyledText>
         </StyledContainer>
-      )}
+      )} */}
 
       {auctionData && auctionFinished && (
         <StyledContainer>

@@ -7,51 +7,10 @@ import Label from '../../../components/Label'
 import Spacer from '../../../components/Spacer'
 import useKira from '../../../hooks/useKira'
 import useAuctionConfig from '../../../hooks/useAuctionConfig'
-// import useAuctionData from '../../../hooks/useAuctionData'
 import { AuctionData } from '../../../contexts/Auction'
-import useTokenBalance from '../../../hooks/useTokenBalance'
-import useTokenInitialSupply from '../../../hooks/useTokenInitialSupply'
-import { getKiraAddress } from '../../../kira/utils'
 import Kira_Img from '../../../assets/img/kira.png'
 import BigNumber from 'bignumber.js'
 import cfgData from '../../../config.json';
-import { exception } from 'react-ga'
-
-const RemainingTime: React.FC = () => {
-  const [start, setStart] = useState(0)
-  const [end, setEnd] = useState(0)
-  const [scale, setScale] = useState(1)
-
-  let sumEarning = 0
-
-  useEffect(() => {
-    setStart(end)
-    setEnd(sumEarning)
-  }, [sumEarning])
-
-  return (
-    <span
-      style={{
-        transform: `scale(${scale})`,
-        transformOrigin: 'right bottom',
-        transition: 'transform 0.5s',
-        display: 'inline-block',
-      }}
-    >
-      <CountUp
-        start={start}
-        end={end}
-        decimals={end < 0 ? 4 : end > 1e5 ? 0 : 3}
-        duration={1}
-        onStart={() => {
-          setScale(1.25)
-          setTimeout(() => setScale(1), 600)
-        }}
-        separator=","
-      />
-    </span>
-  )
-}
 
 interface StatsProps {
   auctionData?: AuctionData
@@ -72,18 +31,17 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
   // TODO: Get Auction Status
   const [auctionStartTime, setAuctionStartTime] = useState<string>("");
   const [auctionEndTime, setAuctionEndTime] = useState<string>("");
-  const [auctionRemainingTime, setAuctionRemainingTime] = useState<number>(0);
+  const [auctionRemainingTime, setAuctionRemainingTime] = useState<string>('0');
   const [currentKexPrice, setCurrentKexPrice] = useState<number>(0);
   const [totalDeposited, setTotalDeposited] = useState<number>(0);
   const [filledPercent, setFilledPercent] = useState<string>("0.00"); // % of the CAP remaining to be filled by the public
 
-  const kira = useKira()
   const auctionConfig = useAuctionConfig()
   //const kexBalance = useTokenBalance()
   //const kexInitialSupply = useTokenInitialSupply()
   const resCnf: any = cfgData; // Config Data
-  const kexAvailable = resCnf["available"] // max amount of KEX available for distribution
-  const kexCirculating = resCnf["circulation"] // max circulating supply after auction end
+  // const kexAvailable = resCnf["available"] // max amount of KEX available for distribution
+  // const kexCirculating = resCnf["circulation"] // max circulating supply after auction end
 
   useEffect(() => {
     if (auctionData) {
@@ -92,21 +50,11 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
       
       if (auctionData.auctionFinished) {
         setAuctionEndTime("Finished");
-        setAuctionRemainingTime(0);
+        setAuctionRemainingTime('0');
       } else {
-        setAuctionRemainingTime(auctionData.auctionEndTimeLeft);
-
-        let endTime = new Date(0);
-        endTime.setUTCSeconds(auctionConfig.epochTime + auctionData.auctionEndTimeLeft);
-        let day = endTime.getUTCDate();
-        let hour = endTime.getUTCHours();
-        let minute = endTime.getUTCMinutes();
-        let second = endTime.getUTCSeconds();
-        day = day ? day : 0;
-        hour = hour ? hour : 0;
-        minute = minute ? minute : 0;
-        second = second ? second : 0;
-        setAuctionEndTime([(day > 9 ? '' : '0') + day, (hour > 9 ? '' : '0') + hour, (minute > 9 ? '' : '0') + minute, (second > 9 ? '' : '0') + second].join(':'));
+        console.log("AUCTION END TIME LEFT: ", auctionData.auctionEndTimeLeft);
+        setAuctionRemainingTime(auctionData.auctionEndTimeLeft && auctionData.auctionEndTimeLeft.toFixed(2));
+        setAuctionEndTime(formatTime(auctionConfig.epochTime && auctionData.auctionEndTimeLeft ? auctionConfig.epochTime + auctionData.auctionEndTimeLeft : 0));
       }
     }
   }, [auctionData])
@@ -123,21 +71,26 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
           throw new Error(`End CAP can't be less or equal 0, but was ${auctionData.kexPrice}`);
       }
 
-      setFilledPercent((auctionData.ethDeposited/auctionData.auctionEndCAP).toFixed(2)) // what % of the current hard cap was deposited
+      const percent = auctionData.auctionEndCAP ? auctionData.totalRaisedInUSD / auctionData.auctionEndCAP * 100 : 0;
+      setFilledPercent((percent).toFixed(2)) // what % of the current hard cap was deposited
     }
   }, [auctionData, currentKexPrice])
 
   useEffect(() => {
     if (auctionConfig) {
-      let startTime = new Date(0);
-      startTime.setUTCSeconds(auctionConfig.epochTime);
-      const day = startTime.getUTCDate();
-      const hour = startTime.getUTCHours();
-      const minute = startTime.getUTCMinutes();
-      const second = startTime.getUTCSeconds();
-      setAuctionStartTime([(day > 9 ? '' : '0') + day, (hour > 9 ? '' : '0') + hour, (minute > 9 ? '' : '0') + minute, (second > 9 ? '' : '0') + second].join(':'));
+      setAuctionStartTime(formatTime(auctionConfig.epochTime));
     }
   }, [auctionConfig])
+
+  const formatTime = (epoch: number) => {
+    let startTime = new Date(0);
+    startTime.setUTCSeconds(epoch);
+    const day = startTime.getUTCDate();
+    const hour = startTime.getUTCHours();
+    const minute = startTime.getUTCMinutes();
+    const second = startTime.getUTCSeconds();
+    return [(day > 9 ? '' : '0') + day, (hour > 9 ? '' : '0') + hour, (minute > 9 ? '' : '0') + minute, (second > 9 ? '' : '0') + second].join(':');
+  }
 
   return (
     <StyledWrapper>
@@ -169,6 +122,11 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
                 </StyledAuctionTime>
 
                 <StyledAuctionTime>
+                  <Label text="Now (UTC)" color='#523632'/>
+                  <StyledAuctionValue>{formatTime(Date.now() / 1000)}</StyledAuctionValue>
+                </StyledAuctionTime>
+
+                <StyledAuctionTime>
                   <Label text="Hard CAP Reached" color='#523632'/>
                   <StyledAuctionValue>{filledPercent}%</StyledAuctionValue>
                 </StyledAuctionTime>
@@ -197,7 +155,7 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
                 <Spacer size="sm"/>
 
                 <StyledAuctionTime>
-                  <Label text="Projected KEX Price" color='#523632'/>
+                  <Label text="Max KEX Price" color='#523632'/>
                   <StyledAuctionValue>{"$" + currentKexPrice}</StyledAuctionValue>
                 </StyledAuctionTime>
                

@@ -175,34 +175,23 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
           options={options} 
           type="bar" 
         />
-        <StyledQRCode>
-          <QRCode value={resCnf['deposit']} />
-        </StyledQRCode>
-        <Spacer size="sm" />
-        <StyledSubText>
-          ETH Deposit Address:
-        </StyledSubText>
-        <Spacer size="sm" />
-        <StyledSubText>
-          {resCnf['deposit']}
-        </StyledSubText>
       </StyledBarContainer>
+      <StyledText>
+        {auctionData && auctionData.auctionFinished ? "Auction Finished" : "Auction is ongoing!"}
+      </StyledText>
+      <StyledSubText>
+        ETH Deposit Address:
+      </StyledSubText>
+      <Spacer size="sm" />
+      <StyledSubText>
+        <QRCode value={resCnf['deposit']} />
+      </StyledSubText>
+      <Spacer size="sm" />
+      <StyledSubText>
+        {resCnf['deposit']}
+      </StyledSubText>
+      <Spacer size="md" />
       <StyledInfoContainer>
-        <StyledText>
-          {auctionData && auctionData.auctionFinished ? "Auction Finished" : "Auction is ongoing!"}
-        </StyledText>
-        <StyledSubText>
-          ETH Deposit Address:
-        </StyledSubText>
-        <Spacer size="sm" />
-        <StyledSubText>
-          <QRCode value={resCnf['deposit']} />
-        </StyledSubText>
-        <Spacer size="sm" />
-        <StyledSubText>
-          {resCnf['deposit']}
-        </StyledSubText>
-        <Spacer size="md" />
         <StyledButtonContainer>
           <StyledButton>
             <Button onClick={onClickCopy} size="sm" text="Copy" />

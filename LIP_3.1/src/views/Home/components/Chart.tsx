@@ -6,6 +6,9 @@ import { AuctionData } from '../../../contexts/Auction'
 import useAuctionConfig from '../../../hooks/useAuctionConfig'
 import Button from '../../../components/Button'
 import cfgData from '../../../config.json';
+import { Clipboard } from 'ts-clipboard';
+import { QRCode } from 'react-qrcode-logo';
+import Spacer from '../../../components/Spacer'
 
 const abbreviateNumber = (value: number)  => {
   let newValue;
@@ -33,7 +36,7 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
   const auctionConfig = useAuctionConfig();
   const resCnf: any = cfgData; // Config Data
   const kexAvailable = resCnf["available"] // max amount of KEX available for distribution
-  const depositAddress = "Deposit Address: " + resCnf['deposit'];
+
   const options: object = {
     // maintainAspectRatio: false,
     title: {
@@ -152,10 +155,18 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
     }
   }, [auctionData, chartData])
 
-  const onClick = () => {
-    window.open('https://lip3.kira.network');
+  const onClickCopy = () => {
+    Clipboard.copy(resCnf['deposit']);
   }
   
+  const onClickVerify = () => {
+    window.open(resCnf['verify']);
+  }
+
+  const onClickExplorer = () => {
+    window.open(resCnf['explorer']);
+  }
+
   return (
     <StyledWrapper>
       <StyledBarContainer>
@@ -164,17 +175,45 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
           options={options} 
           type="bar" 
         />
+        <StyledQRCode>
+          <QRCode value={resCnf['deposit']} />
+        </StyledQRCode>
+        <Spacer size="sm" />
+        <StyledSubText>
+          ETH Deposit Address:
+        </StyledSubText>
+        <Spacer size="sm" />
+        <StyledSubText>
+          {resCnf['deposit']}
+        </StyledSubText>
       </StyledBarContainer>
       <StyledInfoContainer>
         <StyledText>
           {auctionData && auctionData.auctionFinished ? "Auction Finished" : "Auction is ongoing!"}
         </StyledText>
         <StyledSubText>
-          {depositAddress}
+          ETH Deposit Address:
         </StyledSubText>
-        <StyledButton>
-          <Button onClick={onClick} size="sm" text="Etherscan" />
-        </StyledButton>
+        <Spacer size="sm" />
+        <StyledSubText>
+          <QRCode value={resCnf['deposit']} />
+        </StyledSubText>
+        <Spacer size="sm" />
+        <StyledSubText>
+          {resCnf['deposit']}
+        </StyledSubText>
+        <Spacer size="md" />
+        <StyledButtonContainer>
+          <StyledButton>
+            <Button onClick={onClickCopy} size="sm" text="Copy" />
+          </StyledButton>
+          <StyledButton>
+            <Button onClick={onClickVerify} size="sm" text="Verify" />
+          </StyledButton>
+          <StyledButton>
+            <Button onClick={onClickExplorer} size="sm" text="Explorer" />
+          </StyledButton>
+        </StyledButtonContainer>
       </StyledInfoContainer>
     </StyledWrapper>
   )
@@ -195,18 +234,18 @@ const StyledWrapper = styled.div`
 
 const StyledBarContainer = styled.div`
   width: 100%;
+  margin-top: 10px;
+  margin-bottom: 20px;
   @media (max-width: 769px) {
     display: none;
   }
 `
 const StyledInfoContainer = styled.div`
   width: 100%;
-
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  
   @media screen and (min-width: 769px) {
     display: none;
   }
@@ -224,11 +263,25 @@ const StyledSubText = styled.div`
   overflow-wrap: break-word;
   width: 100%;
   font-size: 10;
-  margin-bottom: 20px;
   color: ${props => props.theme.color.purple[500]};
 `
 
+const StyledQRCode = styled.div`
+  text-align: center;
+  width: 100%;
+  margin-top: 30px;
+`
+
+const StyledButtonContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+`
+
 const StyledButton = styled.div`
-  width: 50%;
+  width: 80px;
+  margin: 0px 10px;
 `
 export default Chart

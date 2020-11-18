@@ -32,7 +32,6 @@ const Home: React.FC = () => {
       <Container>
         <Stats auctionData={auctionData}/>
       </Container>
-      <Spacer size="md" />
       {!auctionFinished && (
         <Container size="lg">
           <Chart auctionData={auctionData}/>

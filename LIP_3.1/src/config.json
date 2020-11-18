@@ -4,6 +4,8 @@
     "token": "0x41379EF961492a594F91bB0F966c2CeD32B49544",
     "auction": "0xDAcD7D4654bae5937CDe48e526eEC911c7502f68",
     "oracle": "https://oracle-kira-network.s3.eu-central-1.amazonaws.com",
+    "verify": "https://lip3.kira.network",
+    "explorer": "https://lip3.kira.network",    
     "supply": 300000000,
     "available": 2666666, 
     "circulation": 12483333,

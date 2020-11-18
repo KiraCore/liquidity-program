@@ -66,11 +66,10 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
     const minute = Math.floor(diff / 60);
     diff %= 60;
     const second = Math.floor(diff);
-    const rTime = (day > 0 ? pad(day) + 'd ' : '') + 
-          (hour > 0 ? pad(hour) + 'h ' : '') +
-          (minute > 0 ? pad(minute) + 'm ' : '') +
-          (second > 0 ? pad(second) + 's' : '');
-    return rTime == '' ? '00d 00h 00m 00s' : rTime;
+    return (pad(day) + 'd ') + 
+          (pad(hour) + 'h ') + 
+          (pad(minute) + 'm ') + 
+          (pad(second) + 's');
   }
 
   const formatAmount = (x: number) => {

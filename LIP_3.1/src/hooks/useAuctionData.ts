@@ -112,7 +112,6 @@ const useAuctionData = () => {
     
     for (let epochT = auctionConfig.epochTime; epochT <= T2M; epochT += timeInterval) {
       let T = new Date(0);
-      console.log(epochT, auctionConfig.epochTime);
       T.setUTCSeconds(epochT);
       let month = T.getMonth();
       let day = T.getUTCDate();
@@ -123,7 +122,6 @@ const useAuctionData = () => {
       hour = hour ? hour : 0;
       minute = minute ? minute : 0;
       second = second ? second : 0;
-      console.log(month);
       labels.push((day > 9 ? '' : '0') + day + "/" + (month) + " " + [(hour > 9 ? '' : '0') + hour, (minute > 9 ? '' : '0') + minute, (second > 9 ? '' : '0') + second].join(':'));
       prices.push(getCurrentPrice(epochT) * +resCnf['ethusd']);
       amounts.push(0);

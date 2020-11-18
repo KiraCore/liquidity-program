@@ -36,21 +36,11 @@ const Home: React.FC = () => {
         <Stats auctionData={auctionData}/>
       </Container>
       <Spacer size="md" />
-
       {!auctionFinished && (
         <Container size="lg">
           <Chart auctionData={auctionData}/>
         </Container>
       )}
-{/* 
-      {(!auctionData) && (
-        <StyledContainer>
-          <StyledText>
-            Please connect to your wallet
-          </StyledText>
-        </StyledContainer>
-      )} */}
-
       {auctionData && auctionFinished && (
         <StyledContainer>
           <StyledText>
@@ -61,7 +51,6 @@ const Home: React.FC = () => {
           </StyledSubText>
         </StyledContainer>
       )}
-
       <Spacer size="md" />
       <StyledInfo>
         💡<b>Pro Tip</b>: Click "Connect Wallet" if you didn't yet : )

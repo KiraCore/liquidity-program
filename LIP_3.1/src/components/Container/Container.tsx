@@ -14,7 +14,7 @@ const Container: React.FC<ContainerProps> = ({ children, size = 'md' }) => {
       width = siteWidth / 2
       break
     case 'md':
-      width = siteWidth * 2 / 3
+      width = siteWidth * 4 / 5
       break
     case 'lg':
     default:
@@ -32,6 +32,7 @@ interface StyledContainerProps {
 }
 
 const StyledContainer = styled.div<StyledContainerProps>`
+  flex: 1;
   box-sizing: border-box;
   margin: 0 auto;
   max-width: ${props => props.width}px;

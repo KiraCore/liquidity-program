@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import kira from '../../assets/img/kira.png'
-import { useWallet } from 'use-wallet'
 import Container from '../../components/Container'
 import Page from '../../components/Page'
 import PageHeader from '../../components/PageHeader'
@@ -13,9 +12,7 @@ import useAuctionData from '../../hooks/useAuctionData'
 
 const Home: React.FC = () => {
   const [auctionFinished, setAuctionFinished] = useState<boolean>(false);
-
   const auctionData = useAuctionData()
-  const { account } = useWallet()
 
   useEffect(() => {
     if (auctionData) {
@@ -94,6 +91,7 @@ const StyledSubText = styled.div`
   justify-content: center;
   width: 100%;
   font-size: 15;
+  overflow-wrap: break-word;
   margin-top: 20px;
   color: ${props => props.theme.color.purple[500]};
 `

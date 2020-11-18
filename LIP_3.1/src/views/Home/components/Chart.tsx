@@ -4,6 +4,7 @@ import { Bar } from 'react-chartjs-2'
 
 import { AuctionData } from '../../../contexts/Auction'
 import useAuctionConfig from '../../../hooks/useAuctionConfig'
+import Button from '../../../components/Button'
 import cfgData from '../../../config.json';
 
 const abbreviateNumber = (value: number)  => {
@@ -32,6 +33,7 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
   const auctionConfig = useAuctionConfig();
   const resCnf: any = cfgData; // Config Data
   const kexAvailable = resCnf["available"] // max amount of KEX available for distribution
+  const depositAddress = "Deposit Address: " + resCnf['deposit'];
   const options: object = {
     // maintainAspectRatio: false,
     title: {
@@ -146,26 +148,43 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
       chartData.labels = auctionData.labels;
       chartData.datasets[0].data = auctionData.prices;
       chartData.datasets[1].data = auctionData.amounts;
-
       setChartData(chartData);
     }
   }, [auctionData, chartData])
 
+  const onClick = () => {
+    window.open('https://lip3.kira.network');
+  }
+  
   return (
     <StyledWrapper>
-      {/* {!!auctionConfig && (<div id="chartdiv" style={{ width: "100%", height: "500px" }}></div>)} */}
-      {<Bar 
-        data={chartData} 
-        options={options} 
-        type="bar" 
-      />}
+      <StyledBarContainer>
+        <Bar
+          data={chartData} 
+          options={options} 
+          type="bar" 
+        />
+      </StyledBarContainer>
+      <StyledInfoContainer>
+        <StyledText>
+          {auctionData && auctionData.auctionFinished ? "Auction Finished" : "Auction is ongoing!"}
+        </StyledText>
+        <StyledSubText>
+          {depositAddress}
+        </StyledSubText>
+        <StyledButton>
+          <Button onClick={onClick} size="sm" text="Etherscan" />
+        </StyledButton>
+      </StyledInfoContainer>
     </StyledWrapper>
   )
 }
 
 const StyledWrapper = styled.div`
-  align-items: center;
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   @media (max-width: 768px) {
     width: 100%;
     flex-flow: column nowrap;
@@ -174,4 +193,42 @@ const StyledWrapper = styled.div`
   margin-top: 50px;
 `
 
+const StyledBarContainer = styled.div`
+  width: 100%;
+  @media (max-width: 769px) {
+    display: none;
+  }
+`
+const StyledInfoContainer = styled.div`
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
+  @media screen and (min-width: 769px) {
+    display: none;
+  }
+`
+
+const StyledText = styled.h1`
+  text-align: center;
+  width: 100%;
+  font-size: 18;
+  color: ${props => props.theme.color.purple[500]};
+`
+
+const StyledSubText = styled.div`
+  text-align: center;
+  overflow-wrap: break-word;
+  width: 100%;
+  font-size: 10;
+  margin-bottom: 20px;
+  color: ${props => props.theme.color.purple[500]};
+`
+
+const StyledButton = styled.div`
+  width: 50%;
+`
 export default Chart

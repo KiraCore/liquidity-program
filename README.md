@@ -73,8 +73,9 @@ TBA
 
 * [Deployment Documentation](./LIP_3/README.md)
 * [Application Binary Interface](./LIP_3/ABI.json)
-* [Improvement Proposal](https://github.com/KiraCore/docs/blob/master/spec/liquidity-program/lip_1.md)
-
+* [Improvement Proposal](https://github.com/KiraCore/docs/blob/master/spec/liquidity-program/lip_3.md)
+* [Audit Report](./LIP_2/audit.pdf)
+  
 ### Contract Address
 
 ```
@@ -85,8 +86,9 @@ TBA
 
 **Ethereum Address Balance Caching Service**
 
-_NOTE: Caching service is an AWS lambda function which stores information regarding ethereum account balances in the function of block height and time. Intended use of this service is besides the LIP_3.1 which is a static frontend application for the public auction._
+_NOTE: Caching service is an AWS lambda function which stores information regarding ethereum account balances in the function of block height and time. Intended use of this service is the LIP_3.1 which must operate as static page without dependency on any API._
 
 * [Deployment Documentation](./LIP_3.2/README.md)
-* [Public S3 Bucket](http://oracle.kira.network)
+* [Public S3 Bucket](https://oracle.kira.network/)
+* [Configuration File](https://github.com/KiraCore/cfg/blob/main/EthereumOracle/env-mainnet)
 * [Improvement Proposal](https://github.com/KiraCore/docs/blob/master/spec/liquidity-program/lip_3.2.md)

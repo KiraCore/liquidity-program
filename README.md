@@ -6,12 +6,13 @@
 
 ## LIP_1
 
-Ethereum ERC20 KEX Placeholder Token for easy market access.
+**Ethereum ERC20 KEX Placeholder Token for easy market access**
 
 _NOTE: The owner of the contract has the privilege of whitelisting and blacklisting accounts, effectively enabling or disabling them from sending and receiving tokens. The operator also has the option of freezing token transfers for all accounts that are not explicitly whitelisted. To learn more about Transaction Ordering Dependence and    Allowance Double-Spend possibility see attached Audit Report_
 
 * [Deployment Documentation](./LIP_1/README.md)
 * [Application Binary Interface](./LIP_1/ABI.json)
+* [Improvement Proposal](https://github.com/KiraCore/docs/blob/master/spec/liquidity-program/lip_1.md)
 * [Token Logo 256x256](./LIP_1/doc/KEX-256x256.png)
 * [Audit Report](./LIP_1/audit.pdf)
 
@@ -51,3 +52,56 @@ RWTopxNIGH2njxWuafRX8gi0AYlSTBmOaFtR9ztTZCVVWXTDrTIn73hkeNiBJAY=
 -----END PGP SIGNATURE-----
 
 ```
+
+## LIP_3
+
+**Liquidity Auction**
+
+* [Deployment Documentation](./LIP_3/README.md)
+* [Application Binary Interface](./LIP_3/ABI.json)
+* [Improvement Proposal](https://github.com/KiraCore/docs/blob/master/spec/liquidity-program/lip_3.md)
+* [Audit Report](./LIP_3/audit.pdf)
+  
+### Contract Address
+
+```
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+KIRA Network Liquidity Auction Contract Address:
+0x297fF490bdd3bc80eB30397108823D2D6aB53Db6
+
+         Network: Ethereum
+    Auction Type: Hard & Soft CAP LastBid Dutch Auction with Whitelist
+   Auction Start: 26/11/2020 15:00:00 UTC
+ Accepted Tokens: ETH
+Available Tokens: 4'000'000 ERC20 KEX (0x1698...a4F8)
+        Soft CAP: $300'000 (fixed rate)
+  Whitelist Form: https://whitelist.kira.network
+
+ABI SHA256 Checksum:
+d7e25c736a66a1c22f7dd3aff0e972025eee0fe5cbbffb820951b4fd0d78fe28  ABI.json
+-----BEGIN PGP SIGNATURE-----
+Version: Keybase OpenPGP v2.1.13
+Comment: https://keybase.io/crypto
+
+wsBcBAABCgAGBQJftn+WAAoJEMd1XMN/y97LKu0IAI7gp7cu0e3ohSmd7SGpwaqv
+YGxm9wuwslD3Vd/SOfL+BOBnaaKaQd7nQLkqm4pIY81xG+zA0fGcyZKZA4lREMK3
+moG8olKfr06qAqlHc9c1saWiRfIYXqdlirUTJYpVCuAtAuU+DVShtKzCZEzjN/8N
+9EF2eDcYhLb2YQZdTyEawD/yAClyb8egp4oBboNnQRESBWnBjn0AHsrhugBYk0be
+cmulkQch/Xfu8LfCDLTLrY5Rta1q/fo9CtoFPzHtN3274QN7io+sWDBVqy1eAhh1
+BbGx6HLNdYhBJ+e8Tyo2+jf/n6xwjMsexO8hk0rHGE+ByShA50uBujpgnstEmeA=
+=6iJS
+-----END PGP SIGNATURE-----
+```
+
+## LIP_3.2
+
+**Ethereum Address Balance Caching Service**
+
+_NOTE: Caching service is an AWS lambda function which stores information regarding ethereum account balances in the function of block height and time. Intended use of this service is the LIP_3.1 which must operate as static page without dependency on any API._
+
+* [Deployment Documentation](./LIP_3.2/README.md)
+* [Public S3 Bucket](https://oracle.kira.network/)
+* [Configuration File](https://github.com/KiraCore/cfg/blob/main/EthereumOracle/env-mainnet)
+* [Improvement Proposal](https://github.com/KiraCore/docs/blob/master/spec/liquidity-program/lip_3.2.md)

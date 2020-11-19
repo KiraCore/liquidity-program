@@ -251,8 +251,6 @@ Add KEX token as a custom token in your MetaMask wallet
 Lets generate ABI so that we can interact with the contract:
 
 ```
-apt-get install xclip
-npm install -g truffle-export-abi
 truffle-export-abi
 cat ./build/ABI.json | xclip -selection c
 ```

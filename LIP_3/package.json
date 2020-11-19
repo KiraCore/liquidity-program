@@ -1,0 +1,38 @@
+{
+  "name": "kira-auction",
+  "version": "1.0.0",
+  "description": "",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "start": "npm run build",
+    "build": "truffle compile",
+    "test": "truffle test",
+    "deploy:mainnet": "truffle migrate --network mainnet",
+    "deploy:ropsten": "truffle migrate --network ropsten",
+    "deploy:kovan": "truffle migrate --network kovan",
+    "deploy:private": "truffle migrate --network private",
+    "deploy:development": "truffle migrate --network development",
+    "prebuild": "rimraf ./build/contracts/*",
+    "postinstall": "cpr .env.example .env",
+    "verify:ropsten": "truffle run verify --network ropsten",
+    "verify:kovan": "truffle run verify --network kovan",
+    "verify:mainnet": "truffle run verify --network mainnet"
+  },
+  "keywords": [],
+  "private": true,
+  "dependencies": {
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "chai-bn": "^0.2.1",
+    "cpr": "^3.0.1",
+    "dotenv": "^8.2.0",
+    "openzeppelin-solidity": "^3.1.0",
+    "rimraf": "^3.0.2",
+    "truffle": "^5.1.13",
+    "truffle-hdwallet-provider": "^1.0.17",
+    "truffle-plugin-verify": "^0.3.9"
+  }
+}

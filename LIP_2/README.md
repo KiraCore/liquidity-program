@@ -220,3 +220,17 @@ cd $HOME/liquidity-program/$LIP_ID
 jq -r ".abi" ./build/contracts/KiraStaking.json > ./build/ABI.json
 cat ./build/ABI.json | xclip -selection c
 ```
+
+## LIP_2
+
+**Liquidity Incentivization Program**
+
+* [Deployment Documentation](./LIP_2/README.md)
+* [Application Binary Interface](./LIP_2/ABI.json)
+* [Improvement Proposal](https://github.com/KiraCore/docs/blob/master/spec/liquidity-program/lip_2.md)
+
+### Contract Address
+
+```
+TBA
+```

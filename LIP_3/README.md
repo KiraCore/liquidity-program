@@ -172,7 +172,7 @@ $ npm run verify:kovan KiraAuction
 
 ```
 cd $HOME/liquidity-program/$LIP_ID
-jq -r ".abi" ./build/contracts/KiraAuction.json > ./build/ABI.json 
+jq -r ".abi" ./build/contracts/KiraAuction.json > ./build/ABI.json
 cat ./build/ABI.json | xclip -selection c
 ```
 

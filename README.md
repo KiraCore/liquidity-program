@@ -73,7 +73,7 @@ KIRA Network Liquidity Auction Contract Address:
 
          Network: Ethereum
     Auction Type: Hard & Soft CAP LastBid Dutch Auction with Whitelist
-   Auction Start: 26/11/2020 15:00:00 UTC
+   Auction Start: 25/11/2020 15:00:00 UTC
  Accepted Tokens: ETH
 Available Tokens: 4'000'000 ERC20 KEX (0x1698...a4F8)
         Soft CAP: $300'000 (fixed rate)
@@ -85,13 +85,13 @@ d7e25c736a66a1c22f7dd3aff0e972025eee0fe5cbbffb820951b4fd0d78fe28  ABI.json
 Version: Keybase OpenPGP v2.1.13
 Comment: https://keybase.io/crypto
 
-wsBcBAABCgAGBQJftn+WAAoJEMd1XMN/y97LKu0IAI7gp7cu0e3ohSmd7SGpwaqv
-YGxm9wuwslD3Vd/SOfL+BOBnaaKaQd7nQLkqm4pIY81xG+zA0fGcyZKZA4lREMK3
-moG8olKfr06qAqlHc9c1saWiRfIYXqdlirUTJYpVCuAtAuU+DVShtKzCZEzjN/8N
-9EF2eDcYhLb2YQZdTyEawD/yAClyb8egp4oBboNnQRESBWnBjn0AHsrhugBYk0be
-cmulkQch/Xfu8LfCDLTLrY5Rta1q/fo9CtoFPzHtN3274QN7io+sWDBVqy1eAhh1
-BbGx6HLNdYhBJ+e8Tyo2+jf/n6xwjMsexO8hk0rHGE+ByShA50uBujpgnstEmeA=
-=6iJS
+wsBcBAABCgAGBQJftu0VAAoJEMd1XMN/y97L2JIH/1GRsOPDzMx2ryggcjM1meQ/
+W/jW3Avp9mkAYwUhhMqh+r1jtAK8LHwyPgCysyxFpshMEXfVyWVvDt3/fDtfOwt7
+IujS5sJUOD4omV7lQBldH8W2MtjpPo9kCxhOgJ9aoclvwzmI81bXtemapUriORQ+
+qye8WTpPtFLUhFE8mxqbR8ffMlxGOpylgcUT8iHPwLbBcagXI5rj6Pk0zt2oMQ13
+0+n2rnjjneHMQg6duopjJnBPZzvlDQe+rFgpVsEAyyOtuBM5+VitAdGHNC48kLG+
+yGJXeQ6ROtU8klONsrg5R33L7ooAjNcqZoR3nnt2jLVFfjrz8WG3W0dK/PHAEgg=
+=3qNY
 -----END PGP SIGNATURE-----
 ```
 

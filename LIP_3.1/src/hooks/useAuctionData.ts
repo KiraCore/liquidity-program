@@ -34,7 +34,7 @@ const useAuctionData = () => {
   // fetch new data every 5 seconds
   useInterval(async () => {
     console.log("Interval running...");
-    if (!!auctionConfig && !!auctionData) {
+    if (!!auctionConfig && !!auctionData && intervalAllowed) {
       fetchData()
     }
   }, 5000);
@@ -112,17 +112,22 @@ const useAuctionData = () => {
     
     for (let epochT = auctionConfig.epochTime; epochT <= T2M; epochT += timeInterval) {
       let T = new Date(0);
-      T.setUTCSeconds(epochT);
-      let month = T.getMonth();
+      T.setSeconds(epochT);
+      
+      let year = T.getFullYear();
+      let month = T.getUTCMonth() + 1;
       let day = T.getUTCDate();
       let hour = T.getUTCHours();
       let minute =T.getUTCMinutes();
       let second = T.getUTCSeconds();
+
+      console.log(T.getDate());
+
       day = day ? day : 0;
       hour = hour ? hour : 0;
       minute = minute ? minute : 0;
       second = second ? second : 0;
-      labels.push((day > 9 ? '' : '0') + day + "/" + (month) + " " + [(hour > 9 ? '' : '0') + hour, (minute > 9 ? '' : '0') + minute, (second > 9 ? '' : '0') + second].join(':'));
+      labels.push(month + "/" + (day) + "/" + year + " " + [(hour > 9 ? '' : '0') + hour, (minute > 9 ? '' : '0') + minute, (second > 9 ? '' : '0') + second].join(':'));
       prices.push(getCurrentPrice(epochT) * +resCnf['ethusd']);
       amounts.push(0);
     }
@@ -214,9 +219,9 @@ const useAuctionData = () => {
     console.log("TOTAL RAISED ETH AMOUNT: ", ethDeposited, totalRaisedAmount, estimatedEndCAP, currentKexPrice);
     if (totalRaisedAmount > estimatedEndCAP) { // Finishes the auction when raised amount is over the estimated end cap
       setIntervalAllowed(false);
-      console.log("Finished", currentKexPrice);
+      console.log("Auction finished", auctionData.ethDeposited);
     }
-    
+
     setAuctionData({
       labels: totalRaisedAmount > CAP3 ? labels : xLabels,
       prices: totalRaisedAmount > CAP3 ? prices : pPrices,
@@ -226,7 +231,6 @@ const useAuctionData = () => {
       totalRaisedInUSD: totalRaisedAmount,
       auctionEndTimeLeft: getEstimatedTimeLeft(ethDeposited, now),
       auctionEndCAP: estimatedEndCAP, // IN USD
-      // auctionFinished: now > auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2 ? true : false
       auctionFinished: now > auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2 || totalRaisedAmount > estimatedEndCAP ? true : false
     })
   }

@@ -211,7 +211,7 @@ const useAuctionData = () => {
 
     totalRaisedAmount = ethDeposited * +resCnf['ethusd'];
 
-    console.log("TOTAL RAISED ETH AMOUNT: ", totalRaisedAmount, estimatedEndCAP, currentKexPrice);
+    console.log("TOTAL RAISED ETH AMOUNT: ", ethDeposited, totalRaisedAmount, estimatedEndCAP, currentKexPrice);
     if (totalRaisedAmount > estimatedEndCAP) { // Finishes the auction when raised amount is over the estimated end cap
       setIntervalAllowed(false);
       console.log("Finished", currentKexPrice);
@@ -226,8 +226,8 @@ const useAuctionData = () => {
       totalRaisedInUSD: totalRaisedAmount,
       auctionEndTimeLeft: getEstimatedTimeLeft(ethDeposited, now),
       auctionEndCAP: estimatedEndCAP, // IN USD
-      auctionFinished: now > auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2 ? true : false
-      // auctionFinished: now > auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2 || totalRaisedAmount > estimatedEndCAP ? true : false
+      // auctionFinished: now > auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2 ? true : false
+      auctionFinished: now > auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2 || totalRaisedAmount > estimatedEndCAP ? true : false
     })
   }
 

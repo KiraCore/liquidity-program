@@ -11,7 +11,8 @@ interface ButtonProps {
   size?: 'sm' | 'md' | 'lg',
   text?: string,
   to?: string,
-  variant?: 'default' | 'secondary' | 'tertiary'
+  variant?: 'default' | 'secondary' | 'tertiary',
+  bgColor?: string,
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -23,6 +24,7 @@ const Button: React.FC<ButtonProps> = ({
   text,
   to,
   variant,
+  bgColor
 }) => {
   const { color, spacing } = useContext(ThemeContext)
 
@@ -37,7 +39,7 @@ const Button: React.FC<ButtonProps> = ({
   }
 
   buttonColor = 'white'
-
+  
   let boxShadow: string
   let buttonSize: number
   let buttonPadding: number
@@ -86,6 +88,7 @@ const Button: React.FC<ButtonProps> = ({
       onClick={onClick}
       padding={buttonPadding}
       size={buttonSize}
+      bgColor={bgColor}
     >
       {children}
       {ButtonChild}
@@ -99,7 +102,8 @@ interface StyledButtonProps {
   disabled?: boolean,
   fontSize: number,
   padding: number,
-  size: number
+  size: number,
+  bgColor: string,
 }
 
 const StyledButton = styled.button<StyledButtonProps>`

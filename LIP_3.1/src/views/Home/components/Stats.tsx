@@ -115,31 +115,31 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
         <CardContent>
           <StyledBalances>
             <StyledBalance>
-              <span
+              {/* <span
                 role="img"
                 style={{
                   fontSize: 50,
                 }}
               >
                 {"⏳"}
-              </span>
+              </span> */}
               <Spacer />
               <div style={{ flex: 1 }}>
-                <Label text="Liquidity Auction Status" color='#ab582b'/>
+                <Label text="Liquidity Auction Status" weight={600} size={20}/>
                 <Spacer size="sm"/>
 
                 <StyledAuctionTime>
-                  <Label text="Auction Start" color='#523632'/>
+                  <Label text="- Auction Start" color='#333333'/>
                   <StyledAuctionValue>{auctionStartTime}</StyledAuctionValue>
                 </StyledAuctionTime>
                
                 <StyledAuctionTime>
-                  <Label text="Projected End" color='#523632'/>
+                  <Label text="- Projected End" color='#333333'/>
                   <StyledAuctionValue>{auctionEndTime}</StyledAuctionValue>
                 </StyledAuctionTime>
 
                 <StyledAuctionTime>
-                  <Label text="Hard CAP Reached" color='#523632'/>
+                  <Label text="- Hard CAP Reached" color='#333333'/>
                   <StyledAuctionValue>{filledPercent}%</StyledAuctionValue>
                 </StyledAuctionTime>
               </div>
@@ -160,24 +160,24 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
         <CardContent>
           <StyledBalances>
             <StyledBalance>
-              <img src={Kira_Img} alt="" style={{width: '60px', height: '60px'}}/>
+              {/* <img src={Kira_Img} alt="" style={{width: '60px', height: '60px'}}/> */}
               <Spacer />
               <div style={{ flex: 1 }}>
-                <Label text="KEX Liquidity Market Status" color='#ab582b'/>
+                <Label text="KEX Liquidity Market Status" weight={600} size={20}/>
                 <Spacer size="sm"/>
 
                 <StyledAuctionTime>
-                  <Label text="Max KEX Price" color='#523632'/>
+                  <Label text="- Max KEX Price" color='#333333'/>
                   <StyledAuctionValue>{"$" + currentKexPrice}</StyledAuctionValue>
                 </StyledAuctionTime>
                
                 <StyledAuctionTime>
-                  <Label text="ETH Deposited" color='#523632'/>
+                  <Label text="- ETH Deposited" color='#333333'/>
                   <StyledAuctionValue>{totalDeposited + " ETH"}</StyledAuctionValue>
                 </StyledAuctionTime>
 
                 <StyledAuctionTime>
-                  <Label text="Projected CMC" color='#523632'/>
+                  <Label text="- Projected CMC" color='#333333'/>
                   <StyledAuctionValue>${abbreviateNumber(new BigNumber(resCnf["circulation"]).multipliedBy(currentKexPrice).toNumber())}</StyledAuctionValue>
                 </StyledAuctionTime>
               </div>
@@ -233,9 +233,10 @@ const StyledAuctionTime = styled.div`
 `
 
 const StyledAuctionValue = styled.div`
-  color: ${(props) => props.theme.color.purple[600]};
+  color: #000;
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 300;
+  color: ${(props) => props.theme.color.purple[500]};
 `
 
 export default Stats

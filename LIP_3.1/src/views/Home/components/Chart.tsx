@@ -38,10 +38,9 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
   const kexAvailable = resCnf["available"] // max amount of KEX available for distribution
 
   const options: object = {
-    // maintainAspectRatio: false,
     title: {
       display: true,
-      fontSize: 25,
+      fontSize: 23,
       text: "Kira Liquidity Auction"
     },
     tooltips: {

@@ -11,7 +11,7 @@ interface PageHeaderProps {
 
 const PageHeader: React.FC<PageHeaderProps> = ({ icon, subtitle, title }) => {
   return (
-    <Container size="sm">
+    <Container size="lg">
       <StyledPageHeader>
         <StyledIcon>{icon}</StyledIcon>
         <StyledTitle>{title}</StyledTitle>
@@ -40,20 +40,18 @@ const StyledIcon = styled.div`
 `
 
 const StyledTitle = styled.h1`
-  font-family: 'Bowlby One SC', sans-serif;
   color: ${(props) => props.theme.color.purple[500]};
-  font-size: 40px;
+  font-size: 45px;
   text-align: center;
-  font-weight: 100;
+  font-weight: 600;
   margin: 0;
   padding: 0;
 `
 
 const StyledSubtitle = styled.h3`
-  font-family: 'Arizonia', sans-serif;
   color: ${(props) => props.theme.color.purple[400]};
-  font-size: 25px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 300;
   margin: 0;
   padding: 0;
   text-align: center;

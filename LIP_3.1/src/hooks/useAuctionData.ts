@@ -114,20 +114,17 @@ const useAuctionData = () => {
       let T = new Date(0);
       T.setSeconds(epochT);
       
-      let year = T.getFullYear();
       let month = T.getUTCMonth() + 1;
       let day = T.getUTCDate();
       let hour = T.getUTCHours();
       let minute =T.getUTCMinutes();
       let second = T.getUTCSeconds();
 
-      console.log(T.getDate());
-
       day = day ? day : 0;
       hour = hour ? hour : 0;
       minute = minute ? minute : 0;
       second = second ? second : 0;
-      labels.push(month + "/" + (day) + "/" + year + " " + [(hour > 9 ? '' : '0') + hour, (minute > 9 ? '' : '0') + minute, (second > 9 ? '' : '0') + second].join(':'));
+      labels.push([(hour > 9 ? '' : '0') + hour, (minute > 9 ? '' : '0') + minute, (second > 9 ? '' : '0') + second + ", " + month + "/" + (day) + " "].join(':'));
       prices.push(getCurrentPrice(epochT) * +resCnf['ethusd']);
       amounts.push(0);
     }

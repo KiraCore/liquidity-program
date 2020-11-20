@@ -9,7 +9,6 @@ import Stats from './components/Stats'
 import Chart from './components/Chart'
 import useAuctionData from '../../hooks/useAuctionData'
 
-
 const Home: React.FC = () => {
   const [auctionFinished, setAuctionFinished] = useState<boolean>(false);
   const auctionData = useAuctionData()

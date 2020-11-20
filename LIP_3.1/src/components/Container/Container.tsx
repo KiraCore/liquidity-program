@@ -38,6 +38,7 @@ const StyledContainer = styled.div<StyledContainerProps>`
   max-width: ${props => props.width}px;
   padding: 0 ${props => props.theme.spacing[4]}px;
   width: 100%;
+  background-color: #fff;
 `
 
 export default Container

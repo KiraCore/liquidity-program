@@ -32,7 +32,6 @@ const App: React.FC = () => {
           </Route>
         </Switch>
       </Router>
-      <Disclaimer />
     </Providers>
   )
 }
@@ -54,22 +53,6 @@ const Providers: React.FC = ({ children }) => {
       </UseWalletProvider>
     </ThemeProvider>
   )
-}
-
-const Disclaimer: React.FC = () => {
-  const markSeen = useCallback(() => {
-    localStorage.setItem('disclaimer', 'seen')
-  }, [])
-
-  const [onPresentDisclaimerModal] = useModal(
-    <DisclaimerModal onConfirm={markSeen} />,
-  )
-
-  useEffect(() => {
-    
-  }, [])
-
-  return <div />
 }
 
 export default App

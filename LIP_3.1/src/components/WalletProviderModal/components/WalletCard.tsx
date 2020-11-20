@@ -14,11 +14,11 @@ interface WalletCardProps {
 
 const WalletCard: React.FC<WalletCardProps> = ({ icon, onConnect, title }) => (
   <Card>
-    <CardContent>
+    <CardContent bgColor={'#fafafa'}>
       <CardIcon>{icon}</CardIcon>
       <CardTitle text={title} />
       <Spacer size="sm"/>
-      <Button onClick={onConnect} text="Connect" size="md"/>
+      <Button bgColor="white" onClick={onConnect} text="Connect" size="md"/>
     </CardContent>
   </Card>
 )

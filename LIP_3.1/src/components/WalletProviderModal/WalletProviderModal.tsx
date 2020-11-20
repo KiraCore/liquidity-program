@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useWallet } from 'use-wallet'
 
@@ -16,11 +16,15 @@ import WalletCard from './components/WalletCard'
 
 const WalletProviderModal: React.FC<ModalProps> = ({ onDismiss }) => {
   const { account, connect } = useWallet()
+  const [warning, showWarning] = useState(false);
 
   useEffect(() => {
+    if (!account) {
+      showWarning(true); 
+    }
     if (account) {
       onDismiss()
-    }
+    } 
   }, [account, onDismiss])
 
   return (
@@ -45,7 +49,11 @@ const WalletProviderModal: React.FC<ModalProps> = ({ onDismiss }) => {
           </StyledWalletCard>
         </StyledWalletsWrapper>
       </ModalContent>
-
+      {warning && (
+        <StyledText>
+          Please confirm you've selected correct network.
+        </StyledText>
+      )}
       <ModalActions>
         <Button text="Cancel" variant="secondary" onClick={onDismiss} size="md" />
       </ModalActions>
@@ -64,6 +72,13 @@ const StyledWalletsWrapper = styled.div`
 
 const StyledWalletCard = styled.div`
   flex-basis: calc(50% - ${(props) => props.theme.spacing[2]}px);
+`
+
+const StyledText = styled.h2`
+  display: flex;
+  justify-content: center;
+  font-size: 16px;
+  color: ${(props) => props.theme.color.purple[500]};
 `
 
 export default WalletProviderModal

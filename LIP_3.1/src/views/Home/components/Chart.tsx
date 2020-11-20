@@ -191,19 +191,19 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
         {resCnf['deposit']}
       </StyledSubText>
       <Spacer size="md" />
-      <StyledInfoContainer>
-        <StyledButtonContainer>
-          <StyledButton>
-            <Button onClick={onClickCopy} size="sm" text="Copy" />
-          </StyledButton>
-          <StyledButton>
-            <Button onClick={onClickVerify} size="sm" text="Verify" />
-          </StyledButton>
-          <StyledButton>
-            <Button onClick={onClickExplorer} size="sm" text="Explorer" />
-          </StyledButton>
-        </StyledButtonContainer>
-      </StyledInfoContainer>
+      {/* <StyledInfoContainer> */}
+      <StyledButtonContainer>
+        <StyledButton>
+          <Button onClick={onClickCopy} size="sm" text="Copy" />
+        </StyledButton>
+        <StyledButton>
+          <Button onClick={onClickVerify} size="sm" text="Verify" />
+        </StyledButton>
+        <StyledButton>
+          <Button onClick={onClickExplorer} size="sm" text="Explorer" />
+        </StyledButton>
+      </StyledButtonContainer>
+      {/* </StyledInfoContainer> */}
     </StyledWrapper>
   )
 }

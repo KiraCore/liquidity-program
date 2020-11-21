@@ -33,7 +33,7 @@ const useAuctionData = () => {
 
   // fetch new data every 5 seconds
   useInterval(async () => {
-    console.log("Interval running...");
+    console.log(`Interval running [${!!auctionConfig}, ${!!auctionData}, ${intervalAllowed}]...`);
     if (!!auctionConfig && !!auctionData && intervalAllowed) {
       fetchData()
     }
@@ -155,7 +155,8 @@ const useAuctionData = () => {
     const now = Date.now() / 1000;
     const T2M = auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2;
     const currentKexPrice = getCurrentPrice(now);
-    const estimatedEndCAP = getEstimatedEndCAP(now) * +resCnf['ethusd']; // IN USD
+    const estimatedEndCapETH = getEstimatedEndCAP(now);
+    const estimatedEndCAP = estimatedEndCapETH* +resCnf['ethusd']; // IN USD
     const timeLeft = getEstimatedTimeLeft(ethDeposited, now);
     const CAP3 = availableKEX * auctionConfig.P3;
 
@@ -188,9 +189,10 @@ const useAuctionData = () => {
     
     console.log(`INFO: Current account balance: ${resData['latest']['amount']}ETH`);
 
+    
     let startTime = auctionConfig.epochTime; // auction start
-    let endTime = Math.min(auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2, now + timeLeft) // auction end
-    for (let T = startTime, index = 0; T < (endTime + timeInterval); T += timeInterval, index ++) { // (endTime + timeInterval) is used to include latest frame - otherwise we will have empty screen for the first 10 minutes
+    let endTime = auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2; // auction end
+    for (let T = startTime, index = 0; T < (endTime + timeInterval); T += timeInterval, index++) { // (endTime + timeInterval) is used to include latest frame - otherwise we will have empty screen for the first 10 minutes
       // Sort by epoch difference
       let epoches = Object.keys(resData['balances']);
       
@@ -201,6 +203,11 @@ const useAuctionData = () => {
       // Find the cloest epoch timestamp
       let ethAmountRaised: number = Math.abs(+epoches[0] - T) < timeInterval ? +resData['balances'][epoches[0]].amount : 0
       // let ethAmountRaised = +resData['balances'][epoches[0]].amount;
+      
+      let cap = getEstimatedEndCAP(T); // contract does not allow deposits above the cap
+      if (T > now) { // nothing could have been raised if auction didn't started yet
+        ethAmountRaised = ethDeposited; // recover last valid value
+      }
 
       amounts[index] = ethAmountRaised;
       prices[index] = pPrices && pPrices[index];
@@ -214,7 +221,7 @@ const useAuctionData = () => {
     totalRaisedAmount = ethDeposited * +resCnf['ethusd'];
 
     console.log("TOTAL RAISED ETH AMOUNT: ", ethDeposited, totalRaisedAmount, estimatedEndCAP, currentKexPrice);
-    if (totalRaisedAmount > estimatedEndCAP) { // Finishes the auction when raised amount is over the estimated end cap
+    if (startTime < now &&  totalRaisedAmount > estimatedEndCAP) { // Finishes the auction when raised amount is over the estimated end cap AND auction started
       setIntervalAllowed(false);
       console.log("Auction finished", auctionData.ethDeposited);
     }

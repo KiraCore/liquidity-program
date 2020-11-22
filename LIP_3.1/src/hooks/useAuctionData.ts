@@ -136,8 +136,10 @@ const useAuctionData = () => {
       prices: prices,
       amounts: amounts,
       kexPrice: 0,
+      projectedKexPrice: 0,
       ethDeposited: 0,
       totalRaisedInUSD: 0,
+      projectedEndTime: T2M,
       initialMarketCap: CAP1,
       auctionStarted: now >= auctionConfig.epochTime ? true : false,
       auctionFinished: now > T2M ? true : false
@@ -200,9 +202,6 @@ const useAuctionData = () => {
         }
       });
 
-      console.log("epoches");
-      console.log(lastEpoch);
-    
       let ethAmountRaised: number = lastEpoch > 0 ? +resData['balances'][lastEpoch].amount : 0
       let cap = getEstimatedEndCAP(T); // contract does not allow deposits above the cap
       if (T > now || ethAmountRaised > cap) { // nothing could have been raised if auction didn't started yet
@@ -220,7 +219,7 @@ const useAuctionData = () => {
         projectedEndPrice = getCurrentPrice(projectedEndTime); // estimate final price
       }
 
-      if ( T > now || timeLeft < 0 || ethDeposited > hardCap) {
+      if (timeLeft < 0 || ethAmountRaised > hardCap || (T + timeInterval) > now) {
         amounts[index] = 0; // do not display amounts after auction finalized or if frame is not live yet, or if current hard cap is hit
       } else {
         amounts[index] = ethAmountRaised;
@@ -233,7 +232,8 @@ const useAuctionData = () => {
 
     totalRaisedAmount = ethDeposited * ethusd;
 
-    let currentKexPrice = getCurrentPrice(now);
+    let timeLast = Math.min(projectedEndTime, now);
+    let currentKexPrice = getCurrentPrice(timeLast);
     if ( now >= projectedEndTime) { // if auction ended - show final price
       currentKexPrice = projectedEndPrice;
     }
@@ -264,8 +264,10 @@ const useAuctionData = () => {
       prices: totalRaisedAmount > CAP3 ? prices : pPrices,
       amounts: amounts,
       kexPrice: currentKexPriceUSD,
+      projectedKexPrice: projectedEndPrice * ethusd,
       ethDeposited: ethDeposited,
       totalRaisedInUSD: totalRaisedAmount,
+      projectedEndTime: projectedEndTime,
       auctionEndTimeLeft: timeRemaining,
       auctionEndCAP: estimatedEndCAP, // IN USD
       auctionStarted: now >= startTime ? true : false,

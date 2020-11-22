@@ -32,6 +32,7 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
   const [auctionEndTime, setAuctionEndTime] = useState<string>("0d 0h 0m 0s");
   const [currentTime, setCurrentTime] = useState<string>('');
   const [currentKexPrice, setCurrentKexPrice] = useState<number>(0);
+  const [projectedKexPrice, setProjectedKexPrice] = useState<number>(0);
   const [totalDeposited, setTotalDeposited] = useState<number>(0);
   const [filledPercent, setFilledPercent] = useState<string>("0.00"); // % of the CAP remaining to be filled by the public
 
@@ -81,7 +82,7 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
     if (auctionConfig) {
       setCurrentTime(getCurrentTime());
       setAuctionStartTime(getRemainingTime(auctionConfig.epochTime));
-      setAuctionEndTime(getRemainingTime(auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2));
+      setAuctionEndTime(getRemainingTime(auctionData.projectedEndTime));
     }
   }, 1000);
 
@@ -89,6 +90,7 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
     if (auctionData) {
       setTotalDeposited(auctionData.ethDeposited)
       setCurrentKexPrice(+auctionData.kexPrice.toFixed(6))
+      setProjectedKexPrice(+auctionData.projectedKexPrice.toFixed(6))
     }
   }, [auctionData])
 
@@ -104,10 +106,11 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
           throw new Error(`End CAP can't be less or equal 0, but was ${auctionData.kexPrice}`);
       }
 
-      const percent = auctionData.auctionStarted ? (auctionData.totalRaisedInUSD / auctionData.auctionEndCAP) * 100 : 0;
+      let currentHardCap = auctionData.kexPrice * +resCnf['available'];
+      const percent = auctionData.auctionStarted ? (auctionData.totalRaisedInUSD / currentHardCap) * 100 : 0;
       setFilledPercent((percent).toFixed(2)) // what % of the current hard cap was deposited
     }
-  }, [auctionData, currentKexPrice])
+  }, [auctionData, currentKexPrice, projectedKexPrice])
 
   return (
     <StyledWrapper>
@@ -168,7 +171,7 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
 
                 <StyledAuctionTime>
                   <Label text="- Max KEX Price" color='#333333'/>
-                  <StyledAuctionValue>{"$" + currentKexPrice.toFixed(2)}</StyledAuctionValue>
+                  <StyledAuctionValue>{"$" + currentKexPrice.toFixed(3)}</StyledAuctionValue>
                 </StyledAuctionTime>
                
                 <StyledAuctionTime>
@@ -178,7 +181,7 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
 
                 <StyledAuctionTime>
                   <Label text="- Projected CMC" color='#333333'/>
-                  <StyledAuctionValue>${abbreviateNumber(new BigNumber(resCnf["circulation"]).multipliedBy(currentKexPrice).toNumber())}</StyledAuctionValue>
+                  <StyledAuctionValue>${abbreviateNumber(new BigNumber(resCnf["circulation"]).multipliedBy(projectedKexPrice).toNumber())}</StyledAuctionValue>
                 </StyledAuctionTime>
               </div>
             </StyledBalance>

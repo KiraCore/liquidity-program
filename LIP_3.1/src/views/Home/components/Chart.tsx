@@ -41,7 +41,7 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
     title: {
       display: true,
       fontSize: 23,
-      text: "Kira Liquidity Auction"
+      text: "Live Auction Status"
     },
     tooltips: {
       callbacks: {
@@ -76,7 +76,7 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
           type: 'linear',
           scaleLabel: {
             display: true,
-            labelString: 'Max Projected Price [KEX/USD]',
+            labelString: 'KEX/USD',
             fontColor: "rgba(88, 201, 62)",
           },
           ticks: {
@@ -99,7 +99,7 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
           position: 'right',
           scaleLabel: {
             display: true,
-            labelString: 'Current Amount Raised [ETH]',
+            labelString: 'ETH',
             fontColor: "rgba(199, 75, 64)",
           },
           gridLines: {
@@ -124,7 +124,7 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
     datasets: [
       {
         type: 'line',
-        label: 'Max Projected Price [KEX/USD]',
+        label: 'Max Possible Price',
         backgroundColor: `rgb(88, 201, 62)`,
         borderColor: `rgb(88, 201, 62)`,
         borderWidth: 2,
@@ -134,7 +134,7 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
       },
       {
         type: 'bar',
-        label: 'Current Amount Raised [ETH]',
+        label: 'Current Amount Raised',
         backgroundColor: `rgba(199, 75, 64)`,
         borderColor: 'rgba(199, 75, 64)',
         borderWidth: 2,

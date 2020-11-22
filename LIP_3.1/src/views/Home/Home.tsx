@@ -11,12 +11,16 @@ import useAuctionData from '../../hooks/useAuctionData'
 
 const Home: React.FC = () => {
   const [auctionFinished, setAuctionFinished] = useState<boolean>(false);
+  const [auctionStarted, setAuctionStarted] = useState<boolean>(false);
   const auctionData = useAuctionData()
 
   useEffect(() => {
     if (auctionData) {
       if (auctionData.auctionFinished) {
         setAuctionFinished(true);
+      }
+      if (auctionData.auctionStarted) {
+        setAuctionStarted(true);
       }
     }
   }, [auctionData])

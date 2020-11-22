@@ -139,6 +139,7 @@ const useAuctionData = () => {
       ethDeposited: 0,
       totalRaisedInUSD: 0,
       initialMarketCap: CAP1,
+      auctionStarted: now >= auctionConfig.epochTime ? true : false,
       auctionFinished: now > T2M ? true : false
     })
     setGenFinished(true);
@@ -214,8 +215,8 @@ const useAuctionData = () => {
         projectedEndPrice = getCurrentPrice(projectedEndTime); // estimate final price
       }
 
-      if ( timeLeft < 0 ) {
-        amounts[index] = 0; // do not display amounts after auction finalized
+      if ( T > now || timeLeft < 0 ) {
+        amounts[index] = 0; // do not display amounts after auction finalized or if frame is not live yet
       } else {
         amounts[index] = ethAmountRaised;
       }
@@ -259,6 +260,7 @@ const useAuctionData = () => {
       totalRaisedInUSD: totalRaisedAmount,
       auctionEndTimeLeft: getEstimatedTimeLeft(ethDeposited, now),
       auctionEndCAP: estimatedEndCAP, // IN USD
+      auctionStarted: now >= startTime ? true : false,
       auctionFinished: now > auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2 || totalRaisedAmount > estimatedEndCAP ? true : false
     })
   }

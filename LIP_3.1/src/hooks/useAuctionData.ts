@@ -94,7 +94,7 @@ const useAuctionData = () => {
       remainingTime = auctionConfig.T1 - X1;
     }
 
-    return remainingTime;
+    return Math.floor(remainingTime);
   }
 
   const generateInitialData = () => {

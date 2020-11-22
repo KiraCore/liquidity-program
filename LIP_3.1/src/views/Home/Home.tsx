@@ -76,13 +76,14 @@ const StyledContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  text-align: center;
   width: 60%;
-  height: 150px;
 `
 
 const StyledText = styled.h1`
   display: flex;
   justify-content: center;
+  align-items: center;
   width: 100%;
   font-size: 18;
   color: ${props => props.theme.color.purple[500]};

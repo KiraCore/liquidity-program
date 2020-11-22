@@ -169,7 +169,7 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
   return (
     <StyledWrapper>
       <StyledText>
-        {auctionData && auctionData.auctionFinished ? "Auction Finished" : auctionData && auctionData.auctionStarted ? "Auction is not started yet" : "Auction is ongoing!"}
+        {auctionData && auctionData.auctionFinished ? "Auction Finished" : auctionData && auctionData.auctionStarted ? "Auction is Live!" : "Auction is NOT Started Yet"}
       </StyledText>
       <StyledSubText>
         ETH Deposit Address:

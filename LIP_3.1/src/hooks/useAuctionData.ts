@@ -46,13 +46,17 @@ const useAuctionData = () => {
         return auctionConfig.P1; // edge cases must be explicit
     }
 
-    if (dT > (auctionConfig.T1 + auctionConfig.T2)) { // at the auction ended then price is MIN
+    if ( dT == auctionConfig.T1 ) {
+      return auctionConfig.P2; // edge cases must be explicit
+    }
+
+    if (dT >= (auctionConfig.T1 + auctionConfig.T2)) { // at the auction ended then price is MIN
       return auctionConfig.P3;  // edge cases must be explicit
     }
 
-    if (dT > 0 && dT <= auctionConfig.T1) { // If in T1
+    if (dT > 0 && dT < auctionConfig.T1) { // If dT in (0, T1)
       currentPrice = auctionConfig.P2 + (((auctionConfig.T1 - dT) * (auctionConfig.P1 - auctionConfig.P2)) / auctionConfig.T1);
-    } else if (dT > auctionConfig.T1) { // If in T1 ~ T2
+    } else if (dT > auctionConfig.T1) { // If dT in (T1, T2)
       currentPrice = auctionConfig.P3 + (((auctionConfig.T2 + auctionConfig.T1 - dT) * (auctionConfig.P2 - auctionConfig.P3)) / auctionConfig.T2);
     }
 
@@ -84,11 +88,9 @@ const useAuctionData = () => {
     if (totalRaisedETH <= CAP3) {
       remainingTime = auctionConfig.T1 + auctionConfig.T2 - dT;
     } else if (totalRaisedETH <= CAP2) {
-      const X2 = ((P - auctionConfig.P3) * auctionConfig.T2) / (auctionConfig.P2 - auctionConfig.P3);
-      remainingTime = X2;
+      remainingTime = ((P - auctionConfig.P3) * auctionConfig.T2) / (auctionConfig.P2 - auctionConfig.P3); //X2
     } else if (totalRaisedETH <= CAP1) {
-      const X1 = (P - auctionConfig.P2) * auctionConfig.T1 / (auctionConfig.P1 - auctionConfig.P2)
-      remainingTime = X1;
+      remainingTime = (P - auctionConfig.P2) * auctionConfig.T1 / (auctionConfig.P1 - auctionConfig.P2); //X1
     }
 
     return Math.floor(remainingTime);
@@ -107,7 +109,7 @@ const useAuctionData = () => {
       setIntervalAllowed(false)
     }
     
-    for (let epochT = auctionConfig.epochTime; epochT <= T2M; epochT += timeInterval) {
+    for (let epochT = auctionConfig.epochTime; epochT <= T2M;) {
       let T = new Date(0);
       T.setSeconds(epochT);
       
@@ -124,6 +126,7 @@ const useAuctionData = () => {
       labels.push([(hour > 9 ? '' : '0') + hour, (minute > 9 ? '' : '0') + minute, (second > 9 ? '' : '0') + second + ", " + month + "/" + (day) + " "].join(':'));
       prices.push(getCurrentPrice(epochT) * +resCnf['ethusd']);
       amounts.push(0);
+      epochT += timeInterval
     }
     
     setPrices(prices);
@@ -185,18 +188,22 @@ const useAuctionData = () => {
     
     let projectedEndTime = endTime;
     let projectedEndPrice = auctionConfig.P3;
-    for (let T = startTime, index = 0; T < (endTime + timeInterval); T += timeInterval, index++) { // (endTime + timeInterval) is used to include latest frame - otherwise we will have empty screen for the first 10 minutes
+    let T = startTime;
+    for (let index = 0; T <= endTime; index++) { // (endTime + timeInterval) is used to include latest frame - otherwise we will have empty screen for the first 10 minutes
       // Sort by epoch difference
-      let epoches = Object.keys(resData['balances']);
-      
-      epoches.sort((key1, key2) => {
-        return Math.abs(+key1 - T) - Math.abs(+key2 - T)
-      })
 
-      // Find the cloest epoch timestamp
-      let ethAmountRaised: number = Math.abs(+epoches[0] - T) < timeInterval ? +resData['balances'][epoches[0]].amount : 0
-      // let ethAmountRaised = +resData['balances'][epoches[0]].amount;
-      
+      let lastEpoch = 0;
+      Object.keys(resData['balances']).forEach(function(key) {
+        let kval = +key;
+        if (kval > lastEpoch && kval < (T + timeInterval)) { // find oldest epoch smaller than (T + interval)
+          lastEpoch = kval;
+        }
+      });
+
+      console.log("epoches");
+      console.log(lastEpoch);
+    
+      let ethAmountRaised: number = lastEpoch > 0 ? +resData['balances'][lastEpoch].amount : 0
       let cap = getEstimatedEndCAP(T); // contract does not allow deposits above the cap
       if (T > now || ethAmountRaised > cap) { // nothing could have been raised if auction didn't started yet
         ethAmountRaised = ethDeposited; // recover last valid value
@@ -208,7 +215,6 @@ const useAuctionData = () => {
 
       let hardCap = availableKEX * getCurrentPrice(T);
       let timeLeft = getEstimatedTimeLeft(ethAmountRaised, T);
-      
       if ( projectedEndTime > T + timeLeft ) { 
         projectedEndTime =  T + timeLeft; // estimate auction end
         projectedEndPrice = getCurrentPrice(projectedEndTime); // estimate final price
@@ -222,6 +228,7 @@ const useAuctionData = () => {
 
       prices[index] = pPrices && pPrices[index];
       labels[index] = labels && xLabels[index];
+      T += timeInterval; 
     }
 
     totalRaisedAmount = ethDeposited * ethusd;
@@ -244,9 +251,8 @@ const useAuctionData = () => {
     console.log(`INFO:       Now Time: ${now}`);
     console.log(`INFO: Projected Time: ${projectedEndTime}`);
     console.log(`INFO:       End Time: ${endTime}`);
-    
-    // Finishes the auction when raised amount is over the estimated end cap AND auction started or if auction ended
-    if ((startTime < now &&  totalRaisedAmount > estimatedEndCAP) || now >  endTime) { 
+
+    if (timeRemaining <= 0) { // Finishes the auction when time remaining is 0
       setIntervalAllowed(false);
       console.log("Auction finished", auctionData.ethDeposited);
     }

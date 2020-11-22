@@ -104,7 +104,7 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
           throw new Error(`End CAP can't be less or equal 0, but was ${auctionData.kexPrice}`);
       }
 
-      const percent = auctionData.auctionEndCAP ? auctionData.totalRaisedInUSD / auctionData.auctionEndCAP * 100 : 0;
+      const percent = auctionData.auctionStarted ? (auctionData.totalRaisedInUSD / auctionData.auctionEndCAP) * 100 : 0;
       setFilledPercent((percent).toFixed(2)) // what % of the current hard cap was deposited
     }
   }, [auctionData, currentKexPrice])
@@ -168,7 +168,7 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
 
                 <StyledAuctionTime>
                   <Label text="- Max KEX Price" color='#333333'/>
-                  <StyledAuctionValue>{"$" + currentKexPrice}</StyledAuctionValue>
+                  <StyledAuctionValue>{"$" + currentKexPrice.toFixed(2)}</StyledAuctionValue>
                 </StyledAuctionTime>
                
                 <StyledAuctionTime>

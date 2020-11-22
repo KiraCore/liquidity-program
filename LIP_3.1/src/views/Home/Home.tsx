@@ -46,7 +46,7 @@ const Home: React.FC = () => {
             Auction Finished
           </StyledText>
           <StyledSubText>
-            Click "My Wallet" button and claim your KEX now!, or await automatic distribution within 48 hours.
+            Click "My Wallet" button and claim your KEX now, or await automatic distribution within 48 hours.
           </StyledSubText>
         </StyledContainer>
       )}

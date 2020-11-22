@@ -68,7 +68,7 @@ const useAuctionData = () => {
     const dT: number = currentTime - auctionConfig.epochTime
 
     if (dT <= 0) { // if auction didn't started yet then time remaining is MAX possible
-        return (auctionConfig.T1 + auctionConfig.T2); // edge cases must be explicit
+      return (Math.abs(dT) + auctionConfig.T1 + auctionConfig.T2); // edge cases must be explicit
     }
 
     if (dT >= (auctionConfig.T1 + auctionConfig.T2)) { // at the auction ended then time remaining is 0
@@ -82,13 +82,13 @@ const useAuctionData = () => {
     const P = getCurrentPrice(currentTime);       // current Hard CAP price KEX/ETH
 
     if (totalRaisedETH <= CAP3) {
-      remainingTime = auctionConfig.T1 + auctionConfig.T2;
+      remainingTime = auctionConfig.T1 + auctionConfig.T2 - dT;
     } else if (totalRaisedETH <= CAP2) {
       const X2 = ((P - auctionConfig.P3) * auctionConfig.T2) / (auctionConfig.P2 - auctionConfig.P3);
-      remainingTime = auctionConfig.T1 + (auctionConfig.T2 - X2);
+      remainingTime = X2;
     } else if (totalRaisedETH <= CAP1) {
       const X1 = (P - auctionConfig.P2) * auctionConfig.T1 / (auctionConfig.P1 - auctionConfig.P2)
-      remainingTime = auctionConfig.T1 - X1;
+      remainingTime = X1;
     }
 
     return Math.floor(remainingTime);
@@ -231,6 +231,7 @@ const useAuctionData = () => {
       currentKexPrice = projectedEndPrice;
     }
 
+    let timeRemaining = getEstimatedTimeLeft(ethDeposited, now);
     let estimatedEndCapETH = getEstimatedEndCAP(projectedEndTime); // Projected CMC must be at projected time
     let estimatedEndCAP = estimatedEndCapETH * ethusd; // Projected CMC in USD
     let currentKexPriceUSD = currentKexPrice * ethusd;
@@ -251,6 +252,7 @@ const useAuctionData = () => {
     }
 
     let CAP3 = availableKEX * auctionConfig.P3;
+
     setAuctionData({
       labels: totalRaisedAmount > CAP3 ? labels : xLabels,
       prices: totalRaisedAmount > CAP3 ? prices : pPrices,
@@ -258,10 +260,10 @@ const useAuctionData = () => {
       kexPrice: currentKexPriceUSD,
       ethDeposited: ethDeposited,
       totalRaisedInUSD: totalRaisedAmount,
-      auctionEndTimeLeft: getEstimatedTimeLeft(ethDeposited, now),
+      auctionEndTimeLeft: timeRemaining,
       auctionEndCAP: estimatedEndCAP, // IN USD
       auctionStarted: now >= startTime ? true : false,
-      auctionFinished: now > auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2 || totalRaisedAmount > estimatedEndCAP ? true : false
+      auctionFinished: timeRemaining <= 0 ? true : false
     })
   }
 

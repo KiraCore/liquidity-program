@@ -1,11 +1,8 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import useAuctionConfig from './useAuctionConfig'
 import { getBalanceData } from '../utils/auction'
 import { AuctionData } from '../contexts/Auction'
-import { getKiraAddress } from '../kira/utils'
-import useKira from './useKira'
-import BigNumber from 'bignumber.js'
 import useInterval from 'use-interval'
 import useTokenInitialSupply from './useTokenInitialSupply'
 import cfgData from '../config.json';

@@ -206,14 +206,16 @@ const useAuctionData = () => {
         ethDeposited = ethAmountRaised
       }
 
+      let hardCap = availableKEX * getCurrentPrice(T);
       let timeLeft = getEstimatedTimeLeft(ethAmountRaised, T);
+      
       if ( projectedEndTime > T + timeLeft ) { 
         projectedEndTime =  T + timeLeft; // estimate auction end
         projectedEndPrice = getCurrentPrice(projectedEndTime); // estimate final price
       }
 
-      if ( T > now || timeLeft < 0 ) {
-        amounts[index] = 0; // do not display amounts after auction finalized or if frame is not live yet
+      if ( T > now || timeLeft < 0 || ethDeposited > hardCap) {
+        amounts[index] = 0; // do not display amounts after auction finalized or if frame is not live yet, or if current hard cap is hit
       } else {
         amounts[index] = ethAmountRaised;
       }
@@ -238,6 +240,7 @@ const useAuctionData = () => {
     console.log(`INFO:  Projected Cap: ${estimatedEndCapETH} ETH / ${estimatedEndCAP} USD`);
 
     console.log(`INFO:     Start Time: ${startTime}`);
+    console.log(`INFO:       Now Time: ${now}`);
     console.log(`INFO: Projected Time: ${projectedEndTime}`);
     console.log(`INFO:       End Time: ${endTime}`);
     

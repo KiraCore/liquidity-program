@@ -17,7 +17,7 @@ interface StatsProps {
 
 const abbreviateNumber = (value: number) => {
   let newValue:number = value;
-  const suffixes = ["", "k", "M", "B","T"];
+  const suffixes = ["", "K", "M", "B","T"];
   let suffixNum = 0;
   while (newValue >= 1000) {
     newValue /= 1000;
@@ -33,7 +33,6 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
   const [currentTime, setCurrentTime] = useState<string>('');
   const [currentKexPrice, setCurrentKexPrice] = useState<number>(0);
   const [totalDeposited, setTotalDeposited] = useState<number>(0);
-  const [projectedCMC, setProjectedCMC] = useState<number>(0);
   const [filledPercent, setFilledPercent] = useState<string>("0.00"); // % of the CAP remaining to be filled by the public
 
   const auctionConfig = useAuctionConfig()
@@ -90,7 +89,6 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
     if (auctionData) {
       setTotalDeposited(auctionData.ethDeposited)
       setCurrentKexPrice(+auctionData.kexPrice.toFixed(6))
-      setProjectedCMC(auctionData.auctionEndCAP)
     }
   }, [auctionData])
 
@@ -180,7 +178,7 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
 
                 <StyledAuctionTime>
                   <Label text="- Projected CMC" color='#333333'/>
-                  <StyledAuctionValue>${abbreviateNumber(projectedCMC)}</StyledAuctionValue>
+                  <StyledAuctionValue>${abbreviateNumber(new BigNumber(resCnf["circulation"]).multipliedBy(currentKexPrice).toNumber())}</StyledAuctionValue>
                 </StyledAuctionTime>
               </div>
             </StyledBalance>

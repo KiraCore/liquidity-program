@@ -168,13 +168,6 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
 
   return (
     <StyledWrapper>
-      <StyledBarContainer>
-        <Bar
-          data={chartData} 
-          options={options} 
-          type="bar" 
-        />
-      </StyledBarContainer>
       <StyledText>
         {auctionData && auctionData.auctionFinished ? "Auction Finished" : "Auction is ongoing!"}
       </StyledText>
@@ -203,6 +196,13 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
         </StyledButton>
       </StyledButtonContainer>
       {/* </StyledInfoContainer> */}
+      <StyledBarContainer>
+        <Bar
+          data={chartData} 
+          options={options} 
+          type="bar" 
+        />
+      </StyledBarContainer>
     </StyledWrapper>
   )
 }

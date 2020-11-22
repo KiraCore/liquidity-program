@@ -37,7 +37,7 @@
     "build": "CI= GENERATE_SOURCEMAP=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "serve": "yarn build && cp ./build/index.html && cd ./build && npx serve"
+    "serve": "cd ./build && npx serve"
   },
   "eslintConfig": {
     "extends": "react-app"

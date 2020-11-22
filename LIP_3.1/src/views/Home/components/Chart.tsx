@@ -183,7 +183,6 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
         {resCnf['deposit']}
       </StyledSubText>
       <Spacer size="md" />
-      {/* <StyledInfoContainer> */}
       <StyledButtonContainer>
         <StyledButton>
           <Button onClick={onClickCopy} size="sm" text="Copy" />
@@ -195,7 +194,6 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
           <Button onClick={onClickExplorer} size="sm" text="Explorer" />
         </StyledButton>
       </StyledButtonContainer>
-      {/* </StyledInfoContainer> */}
       <StyledBarContainer>
         <Bar
           data={chartData} 
@@ -222,19 +220,9 @@ const StyledWrapper = styled.div`
 
 const StyledBarContainer = styled.div`
   width: 100%;
-  margin-top: 10px;
+  margin-top: 30px;
   margin-bottom: 20px;
   @media (max-width: 769px) {
-    display: none;
-  }
-`
-const StyledInfoContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  @media screen and (min-width: 769px) {
     display: none;
   }
 `

@@ -148,19 +148,15 @@ const useAuctionData = () => {
     let labels = [] as string[]
     let prices = [] as number[]
     let amounts = [] as number[]
-    
     let ethDeposited: number = 0;
     let totalRaisedAmount: number = 0;
 
     const now = Date.now() / 1000;
-    const T2M = auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2;
-    const currentKexPrice = getCurrentPrice(now);
-    const estimatedEndCapETH = getEstimatedEndCAP(now);
-    const estimatedEndCAP = estimatedEndCapETH* +resCnf['ethusd']; // IN USD
-    const timeLeft = getEstimatedTimeLeft(ethDeposited, now);
-    const CAP3 = availableKEX * auctionConfig.P3;
-
-    if (now > T2M) {
+    const ethusd = +resCnf['ethusd'];
+    const startTime = auctionConfig.epochTime; // auction start
+    const endTime = startTime + auctionConfig.T1 + auctionConfig.T2;
+    
+    if (now > endTime) {
       setIntervalAllowed(false);
     }
 
@@ -188,10 +184,9 @@ const useAuctionData = () => {
     }
     
     console.log(`INFO: Current account balance: ${resData['latest']['amount']}ETH`);
-
     
-    let startTime = auctionConfig.epochTime; // auction start
-    let endTime = auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2; // auction end
+    let projectedEndTime = endTime;
+    let projectedEndPrice = auctionConfig.P3;
     for (let T = startTime, index = 0; T < (endTime + timeInterval); T += timeInterval, index++) { // (endTime + timeInterval) is used to include latest frame - otherwise we will have empty screen for the first 10 minutes
       // Sort by epoch difference
       let epoches = Object.keys(resData['balances']);
@@ -205,32 +200,61 @@ const useAuctionData = () => {
       // let ethAmountRaised = +resData['balances'][epoches[0]].amount;
       
       let cap = getEstimatedEndCAP(T); // contract does not allow deposits above the cap
-      if (T > now) { // nothing could have been raised if auction didn't started yet
+      if (T > now || ethAmountRaised > cap) { // nothing could have been raised if auction didn't started yet
         ethAmountRaised = ethDeposited; // recover last valid value
       }
-
-      amounts[index] = ethAmountRaised;
-      prices[index] = pPrices && pPrices[index];
-      labels[index] = labels && xLabels[index];
 
       if (ethAmountRaised > ethDeposited) { // lets find the largest sum of ETH that was ever deposited 
         ethDeposited = ethAmountRaised
       }
+
+      let timeLeft = getEstimatedTimeLeft(ethAmountRaised, T);
+      if ( projectedEndTime > T + timeLeft ) { 
+        projectedEndTime =  T + timeLeft; // estimate auction end
+        projectedEndPrice = getCurrentPrice(projectedEndTime); // estimate final price
+      }
+
+      if ( timeLeft < 0 ) {
+        amounts[index] = 0; // do not display amounts after auction finalized
+      } else {
+        amounts[index] = ethAmountRaised;
+      }
+
+      prices[index] = pPrices && pPrices[index];
+      labels[index] = labels && xLabels[index];
     }
 
-    totalRaisedAmount = ethDeposited * +resCnf['ethusd'];
+    totalRaisedAmount = ethDeposited * ethusd;
 
-    console.log("TOTAL RAISED ETH AMOUNT: ", ethDeposited, totalRaisedAmount, estimatedEndCAP, currentKexPrice);
-    if (startTime < now &&  totalRaisedAmount > estimatedEndCAP) { // Finishes the auction when raised amount is over the estimated end cap AND auction started
+    let currentKexPrice = getCurrentPrice(now);
+    if ( now >= projectedEndTime) { // if auction ended - show final price
+      currentKexPrice = projectedEndPrice;
+    }
+
+    let estimatedEndCapETH = getEstimatedEndCAP(projectedEndTime); // Projected CMC must be at projected time
+    let estimatedEndCAP = estimatedEndCapETH * ethusd; // Projected CMC in USD
+    let currentKexPriceUSD = currentKexPrice * ethusd;
+
+    console.log(`INFO:   Total raised: ${ethDeposited} ETH / ${totalRaisedAmount} USD`);
+    console.log(`INFO: Last KEX price: ${currentKexPrice} ETH / ${currentKexPriceUSD} USD`);
+    console.log(`INFO:  Projected Cap: ${estimatedEndCapETH} ETH / ${estimatedEndCAP} USD`);
+
+    console.log(`INFO:     Start Time: ${startTime}`);
+    console.log(`INFO: Projected Time: ${projectedEndTime}`);
+    console.log(`INFO:       End Time: ${endTime}`);
+    
+    // Finishes the auction when raised amount is over the estimated end cap AND auction started or if auction ended
+    if ((startTime < now &&  totalRaisedAmount > estimatedEndCAP) || now >  endTime) { 
       setIntervalAllowed(false);
       console.log("Auction finished", auctionData.ethDeposited);
     }
 
+    let CAP3 = availableKEX * auctionConfig.P3;
     setAuctionData({
       labels: totalRaisedAmount > CAP3 ? labels : xLabels,
       prices: totalRaisedAmount > CAP3 ? prices : pPrices,
       amounts: amounts,
-      kexPrice: currentKexPrice * +resCnf['ethusd'],
+      kexPrice: currentKexPriceUSD,
       ethDeposited: ethDeposited,
       totalRaisedInUSD: totalRaisedAmount,
       auctionEndTimeLeft: getEstimatedTimeLeft(ethDeposited, now),

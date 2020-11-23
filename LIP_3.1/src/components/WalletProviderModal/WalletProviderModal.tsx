@@ -51,7 +51,7 @@ const WalletProviderModal: React.FC<ModalProps> = ({ onDismiss }) => {
       </ModalContent>
       {warning && (
         <StyledText>
-          Please confirm you've selected correct network.
+          Please verify you've selected correct network.
         </StyledText>
       )}
       <ModalActions>

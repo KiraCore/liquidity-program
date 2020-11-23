@@ -30,25 +30,15 @@ const Home: React.FC = () => {
       <PageHeader
         icon={<img src={kira} height={100} />}
         title="Kira Liquidity Auction"
-        subtitle="Take part in the Kira Liquidity Auction to buy KEX!"
+        subtitle={auctionFinished ? "Thank you all for participation in the event! " : auctionStarted ? "Buy and discover KEX price!" : "Event will begin shortly!" }
       />
       <Container>
         <Stats auctionData={auctionData}/>
       </Container>
-      {!auctionFinished && (
+      {(
         <Container size="lg">
           <Chart auctionData={auctionData}/>
         </Container>
-      )}
-      {auctionData && auctionFinished && (
-        <StyledContainer>
-          <StyledText>
-            Auction Finished
-          </StyledText>
-          <StyledSubText>
-            Click "My Wallet" button and claim your KEX now, or await automatic distribution within 48 hours.
-          </StyledSubText>
-        </StyledContainer>
       )}
       <Spacer size="md" />
       <StyledInfo>

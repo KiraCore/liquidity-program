@@ -75,25 +75,15 @@ const useAuctionData = () => {
       return (Math.abs(dT) + auctionConfig.T1 + auctionConfig.T2); // edge cases must be explicit
     }
 
-    if (dT >= (auctionConfig.T1 + auctionConfig.T2)) { // at the auction ended then time remaining is 0
-      return 0;  // edge cases must be explicit
+    for(let i = auctionConfig.epochTime; i <= (auctionConfig.epochTime + auctionConfig.T1 + auctionConfig.T2); i++) {
+      let pTMP = getCurrentPrice(i);
+      let hcTMP = pTMP*availableKEX;
+      if( hcTMP <= totalRaisedETH ){
+          return i - currentTime; // hard cap was hit at i
+      }
     }
 
-    let remainingTime: number = 0;
-    const CAP1 = availableKEX * auctionConfig.P1; // absolute maximum that can be sold (ETH)
-    const CAP2 = availableKEX * auctionConfig.P2; 
-    const CAP3 = availableKEX * auctionConfig.P3; // lowest possible hard cap for the auction
-    const P = getCurrentPrice(currentTime);       // current Hard CAP price KEX/ETH
-
-    if (totalRaisedETH <= CAP3) {
-      remainingTime = auctionConfig.T1 + auctionConfig.T2 - dT;
-    } else if (totalRaisedETH <= CAP2) {
-      remainingTime = ((P - auctionConfig.P3) * auctionConfig.T2) / (auctionConfig.P2 - auctionConfig.P3); //X2
-    } else if (totalRaisedETH <= CAP1) {
-      remainingTime = (P - auctionConfig.P2) * auctionConfig.T1 / (auctionConfig.P1 - auctionConfig.P2); //X1
-    }
-
-    return Math.floor(remainingTime);
+    return (auctionConfig.T1 + auctionConfig.T2) - dT;
   }
 
   const generateInitialData = () => {
@@ -105,9 +95,9 @@ const useAuctionData = () => {
     let prices = [] as number[]
     let amounts = [] as number[]
 
-    if (now > T2M) {
+    /*if (now > T2M) {
       setIntervalAllowed(false)
-    }
+    }*/
     
     for (let epochT = auctionConfig.epochTime; epochT <= T2M;) {
       let T = new Date(0);
@@ -154,14 +144,14 @@ const useAuctionData = () => {
     let ethDeposited: number = 0;
     let totalRaisedAmount: number = 0;
 
-    const now = Date.now() / 1000;
-    const ethusd = +resCnf['ethusd'];
-    const startTime = auctionConfig.epochTime; // auction start
-    const endTime = startTime + auctionConfig.T1 + auctionConfig.T2;
+    let now = Date.now() / 1000;
+    let ethusd = +resCnf['ethusd'];
+    let startTime = auctionConfig.epochTime; // auction start
+    let endTime = startTime + auctionConfig.T1 + auctionConfig.T2;
     
-    if (now > endTime) {
+    /*if (now > endTime) {
       setIntervalAllowed(false);
-    }
+    }*/
 
     let fetchResult;
     if(resCnf['test'] == true){ // LOCAL TESTING DATA ./test.json
@@ -213,16 +203,15 @@ const useAuctionData = () => {
       }
 
       let hardCap = availableKEX * getCurrentPrice(T);
-      let timeLeft = getEstimatedTimeLeft(ethAmountRaised, T);
-      if ( projectedEndTime > T + timeLeft ) { 
-        projectedEndTime =  T + timeLeft; // estimate auction end
-        projectedEndPrice = getCurrentPrice(projectedEndTime); // estimate final price
-      }
+      let timeLeft = getEstimatedTimeLeft(ethDeposited, T);
 
+      //console.log(`Time Left: T:${T} -> ${timeLeft}`);
       if (timeLeft < 0 || ethAmountRaised > hardCap || (T + timeInterval) > now) {
         amounts[index] = 0; // do not display amounts after auction finalized or if frame is not live yet, or if current hard cap is hit
       } else {
         amounts[index] = ethAmountRaised;
+        projectedEndTime =  T + timeLeft; // estimate auction end
+        projectedEndPrice = getCurrentPrice(projectedEndTime); // estimate final price
       }
 
       prices[index] = pPrices && pPrices[index];
@@ -242,9 +231,11 @@ const useAuctionData = () => {
     let estimatedEndCapETH = getEstimatedEndCAP(projectedEndTime); // Projected CMC must be at projected time
     let estimatedEndCAP = estimatedEndCapETH * ethusd; // Projected CMC in USD
     let currentKexPriceUSD = currentKexPrice * ethusd;
+    let projectedEndPriceUSD = projectedEndPrice * ethusd;
 
     console.log(`INFO:   Total raised: ${ethDeposited} ETH / ${totalRaisedAmount} USD`);
     console.log(`INFO: Last KEX price: ${currentKexPrice} ETH / ${currentKexPriceUSD} USD`);
+    console.log(`INFO: Proj KEX price: ${projectedEndPrice} ETH / ${projectedEndPriceUSD} USD`);
     console.log(`INFO:  Projected Cap: ${estimatedEndCapETH} ETH / ${estimatedEndCAP} USD`);
 
     console.log(`INFO:     Start Time: ${startTime}`);
@@ -252,10 +243,10 @@ const useAuctionData = () => {
     console.log(`INFO: Projected Time: ${projectedEndTime}`);
     console.log(`INFO:       End Time: ${endTime}`);
 
-    if (timeRemaining <= 0) { // Finishes the auction when time remaining is 0
+    /*if (timeRemaining <= 0) { // Finishes the auction when time remaining is 0
       setIntervalAllowed(false);
       console.log("Auction finished", auctionData.ethDeposited);
-    }
+    }*/
 
     let CAP3 = availableKEX * auctionConfig.P3;
 
@@ -264,7 +255,7 @@ const useAuctionData = () => {
       prices: totalRaisedAmount > CAP3 ? prices : pPrices,
       amounts: amounts,
       kexPrice: currentKexPriceUSD,
-      projectedKexPrice: projectedEndPrice * ethusd,
+      projectedKexPrice: projectedEndPriceUSD,
       ethDeposited: ethDeposited,
       totalRaisedInUSD: totalRaisedAmount,
       projectedEndTime: projectedEndTime,

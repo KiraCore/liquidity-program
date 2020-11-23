@@ -31,6 +31,7 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
   const [auctionStartTime, setAuctionStartTime] = useState<string>("0d 0h 0m 0s");
   const [auctionEndTime, setAuctionEndTime] = useState<string>("0d 0h 0m 0s");
   const [currentTime, setCurrentTime] = useState<string>('');
+  const [auctionEnded, setAuctionEnded] = useState<boolean>(false);
   const [currentKexPrice, setCurrentKexPrice] = useState<number>(0);
   const [projectedKexPrice, setProjectedKexPrice] = useState<number>(0);
   const [totalDeposited, setTotalDeposited] = useState<number>(0);
@@ -46,14 +47,13 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
     return number;
   }
 
-  const getCurrentTime = () => {
-    const now = new Date();
-    return now.getUTCFullYear() +
-    '-' + pad(now.getUTCMonth() + 1) +
-    '-' + pad(now.getUTCDate()) +
-    ' ' + pad(now.getUTCHours()) +
-    ':' + pad(now.getUTCMinutes()) +
-    ':' + pad(now.getUTCSeconds());
+  const getCurrentTime = (dt: Date) => {
+    return dt.getUTCFullYear() +
+    '-' + pad(dt.getUTCMonth() + 1) +
+    '-' + pad(dt.getUTCDate()) +
+    ' ' + pad(dt.getUTCHours()) +
+    ':' + pad(dt.getUTCMinutes()) +
+    ':' + pad(dt.getUTCSeconds());
   }
 
   const getRemainingTime = (epoch: number) => {
@@ -80,7 +80,9 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
   useInterval(async () => {
     console.log("Interval running...");
     if (auctionConfig) {
-      setCurrentTime(getCurrentTime());
+      var timeNow = getCurrentTime(new Date());
+      var timeEnd = getCurrentTime(new Date(auctionData.projectedEndTime*1000));
+      setCurrentTime(auctionEnded ? timeEnd : timeNow);
       setAuctionStartTime(getRemainingTime(auctionConfig.epochTime));
       setAuctionEndTime(getRemainingTime(auctionData.projectedEndTime));
     }
@@ -88,9 +90,10 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
 
   useEffect(() => {
     if (auctionData) {
-      setTotalDeposited(auctionData.ethDeposited)
+      setTotalDeposited(+auctionData.ethDeposited.toFixed(3))
       setCurrentKexPrice(+auctionData.kexPrice.toFixed(6))
       setProjectedKexPrice(+auctionData.projectedKexPrice.toFixed(6))
+      setAuctionEnded(auctionData.auctionFinished);
     }
   }, [auctionData])
 
@@ -107,10 +110,10 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
       }
 
       let currentHardCap = auctionData.kexPrice * +resCnf['available'];
-      const percent = auctionData.auctionStarted ? (auctionData.totalRaisedInUSD / currentHardCap) * 100 : 0;
-      setFilledPercent((percent).toFixed(2)) // what % of the current hard cap was deposited
+      let percent = auctionData.auctionStarted ? (auctionData.totalRaisedInUSD / currentHardCap) * 100 : 0;
+      setFilledPercent((percent > 100 ? 100 : percent).toFixed(2)) // what % of the current hard cap was deposited
     }
-  }, [auctionData, currentKexPrice, projectedKexPrice])
+  }, [auctionData, currentKexPrice, projectedKexPrice, auctionEnded])
 
   return (
     <StyledWrapper>
@@ -128,7 +131,7 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
               </span> */}
               <Spacer />
               <div style={{ flex: 1 }}>
-                <Label text="Liquidity Auction Status" weight={600} size={20}/>
+                <Label text="Auction Status" weight={600} size={20}/>
                 <Spacer size="sm"/>
 
                 <StyledAuctionTime>
@@ -151,7 +154,7 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
         </CardContent>
 
         <Footnote>
-          Time Now UTC
+          {auctionEnded ? "End Time UTC" : "Time Now UTC"}
           <FootnoteValue>
             {currentTime}
           </FootnoteValue>
@@ -166,12 +169,12 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
               {/* <img src={Kira_Img} alt="" style={{width: '60px', height: '60px'}}/> */}
               <Spacer />
               <div style={{ flex: 1 }}>
-                <Label text="KEX Liquidity Market Status" weight={600} size={20}/>
+                <Label text="Market Status" weight={600} size={20}/>
                 <Spacer size="sm"/>
 
                 <StyledAuctionTime>
-                  <Label text="- Max KEX Price" color='#333333'/>
-                  <StyledAuctionValue>{"$" + currentKexPrice.toFixed(3)}</StyledAuctionValue>
+                  <Label text={auctionEnded ? "- Final KEX Price" : "- Max KEX Price"} color='#333333'/>
+                  <StyledAuctionValue>{currentKexPrice.toFixed(3) + " USD"}</StyledAuctionValue>
                 </StyledAuctionTime>
                
                 <StyledAuctionTime>
@@ -180,8 +183,8 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
                 </StyledAuctionTime>
 
                 <StyledAuctionTime>
-                  <Label text="- Projected CMC" color='#333333'/>
-                  <StyledAuctionValue>${abbreviateNumber(new BigNumber(resCnf["circulation"]).multipliedBy(projectedKexPrice).toNumber())}</StyledAuctionValue>
+                  <Label text={auctionEnded ? "- Initial CMC" : "- Projected CMC"} color='#333333'/>
+                  <StyledAuctionValue>{abbreviateNumber(new BigNumber(resCnf["circulation"]).multipliedBy(projectedKexPrice).toNumber()) + " USD"}</StyledAuctionValue>
                 </StyledAuctionTime>
               </div>
             </StyledBalance>

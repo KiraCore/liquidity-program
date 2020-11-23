@@ -21,7 +21,7 @@ const AboutKiraAuction: React.FC<ModalProps> = ({ onDismiss }) => {
             <CardTitle text={"How Does This Work ?"} />
             <CardContent>
               <StyledText>
-                {"Connect your MetaMask wallet and deposit ETH, that's all there is to it. Everyone gets the same price and the price depends on when the auction starts. To prevent auction from ending too fast and everyone having a chance to making it in time, the initial price is high and then rapidly descends. You can either send ETH right away or await until the KEX price reaches a lower level. However! if you wait too long you might not be able to make it. The auction ends instantly when the red bar indicating amount of ETH deposited by participants touches the green line indicting pice of KEX and the corresponding CAP."}
+                {"Deposit ETH to the address displayed on the home page while the auction is live. You can send maximum of 5 ETH once every 1 hour. After auction ends, connect your MetaMask wallet and claim your KEX immediately or await automatic distribution within ~48h. At the end everyone gets the same price regardless when they deposit ETH. You should transfer your coins when you think MAX price per KEX is fair. Auction ends when the constantly decreasing Hard Cap is reached."}
               </StyledText>
             </CardContent>
           </Card>

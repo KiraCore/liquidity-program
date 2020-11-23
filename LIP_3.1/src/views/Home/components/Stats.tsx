@@ -110,7 +110,7 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
       }
 
       let currentHardCap = auctionData.kexPrice * +resCnf['available'];
-      let percent = auctionData.auctionStarted ? (auctionData.totalRaisedInUSD / currentHardCap) * 100 : 0;
+      let percent = currentHardCap <= 0 ? 0 : (auctionData.auctionStarted ? (auctionData.totalRaisedInUSD / currentHardCap) * 100 : 0);
       setFilledPercent((percent > 100 ? 100 : percent).toFixed(2)) // what % of the current hard cap was deposited
     }
   }, [auctionData, currentKexPrice, projectedKexPrice, auctionEnded])

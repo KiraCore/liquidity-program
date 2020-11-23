@@ -1,6 +1,7 @@
 {
   "name": "KLA",
   "version": "0.1.0",
+  "homepage": ".",
   "private": true,
   "dependencies": {
     "@types/debounce": "^1.2.0",
@@ -25,6 +26,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "styled-components": "^5.1.1",
+    "surge": "^0.21.7",
     "typescript": "^3.9.7",
     "use-interval": "^1.3.0",
     "use-wallet": "^0.8.0",
@@ -35,7 +37,7 @@
     "build": "CI= GENERATE_SOURCEMAP=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "yarn build && cp ./build/index.html ./build/200.html && surge ./build kiraswap.org"
+    "serve": "cd ./build && npx serve"
   },
   "eslintConfig": {
     "extends": "react-app"

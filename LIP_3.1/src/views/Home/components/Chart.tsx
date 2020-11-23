@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import React, { useEffect, useState, useContext } from 'react'
+import styled, { ThemeContext } from 'styled-components'
 import { Bar } from 'react-chartjs-2'
 
 import { AuctionData } from '../../../contexts/Auction'
@@ -9,6 +9,7 @@ import cfgData from '../../../config.json';
 import { Clipboard } from 'ts-clipboard';
 import { QRCode } from 'react-qrcode-logo';
 import Spacer from '../../../components/Spacer'
+import { WaveLoading } from 'styled-spinkit'
 
 const abbreviateNumber = (value: number)  => {
   let newValue;
@@ -36,6 +37,7 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
   const auctionConfig = useAuctionConfig();
   const resCnf: any = cfgData; // Config Data
   const kexAvailable = resCnf["available"] // max amount of KEX available for distribution
+  const { color, spacing } = useContext(ThemeContext)
 
   const options: object = {
     title: {
@@ -220,7 +222,7 @@ const StyledWrapper = styled.div`
     flex-flow: column nowrap;
     align-items: stretch;
   }
-  margin-top: 50px;
+  margin-top: 20px;
 `
 
 const StyledBarContainer = styled.div`

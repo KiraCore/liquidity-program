@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import React, { useEffect, useState, useContext } from 'react'
+import styled, { ThemeContext } from 'styled-components'
 import kira from '../../assets/img/kira.png'
 import Container from '../../components/Container'
 import Page from '../../components/Page'
@@ -8,11 +8,14 @@ import Spacer from '../../components/Spacer'
 import Stats from './components/Stats'
 import Chart from './components/Chart'
 import useAuctionData from '../../hooks/useAuctionData'
+import { WaveLoading } from 'styled-spinkit'
 
 const Home: React.FC = () => {
   const [auctionFinished, setAuctionFinished] = useState<boolean>(false);
   const [auctionStarted, setAuctionStarted] = useState<boolean>(false);
-  const auctionData = useAuctionData()
+  const [isLoading, setLoading] = useState<boolean>(true);
+  const { color } = useContext(ThemeContext);
+  const auctionData = useAuctionData();
 
   useEffect(() => {
     if (auctionData) {
@@ -21,6 +24,9 @@ const Home: React.FC = () => {
       }
       if (auctionData.auctionStarted) {
         setAuctionStarted(true);
+      }
+      if (!auctionData.isLoading) {
+        setLoading(false);
       }
     }
   }, [auctionData])
@@ -32,14 +38,24 @@ const Home: React.FC = () => {
         title="Kira Liquidity Auction"
         subtitle={auctionFinished ? "Thank you all for participation in the event! " : auctionStarted ? "Buy and discover KEX price!" : "Event will begin shortly!" }
       />
-      <Container>
-        <Stats auctionData={auctionData}/>
-      </Container>
-      {(
-        <Container size="lg">
-          <Chart auctionData={auctionData}/>
-        </Container>
-      )}
+        {!isLoading ? ( 
+          <Container size="lg">
+            <Stats auctionData={auctionData}/>
+            {auctionStarted && !auctionFinished && (
+              <StyledBanner>
+                Maximum deposit is 5 ETH per 1 hour! Minimum recommended GAS is 200k
+              </StyledBanner>
+            )}
+            <Chart auctionData={auctionData}/>
+          </Container>
+        ) : (
+          <Container size="lg">
+            <WaveLoading
+              color={color.purple[600]}
+              size={60}	
+            />
+          </Container>
+        )}
       <Spacer size="md" />
       <StyledInfo>
         💡<b>Pro Tip</b>: Click "Connect Wallet" if you didn't yet : )
@@ -61,32 +77,22 @@ const StyledInfo = styled.h3`
   }
 `
 
-const StyledContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  width: 60%;
-`
-
 const StyledText = styled.h1`
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
-  font-size: 18;
   color: ${props => props.theme.color.purple[500]};
 `
 
-const StyledSubText = styled.div`
+const StyledBanner = styled.div`
   display: flex;
   justify-content: center;
-  width: 100%;
-  font-size: 15;
+  width: 100%;  
+  font-size: 22px;
   overflow-wrap: break-word;
-  margin-top: 20px;
-  color: ${props => props.theme.color.purple[500]};
+  margin: 50px 0 30px auto;
+  color: ${props => props.theme.color.red[800]};
 `
 
 export default Home

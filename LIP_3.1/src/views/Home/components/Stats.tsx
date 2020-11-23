@@ -121,14 +121,6 @@ const Stats: React.FC<StatsProps> = ({ auctionData }) => {
         <CardContent>
           <StyledBalances>
             <StyledBalance>
-              {/* <span
-                role="img"
-                style={{
-                  fontSize: 50,
-                }}
-              >
-                {"⏳"}
-              </span> */}
               <Spacer />
               <div style={{ flex: 1 }}>
                 <Label text="Auction Status" weight={600} size={20}/>

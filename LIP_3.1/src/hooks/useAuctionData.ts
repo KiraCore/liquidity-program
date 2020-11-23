@@ -12,7 +12,7 @@ const useAuctionData = () => {
   const resCnf: any = cfgData; // Config Data
   const timeInterval = 60 * 10; // 10 minutes
   const auctionConfig = useAuctionConfig();
-  const [auctionData, setAuctionData] = useState<AuctionData>();
+  const [auctionData, setAuctionData] = useState<AuctionData>({isLoading: true});
   const [xLabels, setLabels] = useState([]);
   const [pPrices, setPrices] = useState([]);
   const [genFinished, setGenFinished] = useState(false);
@@ -132,7 +132,8 @@ const useAuctionData = () => {
       projectedEndTime: T2M,
       initialMarketCap: CAP1,
       auctionStarted: now >= auctionConfig.epochTime ? true : false,
-      auctionFinished: now > T2M ? true : false
+      auctionFinished: now > T2M ? true : false,
+      isLoading: true,
     })
     setGenFinished(true);
   }
@@ -262,7 +263,8 @@ const useAuctionData = () => {
       auctionEndTimeLeft: timeRemaining,
       auctionEndCAP: estimatedEndCAP, // IN USD
       auctionStarted: now >= startTime ? true : false,
-      auctionFinished: timeRemaining <= 0 ? true : false
+      auctionFinished: timeRemaining <= 0 ? true : false,
+      isLoading: auctionData.isLoading ? !auctionData.isLoading : false,
     })
   }
 

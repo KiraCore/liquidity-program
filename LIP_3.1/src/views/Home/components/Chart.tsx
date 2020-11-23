@@ -167,7 +167,7 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
   }
 
   const onClickExplorer = () => {
-    window.open(resCnf['explorer']);
+    window.open(resCnf['explore']);
   }
 
   return (

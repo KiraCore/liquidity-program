@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import React, { useEffect, useState, useContext } from 'react'
+import styled, { ThemeContext } from 'styled-components'
 import kira from '../../assets/img/kira.png'
 import Container from '../../components/Container'
 import Page from '../../components/Page'
@@ -8,11 +8,14 @@ import Spacer from '../../components/Spacer'
 import Stats from './components/Stats'
 import Chart from './components/Chart'
 import useAuctionData from '../../hooks/useAuctionData'
+import { ChasingDots } from 'styled-spinkit'
 
 const Home: React.FC = () => {
   const [auctionFinished, setAuctionFinished] = useState<boolean>(false);
   const [auctionStarted, setAuctionStarted] = useState<boolean>(false);
-  const auctionData = useAuctionData()
+  const [isLoading, setLoading] = useState<boolean>(true);
+  const { color, spacing } = useContext(ThemeContext);
+  const auctionData = useAuctionData();
 
   useEffect(() => {
     if (auctionData) {
@@ -21,6 +24,9 @@ const Home: React.FC = () => {
       }
       if (auctionData.auctionStarted) {
         setAuctionStarted(true);
+      }
+      if (!auctionData.isLoading) {
+        setLoading(false);
       }
     }
   }, [auctionData])
@@ -32,14 +38,20 @@ const Home: React.FC = () => {
         title="Kira Liquidity Auction"
         subtitle={auctionFinished ? "Thank you all for participation in the event! " : auctionStarted ? "Buy and discover KEX price!" : "Event will begin shortly!" }
       />
-      <Container>
-        <Stats auctionData={auctionData}/>
-      </Container>
-      {(
-        <Container size="lg">
-          <Chart auctionData={auctionData}/>
-        </Container>
-      )}
+        {!isLoading ? ( 
+          <Container size="lg">
+            <Stats auctionData={auctionData}/>
+            <Chart auctionData={auctionData}/>
+          </Container>
+        ) : (
+          <Container size="lg">
+            <ChasingDots
+              color={color.purple[600]}
+              size={60}	
+            />
+            <StyledText>Loading...</StyledText>
+          </Container>
+        )}
       <Spacer size="md" />
       <StyledInfo>
         💡<b>Pro Tip</b>: Click "Connect Wallet" if you didn't yet : )
@@ -59,15 +71,6 @@ const StyledInfo = styled.h3`
   > b {
     color: ${(props) => props.theme.color.purple[600]};
   }
-`
-
-const StyledContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  width: 60%;
 `
 
 const StyledText = styled.h1`

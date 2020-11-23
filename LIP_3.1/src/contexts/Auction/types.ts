@@ -28,5 +28,6 @@ export interface AuctionData {
   auctionEndCAP?: number, // ETH
   auctionStarted?: boolean,
   auctionFinished?: boolean,
+  isLoading?: boolean,
   initialMarketCap?: number,
 }

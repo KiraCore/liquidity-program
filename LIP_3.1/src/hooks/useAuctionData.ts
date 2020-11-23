@@ -200,7 +200,7 @@ const useAuctionData = () => {
       let timeLeft = getEstimatedTimeLeft(ethDeposited, T);
 
       console.log(`Time Frame: ${T}/${lastEpoch} -> ${ethDeposited}/${cap} | ${timeLeft}`);
-      if (timeLeft < 0 || ethDeposited > hardCap || T > (now + timeInterval) ) {
+      if (timeLeft < 0 || ethDeposited > hardCap || T > now) {
         amounts[index] = 0; // do not display amounts after auction finalized or if frame is not live yet, or if current hard cap is hit
       } else {
         amounts[index] = ethDeposited;

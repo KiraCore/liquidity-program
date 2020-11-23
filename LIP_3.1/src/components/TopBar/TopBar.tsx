@@ -69,7 +69,7 @@ const StyledButtonWrapper = styled.div`
   flex-wrap: wrap;
 
   @media (max-width: 400px) {
-    justify-content: center;
+    justify-content: flex-end;
     align-items: space-between;
     width: auto;
   }

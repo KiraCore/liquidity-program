@@ -62,9 +62,11 @@ const useAuctionConfig = () => {
       throw new Error("ERROR: Can't fetch Configuration Data");
     }
 
-    if (ethereum && auctionAddress || resCnf['test'] == true) {
+    /*if (ethereum && auctionAddress || resCnf['test'] == true) {
       fetchAuctionInfo()
-    }
+    }*/
+    fetchAuctionInfo();
+    
   }, [ethereum, auctionAddress])
 
   return auction

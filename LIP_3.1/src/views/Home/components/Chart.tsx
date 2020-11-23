@@ -222,7 +222,7 @@ const StyledWrapper = styled.div`
     flex-flow: column nowrap;
     align-items: stretch;
   }
-  margin-top: 50px;
+  margin-top: 20px;
 `
 
 const StyledBarContainer = styled.div`

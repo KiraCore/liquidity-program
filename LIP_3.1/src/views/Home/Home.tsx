@@ -8,13 +8,13 @@ import Spacer from '../../components/Spacer'
 import Stats from './components/Stats'
 import Chart from './components/Chart'
 import useAuctionData from '../../hooks/useAuctionData'
-import { ChasingDots } from 'styled-spinkit'
+import { WaveLoading } from 'styled-spinkit'
 
 const Home: React.FC = () => {
   const [auctionFinished, setAuctionFinished] = useState<boolean>(false);
   const [auctionStarted, setAuctionStarted] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(true);
-  const { color, spacing } = useContext(ThemeContext);
+  const { color } = useContext(ThemeContext);
   const auctionData = useAuctionData();
 
   useEffect(() => {
@@ -41,15 +41,19 @@ const Home: React.FC = () => {
         {!isLoading ? ( 
           <Container size="lg">
             <Stats auctionData={auctionData}/>
+            {auctionStarted && !auctionFinished && (
+              <StyledBanner>
+                Maximum deposit is 5 ETH per 1 hour! Minimum recommended GAS is 200k
+              </StyledBanner>
+            )}
             <Chart auctionData={auctionData}/>
           </Container>
         ) : (
           <Container size="lg">
-            <ChasingDots
+            <WaveLoading
               color={color.purple[600]}
               size={60}	
             />
-            <StyledText>Loading...</StyledText>
           </Container>
         )}
       <Spacer size="md" />
@@ -78,18 +82,17 @@ const StyledText = styled.h1`
   justify-content: center;
   align-items: center;
   width: 100%;
-  font-size: 18;
   color: ${props => props.theme.color.purple[500]};
 `
 
-const StyledSubText = styled.div`
+const StyledBanner = styled.div`
   display: flex;
   justify-content: center;
-  width: 100%;
-  font-size: 15;
+  width: 100%;  
+  font-size: 22px;
   overflow-wrap: break-word;
-  margin-top: 20px;
-  color: ${props => props.theme.color.purple[500]};
+  margin: 50px 0 30px auto;
+  color: ${props => props.theme.color.red[800]};
 `
 
 export default Home

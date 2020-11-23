@@ -6,7 +6,7 @@ const Nav: React.FC = () => {
     <StyledNav>
       <StyledLink
         target="_blank"
-        href="https://lip3.kira.network">
+        href="https://auction-contract.kira.network">
         Auction Contract
       </StyledLink>
       <StyledLink target="_blank" href="https://tg.kira.network">

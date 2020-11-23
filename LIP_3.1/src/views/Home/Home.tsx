@@ -43,7 +43,7 @@ const Home: React.FC = () => {
             <Stats auctionData={auctionData}/>
             {auctionStarted && !auctionFinished && (
               <StyledBanner>
-                Maximum deposit is 5 ETH per 1 hour! Minimum recommended GAS is 200k
+                Maximum deposit is 5 ETH per 1 hour! Minimum recommended Gas Limit is 600k
               </StyledBanner>
             )}
             <Chart auctionData={auctionData}/>
@@ -58,7 +58,7 @@ const Home: React.FC = () => {
         )}
       <Spacer size="md" />
       <StyledInfo>
-        💡<b>Pro Tip</b>: Click "Connect Wallet" if you didn't yet : )
+        💡<b>Pro Tip</b>: Transfer ETH to Deposit Address only once Auction is Live :)
       </StyledInfo>
     </Page>
   )

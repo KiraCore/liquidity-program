@@ -66,6 +66,9 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
           scaleLabel: {
             display: true,
             labelString: "Time",
+          },
+          ticks: {
+            fontSize: 15
           }
         }
       ],
@@ -76,12 +79,12 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
           type: 'linear',
           scaleLabel: {
             display: true,
-            //labelString: 'KEX/USD',
             fontColor: "rgba(88, 201, 62)",
           },
           ticks: {
             min: 0,
             max: auctionConfig && auctionConfig.P1 * +resCnf['ethusd'],
+            fontSize: 15,
             beginAtZero: false,
             callback: (value: number, index: number, values: []) => {
               return '$' + value.toFixed(3);
@@ -110,6 +113,7 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
           ticks: {
             min: 0,
             max: auctionConfig && kexAvailable * auctionConfig.P1,
+            fontSize: 15,
             callback: (value: number, index: number, values: number) => {
               return value.toFixed(2) + ' ETH';
             }

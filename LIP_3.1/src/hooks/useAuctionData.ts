@@ -113,7 +113,7 @@ const useAuctionData = () => {
       hour = hour ? hour : 0;
       minute = minute ? minute : 0;
       second = second ? second : 0;
-      labels.push([(hour > 9 ? '' : '0') + hour, (minute > 9 ? '' : '0') + minute, (second > 9 ? '' : '0') + second + ", " + month + "/" + (day) + " "].join(':'));
+      labels.push([(hour > 9 ? '' : '0') + hour, (minute > 9 ? '' : '0') + minute + " " + month + "/" + (day) + " "].join(':'));
       prices.push(getCurrentPrice(epochT) * +resCnf['ethusd']);
       amounts.push(0);
       epochT += timeInterval

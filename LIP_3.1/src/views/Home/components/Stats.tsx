@@ -232,8 +232,8 @@ const StyledAuctionTime = styled.div`
 
 const StyledAuctionValue = styled.div`
   color: #000;
-  font-size: 20px;
-  font-weight: 300;
+  font-size: 19px;
+  font-weight: 400;
   color: ${(props) => props.theme.color.purple[500]};
 `
 

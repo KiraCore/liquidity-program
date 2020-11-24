@@ -117,7 +117,7 @@ const Chart: React.FC<ChartProps> = ({ auctionData }) => {
             max: auctionConfig && kexAvailable * auctionConfig.P1,
             fontSize: 15,
             callback: (value: number, index: number, values: number) => {
-              return value.toFixed(2) + ' ETH';
+              return value.toFixed(0) + ' ETH';
             }
           }
         }

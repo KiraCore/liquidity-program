@@ -6,6 +6,7 @@ import Modal, { ModalProps } from '../Modal'
 import ModalActions from '../ModalActions'
 import ModalContent from '../ModalContent'
 import ModalTitle from '../ModalTitle'
+import Spacer from '../Spacer'
 
 import Card from '../Card'
 import CardContent from '../CardContent'
@@ -21,7 +22,19 @@ const AboutKiraAuction: React.FC<ModalProps> = ({ onDismiss }) => {
             <CardTitle text={"How Does This Work ?"} />
             <CardContent>
               <StyledText>
-                {"Deposit ETH to the address displayed on the home page while the auction is live. You can send only 1 tx every 1 hour and maximum 5 ETH in each transaction. After auction ends, connect your MetaMask wallet and claim your KEX immediately or await automatic distribution within ~48h. At the end everyone gets the same price regardless when they deposit ETH. You should transfer your coins when you think MAX price per KEX is fair. Auction ends when the constantly decreasing Hard Cap is reached."}
+              {"Deposit ETH to the address displayed on the home page while the auction is live. You can send only 1 tx every 1 hour and maximum 5 ETH in each transaction."}
+              </StyledText>
+              <Spacer size="sm" />
+              <StyledText>
+              {"After auction ends, connect your MetaMask wallet and claim your KEX immediately or await automatic distribution within ~48h."}
+              </StyledText>
+              <Spacer size="sm" />
+              <StyledText>
+              {"At the end everyone gets the same price regardless when they deposit ETH. You should transfer your coins when you think MAX price per KEX is fair. Auction ends when the constantly decreasing Hard Cap is reached."}
+              </StyledText>
+              <Spacer size="md" />
+              <StyledText>
+              {"NOTE: All values in the visualization are only estimates based on fixed ETH/USD ratio of $600 !!!"}
               </StyledText>
             </CardContent>
           </Card>
@@ -46,7 +59,8 @@ const StyledWalletsWrapper = styled.div`
 const StyledText = styled.h3`
   color: ${(props) => props.theme.color.purple[500]};
   font-size: 15px;
-  text-align: center;
+  text-align: justify;
+  text-justify: inter-word;
   margin: 0;
   padding: 0;
 `

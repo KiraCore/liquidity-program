@@ -102,8 +102,17 @@ yGJXeQ6ROtU8klONsrg5R33L7ooAjNcqZoR3nnt2jLVFfjrz8WG3W0dK/PHAEgg=
 _NOTE: This service visualizes LIP_3 using react & typescript server side application which requires hosting_
 
 * [Deployment Documentation](./LIP_3.1/README.md)
-* [Application Binary Interface](./LIP_3/ABI.json)
 * [Improvement Proposal](https://github.com/KiraCore/docs/blob/master/spec/liquidity-program/lip_3.1.md)
+* [Public Announcement](https://medium.com/kira-core/liquidity-auction-7c532d67a97)
+
+```
+Configuration Parameters
+
+* Fixed ETH/USD ratio at $600
+* Start 25'th November 2020, 3PM UTC
+* Transaction limit, 5 ETH max per 1 tx
+* Rate limit, 1 transaction per 1 hour
+```
 
 ## LIP_3.2
 

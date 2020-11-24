@@ -33,6 +33,7 @@ const AccountModal: React.FC<ModalProps> = ({ onDismiss }) => {
   const [balance, setBalance] = useState<number>(0);
 
   useEffect(() => {
+    setBalance(kexBalance.dividedBy(new BigNumber(10).pow(6)).toNumber())
     auctionContract.events.ClaimedTokens({}, (error: object, event:string) => {
       console.log(error, event);
     }).on('data', (event: string, returnValues: any) => {

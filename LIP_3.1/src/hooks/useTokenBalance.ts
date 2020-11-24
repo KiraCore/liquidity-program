@@ -15,6 +15,8 @@ const useTokenBalance = () => {
     ethereum,
   }: { account: string; ethereum: provider } = useWallet()
 
+  console.log(`INFO: Fetching Token Balance, address: ${account}, ERC20: ${kexAddress}`);
+
   const fetchBalance = useCallback(async () => {
     const balance = await getBalance(ethereum, kexAddress, account)
     setBalance(new BigNumber(balance))
@@ -26,6 +28,7 @@ const useTokenBalance = () => {
     }
   }, [account, ethereum, setBalance, kexAddress])
 
+  console.log(`INFO: Personal KEX Token Balance: ${balance}`);
   return balance
 }
 

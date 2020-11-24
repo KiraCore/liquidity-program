@@ -59,20 +59,49 @@ RWTopxNIGH2njxWuafRX8gi0AYlSTBmOaFtR9ztTZCVVWXTDrTIn73hkeNiBJAY=
 
 * [Deployment Documentation](./LIP_3/README.md)
 * [Application Binary Interface](./LIP_3/ABI.json)
-* [Improvement Proposal](https://github.com/KiraCore/docs/blob/master/spec/liquidity-program/lip_1.md)
-
+* [Improvement Proposal](https://github.com/KiraCore/docs/blob/master/spec/liquidity-program/lip_3.md)
+* [Audit Report](./LIP_3/audit.pdf)
+  
 ### Contract Address
 
 ```
-TBA
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+KIRA Network Liquidity Auction Contract Address:
+0x297fF490bdd3bc80eB30397108823D2D6aB53Db6
+
+         Network: Ethereum
+    Auction Type: Hard & Soft CAP LastBid Dutch Auction with Whitelist
+   Auction Start: 25/11/2020 15:00:00 UTC
+ Accepted Tokens: ETH
+Available Tokens: 4'000'000 ERC20 KEX (0x1698...a4F8)
+        Soft CAP: $300'000 (fixed rate)
+  Whitelist Form: https://whitelist.kira.network
+
+ABI SHA256 Checksum:
+d7e25c736a66a1c22f7dd3aff0e972025eee0fe5cbbffb820951b4fd0d78fe28  ABI.json
+-----BEGIN PGP SIGNATURE-----
+Version: Keybase OpenPGP v2.1.13
+Comment: https://keybase.io/crypto
+
+wsBcBAABCgAGBQJftu0VAAoJEMd1XMN/y97L2JIH/1GRsOPDzMx2ryggcjM1meQ/
+W/jW3Avp9mkAYwUhhMqh+r1jtAK8LHwyPgCysyxFpshMEXfVyWVvDt3/fDtfOwt7
+IujS5sJUOD4omV7lQBldH8W2MtjpPo9kCxhOgJ9aoclvwzmI81bXtemapUriORQ+
+qye8WTpPtFLUhFE8mxqbR8ffMlxGOpylgcUT8iHPwLbBcagXI5rj6Pk0zt2oMQ13
+0+n2rnjjneHMQg6duopjJnBPZzvlDQe+rFgpVsEAyyOtuBM5+VitAdGHNC48kLG+
+yGJXeQ6ROtU8klONsrg5R33L7ooAjNcqZoR3nnt2jLVFfjrz8WG3W0dK/PHAEgg=
+=3qNY
+-----END PGP SIGNATURE-----
 ```
 
 ## LIP_3.2
 
 **Ethereum Address Balance Caching Service**
 
-_NOTE: Caching service is an AWS lambda function which stores information regarding ethereum account balances in the function of block height and time. Intended use of this service is besides the LIP_3.1 which is a static frontend application for the public auction._
+_NOTE: Caching service is an AWS lambda function which stores information regarding ethereum account balances in the function of block height and time. Intended use of this service is the LIP_3.1 which must operate as static page without dependency on any API._
 
 * [Deployment Documentation](./LIP_3.2/README.md)
-* [Public S3 Bucket](http://oracle.kira.network)
+* [Public S3 Bucket](https://oracle.kira.network/)
+* [Configuration File](https://github.com/KiraCore/cfg/blob/main/EthereumOracle/env-mainnet)
 * [Improvement Proposal](https://github.com/KiraCore/docs/blob/master/spec/liquidity-program/lip_3.2.md)

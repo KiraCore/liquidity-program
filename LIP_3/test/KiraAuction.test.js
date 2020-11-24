@@ -93,11 +93,11 @@ contract('KiraAuction Test', async function (accounts) {
     })
 
     it("first slope's decreasing rate should be bigger than the second one", async function () {
-      await expect(instance.configAuction(getCurrentTimestamp() + 2, toWei(3), toWei(1), toWei(0), 10, 5, 1, toWei(0.01), toWei(10))).to.eventually.be.rejectedWith('KiraAuction: the first slope should have faster decreasing rate')
+      await expect(instance.configAuction(getCurrentTimestamp() + 2, toWei(3), toWei(1), toWei(0), 10, 5, 1, toWei(0.01), toWei(10))).to.eventually.be.rejectedWith('KiraAuction: the first slope should have faster decreasing rate and the period of each slope should be greater than zero')
     })
 
     it("slope times should be valid", async function () {
-      await expect(instance.configAuction(getCurrentTimestamp() + 2, toWei(3), toWei(1), toWei(0), 0, 5, 1, toWei(0.01), toWei(10))).to.eventually.be.rejectedWith('KiraAuction: the period of each slope should be greater than zero.')
+      await expect(instance.configAuction(getCurrentTimestamp() + 2, toWei(3), toWei(1), toWei(0), 0, 5, 1, toWei(0.01), toWei(10))).to.eventually.be.rejectedWith('KiraAuction: the first slope should have faster decreasing rate and the period of each slope should be greater than zero')
     })
 
     it("max size per transaction should be valid", async function () {
@@ -260,7 +260,7 @@ contract('KiraAuction Test', async function (accounts) {
       const sendEth = toWei(0.5)
       await expect(instance.send(sendEth, { from: account1 })).to.eventually.be.fulfilled
       await expect(instance.totalDeposited()).to.eventually.be.a.bignumber.equal(new BN(sendEth))
-      await expect(instance.getLatestPrice()).to.eventually.be.a.bignumber.equal(new BN(toWei(0.05)))
+      await expect(instance.latestPrice.call()).to.eventually.be.a.bignumber.equal(new BN(toWei(0.05)))
     })
   })
 

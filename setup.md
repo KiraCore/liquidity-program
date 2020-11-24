@@ -27,7 +27,7 @@ npm install -g truffle-export-abi
 sudo apt install git
 cd $HOME
 rm -rfv ./liquidity-program/
-git clone https://github.com/KiraCore/liquidity-program.git
+git clone https://github.com/KiraCore/liquidity-program.git -b <branch_name>
 ```
 
 ## Install the desktop version of Ganache

@@ -95,6 +95,16 @@ yGJXeQ6ROtU8klONsrg5R33L7ooAjNcqZoR3nnt2jLVFfjrz8WG3W0dK/PHAEgg=
 -----END PGP SIGNATURE-----
 ```
 
+## LIP_3.1
+
+**Liquidity Auction Frontend**
+
+_NOTE: This service visualizes LIP_3 using react & typescript server side application which requires hosting_
+
+* [Deployment Documentation](./LIP_3.1/README.md)
+* [Application Binary Interface](./LIP_3/ABI.json)
+* [Improvement Proposal](https://github.com/KiraCore/docs/blob/master/spec/liquidity-program/lip_3.1.md)
+
 ## LIP_3.2
 
 **Ethereum Address Balance Caching Service**

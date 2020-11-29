@@ -66,4 +66,12 @@ const StyledWalletCard = styled.div`
   flex-basis: calc(50% - ${(props) => props.theme.spacing[2]}px);
 `
 
+const StyledText = styled.h2`
+  display: flex;
+  justify-content: center;
+  font-size: 16px;
+  color: ${(props) => props.theme.color.purple[500]};
+`
+
+
 export default WalletProviderModal

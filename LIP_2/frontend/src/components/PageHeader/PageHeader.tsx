@@ -40,11 +40,10 @@ const StyledIcon = styled.div`
 `
 
 const StyledTitle = styled.h1`
-  font-family: 'Kaushan Script', sans-serif;
   color: ${(props) => props.theme.color.purple[500]};
-  font-size: 36px;
+  font-size: 40px;
   text-align: center;
-  font-weight: 700;
+  font-weight: 600;
   margin: 0;
   padding: 0;
 `
@@ -52,7 +51,7 @@ const StyledTitle = styled.h1`
 const StyledSubtitle = styled.h3`
   color: ${(props) => props.theme.color.purple[400]};
   font-size: 18px;
-  font-weight: 400;
+  font-weight: 300;
   margin: 0;
   padding: 0;
   text-align: center;

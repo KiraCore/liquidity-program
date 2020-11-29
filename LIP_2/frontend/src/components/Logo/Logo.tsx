@@ -26,12 +26,11 @@ const StyledLogo = styled(Link)`
 `
 
 const StyledText = styled.span`
-  color: ${(props) => props.theme.color.purple[600]};
-  font-family: 'Reem Kufi', sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: 0.03em;
+  color: ${(props) => props.theme.color.purple[800]};
   margin-left: ${(props) => props.theme.spacing[2]}px;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
   @media (max-width: 400px) {
     display: none;
   }

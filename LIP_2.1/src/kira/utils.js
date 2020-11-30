@@ -71,8 +71,6 @@ export const getTotalLPWethValue = async (
   tokenContract,
   pid,
 ) => {
-  console.log(lpContract.options.address)
-
   // Get balance of the token address
   const tokenAmountWholeLP = await tokenContract.methods
     .balanceOf(lpContract.options.address)
@@ -127,9 +125,6 @@ export const getKiraSupply = async (kira) => {
 
 // Confirmed
 export const stake = async (kiraStakingContract, pid, amount, account) => {
-  console.log(pid, 
-    new BigNumber(amount).times(new BigNumber(10).pow(18)).toString())
-  
   return kiraStakingContract.methods.stake(
       new BigNumber(amount).times(new BigNumber(10).pow(18)).toString(),
     )

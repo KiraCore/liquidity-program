@@ -12,7 +12,6 @@ const useReward = (pid: number) => {
 
   const handleReward = useCallback(async () => {
     const txHash = await harvest(kiraStakingContract, pid, account)
-    console.log(txHash)
     return txHash
   }, [account, pid, kira])
 

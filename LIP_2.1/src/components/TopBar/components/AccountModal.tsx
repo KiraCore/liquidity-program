@@ -40,7 +40,7 @@ const AccountModal: React.FC<ModalProps> = ({ onDismiss }) => {
             </CardIcon>
             <StyledBalance>
               <Value value={getBalanceNumber(kexBalance)} />
-              <Label text="LP Balance" />
+              <Label text="KEX Balance" />
             </StyledBalance>
           </StyledBalanceWrapper>
         </div>

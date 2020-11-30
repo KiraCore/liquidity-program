@@ -31,8 +31,6 @@ const FarmCards: React.FC = () => {
     ({ tokenSymbol }) => tokenSymbol === 'KEX',
   )
 
-  console.log(stakedValue);
-
   const kexPrice =
     kiraIndex >= 0 && stakedValue[kiraIndex]
       ? stakedValue[kiraIndex].tokenPriceInWeth

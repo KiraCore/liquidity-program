@@ -160,12 +160,10 @@ export const unstake = async (kiraStakingContract, pid, amount, account) => {
 
 export const getStakedLP = async (kiraStakingContract, pid, account) => {
   try {
-    console.log(kiraStakingContract);
-    const { amount } = await kiraStakingContract.methods
+    const amount = await kiraStakingContract.methods
       .balanceOf(account)
       .call()
-    console.log("-----------", amount);
-    return new BigNumber(amount)
+    return new BigNumber(amount);
   } catch {
     return new BigNumber(0)
   }

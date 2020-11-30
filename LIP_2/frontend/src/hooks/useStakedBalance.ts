@@ -16,7 +16,7 @@ const useStakedBalance = (pid: number) => {
 
   const fetchBalance = useCallback(async () => {
     const balance = await getStakedLP(kiraStakingContract, pid, account)
-    setBalance(new BigNumber(balance))
+    setBalance(balance)
   }, [account, pid, kira])
 
   useEffect(() => {

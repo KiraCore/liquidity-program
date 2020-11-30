@@ -38,7 +38,7 @@ export class Kira {
     }
     this.contracts = new Contracts(realProvider, networkId, this.web3, options)
     this.kiraAddress = contractAddresses.kira[networkId]
-    this.kiraChefAddress = contractAddresses.kiraChef[networkId]
+    this.kiraStakingAddress = contractAddresses.kiraStaking[networkId]
     this.wethAddress = contractAddresses.weth[networkId]
   }
 

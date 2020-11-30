@@ -4,7 +4,7 @@ import { provider } from 'web3-core'
 import BigNumber from 'bignumber.js'
 import { useWallet } from 'use-wallet'
 
-import { getEarned, getKiraChefContract } from '../kira/utils'
+import { getEarned, getKiraStakingContract } from '../kira/utils'
 import useKira from './useKira'
 import useBlock from './useBlock'
 
@@ -15,19 +15,19 @@ const useEarnings = (pid: number) => {
     ethereum,
   }: { account: string; ethereum: provider } = useWallet()
   const kira = useKira()
-  const kiraChefContract = getKiraChefContract(kira)
+  const kiraStakingContract = getKiraStakingContract(kira)
   const block = useBlock()
 
   const fetchBalance = useCallback(async () => {
-    const balance = await getEarned(kiraChefContract, pid, account)
+    const balance = await getEarned(kiraStakingContract, pid, account)
     setBalance(new BigNumber(balance))
-  }, [account, kiraChefContract, kira])
+  }, [account, kiraStakingContract, kira])
 
   useEffect(() => {
-    if (account && kiraChefContract && kira) {
+    if (account && kiraStakingContract && kira) {
       fetchBalance()
     }
-  }, [account, block, kiraChefContract, setBalance, kira])
+  }, [account, block, kiraStakingContract, setBalance, kira])
 
   return balance
 }

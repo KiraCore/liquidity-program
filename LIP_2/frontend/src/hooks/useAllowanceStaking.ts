@@ -7,7 +7,7 @@ import {provider} from 'web3-core'
 import {Contract} from 'web3-eth-contract'
 
 import {getAllowance} from '../utils/erc20'
-import {getKiraChefContract, getKiraContract, getXKiraStakingContract} from '../kira/utils'
+import {getKiraStakingContract, getKiraContract, getXKiraStakingContract} from '../kira/utils'
 
 const useAllowanceStaking = () => {
   const [allowance, setAllowance] = useState(new BigNumber(0))

@@ -7,30 +7,30 @@ import { provider } from 'web3-core'
 import { Contract } from 'web3-eth-contract'
 
 import { getAllowance } from '../utils/erc20'
-import { getKiraChefContract } from '../kira/utils'
+import { getKiraStakingContract } from '../kira/utils'
 
 const useAllowance = (lpContract: Contract) => {
   const [allowance, setAllowance] = useState(new BigNumber(0))
   const { account }: { account: string; ethereum: provider } = useWallet()
   const kira = useKira()
-  const kiraChefContract = getKiraChefContract(kira)
+  const kiraStakingContract = getKiraStakingContract(kira)
 
   const fetchAllowance = useCallback(async () => {
     const allowance = await getAllowance(
       lpContract,
       account,
-      kiraChefContract.options.address,
+      kiraStakingContract.options.address,
     )
     setAllowance(new BigNumber(allowance))
-  }, [account, kiraChefContract, lpContract])
+  }, [account, kiraStakingContract, lpContract])
 
   useEffect(() => {
-    if (account && kiraChefContract && lpContract) {
+    if (account && kiraStakingContract && lpContract) {
       fetchAllowance()
     }
     let refreshInterval = setInterval(fetchAllowance, 10000)
     return () => clearInterval(refreshInterval)
-  }, [account, kiraChefContract, lpContract])
+  }, [account, kiraStakingContract, lpContract])
 
   return allowance
 }

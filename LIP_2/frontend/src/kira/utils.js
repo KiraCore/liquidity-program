@@ -13,8 +13,8 @@ const GAS_LIMIT = {
   },
 }
 
-export const getKiraChefAddress = (kira) => {
-  return kira && kira.kiraChefAddress
+export const getKiraStakingAddress = (kira) => {
+  return kira && kira.kiraStakingAddress
 }
 export const getKiraAddress = (kira) => {
   return kira && kira.kiraAddress
@@ -23,8 +23,8 @@ export const getWethContract = (kira) => {
   return kira && kira.contracts && kira.contracts.weth
 }
 
-export const getKiraChefContract = (kira) => {
-  return kira && kira.contracts && kira.contracts.kiraChef
+export const getKiraStakingContract = (kira) => {
+  return kira && kira.contracts && kira.contracts.kiraStaking
 }
 export const getKiraContract = (kira) => {
   return kira && kira.contracts && kira.contracts.kira
@@ -65,20 +65,13 @@ export const getFarms = (kira) => {
     : []
 }
 
-export const getPoolWeight = async (kiraChefContract, pid) => {
-  const { allocPoint } = await kiraChefContract.methods.poolInfo(pid).call()
-  const totalAllocPoint = await kiraChefContract.methods
-    .totalAllocPoint()
-    .call()
-  return new BigNumber(allocPoint).div(new BigNumber(totalAllocPoint))
-}
-
-export const getEarned = async (kiraChefContract, pid, account) => {
-  return kiraChefContract.methods.pendingSquid(pid, account).call()
+export const getEarned = async (kiraStakingContract, pid, account) => {
+  // return kiraStakingContract.methods.pendingSquid(pid, account).call()
+  return new BigNumber(0);
 }
 
 export const getTotalLPWethValue = async (
-  kiraChefContract,
+  kiraStakingContract,
   wethContract,
   lpContract,
   tokenContract,
@@ -90,9 +83,9 @@ export const getTotalLPWethValue = async (
     .balanceOf(lpContract.options.address)
     .call()
   const tokenDecimals = await tokenContract.methods.decimals().call()
-  // Get the share of lpContract that kiraChefContract owns
+  // Get the share of lpContract that kiraStakingContract owns
   const balance = await lpContract.methods
-    .balanceOf(kiraChefContract.options.address)
+    .balanceOf(kiraStakingContract.options.address)
     .call()
   // Convert that into the portion of total lpContract = p1
   const totalSupply = await lpContract.methods.totalSupply().call()
@@ -117,13 +110,12 @@ export const getTotalLPWethValue = async (
     wethAmount,
     totalWethValue: totalLpWethValue.div(new BigNumber(10).pow(18)),
     tokenPriceInWeth: wethAmount.div(tokenAmount),
-    poolWeight: await getPoolWeight(kiraChefContract, pid),
   }
 }
 
-export const approve = async (lpContract, kiraChefContract, account) => {
+export const approve = async (lpContract, kiraStakingContract, account) => {
   return lpContract.methods
-    .approve(kiraChefContract.options.address, ethers.constants.MaxUint256)
+    .approve(kiraStakingContract.options.address, ethers.constants.MaxUint256)
     .send({ from: account })
 }
 
@@ -141,13 +133,12 @@ export const getXKiraSupply = async (kira) => {
   return new BigNumber(await kira.contracts.xKiraStaking.methods.totalSupply().call())
 }
 
-export const stake = async (kiraChefContract, pid, amount, account) => {
+export const stake = async (kiraStakingContract, pid, amount, account) => {
   console.log(pid, 
     new BigNumber(amount).times(new BigNumber(10).pow(18)).toString())
-    console.log(kiraChefContract)
-  return kiraChefContract.methods
-    .deposit(
-      pid,
+    console.log(kiraStakingContract)
+  if (pid === 0)
+  return kiraStakingContract.methods.stake(
       new BigNumber(amount).times(new BigNumber(10).pow(18)).toString(),
     )
     .send({ from: account })
@@ -157,8 +148,8 @@ export const stake = async (kiraChefContract, pid, amount, account) => {
     })
 }
 
-export const unstake = async (kiraChefContract, pid, amount, account) => {
-  return kiraChefContract.methods
+export const unstake = async (kiraStakingContract, pid, amount, account) => {
+  return kiraStakingContract.methods
     .withdraw(
       pid,
       new BigNumber(amount).times(new BigNumber(10).pow(18)).toString(),
@@ -169,8 +160,9 @@ export const unstake = async (kiraChefContract, pid, amount, account) => {
       return tx.transactionHash
     })
 }
-export const harvest = async (kiraChefContract, pid, account) => {
-  return kiraChefContract.methods
+
+export const harvest = async (kiraStakingContract, pid, account) => {
+  return kiraStakingContract.methods
     .deposit(pid, '0')
     .send({ from: account })
     .on('transactionHash', (tx) => {
@@ -179,21 +171,23 @@ export const harvest = async (kiraChefContract, pid, account) => {
     })
 }
 
-export const getStaked = async (kiraChefContract, pid, account) => {
+export const getStaked = async (kiraStakingContract, pid, account) => {
   try {
-    const { amount } = await kiraChefContract.methods
-      .userInfo(pid, account)
+    console.log(kiraStakingContract);
+    const { amount } = await kiraStakingContract.methods
+      .balanceOf(account)
       .call()
+      console.log(amount);
     return new BigNumber(amount)
   } catch {
     return new BigNumber(0)
   }
 }
 
-export const redeem = async (kiraChefContract, account) => {
+export const redeem = async (kiraStakingContract, account) => {
   let now = new Date().getTime() / 1000
   if (now >= 1597172400) {
-    return kiraChefContract.methods
+    return kiraStakingContract.methods
       .exit()
       .send({ from: account })
       .on('transactionHash', (tx) => {

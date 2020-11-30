@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 import useKira from './useKira'
 import { useWallet } from 'use-wallet'
 
-import { stake, getKiraChefContract } from '../kira/utils'
+import { stake, getKiraStakingContract } from '../kira/utils'
 
 const useStake = (pid: number) => {
   const { account } = useWallet()
@@ -12,7 +12,7 @@ const useStake = (pid: number) => {
   const handleStake = useCallback(
     async (amount: string) => {
       const txHash = await stake(
-        getKiraChefContract(kira),
+        getKiraStakingContract(kira),
         pid,
         amount,
         account,

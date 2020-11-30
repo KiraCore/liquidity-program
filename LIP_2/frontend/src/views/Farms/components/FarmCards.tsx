@@ -15,7 +15,7 @@ import useAllStakedValue, {
 } from '../../../hooks/useAllStakedValue'
 import useFarms from '../../../hooks/useFarms'
 import useKira from '../../../hooks/useKira'
-import { getEarned, getKiraChefContract } from '../../../kira/utils'
+import { getEarned, getKiraStakingContract } from '../../../kira/utils'
 import { bnToDec } from '../../../utils'
 
 interface FarmWithStakedValue extends Farm, StakedValue {
@@ -115,7 +115,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm }) => {
     async function fetchEarned() {
       if (kira) return
       const earned = await getEarned(
-        getKiraChefContract(kira),
+        getKiraStakingContract(kira),
         lpTokenAddress,
         account,
       )

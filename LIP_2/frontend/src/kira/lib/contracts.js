@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js/bignumber'
 import ERC20Abi from './abi/erc20.json'
-import KiraChefAbi from './abi/kirachef.json'
+import KiraStakingAbi from './abi/staking.json'
 import XKiraAbi from './abi/xkira.json'
 import KiraAbi from './abi/kira.json'
 import UNIV2PairAbi from './abi/uni_v2_lp.json'
@@ -23,7 +23,7 @@ export class Contracts {
     this.defaultGasPrice = options.defaultGasPrice
 
     this.kira = new this.web3.eth.Contract(KiraAbi)
-    this.kiraChef = new this.web3.eth.Contract(KiraChefAbi)
+    this.kiraStaking = new this.web3.eth.Contract(KiraStakingAbi)
     this.xKiraStaking = new this.web3.eth.Contract(XKiraAbi)
     this.weth = new this.web3.eth.Contract(WETHAbi)
 
@@ -48,7 +48,7 @@ export class Contracts {
     }
 
     setProvider(this.kira, contractAddresses.kira[networkId])
-    setProvider(this.kiraChef, contractAddresses.kiraChef[networkId])
+    setProvider(this.kiraStaking, contractAddresses.kiraStaking[networkId])
     setProvider(this.xKiraStaking, contractAddresses.xKira[networkId])
     setProvider(this.weth, contractAddresses.weth[networkId])
 
@@ -62,7 +62,7 @@ export class Contracts {
 
   setDefaultAccount(account) {
     this.kira.options.from = account
-    this.kiraChef.options.from = account
+    this.kiraStaking.options.from = account
   }
 
   async callContractFunction(method, options) {

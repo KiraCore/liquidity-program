@@ -8,7 +8,7 @@ import Spacer from '../../components/Spacer'
 import useFarm from '../../hooks/useFarm'
 import useRedeem from '../../hooks/useRedeem'
 import useKira from '../../hooks/useKira'
-import { getKiraChefContract } from '../../kira/utils'
+import { getKiraStakingContract } from '../../kira/utils'
 import { getContract } from '../../utils/erc20'
 import Harvest from './components/Harvest'
 import Stake from './components/Stake'
@@ -44,7 +44,7 @@ const Farm: React.FC = () => {
     return getContract(ethereum as provider, lpTokenAddress)
   }, [ethereum, lpTokenAddress])
 
-  const { onRedeem } = useRedeem(getKiraChefContract(kira))
+  const { onRedeem } = useRedeem(getKiraStakingContract(kira))
 
   const lpTokenName = useMemo(() => {
     return lpToken

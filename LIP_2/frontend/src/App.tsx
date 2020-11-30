@@ -22,7 +22,7 @@ const App: React.FC = () => {
   }, [setMobileMenu])
 
   const handlePresentMobileMenu = useCallback(() => {
-    setMobileMenu(true)
+    setMobileMenu(true);
   }, [setMobileMenu])
 
   return (

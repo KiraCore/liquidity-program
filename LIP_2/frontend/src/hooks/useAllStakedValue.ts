@@ -6,7 +6,7 @@ import { useWallet } from 'use-wallet'
 import { Contract } from 'web3-eth-contract'
 
 import {
-  getKiraChefContract,
+  getKiraStakingContract,
   getWethContract,
   getFarms,
   getTotalLPWethValue,
@@ -27,7 +27,7 @@ const useAllStakedValue = () => {
   const { account }: { account: string; ethereum: provider } = useWallet()
   const kira = useKira()
   const farms = getFarms(kira)
-  const kiraChefContract = getKiraChefContract(kira)
+  const kiraStakingContract = getKiraStakingContract(kira)
   const wethContact = getWethContract(kira)
   const block = useBlock()
 
@@ -44,7 +44,7 @@ const useAllStakedValue = () => {
           tokenContract: Contract
         }) =>
           getTotalLPWethValue(
-            kiraChefContract,
+            kiraStakingContract,
             wethContact,
             lpContract,
             tokenContract,
@@ -54,13 +54,13 @@ const useAllStakedValue = () => {
     )
 
     setBalance(balances)
-  }, [account, kiraChefContract, kira])
+  }, [account, kiraStakingContract, kira])
 
   useEffect(() => {
-    if (account && kiraChefContract && kira) {
+    if (account && kiraStakingContract && kira) {
       fetchAllStakedValue()
     }
-  }, [account, block, kiraChefContract, setBalance, kira])
+  }, [account, block, kiraStakingContract, setBalance, kira])
 
   return balances
 }

@@ -45,7 +45,7 @@ export const contractAddresses = {
   kira: {  // KEX Smart Contract Address
     42: '0x41379EF961492a594F91bB0F966c2CeD32B49544',
   },
-  kiraChef: {
+  kiraStaking: {
     42: '0xb3b3abadb4C97C0a957F85D32fB23C6172e62Fdc',
   },
   weth: {
@@ -56,46 +56,16 @@ export const contractAddresses = {
   }
 }
 
-// MainNet:
-// SquidToken : 0xE90b13eCA5Bb4fa0e5Ed3e54A85220058aeA80B5
-// SquidChef: 0x1D456A3C71e969987F4463Da63f527f04AD83297
-// SquidBar: 0x48B6244378929133E9507Ad0D93B99Cdbb68C987
-// SquidLock: 0xa0989f65247Ea4554fd88568D1aEd3e566e8D211
-
-//100
-// V2 Ropsten
-// SquidToken : 0x253F5A244aa8eDEcf5F0D5e4d2AAe9A1a48F31d8
-// SquidChef: 0x25a3D71079F2DC26ea561166269ED5098847D441
-// SquidBar: 0x5006EcDfF7e0b31F5fbea0069398CAd5bD83FEAF
-/*
-
-SLP Address on mainnet for reference
-==========================================
-0  USDT 0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852
-1  USDC 0xb4e16d0168e52d35cacd2c6185b44281ec28c9dc
-2  DAI  0xa478c2975ab1ea89e8196811f51a7b7ade33eb11
-3  sUSD 0xf80758ab42c3b07da84053fd88804bcb6baa4b5c
-4  COMP 0xcffdded873554f362ac02f8fb1f02e5ada10516f
-5  LEND 0xab3f9bf1d81ddb224a2014e98b238638824bcf20
-6  SNX  0x43ae24960e5534731fc831386c07755a2dc33d47
-7  UMA  0x88d97d199b9ed37c29d846d00d443de980832a22
-8  LINK 0xa2107fa5b38d9bbd2c461d6edf11b11a50f6b974
-9  BAND 0xf421c3f2e695c2d4c0765379ccace8ade4a480d9
-10 AMPL 0xc5be99a02c6857f9eac67bbce58df5572498f40c
-11 YFI  0x2fdbadf3c4d5a8666bc06645b8358ab803996e28
-12 KIRA 0xce84867c3c02b05dc570d0135103d3fb9cc19433
-*/
-
 export const supportedPools = [
   {
     pid: 0,
     lpAddresses: {
-      42: '0xb88B44F171d6fC4EF6eFcE313819067E62002D5c',
+      42: '0xb88b44f171d6fc4ef6efce313819067e62002d5c',
     },
     tokenAddresses: {
       42: '0x41379EF961492a594F91bB0F966c2CeD32B49544'
     },
-    name: 'Apple (ETH) Pool',
+    name: 'Apple (KEX/ETH) Pool',
     symbol: 'KEX-ETH UNI-V2 LP',
     tokenSymbol: 'KEX',
     icon: "🍎",

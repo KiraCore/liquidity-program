@@ -64,11 +64,6 @@ export const getFarms = (kira) => {
     : []
 }
 
-export const getEarned = async (kiraStakingContract, pid, account) => {
-  // return kiraStakingContract.methods.pendingSquid(pid, account).call()
-  return new BigNumber(0);
-}
-
 export const getTotalLPWethValue = async (
   kiraStakingContract,
   wethContract,
@@ -157,6 +152,9 @@ export const unstake = async (kiraStakingContract, pid, amount, account) => {
     })
 }
 
+export const getEarned = async (kiraStakingContract, pid, account) => {
+  return kiraStakingContract.methods.earned(account).call();
+}
 
 export const getStakedLP = async (kiraStakingContract, pid, account) => {
   try {
@@ -171,27 +169,11 @@ export const getStakedLP = async (kiraStakingContract, pid, account) => {
 
 export const harvest = async (kiraStakingContract, pid, account) => {
   return kiraStakingContract.methods
-    .deposit(pid, '0')
+    .getReward()
     .send({ from: account })
     .on('transactionHash', (tx) => {
       console.log(tx)
       return tx.transactionHash
     })
-}
-
-
-export const redeem = async (kiraStakingContract, account) => {
-  let now = new Date().getTime() / 1000
-  if (now >= 1597172400) {
-    return kiraStakingContract.methods
-      .exit()
-      .send({ from: account })
-      .on('transactionHash', (tx) => {
-        console.log(tx)
-        return tx.transactionHash
-      })
-  } else {
-    alert('pool not active')
-  }
 }
 

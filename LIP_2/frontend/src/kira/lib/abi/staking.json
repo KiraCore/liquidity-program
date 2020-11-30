@@ -70,25 +70,6 @@
         "inputs": [
             {
                 "indexed": false,
-                "internalType": "address",
-                "name": "token",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "Recovered",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": false,
                 "internalType": "uint256",
                 "name": "reward",
                 "type": "uint256"
@@ -122,11 +103,23 @@
             {
                 "indexed": false,
                 "internalType": "uint256",
-                "name": "newDuration",
+                "name": "rewardsPerInterval",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "interval",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "rewardRate",
                 "type": "uint256"
             }
         ],
-        "name": "RewardsDurationUpdated",
+        "name": "RewardRateUpdated",
         "type": "event"
     },
     {
@@ -228,7 +221,7 @@
     },
     {
         "inputs": [],
-        "name": "getRewardForDuration",
+        "name": "lastBalance",
         "outputs": [
             {
                 "internalType": "uint256",
@@ -396,25 +389,6 @@
         "type": "function"
     },
     {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "name": "rewards",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
         "inputs": [],
         "name": "rewardsDuration",
         "outputs": [
@@ -457,11 +431,16 @@
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "_rewardsDuration",
+                "name": "rewardsPerInterval",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "interval",
                 "type": "uint256"
             }
         ],
-        "name": "setRewardsDuration",
+        "name": "setRewardRate",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -495,25 +474,6 @@
     {
         "inputs": [],
         "name": "totalSupply",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "name": "userRewardPerTokenPaid",
         "outputs": [
             {
                 "internalType": "uint256",

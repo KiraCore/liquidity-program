@@ -3,7 +3,7 @@ export const contractAddresses = {
     42: '0x41379EF961492a594F91bB0F966c2CeD32B49544',
   },
   kiraStaking: {
-    42: '0xb3b3abadb4C97C0a957F85D32fB23C6172e62Fdc',
+    42: '0xFE41590843b6E98D482eA725407bB3A910d776A0',
   },
   weth: {
     42: '0xd0A1E359811322d97991E03f863a0C30C2cF029C',

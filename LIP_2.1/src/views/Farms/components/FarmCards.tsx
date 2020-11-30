@@ -17,6 +17,7 @@ import useFarms from '../../../hooks/useFarms'
 import useKira from '../../../hooks/useKira'
 import { getEarned, getKiraStakingContract } from '../../../kira/utils'
 import { bnToDec } from '../../../utils'
+import Icon from '../../../components/Icon'
 
 interface FarmWithStakedValue extends Farm, StakedValue {
   apy: BigNumber
@@ -128,11 +129,12 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm }) => {
 
   return (
     <StyledCardWrapper>
-      {farm.tokenSymbol == 'KEX' && <StyledCardAccent />}
       <Card>
         <CardContent>
           <StyledContent>
-            <CardIcon>{farm.icon}</CardIcon>
+            <CardIcon>
+              <img src={farm.icon} height={60} />
+            </CardIcon>
             <StyledTitle>{farm.name}</StyledTitle>
             <StyledDetails>
               <StyledDetail>Deposit {farm.lpToken}</StyledDetail>
@@ -165,7 +167,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm }) => {
                 )}
               </Button>
             }
-            <StyledInsight>
+            {/* <StyledInsight>
               <span>APY</span>
               <span>
                 {farm.apy
@@ -177,7 +179,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm }) => {
                       .slice(0, -1)}%`
                   : 'Loading ...'}
               </span>
-              {/* <span>
+              <span>
                 {farm.tokenAmount
                   ? (farm.tokenAmount.toNumber() || 0).toLocaleString('en-US')
                   : '-'}{' '}
@@ -188,8 +190,8 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm }) => {
                   ? (farm.wethAmount.toNumber() || 0).toLocaleString('en-US')
                   : '-'}{' '}
                 ETH
-              </span> */}
-            </StyledInsight>
+              </span>
+            </StyledInsight> */}
           </StyledContent>
         </CardContent>
       </Card>

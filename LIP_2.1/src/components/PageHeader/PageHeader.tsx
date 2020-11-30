@@ -11,10 +11,10 @@ interface PageHeaderProps {
 
 const PageHeader: React.FC<PageHeaderProps> = ({ icon, subtitle, title }) => {
   return (
-    <Container size="sm">
+    <Container size="lg">
       <StyledPageHeader>
         <StyledIcon>{icon}</StyledIcon>
-        <StyledTitle>Select Your Favorite Pools</StyledTitle>
+        <StyledTitle>Kira Staking Frontend</StyledTitle>
         <StyledSubtitle>{subtitle}</StyledSubtitle>
       </StyledPageHeader>
     </Container>
@@ -41,10 +41,10 @@ const StyledIcon = styled.div`
 
 const StyledTitle = styled.h1`
   color: ${(props) => props.theme.color.purple[500]};
-  font-size: 40px;
+  font-size: 42px;
   text-align: center;
   font-weight: 600;
-  margin: 0;
+  margin: 10px;
   padding: 0;
 `
 

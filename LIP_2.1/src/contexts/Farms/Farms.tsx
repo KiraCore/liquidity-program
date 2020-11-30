@@ -3,12 +3,9 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useWallet } from 'use-wallet'
 import useKira from '../../hooks/useKira'
 
-import { bnToDec } from '../../utils'
-import { getKiraStakingContract, getEarned } from '../../kira/utils'
 import { getFarms } from '../../kira/utils'
 
 import Context from './context'
-import { Farm } from './types'
 
 const Farms: React.FC = ({ children }) => {
   const [unharvested, setUnharvested] = useState(0)

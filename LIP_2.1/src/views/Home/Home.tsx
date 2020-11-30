@@ -13,8 +13,8 @@ const Home: React.FC = () => {
     <Page>
       <PageHeader
         icon={<img src={kira} height={120} />}
-        title="KiraSWap is Ready"
-        subtitle="Stake KiraSwap LP tokens to claim your very own tasty KEX!"
+        title="Kira staking is Ready"
+        subtitle="Stake Kira LP tokens to claim your very own KEX!"
       />
 
       <Container>

@@ -1,18 +1,13 @@
 import React from 'react'
 import { Route, Switch, useRouteMatch } from 'react-router-dom'
 import { useWallet } from 'use-wallet'
-
 import kira from '../../assets/img/kira.png'
-
 import Button from '../../components/Button'
 import Page from '../../components/Page'
 import PageHeader from '../../components/PageHeader'
 import WalletProviderModal from '../../components/WalletProviderModal'
-
 import useModal from '../../hooks/useModal'
-
 import Farm from '../Farm'
-
 import FarmCards from './components/FarmCards'
 
 const Farms: React.FC = () => {
@@ -26,8 +21,8 @@ const Farms: React.FC = () => {
           <>
             <Route exact path={path}>
               <PageHeader
-                icon={<img src={kira} height="120" />}
-                subtitle="Earn Kira tokens by staking Uniswap V2 LP Tokens."
+                icon={<img src={kira} height={120} />}
+                subtitle="Earn KEX tokens by staking Uniswap V2 LP Tokens."
               />
               <FarmCards />
             </Route>

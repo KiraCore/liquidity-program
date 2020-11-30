@@ -19,10 +19,10 @@ export const supportedPools = [
     tokenAddresses: {
       42: '0x41379EF961492a594F91bB0F966c2CeD32B49544'
     },
-    name: 'Apple (KEX/ETH) Pool',
+    name: 'KEX-ETH Pool',
     symbol: 'KEX-ETH UNI-V2 LP',
     tokenSymbol: 'KEX',
-    icon: "🍎",
+    icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
   },
   {
     pid: 1,
@@ -32,9 +32,9 @@ export const supportedPools = [
     tokenAddresses: {
       42: '0x41379EF961492a594F91bB0F966c2CeD32B49544',
     },
-    name: 'Melon (USDT) Pool',
+    name: 'KEX-USDT Pool',
     symbol: 'KEX-USDT UNI-V2 LP',
     tokenSymbol: 'USDT',
-    icon: "🍋",
+    icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/825.png",
   },
 ]

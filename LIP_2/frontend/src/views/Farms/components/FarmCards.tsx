@@ -33,7 +33,7 @@ const FarmCards: React.FC = () => {
 
   console.log(stakedValue);
 
-  const kiraPrice =
+  const kexPrice =
     kiraIndex >= 0 && stakedValue[kiraIndex]
       ? stakedValue[kiraIndex].tokenPriceInWeth
       : new BigNumber(0)
@@ -47,7 +47,7 @@ const FarmCards: React.FC = () => {
         ...farm,
         ...stakedValue[i],
         apy: stakedValue[i]
-          ? kiraPrice
+          ? kexPrice
               .times(KIRA_PER_BLOCK)
               .times(BLOCKS_PER_YEAR)
               .times(stakedValue[i].poolWeight)

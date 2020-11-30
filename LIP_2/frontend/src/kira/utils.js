@@ -16,9 +16,11 @@ const GAS_LIMIT = {
 export const getKiraStakingAddress = (kira) => {
   return kira && kira.kiraStakingAddress
 }
+
 export const getKiraAddress = (kira) => {
   return kira && kira.kiraAddress
 }
+
 export const getWethContract = (kira) => {
   return kira && kira.contracts && kira.contracts.weth
 }
@@ -26,12 +28,9 @@ export const getWethContract = (kira) => {
 export const getKiraStakingContract = (kira) => {
   return kira && kira.contracts && kira.contracts.kiraStaking
 }
+
 export const getKiraContract = (kira) => {
   return kira && kira.contracts && kira.contracts.kira
-}
-
-export const getXKiraStakingContract = (kira) => {
-  return kira && kira.contracts && kira.contracts.xKiraStaking
 }
 
 export const getFarms = (kira) => {
@@ -78,6 +77,7 @@ export const getTotalLPWethValue = async (
   pid,
 ) => {
   console.log(lpContract.options.address)
+
   // Get balance of the token address
   const tokenAmountWholeLP = await tokenContract.methods
     .balanceOf(lpContract.options.address)
@@ -105,6 +105,7 @@ export const getTotalLPWethValue = async (
   const wethAmount = new BigNumber(lpContractWeth)
     .times(portionLp)
     .div(new BigNumber(10).pow(18))
+
   return {
     tokenAmount,
     wethAmount,
@@ -129,15 +130,11 @@ export const getKiraSupply = async (kira) => {
   return new BigNumber(await kira.contracts.kira.methods.totalSupply().call())
 }
 
-export const getXKiraSupply = async (kira) => {
-  return new BigNumber(await kira.contracts.xKiraStaking.methods.totalSupply().call())
-}
-
+// Confirmed
 export const stake = async (kiraStakingContract, pid, amount, account) => {
   console.log(pid, 
     new BigNumber(amount).times(new BigNumber(10).pow(18)).toString())
-    console.log(kiraStakingContract)
-  if (pid === 0)
+  
   return kiraStakingContract.methods.stake(
       new BigNumber(amount).times(new BigNumber(10).pow(18)).toString(),
     )
@@ -148,10 +145,9 @@ export const stake = async (kiraStakingContract, pid, amount, account) => {
     })
 }
 
+// Confirmed
 export const unstake = async (kiraStakingContract, pid, amount, account) => {
-  return kiraStakingContract.methods
-    .withdraw(
-      pid,
+  return kiraStakingContract.methods.withdraw(
       new BigNumber(amount).times(new BigNumber(10).pow(18)).toString(),
     )
     .send({ from: account })
@@ -159,6 +155,20 @@ export const unstake = async (kiraStakingContract, pid, amount, account) => {
       console.log(tx)
       return tx.transactionHash
     })
+}
+
+
+export const getStakedLP = async (kiraStakingContract, pid, account) => {
+  try {
+    console.log(kiraStakingContract);
+    const { amount } = await kiraStakingContract.methods
+      .balanceOf(account)
+      .call()
+    console.log("-----------", amount);
+    return new BigNumber(amount)
+  } catch {
+    return new BigNumber(0)
+  }
 }
 
 export const harvest = async (kiraStakingContract, pid, account) => {
@@ -171,18 +181,6 @@ export const harvest = async (kiraStakingContract, pid, account) => {
     })
 }
 
-export const getStaked = async (kiraStakingContract, pid, account) => {
-  try {
-    console.log(kiraStakingContract);
-    const { amount } = await kiraStakingContract.methods
-      .balanceOf(account)
-      .call()
-      console.log(amount);
-    return new BigNumber(amount)
-  } catch {
-    return new BigNumber(0)
-  }
-}
 
 export const redeem = async (kiraStakingContract, account) => {
   let now = new Date().getTime() / 1000
@@ -199,27 +197,3 @@ export const redeem = async (kiraStakingContract, account) => {
   }
 }
 
-export const enter = async (contract, amount, account) => {
-  debugger
-  return contract.methods
-      .enter(
-          new BigNumber(amount).times(new BigNumber(10).pow(18)).toString(),
-      )
-      .send({ from: account })
-      .on('transactionHash', (tx) => {
-        console.log(tx)
-        return tx.transactionHash
-      })
-}
-
-export const leave = async (contract, amount, account) => {
-  return contract.methods
-      .leave(
-          new BigNumber(amount).times(new BigNumber(10).pow(18)).toString(),
-      )
-      .send({ from: account })
-      .on('transactionHash', (tx) => {
-        console.log(tx)
-        return tx.transactionHash
-      })
-}

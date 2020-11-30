@@ -11,9 +11,6 @@ const Nav: React.FC = () => {
       <StyledLink exact activeClassName="active" to="/farms">
         Menu
       </StyledLink>
-      {/* <StyledLink exact activeClassName="active" to="/staking">
-        Staking
-      </StyledLink> */}
       <StyledAbsoluteLink
         href="https://medium.com/kira-core"
         target="_blank"

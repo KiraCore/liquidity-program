@@ -95,7 +95,7 @@ const Balances: React.FC = () => {
               <img src={Kira_Img} alt="" style={{width: '60px', height: '60px'}}/>
               <Spacer />
               <div style={{ flex: 1 }}>
-                <Label text="Your KEX Balance" color='#e88f54'/>
+                <Label text="Your Staked LP Balance" color='#e88f54'/>
                 <Value
                   value={!!account ? getBalanceNumber(kexBalance) : 'Locked'}
                 />

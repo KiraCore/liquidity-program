@@ -12,7 +12,7 @@ const Home: React.FC = () => {
   return (
     <Page>
       <PageHeader
-        icon={<img src={kira} height={120} />}
+        icon={<img src={kira} height={90} />}
         title="Kira staking is Ready"
         subtitle="Stake Kira LP tokens to claim your very own KEX!"
       />

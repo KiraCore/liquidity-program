@@ -21,7 +21,7 @@ const Farms: React.FC = () => {
           <>
             <Route exact path={path}>
               <PageHeader
-                icon={<img src={kira} height={120} />}
+                icon={<img src={kira} height={90} />}
                 subtitle="Earn KEX tokens by staking Uniswap V2 LP Tokens."
               />
               <FarmCards />

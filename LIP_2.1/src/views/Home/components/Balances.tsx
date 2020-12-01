@@ -10,6 +10,7 @@ import Spacer from '../../../components/Spacer'
 import Value from '../../../components/Value'
 import useAllEarnings from '../../../hooks/useAllEarnings'
 import useAllStakedValue from '../../../hooks/useAllStakedValue'
+import useTotalLPSupply from '../../../hooks/useTotalLPSupply'
 import useFarms from '../../../hooks/useFarms'
 import useTokenBalance from '../../../hooks/useTokenBalance'
 import useKira from '../../../hooks/useKira'
@@ -70,20 +71,10 @@ const PendingRewards: React.FC = () => {
 }
 
 const Balances: React.FC = () => {
-  const [totalSupply, setTotalSupply] = useState<BigNumber>()
   const kira = useKira()
   const kexBalance = useTokenBalance(getKiraAddress(kira))
   const { account, ethereum }: { account: any; ethereum: any } = useWallet()
-
-  useEffect(() => {
-    async function fetchTotalSupply() {
-      const supply = await getKiraSupply(kira)
-      setTotalSupply(supply)
-    }
-    if (kira) {
-      fetchTotalSupply()
-    }
-  }, [kira, setTotalSupply])
+  const totalSupply = useTotalLPSupply(account);
 
   return (
     <StyledWrapper>
@@ -113,14 +104,14 @@ const Balances: React.FC = () => {
 
       <Card>
         <CardContent>
-          <Label text="Total KEX Supply" color='#e88f54'/>
+          <Label text="Total Circulating LP Token" color='#e88f54'/>
           <Value
-            value={totalSupply ? getBalanceNumber(totalSupply) : 'Locked'}
+            value={!!account ? getBalanceNumber(totalSupply, 18) : 'Locked'}
           />
         </CardContent>
         <Footnote>
-          New rewards per block
-          <FootnoteValue>1000 KEX</FootnoteValue>
+          New rewards
+          <FootnoteValue>0 KEX</FootnoteValue>
         </Footnote>
       </Card>
     </StyledWrapper>

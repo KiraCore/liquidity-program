@@ -127,6 +127,10 @@ export const getTotalLPSupply = async(kiraStakingContract) => {
   return kiraStakingContract.methods.totalSupply().call()
 }
 
+export const getRewardRate = async(kiraStakingContract) => {
+  return new BigNumber(await kiraStakingContract.methods.rewardRate().call())
+}
+
 // Confirmed
 export const stake = async (kiraStakingContract, pid, amount, account) => {
   return kiraStakingContract.methods.stake(

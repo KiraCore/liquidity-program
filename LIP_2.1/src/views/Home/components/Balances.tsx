@@ -9,14 +9,16 @@ import Label from '../../../components/Label'
 import Spacer from '../../../components/Spacer'
 import Value from '../../../components/Value'
 import useAllEarnings from '../../../hooks/useAllEarnings'
+import useStakedBalance from '../../../hooks/useStakedBalance'
 import useAllStakedValue from '../../../hooks/useAllStakedValue'
 import useTotalLPSupply from '../../../hooks/useTotalLPSupply'
 import useFarms from '../../../hooks/useFarms'
 import useTokenBalance from '../../../hooks/useTokenBalance'
 import useKira from '../../../hooks/useKira'
-import { getKiraAddress, getKiraSupply } from '../../../kira/utils'
+import { getKiraAddress, getKiraStakingContract, getRewardRate } from '../../../kira/utils'
 import { getBalanceNumber } from '../../../utils/formatBalance'
 import Kira_Img from '../../../assets/img/kira.png'
+import { getBalance } from '../../../utils/erc20'
 
 const PendingRewards: React.FC = () => {
   const [start, setStart] = useState(0)
@@ -73,8 +75,29 @@ const PendingRewards: React.FC = () => {
 const Balances: React.FC = () => {
   const kira = useKira()
   const kexBalance = useTokenBalance(getKiraAddress(kira))
+  const kiraStakingContract = getKiraStakingContract(kira)
   const { account, ethereum }: { account: any; ethereum: any } = useWallet()
-  const totalSupply = useTotalLPSupply(account);
+  const totalLPSupply = useTotalLPSupply(account)
+  const [rewardPerSecond, setRewardPerSecond] = useState(new BigNumber(0))
+  const stakedBalance = useStakedBalance(0)
+  const [ROI, setROI] = useState(new BigNumber(0))
+
+  useEffect(() => {
+    async function fetchTotalSupply() {
+      const reward = await getRewardRate(kiraStakingContract)
+      setRewardPerSecond(reward)
+    }
+    if (kira) {
+      fetchTotalSupply()
+    }
+  }, [kira, setRewardPerSecond])
+
+  useEffect(() => {
+    if (totalLPSupply.toNumber() > 0) {
+      console.log(stakedBalance.toNumber(), totalLPSupply.toNumber(), rewardPerSecond.toNumber())
+      setROI(stakedBalance.dividedBy(totalLPSupply).multipliedBy(rewardPerSecond).multipliedBy(3600 * 24 * 30))
+    }
+  }, [stakedBalance, totalLPSupply, rewardPerSecond])
 
   return (
     <StyledWrapper>
@@ -85,19 +108,17 @@ const Balances: React.FC = () => {
               <img src={Kira_Img} alt="" style={{width: '60px', height: '60px'}}/>
               <Spacer />
               <div style={{ flex: 1 }}>
-                <Label text="Your KEX Balance" color='#e88f54'/>
+                <Label text="Your ROI per month" color='#e88f54'/>
                 <Value
-                  value={!!account ? getBalanceNumber(kexBalance) : 'Locked'}
+                  value={!!account ? getBalanceNumber(ROI) : 'Locked'}
                 />
               </div>
             </StyledBalance>
           </StyledBalances>
         </CardContent>
         <Footnote>
-          Pending harvest
-          <FootnoteValue>
-            <PendingRewards /> KEX
-          </FootnoteValue>
+          Rewards per second
+          <FootnoteValue>{getBalanceNumber(rewardPerSecond)} KEX</FootnoteValue>
         </Footnote>
       </Card>
       <Spacer />
@@ -106,12 +127,14 @@ const Balances: React.FC = () => {
         <CardContent>
           <Label text="Total Circulating LP Token" color='#e88f54'/>
           <Value
-            value={!!account ? getBalanceNumber(totalSupply, 18) : 'Locked'}
+            value={!!account ? getBalanceNumber(totalLPSupply, 18) : 'Locked'}
           />
         </CardContent>
         <Footnote>
-          New rewards
-          <FootnoteValue>0 KEX</FootnoteValue>
+          Pending harvest
+          <FootnoteValue>
+            <PendingRewards /> KEX
+          </FootnoteValue>
         </Footnote>
       </Card>
     </StyledWrapper>

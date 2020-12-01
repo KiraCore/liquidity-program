@@ -110,7 +110,7 @@ const Balances: React.FC = () => {
               <div style={{ flex: 1 }}>
                 <Label text="Your ROI per month" color='#e88f54'/>
                 <Value
-                  value={!!account ? getBalanceNumber(ROI) : 'Locked'}
+                  value={!!account ? getBalanceNumber(ROI) + " KEX": 'Locked'}
                 />
               </div>
             </StyledBalance>

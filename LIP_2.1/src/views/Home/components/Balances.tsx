@@ -13,13 +13,12 @@ import useStakedBalance from '../../../hooks/useStakedBalance'
 import useAllStakedValue from '../../../hooks/useAllStakedValue'
 import useTotalLPSupply from '../../../hooks/useTotalLPSupply'
 import useFarms from '../../../hooks/useFarms'
-import useETHPriceInUSD from '../../../hooks/useETHPrice'
+import useTokenPrice from '../../../hooks/useTokenPrice'
 import useTokenBalance from '../../../hooks/useTokenBalance'
 import useKira from '../../../hooks/useKira'
 import { getKiraAddress, getKiraStakingAddress, getKiraStakingContract, getRewardRate } from '../../../kira/utils'
 import { getBalanceNumber } from '../../../utils/formatBalance'
 import Kira_Img from '../../../assets/img/kira.png'
-
 
 const PendingRewards: React.FC = () => {
   const [start, setStart] = useState(0)
@@ -75,15 +74,21 @@ const PendingRewards: React.FC = () => {
 
 const Balances: React.FC = () => {
   const kira = useKira()
+  const { account, ethereum }: { account: any; ethereum: any } = useWallet()
+  const [rewardPerSecond, setRewardPerSecond] = useState(new BigNumber(0))
+  const [ROI, setROI] = useState(new BigNumber(0))
+
   const kexBalanceInContract = useTokenBalance(getKiraAddress(kira), getKiraStakingAddress(kira))
+  const [valueOfLockedAssets, setValueOfLockedAssets] = useState(new BigNumber(0))
   // console.log("KEX - BALANCE: " , kexBalanceInContract);
   const kiraStakingContract = getKiraStakingContract(kira)
-  const { account, ethereum }: { account: any; ethereum: any } = useWallet()
   const totalLPSupply = useTotalLPSupply(account)
-  const [rewardPerSecond, setRewardPerSecond] = useState(new BigNumber(0))
   const stakedBalance = useStakedBalance(0)
-  const [ROI, setROI] = useState(new BigNumber(0))
-  const ethPriceInUSD = useETHPriceInUSD()
+  const tokenPrice = useTokenPrice()
+
+  useEffect(() => {
+    setValueOfLockedAssets(kexBalanceInContract.multipliedBy(tokenPrice.KEX))
+  }, [tokenPrice, kexBalanceInContract])
 
   useEffect(() => {
     async function fetchTotalSupply() {
@@ -117,15 +122,6 @@ const Balances: React.FC = () => {
                 />
               </div>
             </StyledBalance>
-            <StyledBalance>
-              <Spacer />
-              <div style={{ flex: 1 }}>
-                <Label text="Your ROI per month" color='#e88f54'/>
-                <Value
-                  value={!!account ? getBalanceNumber(ROI) + " KEX": 'Locked'}
-                />
-              </div>
-            </StyledBalance>
           </StyledBalances>
         </CardContent>
         <Footnote>
@@ -140,7 +136,7 @@ const Balances: React.FC = () => {
           <CardContent>
             <Label text="Value of Locked Assets" color='#e88f54'/>
             <Value
-              value={!!account ? getBalanceNumber(kexBalanceInContract) : 'Locked'}
+              value={!!account ? getBalanceNumber(valueOfLockedAssets) : 'Locked'}
             />
           </CardContent>
         ):(

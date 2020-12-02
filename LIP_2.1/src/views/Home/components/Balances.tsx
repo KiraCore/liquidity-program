@@ -117,12 +117,12 @@ const Balances: React.FC = () => {
             <Spacer size="sm"/>
 
             <StyledInfoContainer>
-              <Label text="Your ROI per month" color='#333333'/>
+              <Label text="- Your ROI per month" color='#333333'/>
               <StyledInfoValue>
                 <Value
-                  value={!!account ? getBalanceNumber(ROI): 'Locked'}
+                  value={getBalanceNumber(ROI)}
                 />
-                {account ? <Label text="KEX"/> : null}
+                <Label text="KEX"/>
               </StyledInfoValue>
             </StyledInfoContainer>
           </StyledCardContainer>
@@ -141,29 +141,20 @@ const Balances: React.FC = () => {
             <Spacer size="sm"/>
 
             <StyledInfoContainer>
-              <Label text="Value of Locked Assets" color='#333333'/>
+              <Label text="- Value of Locked Assets" color='#333333'/>
               <StyledInfoValue>
-                {account ? <Label text="$"/> : null}
+                <Label text="$"/>
                 <Value
-                  value={!!account ? getBalanceNumber(valueOfLockedAssets) : 'Locked'}
-                />
-              </StyledInfoValue>
-            </StyledInfoContainer>
-
-            <StyledInfoContainer>
-              <Label text="Total Circulating LP Token" color='#333333'/>
-              <StyledInfoValue>
-                <Value
-                  value={!!account ? getBalanceNumber(totalLPSupply, 18) : 'Locked'}
+                  value={getBalanceNumber(valueOfLockedAssets)}
                 />
               </StyledInfoValue>
             </StyledInfoContainer>
           </StyledCardContainer>
         </CardContent>
         <Footnote>
-          Pending harvest
+          Total Circulating LP Token
           <FootnoteValue>
-            <PendingRewards /> KEX
+            {getBalanceNumber(totalLPSupply, 18)}
           </FootnoteValue>
         </Footnote>
       </Card>

@@ -22,8 +22,7 @@ const Home: React.FC = () => {
       </Container>
       <Spacer size="lg" />
       <StyledInfo>
-        💡<b>Pro Tip</b>: KEX-ETH UNI-V2 LP token pool yields TWICE more token
-        rewards per block.
+        💡<b>Pro Tip</b>: KEX-ETH UNI-V2 LP token pool yields TWICE more token rewards per second.
       </StyledInfo>
       <Spacer size="lg" />
       <div
@@ -31,7 +30,7 @@ const Home: React.FC = () => {
           margin: '0 auto',
         }}
       >
-        <Button text="See available pools" to="/farms" variant="secondary" />
+        <Button text="See available pools" to="/pools" variant="secondary" />
       </div>
     </Page>
   )

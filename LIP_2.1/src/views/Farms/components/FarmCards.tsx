@@ -157,7 +157,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm }) => {
               <Button
                 disabled={!poolActive}
                 text={poolActive ? 'Select' : undefined}
-                to={`/farms/${farm.id}`}
+                to={`/pools/${farm.id}`}
               >
                 {!poolActive && (
                   <Countdown

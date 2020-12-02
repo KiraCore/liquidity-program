@@ -33,7 +33,7 @@ const App: React.FC = () => {
           <Route path="/" exact>
             <Home />
           </Route>
-          <Route path="/farms">
+          <Route path="/pools">
             <Farms />
           </Route>
         </Switch>

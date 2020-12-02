@@ -8,8 +8,8 @@ const Nav: React.FC = () => {
       <StyledLink exact activeClassName="active" to="/">
         Home
       </StyledLink>
-      <StyledLink exact activeClassName="active" to="/farms">
-        Menu
+      <StyledLink exact activeClassName="active" to="/pools">
+        Pools
       </StyledLink>
       <StyledAbsoluteLink
         href="https://medium.com/kira-core"

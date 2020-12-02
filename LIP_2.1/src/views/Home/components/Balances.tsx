@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import React, { useEffect, useState } from 'react'
-import CountUp from 'react-countup'
 import styled from 'styled-components'
 import { useWallet } from 'use-wallet'
 import Card from '../../../components/Card'
@@ -8,83 +7,29 @@ import CardContent from '../../../components/CardContent'
 import Label from '../../../components/Label'
 import Spacer from '../../../components/Spacer'
 import Value from '../../../components/Value'
-import useAllEarnings from '../../../hooks/useAllEarnings'
-import useStakedBalance from '../../../hooks/useStakedBalance'
-import useAllStakedValue from '../../../hooks/useAllStakedValue'
+import useStakedLPBalance from '../../../hooks/useStakedLPBalance'
 import useTotalLPSupply from '../../../hooks/useTotalLPSupply'
-import useFarms from '../../../hooks/useFarms'
 import useTokenPrice from '../../../hooks/useTokenPrice'
 import useTokenBalance from '../../../hooks/useTokenBalance'
 import useKira from '../../../hooks/useKira'
 import { getKiraAddress, getKiraStakingAddress, getKiraStakingContract, getRewardRate } from '../../../kira/utils'
 import { getBalanceNumber } from '../../../utils/formatBalance'
-import Kira_Img from '../../../assets/img/kira.png'
-import { checkPropTypes } from 'prop-types'
-
-const PendingRewards: React.FC = () => {
-  const [start, setStart] = useState(0)
-  const [end, setEnd] = useState(0)
-  const [scale, setScale] = useState(1)
-
-  const allEarnings = useAllEarnings()
-  let sumEarning = 0
-  for (let earning of allEarnings) {
-    sumEarning += new BigNumber(earning)
-      .div(new BigNumber(10).pow(18))
-      .toNumber()
-  }
-
-  const [farms] = useFarms()
-  const allStakedValue = useAllStakedValue()
-
-  if (allStakedValue && allStakedValue.length) {
-    const sumWeth = farms.reduce(
-      (c, { id }, i) => c + (allStakedValue[i].totalWethValue.toNumber() || 0),
-      0,
-    )
-  }
-
-  useEffect(() => {
-    setStart(end)
-    setEnd(sumEarning)
-  }, [sumEarning])
-
-  return (
-    <span
-      style={{
-        transform: `scale(${scale})`,
-        transformOrigin: 'right bottom',
-        transition: 'transform 0.5s',
-        display: 'inline-block',
-      }}
-    >
-      <CountUp
-        start={start}
-        end={end}
-        decimals={end < 0 ? 4 : end > 1e5 ? 0 : 3}
-        duration={1}
-        onStart={() => {
-          setScale(1.25)
-          setTimeout(() => setScale(1), 600)
-        }}
-        separator=","
-      />
-    </span>
-  )
-}
+import config from '../../../config'
 
 const Balances: React.FC = () => {
   const kira = useKira()
   const { account }: { account: any; ethereum: any } = useWallet()
   const [rewardPerSecond, setRewardPerSecond] = useState(new BigNumber(0))
   const [ROI, setROI] = useState(new BigNumber(0))
+  const [lockedUserBalance, setLockedUserBalance] = useState(new BigNumber(0))
 
-  const kexBalanceInContract = useTokenBalance(getKiraAddress(kira), getKiraStakingAddress(kira))
+  const kexBalanceInContract = useTokenBalance(getKiraAddress(kira), account)
+  const poolSizeInKEX = useTokenBalance(getKiraAddress(kira), getKiraStakingAddress(kira))
   const [valueOfLockedAssets, setValueOfLockedAssets] = useState(new BigNumber(0))
 
   const kiraStakingContract = getKiraStakingContract(kira)
-  const totalLPSupply = useTotalLPSupply(account)
-  const stakedBalance = useStakedBalance(0)
+  const totalLPSupply = useTotalLPSupply(account)   // TOTAL LP TOKEN AMOUNT LOCKED IN STAKING CONTRACT
+  const stakedLPBalance = useStakedLPBalance()          // USER'S LP TOKEN AMOUNT LOCED IN STAKING CONTRACT
   const tokenPrice = useTokenPrice()
 
   useEffect(() => {
@@ -104,9 +49,17 @@ const Balances: React.FC = () => {
   // GET ROI PER MONTH
   useEffect(() => {
     if (totalLPSupply.toNumber() > 0) {
-      setROI(stakedBalance.dividedBy(totalLPSupply).multipliedBy(rewardPerSecond).multipliedBy(3600 * 24 * 30))
+      setROI(stakedLPBalance.dividedBy(totalLPSupply).multipliedBy(rewardPerSecond).multipliedBy(3600 * 24 * 30))
     }
-  }, [stakedBalance, totalLPSupply, rewardPerSecond])
+  }, [stakedLPBalance, totalLPSupply, rewardPerSecond])
+
+  useEffect(() => {
+    if (stakedLPBalance && totalLPSupply) {
+      let percentOfUserBalance = stakedLPBalance.dividedBy(totalLPSupply)
+      let lockedKEXBalance = kexBalanceInContract.multipliedBy(percentOfUserBalance)
+      setLockedUserBalance(lockedKEXBalance.multipliedBy(tokenPrice.KEX))
+    }
+  }, [stakedLPBalance, totalLPSupply, kexBalanceInContract])
 
   return (
     <StyledWrapper>
@@ -125,6 +78,16 @@ const Balances: React.FC = () => {
                 <Label text="KEX"/>
               </StyledInfoValue>
             </StyledInfoContainer>
+
+            <StyledInfoContainer>
+              <Label text="- Value of your locked assets" color='#333333'/>
+              <StyledInfoValue>
+                <Label text="$"/>
+                <Value
+                  value={getBalanceNumber(lockedUserBalance)}
+                />
+              </StyledInfoValue>
+            </StyledInfoContainer>
           </StyledCardContainer>
         </CardContent>
         <Footnote>
@@ -141,7 +104,7 @@ const Balances: React.FC = () => {
             <Spacer size="sm"/>
 
             <StyledInfoContainer>
-              <Label text="- Value of Locked Assets" color='#333333'/>
+              <Label text="- Value of Total Locked Assets" color='#333333'/>
               <StyledInfoValue>
                 <Label text="$"/>
                 <Value
@@ -149,12 +112,22 @@ const Balances: React.FC = () => {
                 />
               </StyledInfoValue>
             </StyledInfoContainer>
+
+            <StyledInfoContainer>
+              <Label text="- Annual Percentage Yield" color='#333333'/>
+              <StyledInfoValue>
+                <Value
+                  value={0}
+                />
+                <Label text=" %"/>
+              </StyledInfoValue>
+            </StyledInfoContainer>
           </StyledCardContainer>
         </CardContent>
         <Footnote>
           Total Circulating LP Token
           <FootnoteValue>
-            {getBalanceNumber(totalLPSupply, 18)}
+            {getBalanceNumber(totalLPSupply, 18)} LP
           </FootnoteValue>
         </Footnote>
       </Card>

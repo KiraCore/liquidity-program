@@ -7,7 +7,7 @@ import { getStakedLP, getKiraStakingContract } from '../kira/utils'
 import useKira from './useKira'
 import useBlock from './useBlock'
 
-const useStakedBalance = (pid: number) => {
+const useStakedLPBalance = () => {
   const [balance, setBalance] = useState(new BigNumber(0))
   const { account }: { account: string } = useWallet()
   const kira = useKira()
@@ -15,17 +15,17 @@ const useStakedBalance = (pid: number) => {
   const block = useBlock()
 
   const fetchBalance = useCallback(async () => {
-    const balance = await getStakedLP(kiraStakingContract, pid, account)
+    const balance = await getStakedLP(kiraStakingContract, account)
     setBalance(balance)
-  }, [account, pid, kira])
+  }, [account, kira])
 
   useEffect(() => {
     if (account && kira) {
       fetchBalance()
     }
-  }, [account, pid, setBalance, block, kira])
+  }, [account, setBalance, block, kira])
 
   return balance
 }
 
-export default useStakedBalance
+export default useStakedLPBalance

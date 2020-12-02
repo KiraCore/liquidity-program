@@ -152,7 +152,7 @@ export const getEarned = async (kiraStakingContract, pid, account) => {
   return kiraStakingContract.methods.earned(account).call();
 }
 
-export const getStakedLP = async (kiraStakingContract, pid, account) => {
+export const getStakedLP = async (kiraStakingContract, account) => {
   try {
     const amount = await kiraStakingContract.methods
       .balanceOf(account)

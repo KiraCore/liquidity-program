@@ -14,7 +14,7 @@ import useAllowance from '../../../hooks/useAllowance'
 import useApprove from '../../../hooks/useApprove'
 import useModal from '../../../hooks/useModal'
 import useStake from '../../../hooks/useStake'
-import useStakedBalance from '../../../hooks/useStakedBalance'
+import useStakedBalance from '../../../hooks/useStakedLPBalance'
 import useTokenBalance from '../../../hooks/useTokenBalance'
 import useUnstake from '../../../hooks/useUnstake'
 import { getBalanceNumber } from '../../../utils/formatBalance'
@@ -34,7 +34,7 @@ const Stake: React.FC<StakeProps> = ({ lpContract, pid, tokenName }) => {
   const { onApprove } = useApprove(lpContract)
 
   const tokenBalance = useTokenBalance(lpContract.options.address, null)
-  const stakedBalance = useStakedBalance(pid)
+  const stakedBalance = useStakedBalance()
 
   const { onStake } = useStake(pid)
   const { onUnstake } = useUnstake(pid)

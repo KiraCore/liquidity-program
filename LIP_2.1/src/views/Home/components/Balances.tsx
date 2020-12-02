@@ -19,6 +19,7 @@ import useKira from '../../../hooks/useKira'
 import { getKiraAddress, getKiraStakingAddress, getKiraStakingContract, getRewardRate } from '../../../kira/utils'
 import { getBalanceNumber } from '../../../utils/formatBalance'
 import Kira_Img from '../../../assets/img/kira.png'
+import { checkPropTypes } from 'prop-types'
 
 const PendingRewards: React.FC = () => {
   const [start, setStart] = useState(0)
@@ -74,13 +75,13 @@ const PendingRewards: React.FC = () => {
 
 const Balances: React.FC = () => {
   const kira = useKira()
-  const { account, ethereum }: { account: any; ethereum: any } = useWallet()
+  const { account }: { account: any; ethereum: any } = useWallet()
   const [rewardPerSecond, setRewardPerSecond] = useState(new BigNumber(0))
   const [ROI, setROI] = useState(new BigNumber(0))
 
   const kexBalanceInContract = useTokenBalance(getKiraAddress(kira), getKiraStakingAddress(kira))
   const [valueOfLockedAssets, setValueOfLockedAssets] = useState(new BigNumber(0))
-  // console.log("KEX - BALANCE: " , kexBalanceInContract);
+
   const kiraStakingContract = getKiraStakingContract(kira)
   const totalLPSupply = useTotalLPSupply(account)
   const stakedBalance = useStakedBalance(0)
@@ -100,7 +101,7 @@ const Balances: React.FC = () => {
     }
   }, [kira, setRewardPerSecond])
 
-  // This is to get ROI per month
+  // GET ROI PER MONTH
   useEffect(() => {
     if (totalLPSupply.toNumber() > 0) {
       setROI(stakedBalance.dividedBy(totalLPSupply).multipliedBy(rewardPerSecond).multipliedBy(3600 * 24 * 30))
@@ -111,18 +112,20 @@ const Balances: React.FC = () => {
     <StyledWrapper>
       <Card>
         <CardContent>
-          <StyledBalances>
-            <StyledBalance>
-              <img src={Kira_Img} alt="" style={{width: '60px', height: '60px'}}/>
-              <Spacer />
-              <div style={{ flex: 1 }}>
-                <Label text="Your ROI per month" color='#e88f54'/>
+          <StyledCardContainer>
+            <Label text="User Information" weight={600} size={20}/>
+            <Spacer size="sm"/>
+
+            <StyledInfoContainer>
+              <Label text="Your ROI per month" color='#333333'/>
+              <StyledInfoValue>
                 <Value
-                  value={!!account ? getBalanceNumber(ROI) + " KEX": 'Locked'}
+                  value={!!account ? getBalanceNumber(ROI): 'Locked'}
                 />
-              </div>
-            </StyledBalance>
-          </StyledBalances>
+                {account ? <Label text="KEX"/> : null}
+              </StyledInfoValue>
+            </StyledInfoContainer>
+          </StyledCardContainer>
         </CardContent>
         <Footnote>
           Rewards per second
@@ -132,21 +135,31 @@ const Balances: React.FC = () => {
       <Spacer />
 
       <Card>
-        {!!account ? (
-          <CardContent>
-            <Label text="Value of Locked Assets" color='#e88f54'/>
-            <Value
-              value={!!account ? getBalanceNumber(valueOfLockedAssets) : 'Locked'}
-            />
-          </CardContent>
-        ):(
-          <CardContent>
-            <Label text="Total Circulating LP Token" color='#e88f54'/>
-            <Value
-              value={!!account ? getBalanceNumber(totalLPSupply, 18) : 'Locked'}
-            />
-          </CardContent>
-        )}
+        <CardContent>
+          <StyledCardContainer>
+            <Label text="Pool Information" weight={600} size={20}/>
+            <Spacer size="sm"/>
+
+            <StyledInfoContainer>
+              <Label text="Value of Locked Assets" color='#333333'/>
+              <StyledInfoValue>
+                {account ? <Label text="$"/> : null}
+                <Value
+                  value={!!account ? getBalanceNumber(valueOfLockedAssets) : 'Locked'}
+                />
+              </StyledInfoValue>
+            </StyledInfoContainer>
+
+            <StyledInfoContainer>
+              <Label text="Total Circulating LP Token" color='#333333'/>
+              <StyledInfoValue>
+                <Value
+                  value={!!account ? getBalanceNumber(totalLPSupply, 18) : 'Locked'}
+                />
+              </StyledInfoValue>
+            </StyledInfoContainer>
+          </StyledCardContainer>
+        </CardContent>
         <Footnote>
           Pending harvest
           <FootnoteValue>
@@ -179,14 +192,23 @@ const StyledWrapper = styled.div`
   }
 `
 
-const StyledBalances = styled.div`
-  display: flex;
+const StyledCardContainer = styled.div`
+  flex: 1
 `
 
-const StyledBalance = styled.div`
+const StyledInfoContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  display: flex;
-  flex: 1;
 `
 
+const StyledInfoValue = styled.div`
+  font-size: 20px;
+  font-weight: 300;
+  color: ${(props) => props.theme.color.purple[500]};
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+`
 export default Balances

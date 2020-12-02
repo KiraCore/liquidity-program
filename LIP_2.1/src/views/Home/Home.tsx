@@ -17,7 +17,7 @@ const Home: React.FC = () => {
         subtitle="Stake Kira LP tokens to claim your very own KEX!"
       />
 
-      <Container>
+      <Container size="lg">
         <Balances />
       </Container>
       <Spacer size="lg" />

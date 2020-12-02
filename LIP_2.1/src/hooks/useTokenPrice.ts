@@ -14,7 +14,8 @@ const useTokenPrice = () => {
   const block = useBlock()
 
   const fetchETHPriceInUSD = useCallback(async () => {
-    const ethPrice = await getETHPriceInUSD()
+    // const ethPrice = await getETHPriceInUSD()
+    const ethPrice = 595.3
     const kexPrice = ethPrice * config.ratio
 
     setTokenPrice({

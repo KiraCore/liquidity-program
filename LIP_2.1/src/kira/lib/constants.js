@@ -24,17 +24,4 @@ export const supportedPools = [
     tokenSymbol: 'KEX',
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
   },
-  {
-    pid: 1,
-    lpAddresses: {
-      42: '0xb88B44F171d6fC4EF6eFcE313819067E62002D5c',
-    },
-    tokenAddresses: {
-      42: '0x41379EF961492a594F91bB0F966c2CeD32B49544',
-    },
-    name: 'KEX-USDT Pool',
-    symbol: 'KEX-USDT UNI-V2 LP',
-    tokenSymbol: 'USDT',
-    icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/825.png",
-  },
 ]

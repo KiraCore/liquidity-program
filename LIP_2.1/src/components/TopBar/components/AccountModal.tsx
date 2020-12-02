@@ -25,7 +25,7 @@ const AccountModal: React.FC<ModalProps> = ({ onDismiss }) => {
   }, [onDismiss, reset])
 
   const kira = useKira()
-  const kexBalance = useTokenBalance(getKiraAddress(kira))
+  const kexBalance = useTokenBalance(getKiraAddress(kira), null)
 
   return (
     <Modal>

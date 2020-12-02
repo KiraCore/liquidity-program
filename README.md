@@ -1,120 +1,126 @@
 <div align="center">
   <h1>Kira Liquidity Program</h1>
-  <h2>Improvement Proposals Guides</h2>
+  <h2>Improvement Proposals & Documentation</h2>
   <br/>  
 </div>
 
-* [LIP_1](./LIP_1/README.md) - Ethereum ERC20 KEX Placeholder Token for easy market access
+## LIP_1
 
-<div align="center">
-  <h2>Common Guide</h2>
-  <br/>  
-</div>
+**Ethereum ERC20 KEX Placeholder Token for easy market access**
 
-# 1. Dependency Setup
+_NOTE: The owner of the contract has the privilege of whitelisting and blacklisting accounts, effectively enabling or disabling them from sending and receiving tokens. The operator also has the option of freezing token transfers for all accounts that are not explicitly whitelisted. To learn more about Transaction Ordering Dependence and    Allowance Double-Spend possibility see attached Audit Report_
 
-## Install Node.js & NPM on Ubuntu 20.04
+* [Deployment Documentation](./LIP_1/README.md)
+* [Application Binary Interface](./LIP_1/ABI.json)
+* [Improvement Proposal](https://github.com/KiraCore/docs/blob/master/spec/liquidity-program/lip_1.md)
+* [Token Logo 256x256](./LIP_1/doc/KEX-256x256.png)
+* [Audit Report](./LIP_1/audit.pdf)
 
-```
-$ sudo apt update
-$ sudo apt install curl
-$ curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh
-$ sudo bash nodesource_setup.sh
-$ sudo apt install nodejs
-$ node -v
-v14.11.0
-$ npm -v
-v6.14.8
-```
+![picture 1](./LIP_1/doc/KEX-256x256.png)  
 
-## Install Git & Clone the repo on Ubuntu 20.04
+### Contract Address
 
 ```
-sudo apt install git
-cd $HOME
-rm -rfv ./liquidity-program/
-git clone https://github.com/KiraCore/liquidity-program.git
-```
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
 
-## Install the desktop version of Ganache
+KIRA Network Token Contract Address:
+0x16980b3B4a3f9D89E33311B5aa8f80303E5ca4F8
 
-Ganache will provide a personal blockchain to be used for local development and testing of smart contracts.
+ Network: Ethereum
+    Type: ERC20
+  Symbol: KEX
+Decimals: 6
 
-1.  Open a browser and navigate to https://github.com/trufflesuite/ganache/releases
+ABI SHA256 Checksum:
+fb5e62096b77a189c980629af882281de55f330ada0eae544c7df5adb086f560  ABI.json
 
-2.  Download the latest Linux release which will be the \*.AppImage file.
+NOTE: 
+* This token will be swapped for the mainnet KIRA Network Token 
+* Before interacting with the contract verify signature of the kiracore user at https://keybase.io/verify
+-----BEGIN PGP SIGNATURE-----
+Version: Keybase OpenPGP v2.1.13
+Comment: https://keybase.io/crypto
 
-3.  For example ganache-2.4.0-linux-x86_64.AppImage.
-
-4.  Once the download is complete, open a new terminal and change into the directory with the \*.AppImage file.
-
-5.  Use chmod to make the file executable:
-    ```
-    chmod a+x ganache-1.3.0-x86_64.AppImage
-    ```
-6.  Now run the file
-    ```
-    ./ganache-1.3.0-x86_64.AppImage
-    ```
-
-# 2. Environment Variables (Accounts & Keys Setup)
-
-### `PRIVATE_KEY`
-
-- Install Google Chrome
-  ```
-   $ sudo apt install gdebi-core wget
-   $ wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-   $ sudo gdebi google-chrome-stable_current_amd64.deb
-   $ google-chrome
-  ```
-
-Let's setup MetaMask account and we can use Seed Phrase of the MetaMask wallet with ganche testnet.
-
-- Install [MetaMask Google Chrome Extension](https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn)
-- Use the secret phrase of your MetaMask wallet as `PRIVATE_KEY`.
-- Enter MetaMask, create account and backup seed phrase
-- Click three dots in the top right of the main menu and enter Account details view
-- Click Export Private Key
-
-Each deployment environment has a different set of mandatory environment variables. Add the secrets required for the deployment environment to `.env` file of each working directory (e.g LIP_1, LIP_2, etc)
-
-Make sure to provide the 64 character long hexa-decimal `PRIVATE_KEY`. The associated address will inherit the tokens created by the contract deployment.
-
-For example, To setup LIP_1's PRIVATE_KEY
+wsBcBAABCgAGBQJfihOJAAoJEMd1XMN/y97LjYoH/i0dUWOzAA03Ij128A88IBW8
+UnqnG1F6pVqIoJEQ5W6mMktn2OXa6Z37utGdY53sLZDSvI25kTzT6HxLf7g6L2/F
+g3tUoyXLKP8N0mfrjWLDZTF6Trk6K4wspQfjnK+jYEmJP0Zi9W78NMbMgBy0kK+Q
+2wKinOVCj5A3/gbcs4pG45KWPwrDIHXT2k0HaIc2qeGO3qsNaJqZusZsb86llqqv
+qFniFaFo7S/n7tbPmu6rAcd9o3AjZoZ74M5wa7LpL0WK6KAdPbQXXvhDQFIDD1bx
+RWTopxNIGH2njxWuafRX8gi0AYlSTBmOaFtR9ztTZCVVWXTDrTIn73hkeNiBJAY=
+=a0YF
+-----END PGP SIGNATURE-----
 
 ```
-LIP_ID="LIP_1"
-echo "PRIVATE_KEY=0xXXX...XXX" > $HOME/liquidity-program/$LIP_ID/.env
-```
 
-### `INFURA_APIKEY`
+## LIP_3
 
-Sign up for a free api key at https://infura.io/dashboard to deploy to public networks.
+**Liquidity Auction**
 
-- Create an account on [infura.io](https://infura.io)
-- Create a new Project on your infura account
-- Go to Settings Tab
-- Use the Project ID as `INFURA_APIKEY`
-
-```
-echo "INFURA_APIKEY=XXX...XXX" >> $HOME/liquidity-program/$LIP_ID/.env
-```
-
-### `ETHERSCAN_APIKEY`
-
-- Generate the Etherscan API Key for free at https://etherscan.io/myapikey.
+* [Deployment Documentation](./LIP_3/README.md)
+* [Application Binary Interface](./LIP_3/ABI.json)
+* [Improvement Proposal](https://github.com/KiraCore/docs/blob/master/spec/liquidity-program/lip_3.md)
+* [Audit Report](./LIP_3/audit.pdf)
+  
+### Contract Address
 
 ```
-echo "ETHERSCAN_APIKEY=XXX...XXX" >> $HOME/liquidity-program/$LIP_ID/.env
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+KIRA Network Liquidity Auction Contract Address:
+0x297fF490bdd3bc80eB30397108823D2D6aB53Db6
+
+         Network: Ethereum
+    Auction Type: Hard & Soft CAP LastBid Dutch Auction with Whitelist
+   Auction Start: 25/11/2020 15:00:00 UTC
+ Accepted Tokens: ETH
+Available Tokens: 4'000'000 ERC20 KEX (0x1698...a4F8)
+        Soft CAP: $300'000 (fixed rate)
+  Whitelist Form: https://whitelist.kira.network
+
+ABI SHA256 Checksum:
+d7e25c736a66a1c22f7dd3aff0e972025eee0fe5cbbffb820951b4fd0d78fe28  ABI.json
+-----BEGIN PGP SIGNATURE-----
+Version: Keybase OpenPGP v2.1.13
+Comment: https://keybase.io/crypto
+
+wsBcBAABCgAGBQJftu0VAAoJEMd1XMN/y97L2JIH/1GRsOPDzMx2ryggcjM1meQ/
+W/jW3Avp9mkAYwUhhMqh+r1jtAK8LHwyPgCysyxFpshMEXfVyWVvDt3/fDtfOwt7
+IujS5sJUOD4omV7lQBldH8W2MtjpPo9kCxhOgJ9aoclvwzmI81bXtemapUriORQ+
+qye8WTpPtFLUhFE8mxqbR8ffMlxGOpylgcUT8iHPwLbBcagXI5rj6Pk0zt2oMQ13
+0+n2rnjjneHMQg6duopjJnBPZzvlDQe+rFgpVsEAyyOtuBM5+VitAdGHNC48kLG+
+yGJXeQ6ROtU8klONsrg5R33L7ooAjNcqZoR3nnt2jLVFfjrz8WG3W0dK/PHAEgg=
+=3qNY
+-----END PGP SIGNATURE-----
 ```
 
-# 3. Testnet used and faucet references
+## LIP_3.1
 
-## Ropsten Testnet
+**Liquidity Auction Frontend**
 
-You can instantly get 1 Ropsten Test Ether per 24h per account by visiting https://faucet.ropsten.be/
+_NOTE: This service visualizes LIP_3 using react & typescript server side application which requires hosting_
 
-## Kovan Testnet
+* [Deployment Documentation](./LIP_3.1/README.md)
+* [Improvement Proposal](https://github.com/KiraCore/docs/blob/master/spec/liquidity-program/lip_3.1.md)
+* [Public Announcement](https://medium.com/kira-core/liquidity-auction-7c532d67a97)
 
-You can instantly get 1 KEth per 24h per GitHub account by visiting https://faucet.kovan.network/ and submitting your Kovan address.
+```
+Configuration Parameters
+
+* Fixed ETH/USD ratio at $600
+* Start 25'th November 2020, 3PM UTC
+* Transaction limit, 5 ETH max per 1 tx
+* Rate limit, 1 transaction per 1 hour
+```
+
+## LIP_3.2
+
+**Ethereum Address Balance Caching Service**
+
+_NOTE: Caching service is an AWS lambda function which stores information regarding ethereum account balances in the function of block height and time. Intended use of this service is the LIP_3.1 which must operate as static page without dependency on any API._
+
+* [Deployment Documentation](./LIP_3.2/README.md)
+* [Public S3 Bucket](https://oracle.kira.network/)
+* [Configuration File](https://github.com/KiraCore/cfg/blob/main/EthereumOracle/env-mainnet)
+* [Improvement Proposal](https://github.com/KiraCore/docs/blob/master/spec/liquidity-program/lip_3.2.md)

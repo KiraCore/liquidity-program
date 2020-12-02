@@ -7,7 +7,7 @@ Before start, make sure you are inside the LIP_1 directory on the terminal
 
 # 1. Dependency Setup
 
-Check Common Guide's [Dependency Setup Section](../README.md#1.-Dependency-Setup)
+Check Common Guide's [Dependency Setup Section](../setup.md#1.-Dependency-Setup)
 
 ## Install the dependencies
 
@@ -251,8 +251,6 @@ Add KEX token as a custom token in your MetaMask wallet
 Lets generate ABI so that we can interact with the contract:
 
 ```
-apt-get install xclip
-npm install -g truffle-export-abi
 truffle-export-abi
 cat ./build/ABI.json | xclip -selection c
 ```

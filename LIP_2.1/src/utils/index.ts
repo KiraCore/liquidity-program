@@ -1,6 +1,4 @@
 import BigNumber from 'bignumber.js'
-import config from '../config'
-
 export { default as formatAddress } from './formatAddress'
 
 export const bnToDec = (bn: BigNumber, decimals = 18): number => {
@@ -14,22 +12,19 @@ export const decToBn = (dec: number, decimals = 18) => {
 export const getETHPriceInUSD = async (
 ): Promise<any> => {
   try {
-    const proxyURL = 'https://cors-anywhere.herokuapp.com/';
-    const targetURL = `https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD`;
-    const APIKey = "Apikey {" + config.price_api_key + "}"
-    const response = await fetch(proxyURL + targetURL, {
+    const targetURL = `https://oracle.kira.network/tickers/eth/latest.json`;
+    const response = await fetch(targetURL, {
       headers: {
-        'Accept': '*/*',
+        'Accept': 'application/json',
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Expose-Headers': 'Content-Length',
         'Content-Type': 'application/json',
-        'Authorization': APIKey,
       },
       method: 'GET',
     });
-    console.log(response)
+    
     let resData:any = response.json();
-    return resData["USD"];
+    return resData["price_usd"];
   } catch (e) {
     return null
   }

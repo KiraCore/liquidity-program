@@ -5,6 +5,7 @@ import useKira from './useKira'
 import useAllInfo from './useAllInfo'
 import useBlock from './useBlock'
 import { TokenPrice } from '../contexts/TokenPrice'
+import { getETHPriceInUSD } from '../utils'
 
 const useTokenPrice = () => {
   const [tokenPrice, setTokenPrice] = useState<TokenPrice>({ ETH: 0, KEX: 0 });

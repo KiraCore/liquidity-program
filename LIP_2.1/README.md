@@ -5,7 +5,6 @@ The kira staking frontend is the web app which enables users to receive kex toke
 ## - Installation
 
 ```
-
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 apt update
@@ -47,4 +46,12 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 Create an AWS S3 bucket and copy the files in build folder. 
 Make the S3 bucket public and access via url.
 
+## - Env file
 
+Create an .env file and fill out the appropriate addresses
+```
+KEX_CONTRACT=xxxx
+LOCKING_CONTRACT=xxxx
+WETH_CONTRACT=xxxx
+LP_CONTRACT=xxxx
+```

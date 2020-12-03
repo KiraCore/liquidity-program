@@ -1,12 +1,14 @@
+import config from '../../config.js'
+
 export const contractAddresses = {
-  kira: {  // KEX Smart Contract Address
-    42: '0x41379EF961492a594F91bB0F966c2CeD32B49544',
+  kira: {
+    42: config.KEX_CONTRACT,
   },
   kiraStaking: {
-    42: '0xFE41590843b6E98D482eA725407bB3A910d776A0',
+    42: config.LOCKING_CONTRACT,
   },
   weth: {
-    42: '0xd0A1E359811322d97991E03f863a0C30C2cF029C',
+    42: config.WETH_CONTRACT,
   },
 }
 
@@ -14,10 +16,10 @@ export const supportedPools = [
   {
     pid: 0,
     lpAddresses: {
-      42: '0xb88b44f171d6fc4ef6efce313819067e62002d5c',
+      42: config.LP_CONTRACT,
     },
     tokenAddresses: {
-      42: '0x41379EF961492a594F91bB0F966c2CeD32B49544'
+      42: config.KEX_CONTRACT
     },
     name: 'KEX-ETH Pool',
     symbol: 'KEX-ETH UNI-V2 LP',

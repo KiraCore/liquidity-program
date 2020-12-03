@@ -12,7 +12,7 @@ export const decToBn = (dec: number, decimals = 18) => {
 export const getETHPriceInUSD = async (
 ): Promise<any> => {
   try {
-    const targetURL = `https://oracle.kira.network/tickers/eth/latest.json`;
+    const targetURL = `https://oracle-kira-network.s3.eu-central-1.amazonaws.com/tickers/eth/latest.json`;
     const response = await fetch(targetURL, {
       headers: {
         'Accept': 'application/json',
@@ -22,9 +22,7 @@ export const getETHPriceInUSD = async (
       },
       method: 'GET',
     });
-    
-    let resData:any = response.json();
-    return resData["price_usd"];
+    return response.json();
   } catch (e) {
     return null
   }

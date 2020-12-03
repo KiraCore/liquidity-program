@@ -56,13 +56,13 @@ const Balances: React.FC = () => {
   }, [stakedLPBalance, totalLPInStakingContract, rewardPerSecond])
 
   useEffect(() => {
-    if (stakedLPBalance && totalLPInStakingContract && allInfo[0]) {
+    if (stakedLPBalance && totalLPInStakingContract && allInfo[0] && tokenPrice) {
       let percentOfUserBalance = totalLPInStakingContract ? stakedLPBalance.dividedBy(totalLPInStakingContract) : 0;
       let lockedWethValue = allInfo[0] && allInfo[0].totalWethValue.multipliedBy(percentOfUserBalance)
       setLockedUserBalance(lockedWethValue.multipliedBy(tokenPrice.ETH))
       setValueOfLockedAssets(allInfo[0] && allInfo[0].totalWethValue.multipliedBy(tokenPrice.ETH))
     }
-  }, [stakedLPBalance, totalLPInStakingContract, allInfo])
+  }, [stakedLPBalance, totalLPInStakingContract, tokenPrice])
 
   return (
     <StyledWrapper>

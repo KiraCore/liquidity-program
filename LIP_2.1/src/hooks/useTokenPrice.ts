@@ -16,8 +16,8 @@ const useTokenPrice = () => {
 
   const fetchETHPriceInUSD = useCallback(async () => {
     if (allInfo[0]) {
-      // const ethPrice = await getETHPriceInUSD()
-      const ethPrice = 595.3
+      const prices = await getETHPriceInUSD()
+      const ethPrice = prices['price_usd']
       const kexPrice = allInfo[0].tokenPriceInWeth.multipliedBy(ethPrice).toNumber()
 
       setTokenPrice({

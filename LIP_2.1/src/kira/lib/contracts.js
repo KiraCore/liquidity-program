@@ -1,14 +1,9 @@
-import BigNumber from 'bignumber.js/bignumber'
 import ERC20Abi from './abi/erc20.json'
 import KiraStakingAbi from './abi/staking.json'
 import KiraAbi from './abi/kira.json'
 import UNIV2PairAbi from './abi/uni_v2_lp.json'
 import WETHAbi from './abi/weth.json'
-import {
-  contractAddresses,
-  SUBTRACT_GAS_LIMIT,
-  supportedPools,
-} from './constants.js'
+import { contractAddresses, supportedPools } from './constants.js'
 import * as Types from './types.js'
 
 export class Contracts {
@@ -61,11 +56,4 @@ export class Contracts {
     this.kira.options.from = account
     this.kiraStaking.options.from = account
   }
-
-  async callConstantContractFunction(method, options) {
-    const m2 = method
-    const { blockNumber, ...txOptions } = options
-    return m2.call(txOptions, blockNumber)
-  }
-
 }

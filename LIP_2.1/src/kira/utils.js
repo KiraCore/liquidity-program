@@ -14,6 +14,10 @@ export const getKiraAddress = (kira) => {
   return kira && kira.kiraAddress
 }
 
+export const getWethAddress = (kira) => {
+  return kira && kira.wethAddress
+}
+
 export const getWethContract = (kira) => {
   return kira && kira.contracts && kira.contracts.weth
 }
@@ -64,39 +68,45 @@ export const getTotalLPWethValue = async (
   tokenContract,
   pid,
 ) => {
-  // Get balance of the token address
-  const tokenAmountWholeLP = await tokenContract.methods
+  // Get balance of the KEX token locked in Pair Contract
+  const kexBalanceLockedInPool = await tokenContract.methods
     .balanceOf(lpContract.options.address)
     .call()
   const tokenDecimals = await tokenContract.methods.decimals().call()
-  // Get the share of lpContract that kiraStakingContract owns
-  const balance = await lpContract.methods
+
+  // Get the share of lpContract that staking contract owns
+  const lpTotalLockedInStaking = await lpContract.methods
     .balanceOf(kiraStakingContract.options.address)
     .call()
   // Convert that into the portion of total lpContract = p1
-  const totalSupply = await lpContract.methods.totalSupply().call()
+  const lpTotalLockedInPool = await lpContract.methods.totalSupply().call()
   // Get total weth value for the lpContract = w1
   const lpContractWeth = await wethContract.methods
     .balanceOf(lpContract.options.address)
     .call()
+
   // Return p1 * w1 * 2
-  const portionLp = new BigNumber(balance).div(new BigNumber(totalSupply))
+  const portionLp = new BigNumber(lpTotalLockedInStaking).div(new BigNumber(lpTotalLockedInPool))
+  console.log("PortionLP: ", portionLp.toNumber())
   const lpWethWorth = new BigNumber(lpContractWeth)
   const totalLpWethValue = portionLp.times(lpWethWorth).times(new BigNumber(2))
+
   // Calculate
-  const tokenAmount = new BigNumber(tokenAmountWholeLP)
+  const kexBalanceLockedInStaking = new BigNumber(kexBalanceLockedInPool)
     .times(portionLp)
     .div(new BigNumber(10).pow(tokenDecimals))
 
-  const wethAmount = new BigNumber(lpContractWeth)
+  const wethBalanceLockedInStaking = new BigNumber(lpContractWeth)
     .times(portionLp)
     .div(new BigNumber(10).pow(18))
 
   return {
-    tokenAmount,
-    wethAmount,
+    tokenAmountInStaking: kexBalanceLockedInStaking,
+    wethAmountStaking: wethBalanceLockedInStaking,
+    tokenAmountInPool: kexBalanceLockedInPool,
+    wethAmountInPool: lpContractWeth,
     totalWethValue: totalLpWethValue.div(new BigNumber(10).pow(18)),
-    tokenPriceInWeth: wethAmount.div(tokenAmount),
+    tokenPriceInWeth: wethBalanceLockedInStaking.div(kexBalanceLockedInStaking),
   }
 }
 
@@ -116,7 +126,7 @@ export const getKiraSupply = async (kira) => {
   return new BigNumber(await kira.contracts.kira.methods.totalSupply().call())
 }
 
-export const getTotalLPSupply = async(kiraStakingContract) => {
+export const getTotalLPInStaking = async(kiraStakingContract) => {
   return kiraStakingContract.methods.totalSupply().call()
 }
 
@@ -173,3 +183,6 @@ export const harvest = async (kiraStakingContract, pid, account) => {
     })
 }
 
+export const getPairAddress = async(uniswapV2Factory, tokenA, tokenB) => {
+  return uniswapV2Factory.methods.getPair(tokenA, tokenB).call()
+}

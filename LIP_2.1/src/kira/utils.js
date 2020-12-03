@@ -91,7 +91,6 @@ export const getTotalLPWethValue = async (
 
   // Return p1 * w1 * 2
   const portionLp = new BigNumber(lpTotalLockedInStaking).div(new BigNumber(lpTotalLockedInPool))
-  console.log("PortionLP: ", portionLp.toNumber())
   const lpWethWorth = new BigNumber(lpContractWeth)
   const totalLpWethValue = portionLp.times(lpWethWorth).times(new BigNumber(2))
 

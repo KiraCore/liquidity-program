@@ -33,8 +33,8 @@ const Stake: React.FC<StakeProps> = ({ lpContract, pid, tokenName }) => {
   const allowance = useAllowance(lpContract)
   const { onApprove } = useApprove(lpContract)
 
-  const tokenBalance = useTokenBalance(false)
-  const stakedBalance = useStakedBalance()
+  const tokenBalance = useTokenBalance(false) // GET LP AMOUNT IN USER'S METAMASK
+  const stakedBalance = useStakedBalance() // GET USER'S STAKED LP AMOUNT
 
   const { onStake } = useStake(pid)
   const { onUnstake } = useUnstake(pid)

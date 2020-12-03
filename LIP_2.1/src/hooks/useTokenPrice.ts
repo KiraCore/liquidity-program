@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { provider } from 'web3-core'
 import { useWallet } from 'use-wallet'
-import { getETHPriceInUSD } from '../utils'
 import useKira from './useKira'
 import useAllInfo from './useAllInfo'
 import useBlock from './useBlock'

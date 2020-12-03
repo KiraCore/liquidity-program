@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { useWallet } from 'use-wallet'
 import Card from '../../../components/Card'
 import CardContent from '../../../components/CardContent'
 import Label from '../../../components/Label'
@@ -10,7 +9,6 @@ import Value from '../../../components/Value'
 import useStakedLPBalance from '../../../hooks/useStakedLPBalance'
 import useTotalLPInStakingContract from '../../../hooks/useTotalLPInStakingContract'
 import useTokenPrice from '../../../hooks/useTokenPrice'
-import useTokenBalance from '../../../hooks/useTokenBalance'
 import useAllInfo from '../../../hooks/useAllInfo'
 import useKira from '../../../hooks/useKira'
 import { getKiraStakingContract, getRewardRate } from '../../../kira/utils'
@@ -26,7 +24,6 @@ const Balances: React.FC = () => {
   const [lockedUserBalance, setLockedUserBalance] = useState(new BigNumber(0))
   const [valueOfLockedAssets, setValueOfLockedAssets] = useState(new BigNumber(0))
   
-  const kexBalanceInContract = useTokenBalance(true)
   const totalLPInStakingContract = useTotalLPInStakingContract()   // TOTAL LP TOKEN AMOUNT LOCKED IN STAKING CONTRACT
   const stakedLPBalance = useStakedLPBalance()          // USER'S LP TOKEN AMOUNT LOCED IN STAKING CONTRACT
   const tokenPrice = useTokenPrice()
@@ -59,16 +56,13 @@ const Balances: React.FC = () => {
   }, [stakedLPBalance, totalLPInStakingContract, rewardPerSecond])
 
   useEffect(() => {
-    if (stakedLPBalance && totalLPInStakingContract) {
+    if (stakedLPBalance && totalLPInStakingContract && allInfo[0]) {
       let percentOfUserBalance = totalLPInStakingContract ? stakedLPBalance.dividedBy(totalLPInStakingContract) : 0;
-      let lockedKEXBalance = kexBalanceInContract.multipliedBy(percentOfUserBalance)
-      setLockedUserBalance(lockedKEXBalance.multipliedBy(tokenPrice.KEX))
+      let lockedWethValue = allInfo[0] && allInfo[0].totalWethValue.multipliedBy(percentOfUserBalance)
+      setLockedUserBalance(lockedWethValue.multipliedBy(tokenPrice.ETH))
+      setValueOfLockedAssets(allInfo[0] && allInfo[0].totalWethValue.multipliedBy(tokenPrice.ETH))
     }
-  }, [stakedLPBalance, totalLPInStakingContract, kexBalanceInContract])
-
-  useEffect(() => {
-    setValueOfLockedAssets(kexBalanceInContract.multipliedBy(tokenPrice.KEX))
-  }, [tokenPrice, kexBalanceInContract])
+  }, [stakedLPBalance, totalLPInStakingContract, allInfo])
 
   return (
     <StyledWrapper>
@@ -93,7 +87,7 @@ const Balances: React.FC = () => {
               <StyledInfoValue>
                 <Label text="$"/>
                 <Value
-                  value={getBalanceNumber(lockedUserBalance)}
+                  value={lockedUserBalance.toNumber()}
                 />
               </StyledInfoValue>
             </StyledInfoContainer>
@@ -117,7 +111,7 @@ const Balances: React.FC = () => {
               <StyledInfoValue>
                 <Label text="$"/>
                 <Value
-                  value={getBalanceNumber(valueOfLockedAssets)}
+                  value={valueOfLockedAssets.toNumber()}
                 />
               </StyledInfoValue>
             </StyledInfoContainer>

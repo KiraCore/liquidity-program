@@ -31,7 +31,7 @@ const Balances: React.FC = () => {
 
   useEffect(() => {
     if (allInfo) {
-      const SECOND_PER_YEAR = 3600 * 24 * 365
+      const SECOND_PER_YEAR = 3600 * 24 * 365.25
       const kexPriceInWeth = allInfo[0] ? allInfo[0].tokenPriceInWeth : new BigNumber(0);
       setAPY(allInfo[0] ? kexPriceInWeth.times(rewardPerSecond).times(SECOND_PER_YEAR).div(allInfo[0].totalWethValue) : new BigNumber(0))
     }
@@ -50,7 +50,7 @@ const Balances: React.FC = () => {
   // GET ROI PER MONTH
   useEffect(() => {
     if (totalLPInStakingContract.toNumber() > 0) {
-      const SECOND_PER_MONTH = 3600 * 24 * 30
+      const SECOND_PER_MONTH = ((3600 * 24 * 365.25) / 12);
       setROI(stakedLPBalance.dividedBy(totalLPInStakingContract).multipliedBy(rewardPerSecond).multipliedBy(SECOND_PER_MONTH))
     }
   }, [stakedLPBalance, totalLPInStakingContract, rewardPerSecond])
@@ -107,7 +107,7 @@ const Balances: React.FC = () => {
             <Spacer size="sm"/>
 
             <StyledInfoContainer>
-              <Label text="- Value of Total Locked Assets" color='#333333'/>
+              <Label text="- Total Value Locked" color='#333333'/>
               <StyledInfoValue>
                 <Label text="$"/>
                 <Value

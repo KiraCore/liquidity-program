@@ -40,12 +40,12 @@ export class Kira {
     this.kiraAddress = contractAddresses.kira[networkId]
     this.kiraStakingAddress = contractAddresses.kiraStaking[networkId]
     this.wethAddress = contractAddresses.weth[networkId]
-    this.lpAddresses = supportedPools.lpAddresses[networkId]
+    this.lpAddresses1 = supportedPools[0].lpAddresses[networkId]
 
     console.log(` KEX ERC20 Contract: ${this.kiraAddress}`);
     console.log(`WETH ERC20 Contract: ${this.kiraStakingAddress}`);
     console.log(`   Locking Contract: ${this.kiraStakingAddress}`);
-    console.log(`  LP Token Contract: ${this.lpAddresses}`)
+    console.log(`LP Token 1 Contract: ${this.lpAddresses1}`)
   }
 
   async resetEVM() {

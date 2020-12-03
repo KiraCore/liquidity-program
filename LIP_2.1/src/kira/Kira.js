@@ -43,7 +43,7 @@ export class Kira {
     this.lpAddresses1 = supportedPools[0].lpAddresses[networkId]
 
     console.log(` KEX ERC20 Contract: ${this.kiraAddress}`);
-    console.log(`WETH ERC20 Contract: ${this.kiraStakingAddress}`);
+    console.log(`WETH ERC20 Contract: ${this.wethAddress}`);
     console.log(`   Locking Contract: ${this.kiraStakingAddress}`);
     console.log(`LP Token 1 Contract: ${this.lpAddresses1}`)
   }

@@ -128,7 +128,7 @@ const Balances: React.FC = () => {
           </StyledCardContainer>
         </CardContent>
         <Footnote>
-          Total Circulating LP Token
+          Total Circulating LP Tokens
           <FootnoteValue>
             {getBalanceNumber(totalLPInStakingContract, 18)} LP
           </FootnoteValue>

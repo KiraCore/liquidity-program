@@ -6,25 +6,20 @@ const Nav: React.FC = () => {
     <StyledNav>
       <StyledLink
         target="_blank"
-        href="https://etherscan.io/address/0x1D456A3C71e969987F4463Da63f527f04AD83297#code"
+        href="https://github.com/KiraCore/liquidity-program/"
       >
-        KIRA Staking Contract
+        Contract
       </StyledLink>
-      {/*<StyledLink
-        target="_blank"
-        href="https://uniswap.info/pair/0xce84867c3c02b05dc570d0135103d3fb9cc19433"
-      >
-      </StyledLink> */}
-      <StyledLink target="_blank" href="https://t.me/kirainterex">
+      <StyledLink target="_blank" href="https://tg.kira.network">
         Telegram
       </StyledLink>
-      <StyledLink target="_blank" href="https://github.com/KiraCore">
+      <StyledLink target="_blank" href="https://git.kira.network">
         Github
       </StyledLink>
-      <StyledLink target="_blank" href="https://twitter.com/kira_core">
+      <StyledLink target="_blank" href="https://twitter.kira.network">
         Twitter
       </StyledLink>
-      <StyledLink target="_blank" href="https://medium.com/kira-core">
+      <StyledLink target="_blank" href="https://blog.kira.network">
         Medium
       </StyledLink>
     </StyledNav>

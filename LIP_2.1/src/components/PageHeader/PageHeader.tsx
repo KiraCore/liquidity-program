@@ -14,7 +14,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({ icon, subtitle, title }) => {
     <Container size="lg">
       <StyledPageHeader>
         <StyledIcon>{icon}</StyledIcon>
-        <StyledTitle>Kira Staking Frontend</StyledTitle>
+        <StyledTitle>KIRA Liquidity Program</StyledTitle>
         <StyledSubtitle>{subtitle}</StyledSubtitle>
       </StyledPageHeader>
     </Container>

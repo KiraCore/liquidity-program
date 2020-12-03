@@ -8,7 +8,7 @@ const Logo: React.FC = () => {
     <StyledLogo to="/">
       <img src={kira} height="32" style={{ marginTop: -4 }} />
       <StyledText>
-        Kira Staking
+        KIRA Staking
       </StyledText>
     </StyledLogo>
   )

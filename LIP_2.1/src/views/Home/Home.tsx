@@ -24,7 +24,7 @@ const Home: React.FC = () => {
       <PageHeader
         icon={<img src={kira} height={90} />}
         title="Kira staking is Ready"
-        subtitle="Stake Kira LP tokens to claim your very own KEX!"
+        subtitle="Lock your KEX-ETH UNI-V2 LP tokens to earn extra APY!"
       />
 
       <Container size="lg">
@@ -32,7 +32,7 @@ const Home: React.FC = () => {
       </Container>
       <Spacer size="lg" />
       <StyledInfo>
-        💡<b>Pro Tip</b>: KEX-ETH UNI-V2 LP token pool yields TWICE more token rewards per second.
+        💡<b>Pro Tip</b>: Make sure you connected Metamask and selected "Ethereum Mainnet" network!
       </StyledInfo>
       <Spacer size="lg" />
       <div

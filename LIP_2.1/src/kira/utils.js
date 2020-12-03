@@ -18,6 +18,10 @@ export const getWethAddress = (kira) => {
   return kira && kira.wethAddress
 }
 
+export const getLPAddress = (kira) => {
+  return kira && kira.contracts && kira.contracts.pools[0].lpAddress
+}
+
 export const getWethContract = (kira) => {
   return kira && kira.contracts && kira.contracts.weth
 }

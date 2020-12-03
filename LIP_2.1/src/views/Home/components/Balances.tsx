@@ -13,21 +13,20 @@ import useTokenPrice from '../../../hooks/useTokenPrice'
 import useTokenBalance from '../../../hooks/useTokenBalance'
 import useAllInfo from '../../../hooks/useAllInfo'
 import useKira from '../../../hooks/useKira'
-import { getKiraAddress, getKiraStakingContract, getRewardRate } from '../../../kira/utils'
+import { getKiraStakingContract, getRewardRate } from '../../../kira/utils'
 import { getBalanceNumber } from '../../../utils/formatBalance'
 
 const Balances: React.FC = () => {
   const kira = useKira()
   const kiraStakingContract = getKiraStakingContract(kira)
 
-  const { account }: { account: any; ethereum: any } = useWallet()
   const [rewardPerSecond, setRewardPerSecond] = useState(new BigNumber(0))
   const [ROI, setROI] = useState(new BigNumber(0))
   const [APY, setAPY] = useState(new BigNumber(0))
   const [lockedUserBalance, setLockedUserBalance] = useState(new BigNumber(0))
   const [valueOfLockedAssets, setValueOfLockedAssets] = useState(new BigNumber(0))
   
-  const kexBalanceInContract = useTokenBalance(getKiraAddress(kira), account)
+  const kexBalanceInContract = useTokenBalance(true)
   const totalLPInStakingContract = useTotalLPInStakingContract()   // TOTAL LP TOKEN AMOUNT LOCKED IN STAKING CONTRACT
   const stakedLPBalance = useStakedLPBalance()          // USER'S LP TOKEN AMOUNT LOCED IN STAKING CONTRACT
   const tokenPrice = useTokenPrice()

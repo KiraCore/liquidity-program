@@ -1,14 +1,24 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import styled from 'styled-components'
+import useFarms from '../../../hooks/useFarms'
 
 const Nav: React.FC = () => {
+  const [farms] = useFarms()
+  const [poolId, setPoolId] = useState('');
+
+  useEffect(() => {
+    if (farms && farms[0]) {
+      setPoolId(farms[0].id)
+    }
+  }, [farms])
+
   return (
     <StyledNav>
       <StyledLink exact activeClassName="active" to="/">
         Home
       </StyledLink>
-      <StyledLink exact activeClassName="active" to="/pools">
+      <StyledLink exact activeClassName="active" to={`/pools/${poolId}`}>
         Pools
       </StyledLink>
       <StyledAbsoluteLink

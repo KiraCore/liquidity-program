@@ -52,8 +52,8 @@ const Farm: React.FC = () => {
     <>
       <PageHeader
         icon={<img src={icon} height={90} />}
-        subtitle={`Deposit ${lpTokenName}  Tokens and earn ${earnTokenName}`}
-        title={name}
+        subtitle={`Lock ${lpTokenName} Tokens and earn extra APY!`}
+        title={`Ethereum Liquidity Pool`}
       />
       <StyledFarm>
         <StyledCardsWrapper>
@@ -79,7 +79,7 @@ const Farm: React.FC = () => {
           target="__blank"
           href={`https://info.uniswap.org/pair/${lpTokenAddress}`}
         >
-          {lpTokenName} Info
+          {lpTokenName} Pool Info
         </StyledLink>
       </StyledFarm>
     </>

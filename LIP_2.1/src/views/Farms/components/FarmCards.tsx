@@ -10,48 +10,28 @@ import CardIcon from '../../../components/CardIcon'
 import Loader from '../../../components/Loader'
 import Spacer from '../../../components/Spacer'
 import { Farm } from '../../../contexts/Farms'
-import useAllStakedValue, {
-  StakedValue,
-} from '../../../hooks/useAllStakedValue'
+import useAllInfo, {
+  AllInfo,
+} from '../../../hooks/useAllInfo'
 import useFarms from '../../../hooks/useFarms'
 import useKira from '../../../hooks/useKira'
 import { getEarned, getKiraStakingContract } from '../../../kira/utils'
 import { bnToDec } from '../../../utils'
-import Icon from '../../../components/Icon'
 
-interface FarmWithStakedValue extends Farm, StakedValue {
+interface FarmWithStakedValue extends Farm, AllInfo {
   apy: BigNumber
 }
 
 const FarmCards: React.FC = () => {
   const [farms] = useFarms()
-  const { account } = useWallet()
-  const stakedValue = useAllStakedValue()
-
-  const kiraIndex = farms.findIndex(
-    ({ tokenSymbol }) => tokenSymbol === 'KEX',
-  )
-
-  const kexPrice =
-    kiraIndex >= 0 && stakedValue[kiraIndex]
-      ? stakedValue[kiraIndex].tokenPriceInWeth
-      : new BigNumber(0)
-
-  const BLOCKS_PER_YEAR = new BigNumber(2336000)
-  const KIRA_PER_BLOCK = new BigNumber(100)
+  const allInfo = useAllInfo()
 
   const rows = farms.reduce<FarmWithStakedValue[][]>(
     (farmRows, farm, i) => {
       const farmWithStakedValue = {
         ...farm,
-        ...stakedValue[i],
-        apy: stakedValue[i]
-          ? kexPrice
-              .times(KIRA_PER_BLOCK)
-              .times(BLOCKS_PER_YEAR)
-              .times(stakedValue[i].poolWeight)
-              .div(stakedValue[i].totalWethValue)
-          : null,
+        ...allInfo[i],
+        apy: new BigNumber(0),
       }
       const newFarmRows = [...farmRows]
       if (newFarmRows[newFarmRows.length - 1].length === 3) {
@@ -79,7 +59,7 @@ const FarmCards: React.FC = () => {
         ))
       ) : (
         <StyledLoadingWrapper>
-          <Loader text="Cooking the rice ..." />
+          <Loader text="Loading ..." />
         </StyledLoadingWrapper>
       )}
     </StyledCards>
@@ -167,31 +147,6 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm }) => {
                 )}
               </Button>
             }
-            {/* <StyledInsight>
-              <span>APY</span>
-              <span>
-                {farm.apy
-                  ? `${farm.apy
-                      .times(new BigNumber(100))
-                      .times(new BigNumber(3))
-                      .toNumber()
-                      .toLocaleString('en-US')
-                      .slice(0, -1)}%`
-                  : 'Loading ...'}
-              </span>
-              <span>
-                {farm.tokenAmount
-                  ? (farm.tokenAmount.toNumber() || 0).toLocaleString('en-US')
-                  : '-'}{' '}
-                {farm.tokenSymbol}
-              </span>
-              <span>
-                {farm.wethAmount
-                  ? (farm.wethAmount.toNumber() || 0).toLocaleString('en-US')
-                  : '-'}{' '}
-                ETH
-              </span>
-            </StyledInsight> */}
           </StyledContent>
         </CardContent>
       </Card>

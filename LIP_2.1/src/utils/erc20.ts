@@ -33,9 +33,9 @@ export const getBalance = async (
   tokenAddress: string,
   userAddress: string,
 ): Promise<string> => {
-  const lpContract = getContract(provider, tokenAddress)
+  const tokenContract = getContract(provider, tokenAddress)
   try {
-    const balance: string = await lpContract.methods
+    const balance: string = await tokenContract.methods
       .balanceOf(userAddress)
       .call()
     return balance

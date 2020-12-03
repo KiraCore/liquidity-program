@@ -1,40 +1,41 @@
 import BigNumber from 'bignumber.js'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { useWallet } from 'use-wallet'
 import Card from '../../../components/Card'
 import CardContent from '../../../components/CardContent'
 import Label from '../../../components/Label'
 import Spacer from '../../../components/Spacer'
 import Value from '../../../components/Value'
 import useStakedLPBalance from '../../../hooks/useStakedLPBalance'
-import useTotalLPSupply from '../../../hooks/useTotalLPSupply'
+import useTotalLPInStakingContract from '../../../hooks/useTotalLPInStakingContract'
 import useTokenPrice from '../../../hooks/useTokenPrice'
-import useTokenBalance from '../../../hooks/useTokenBalance'
+import useAllInfo from '../../../hooks/useAllInfo'
 import useKira from '../../../hooks/useKira'
-import { getKiraAddress, getKiraStakingAddress, getKiraStakingContract, getRewardRate } from '../../../kira/utils'
+import { getKiraStakingContract, getRewardRate } from '../../../kira/utils'
 import { getBalanceNumber } from '../../../utils/formatBalance'
-import config from '../../../config'
 
 const Balances: React.FC = () => {
   const kira = useKira()
-  const { account }: { account: any; ethereum: any } = useWallet()
+  const kiraStakingContract = getKiraStakingContract(kira)
+
   const [rewardPerSecond, setRewardPerSecond] = useState(new BigNumber(0))
   const [ROI, setROI] = useState(new BigNumber(0))
+  const [APY, setAPY] = useState(new BigNumber(0))
   const [lockedUserBalance, setLockedUserBalance] = useState(new BigNumber(0))
-
-  const kexBalanceInContract = useTokenBalance(getKiraAddress(kira), account)
-  const poolSizeInKEX = useTokenBalance(getKiraAddress(kira), getKiraStakingAddress(kira))
   const [valueOfLockedAssets, setValueOfLockedAssets] = useState(new BigNumber(0))
-
-  const kiraStakingContract = getKiraStakingContract(kira)
-  const totalLPSupply = useTotalLPSupply(account)   // TOTAL LP TOKEN AMOUNT LOCKED IN STAKING CONTRACT
+  
+  const totalLPInStakingContract = useTotalLPInStakingContract()   // TOTAL LP TOKEN AMOUNT LOCKED IN STAKING CONTRACT
   const stakedLPBalance = useStakedLPBalance()          // USER'S LP TOKEN AMOUNT LOCED IN STAKING CONTRACT
   const tokenPrice = useTokenPrice()
+  const allInfo = useAllInfo()
 
   useEffect(() => {
-    setValueOfLockedAssets(kexBalanceInContract.multipliedBy(tokenPrice.KEX))
-  }, [tokenPrice, kexBalanceInContract])
+    if (allInfo) {
+      const SECOND_PER_YEAR = 3600 * 24 * 365
+      const kexPriceInWeth = allInfo[0] ? allInfo[0].tokenPriceInWeth : new BigNumber(0);
+      setAPY(allInfo[0] ? kexPriceInWeth.times(rewardPerSecond).times(SECOND_PER_YEAR).div(allInfo[0].totalWethValue) : new BigNumber(0))
+    }
+  }, [allInfo])
 
   useEffect(() => {
     async function fetchTotalSupply() {
@@ -48,18 +49,20 @@ const Balances: React.FC = () => {
 
   // GET ROI PER MONTH
   useEffect(() => {
-    if (totalLPSupply.toNumber() > 0) {
-      setROI(stakedLPBalance.dividedBy(totalLPSupply).multipliedBy(rewardPerSecond).multipliedBy(3600 * 24 * 30))
+    if (totalLPInStakingContract.toNumber() > 0) {
+      const SECOND_PER_MONTH = 3600 * 24 * 30
+      setROI(stakedLPBalance.dividedBy(totalLPInStakingContract).multipliedBy(rewardPerSecond).multipliedBy(SECOND_PER_MONTH))
     }
-  }, [stakedLPBalance, totalLPSupply, rewardPerSecond])
+  }, [stakedLPBalance, totalLPInStakingContract, rewardPerSecond])
 
   useEffect(() => {
-    if (stakedLPBalance && totalLPSupply) {
-      let percentOfUserBalance = stakedLPBalance.dividedBy(totalLPSupply)
-      let lockedKEXBalance = kexBalanceInContract.multipliedBy(percentOfUserBalance)
-      setLockedUserBalance(lockedKEXBalance.multipliedBy(tokenPrice.KEX))
+    if (stakedLPBalance && totalLPInStakingContract && allInfo[0]) {
+      let percentOfUserBalance = totalLPInStakingContract ? stakedLPBalance.dividedBy(totalLPInStakingContract) : 0;
+      let lockedWethValue = allInfo[0] && allInfo[0].totalWethValue.multipliedBy(percentOfUserBalance)
+      setLockedUserBalance(lockedWethValue.multipliedBy(tokenPrice.ETH))
+      setValueOfLockedAssets(allInfo[0] && allInfo[0].totalWethValue.multipliedBy(tokenPrice.ETH))
     }
-  }, [stakedLPBalance, totalLPSupply, kexBalanceInContract])
+  }, [stakedLPBalance, totalLPInStakingContract, allInfo])
 
   return (
     <StyledWrapper>
@@ -84,7 +87,7 @@ const Balances: React.FC = () => {
               <StyledInfoValue>
                 <Label text="$"/>
                 <Value
-                  value={getBalanceNumber(lockedUserBalance)}
+                  value={lockedUserBalance.toNumber()}
                 />
               </StyledInfoValue>
             </StyledInfoContainer>
@@ -108,7 +111,7 @@ const Balances: React.FC = () => {
               <StyledInfoValue>
                 <Label text="$"/>
                 <Value
-                  value={getBalanceNumber(valueOfLockedAssets)}
+                  value={valueOfLockedAssets.toNumber()}
                 />
               </StyledInfoValue>
             </StyledInfoContainer>
@@ -117,7 +120,7 @@ const Balances: React.FC = () => {
               <Label text="- Annual Percentage Yield" color='#333333'/>
               <StyledInfoValue>
                 <Value
-                  value={0}
+                  value={getBalanceNumber(APY)}
                 />
                 <Label text=" %"/>
               </StyledInfoValue>
@@ -127,7 +130,7 @@ const Balances: React.FC = () => {
         <Footnote>
           Total Circulating LP Token
           <FootnoteValue>
-            {getBalanceNumber(totalLPSupply, 18)} LP
+            {getBalanceNumber(totalLPInStakingContract, 18)} LP
           </FootnoteValue>
         </Footnote>
       </Card>

@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled, { keyframes } from 'styled-components'
 
 import { NavLink } from 'react-router-dom'
+import useFarms from '../../hooks/useFarms'
 
 interface MobileMenuProps {
   onDismiss: () => void
@@ -9,6 +10,15 @@ interface MobileMenuProps {
 }
 
 const MobileMenu: React.FC<MobileMenuProps> = ({ onDismiss, visible }) => {
+  const [farms] = useFarms()
+  const [poolId, setPoolId] = useState('');
+
+  useEffect(() => {
+    if (farms && farms[0]) {
+      setPoolId(farms[0].id)
+    }
+  }, [farms])
+
   if (visible) {
     return (
       <StyledMobileMenuWrapper>
@@ -20,19 +30,11 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ onDismiss, visible }) => {
           <StyledLink
             exact
             activeClassName="active"
-            to="/pools"
+            to={`/pools/${poolId}`}
             onClick={onDismiss}
           >
-            Farms
+            Pools
           </StyledLink>
-          {/* <StyledLink
-            exact
-            activeClassName="active"
-            to="/staking"
-            onClick={onDismiss}
-          >
-            Staking
-          </StyledLink> */}
         </StyledMobileMenu>
       </StyledMobileMenuWrapper>
     )

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import kira from '../../assets/img/kira.png'
 import Button from '../../components/Button'
@@ -7,8 +7,18 @@ import Page from '../../components/Page'
 import PageHeader from '../../components/PageHeader'
 import Spacer from '../../components/Spacer'
 import Balances from './components/Balances'
+import useFarms from '../../hooks/useFarms'
 
 const Home: React.FC = () => {
+  const [farms] = useFarms()
+  const [poolId, setPoolId] = useState('');
+
+  useEffect(() => {
+    if (farms && farms[0]) {
+      setPoolId(farms[0].id)
+    }
+  }, [farms])
+
   return (
     <Page>
       <PageHeader
@@ -30,7 +40,7 @@ const Home: React.FC = () => {
           margin: '0 auto',
         }}
       >
-        <Button text="See available pools" to="/pools" variant="secondary" />
+        <Button text="Go To Pool" to={`/pools/${poolId}`} variant="secondary" />
       </div>
     </Page>
   )

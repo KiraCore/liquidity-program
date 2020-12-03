@@ -13,15 +13,6 @@ const useBlock = () => {
     if (!ethereum) return
     const web3 = new Web3(ethereum)
 
-    // const subscription = new Web3(ethereum).eth.subscribe(
-    //   'newBlockHeaders',
-    //   (error, result) => {
-    //     if (!error) {
-    //       setBlockDebounced(result.number)
-    //     }
-    //   },
-    // )
-
     const interval = setInterval(async () => {
       const latestBlockNumber = await web3.eth.getBlockNumber()
       if (block !== latestBlockNumber) {

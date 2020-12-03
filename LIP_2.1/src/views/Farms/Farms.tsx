@@ -14,6 +14,7 @@ const Farms: React.FC = () => {
   const { path } = useRouteMatch()
   const { account } = useWallet()
   const [onPresentWalletProviderModal] = useModal(<WalletProviderModal />)
+  
   return (
     <Switch>
       <Page>

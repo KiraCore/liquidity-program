@@ -14,16 +14,18 @@ import {
 import useKira from './useKira'
 import useBlock from './useBlock'
 
-export interface StakedValue {
-  tokenAmount: BigNumber
-  wethAmount: BigNumber
-  totalWethValue: BigNumber
-  tokenPriceInWeth: BigNumber
-  poolWeight: BigNumber
+export interface AllInfo {
+  tokenAmountInStaking?: BigNumber
+  wethAmountStaking?: BigNumber
+  tokenAmountInPool?: BigNumber
+  wethAmountInPool?: BigNumber
+  totalWethValue?: BigNumber
+  tokenPriceInWeth?: BigNumber
+  poolWeight?: BigNumber
 }
 
-const useAllStakedValue = () => {
-  const [balances, setBalance] = useState([] as Array<StakedValue>)
+const useAllInfo = () => {
+  const [info, setInfo] = useState([] as Array<AllInfo>)
   const { account }: { account: string; ethereum: provider } = useWallet()
   const kira = useKira()
   const farms = getFarms(kira)
@@ -32,7 +34,7 @@ const useAllStakedValue = () => {
   const block = useBlock()
 
   const fetchAllStakedValue = useCallback(async () => {
-    const balances: Array<StakedValue> = await Promise.all(
+    const info: Array<AllInfo> = await Promise.all(
       farms.map(
         ({
           pid,
@@ -53,16 +55,16 @@ const useAllStakedValue = () => {
       ),
     )
 
-    setBalance(balances)
+    setInfo(info)
   }, [account, kiraStakingContract, kira])
 
   useEffect(() => {
     if (account && kiraStakingContract && kira) {
       fetchAllStakedValue()
     }
-  }, [account, block, kiraStakingContract, setBalance, kira])
+  }, [account, block, kiraStakingContract, setInfo, kira])
 
-  return balances
+  return info
 }
 
-export default useAllStakedValue
+export default useAllInfo

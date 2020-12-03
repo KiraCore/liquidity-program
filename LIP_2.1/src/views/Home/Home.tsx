@@ -31,8 +31,6 @@ const Home: React.FC = () => {
         <Balances />
       </Container>
       <Spacer size="lg" />
-      <Button text="Lock Tokens" to={`/pools/${poolId}`} variant="secondary" />
-      <Spacer size="lg" />
       <StyledInfo>
         💡<b>Pro Tip</b>: Make sure you connected Metamask and selected "Ethereum Mainnet" network!
       </StyledInfo>
@@ -42,7 +40,7 @@ const Home: React.FC = () => {
           margin: '0 auto',
         }}
       >
-        
+        <Button text="Lock Tokens" to={`/pools/${poolId}`} variant="secondary" />
       </div>
     </Page>
   )

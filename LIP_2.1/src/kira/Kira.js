@@ -4,6 +4,7 @@ import { Contracts } from './lib/contracts.js'
 import { Account } from './lib/accounts.js'
 import { EVM } from './lib/evm.js'
 import { contractAddresses } from './lib/constants'
+import { supportedPools } from './lib/constants'
 
 export class Kira {
   constructor(provider, networkId, testing, options) {
@@ -39,6 +40,12 @@ export class Kira {
     this.kiraAddress = contractAddresses.kira[networkId]
     this.kiraStakingAddress = contractAddresses.kiraStaking[networkId]
     this.wethAddress = contractAddresses.weth[networkId]
+    this.lpAddresses = supportedPools.lpAddresses[networkId]
+
+    console.log(` KEX ERC20 Contract: ${this.kiraAddress}`);
+    console.log(`WETH ERC20 Contract: ${this.kiraStakingAddress}`);
+    console.log(`   Locking Contract: ${this.kiraStakingAddress}`);
+    console.log(`  LP Token Contract: ${this.lpAddresses}`)
   }
 
   async resetEVM() {

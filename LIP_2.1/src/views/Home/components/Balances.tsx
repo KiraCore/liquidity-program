@@ -42,10 +42,6 @@ const Balances: React.FC = () => {
   }, [allInfo])
 
   useEffect(() => {
-    setValueOfLockedAssets(kexBalanceInContract.multipliedBy(tokenPrice.KEX))
-  }, [tokenPrice, kexBalanceInContract])
-
-  useEffect(() => {
     async function fetchTotalSupply() {
       const reward = await getRewardRate(kiraStakingContract)
       setRewardPerSecond(reward)
@@ -70,6 +66,10 @@ const Balances: React.FC = () => {
       setLockedUserBalance(lockedKEXBalance.multipliedBy(tokenPrice.KEX))
     }
   }, [stakedLPBalance, totalLPInStakingContract, kexBalanceInContract])
+
+  useEffect(() => {
+    setValueOfLockedAssets(kexBalanceInContract.multipliedBy(tokenPrice.KEX))
+  }, [tokenPrice, kexBalanceInContract])
 
   return (
     <StyledWrapper>

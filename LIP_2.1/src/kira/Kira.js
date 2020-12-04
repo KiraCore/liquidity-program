@@ -47,7 +47,9 @@ export class Kira {
     console.log(` KEX ERC20 Contract: ${this.kiraAddress}`);
     console.log(`WETH ERC20 Contract: ${this.wethAddress}`);
     console.log(`   Locking Contract: ${this.kiraStakingAddress}`);
-    console.log(`LP Token 1 Contract: ${this.lpAddresses1}`)
+    console.log(`LP Token 1 Contract: ${this.lpAddresses1}`);
+    console.log(`            Network: ${config.NETWORK}`);
+    console.log(`         Project ID: ${config.INFURA_PROJECT_ID}`);
   }
 
   async resetEVM() {

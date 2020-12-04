@@ -49,6 +49,8 @@ const Balances: React.FC = () => {
 
   // GET ROI PER MONTH
   useEffect(() => {
+    console.log(`  Total LP Tokens: ${totalLPInStakingContract}`);
+    console.log(`Staked LP Balance: ${stakedLPBalance}`);
     if (totalLPInStakingContract.toNumber() > 0) {
       const SECOND_PER_MONTH = ((3600 * 24 * 365.25) / 12);
       setROI(stakedLPBalance.dividedBy(totalLPInStakingContract).multipliedBy(rewardPerSecond).multipliedBy(SECOND_PER_MONTH))
@@ -56,7 +58,9 @@ const Balances: React.FC = () => {
   }, [stakedLPBalance, totalLPInStakingContract, rewardPerSecond])
 
   useEffect(() => {
+    
     if (stakedLPBalance && totalLPInStakingContract && allInfo[0] && tokenPrice) {
+      console.log(`   Ethereum Price: ${tokenPrice.ETH}`);
       let percentOfUserBalance = totalLPInStakingContract ? stakedLPBalance.dividedBy(totalLPInStakingContract) : 0;
       let lockedWethValue = allInfo[0] && allInfo[0].totalWethValue.multipliedBy(percentOfUserBalance)
       setLockedUserBalance(lockedWethValue.multipliedBy(tokenPrice.ETH))
@@ -73,7 +77,7 @@ const Balances: React.FC = () => {
             <Spacer size="sm"/>
 
             <StyledInfoContainer>
-              <Label text="- Your ROI per month" color='#333333'/>
+              <Label text="- Your Monthly Bonus" color='#333333'/>
               <StyledInfoValue>
                 <Value
                   value={getBalanceNumber(ROI)}
@@ -83,7 +87,7 @@ const Balances: React.FC = () => {
             </StyledInfoContainer>
 
             <StyledInfoContainer>
-              <Label text="- Value of your locked assets" color='#333333'/>
+              <Label text="- Your Value Locked" color='#333333'/>
               <StyledInfoValue>
                 <Label text="$"/>
                 <Value

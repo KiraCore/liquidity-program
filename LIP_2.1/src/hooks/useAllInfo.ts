@@ -1,8 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { provider } from 'web3-core'
-
 import BigNumber from 'bignumber.js'
-import { useWallet } from 'use-wallet'
 import { Contract } from 'web3-eth-contract'
 
 import {
@@ -12,7 +9,6 @@ import {
   getTotalLPWethValue,
 } from '../kira/utils'
 import useKira from './useKira'
-import useBlock from './useBlock'
 
 export interface AllInfo {
   tokenAmountInStaking?: BigNumber
@@ -20,18 +16,18 @@ export interface AllInfo {
   tokenAmountInPool?: BigNumber
   wethAmountInPool?: BigNumber
   totalWethValue?: BigNumber
+  totalLiquidity?: BigNumber
   tokenPriceInWeth?: BigNumber
+  lpAmountInPool?: BigNumber
   poolWeight?: BigNumber
 }
 
 const useAllInfo = () => {
   const [info, setInfo] = useState([] as Array<AllInfo>)
-  const { account }: { account: string; ethereum: provider } = useWallet()
   const kira = useKira()
   const farms = getFarms(kira)
   const kiraStakingContract = getKiraStakingContract(kira)
   const wethContact = getWethContract(kira)
-  const block = useBlock()
 
   const fetchAllStakedValue = useCallback(async () => {
     const info: Array<AllInfo> = await Promise.all(
@@ -56,13 +52,13 @@ const useAllInfo = () => {
     )
 
     setInfo(info)
-  }, [account, kiraStakingContract, kira])
+  }, [kiraStakingContract, kira])
 
   useEffect(() => {
-    if (account && kiraStakingContract && kira) {
+    if (kira) {
       fetchAllStakedValue()
     }
-  }, [account, block, kiraStakingContract, setInfo, kira])
+  }, [kira])
 
   return info
 }

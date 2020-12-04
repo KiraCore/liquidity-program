@@ -77,7 +77,6 @@ export const getTotalLPWethValue = async (
     .balanceOf(lpContract.options.address)
     .call()
   const tokenDecimals = await tokenContract.methods.decimals().call()
-
   // Get the share of lpContract that staking contract owns
   const lpTotalLockedInStaking = await lpContract.methods
     .balanceOf(kiraStakingContract.options.address)
@@ -109,6 +108,8 @@ export const getTotalLPWethValue = async (
     tokenAmountInPool: kexBalanceLockedInPool,
     wethAmountInPool: lpContractWeth,
     totalWethValue: totalLpWethValue.div(new BigNumber(10).pow(18)),
+    totalLiquidity: lpWethWorth.div(new BigNumber(10).pow(18)),
+    lpAmountInPool: new BigNumber(lpTotalLockedInPool),
     tokenPriceInWeth: wethBalanceLockedInStaking.div(kexBalanceLockedInStaking),
   }
 }

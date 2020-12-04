@@ -26,23 +26,20 @@ const KiraProvider: React.FC = ({ children }) => {
   window.kira = kira
   // @ts-ignore
 
-
   useEffect(() => {
-    if (ethereum) {
-      const chainId = Number(ethereum.chainId)
-      const kiraLib = new Kira(ethereum, chainId, false, {
-        defaultAccount: ethereum.selectedAddress,
-        defaultConfirmations: 1,
-        autoGasMultiplier: 1.5,
-        testing: false,
-        defaultGas: '6000000',
-        defaultGasPrice: '1000000000000',
-        accounts: [],
-        ethereumNodeTimeout: 10000,
-      })
-      setKira(kiraLib)
-      window.kirasauce = kiraLib
-    }
+    const chainId = ethereum && Number(ethereum.chainId)
+    const kiraLib = new Kira(ethereum, chainId, false, {
+      defaultAccount: ethereum && ethereum.selectedAddress,
+      defaultConfirmations: 1,
+      autoGasMultiplier: 1.5,
+      testing: false,
+      defaultGas: '6000000',
+      defaultGasPrice: '1000000000000',
+      accounts: [],
+      ethereumNodeTimeout: 10000,
+    })
+    setKira(kiraLib)
+    window.kirasauce = kiraLib
   }, [ethereum])
 
   return <Context.Provider value={{ kira }}>{children}</Context.Provider>

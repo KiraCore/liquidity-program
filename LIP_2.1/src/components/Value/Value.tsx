@@ -28,7 +28,7 @@ const Value: React.FC<ValueProps> = ({ value, decimals }) => {
           start={start}
           end={end}
           decimals={
-            decimals !== undefined ? decimals : end < 0 ? 5 : end > 1e5 ? 0 : 4
+            decimals !== undefined ? decimals : end < 0 ? 5 : end > 1e5 ? 0 : 2
           }
           duration={1}
           separator=","

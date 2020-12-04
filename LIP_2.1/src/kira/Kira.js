@@ -5,9 +5,10 @@ import { Account } from './lib/accounts.js'
 import { EVM } from './lib/evm.js'
 import { contractAddresses } from './lib/constants'
 import { supportedPools } from './lib/constants'
+import config from '../config'
 
 export class Kira {
-  constructor(provider, networkId, testing, options) {
+  constructor(provider, networkId = 42, testing, options) {
     var realProvider
 
     if (typeof provider === 'string') {
@@ -23,7 +24,7 @@ export class Kira {
         )
       }
     } else {
-      realProvider = provider
+      realProvider = new Web3.providers.HttpProvider(`https://${config.NETWORK}.infura.io/v3/${config.INFURA_PROJECT_ID}`)
     }
 
     this.web3 = new Web3(realProvider)
@@ -36,6 +37,7 @@ export class Kira {
     if (options.defaultAccount) {
       this.web3.eth.defaultAccount = options.defaultAccount
     }
+
     this.contracts = new Contracts(realProvider, networkId, this.web3, options)
     this.kiraAddress = contractAddresses.kira[networkId]
     this.kiraStakingAddress = contractAddresses.kiraStaking[networkId]

@@ -26,7 +26,7 @@ const AccountButton: React.FC<AccountButtonProps> = (props) => {
       {!account ? (
         <Button onClick={handleUnlockClick} size="sm" text="Connect Wallet" />
       ) : (
-        <Button onClick={onPresentAccountModal} size="sm" text="My Wallet" />
+        <Button onClick={onPresentAccountModal} size="sm" text="My Wallet" connected={true} />
       )}
     </StyledAccountButton>
   )

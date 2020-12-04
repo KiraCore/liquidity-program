@@ -6,17 +6,19 @@ import { Link } from 'react-router-dom'
 interface ButtonProps {
   children?: React.ReactNode,
   disabled?: boolean,
+  connected?: boolean,
   href?: string,
   onClick?: () => void,
   size?: 'sm' | 'md' | 'lg',
   text?: string,
   to?: string,
-  variant?: 'default' | 'secondary' | 'tertiary'
+  variant?: 'default' | 'secondary' | 'connected'
 }
 
 const Button: React.FC<ButtonProps> = ({
   children,
   disabled,
+  connected = false,
   href,
   onClick,
   size,
@@ -81,6 +83,7 @@ const Button: React.FC<ButtonProps> = ({
     <StyledButton
       boxShadow={boxShadow}
       color={buttonColor}
+      connected={connected}
       disabled={disabled}
       fontSize={fontSize}
       onClick={onClick}
@@ -96,6 +99,7 @@ const Button: React.FC<ButtonProps> = ({
 interface StyledButtonProps {
   boxShadow: string,
   color: string,
+  connected?: boolean,
   disabled?: boolean,
   fontSize: number,
   padding: number,
@@ -104,7 +108,7 @@ interface StyledButtonProps {
 
 const StyledButton = styled.button<StyledButtonProps>`
   align-items: center;
-  background-color: #9553e6;
+  background-color: ${props => !props.connected ? "#9553e6" : "#b8533d"};
   border: 0;
   border-radius: 12px;
   box-shadow: ${props => props.boxShadow};
@@ -121,7 +125,7 @@ const StyledButton = styled.button<StyledButtonProps>`
   pointer-events: ${props => !props.disabled ? undefined : 'none'};
   width: 100%;
   &:hover {
-    background-color: #9755e8D0;
+    background-color: ${props => !props.connected ? "#9755e8D0" : "#b8533dD0"};
   }
 `
 

@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react'
+import { useWallet } from 'use-wallet'
+import { provider } from 'web3-core'
 import styled from 'styled-components'
 import kira from '../../assets/img/kira.png'
 import Button from '../../components/Button'
@@ -12,6 +14,7 @@ import useFarms from '../../hooks/useFarms'
 const Home: React.FC = () => {
   const [farms] = useFarms()
   const [poolId, setPoolId] = useState('');
+  const { account }: { account: string; ethereum: provider } = useWallet()
 
   useEffect(() => {
     if (farms && farms[0]) {
@@ -31,17 +34,21 @@ const Home: React.FC = () => {
         <Balances />
       </Container>
       <Spacer size="lg" />
+      {!!account && (
+        <div
+          style={{
+            margin: '0 auto',
+          }}
+        >
+          <Button text="Lock Tokens" to={`/pools/${poolId}`} variant="secondary" />
+        </div>
+      )}
+      {!!account && (
+        <Spacer size="lg" />
+      )}
       <StyledInfo>
         💡<b>Pro Tip</b>: Make sure you connected Metamask and selected "Ethereum Mainnet" network!
       </StyledInfo>
-      <Spacer size="lg" />
-      <div
-        style={{
-          margin: '0 auto',
-        }}
-      >
-        <Button text="Lock Tokens" to={`/pools/${poolId}`} variant="secondary" />
-      </div>
     </Page>
   )
 }

@@ -19,7 +19,7 @@ const Home: React.FC = () => {
   const [farms] = useFarms()
   const [poolId, setPoolId] = useState('');
   const { account }: { account: string; ethereum: provider } = useWallet()
-  const [hasLP, setHasLP] = useState(false);
+  const [hasLP, setHasLP] = useState(true);
 
   const stakedLPBalance = useStakedLPBalance()          // USER'S LP TOKEN AMOUNT LOCED IN STAKING CONTRACT
   const tokenBalance = useTokenBalance(false) // GET LP AMOUNT IN USER'S METAMASK
@@ -40,7 +40,7 @@ const Home: React.FC = () => {
   }, [onPresentWalletProviderModal])
 
   useEffect(() => {
-    setHasLP(stakedLPBalance.toNumber() === 0 && tokenBalance.toNumber() === 0)
+    setHasLP(!account || (stakedLPBalance.toNumber() > 0 && tokenBalance.toNumber() > 0) || (stakedLPBalance.toNumber() === -1 && tokenBalance.toNumber() === -1))
   }, [stakedLPBalance, tokenBalance])
 
   return (

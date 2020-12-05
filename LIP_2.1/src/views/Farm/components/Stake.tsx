@@ -14,7 +14,7 @@ import useAllowance from '../../../hooks/useAllowance'
 import useApprove from '../../../hooks/useApprove'
 import useModal from '../../../hooks/useModal'
 import useStake from '../../../hooks/useStake'
-import useStakedBalance from '../../../hooks/useStakedLPBalance'
+import useStakedLPBalance from '../../../hooks/useStakedLPBalance'
 import useTokenBalance from '../../../hooks/useTokenBalance'
 import useUnstake from '../../../hooks/useUnstake'
 import { getBalanceNumber } from '../../../utils/formatBalance'
@@ -34,8 +34,8 @@ const Stake: React.FC<StakeProps> = ({ lpContract, pid, tokenName }) => {
   const { onApprove } = useApprove(lpContract)
 
   const tokenBalance = useTokenBalance(false) // GET LP AMOUNT IN USER'S METAMASK
-  const stakedBalance = useStakedBalance() // GET USER'S STAKED LP AMOUNT
-
+  const stakedLPBalance = useStakedLPBalance() // GET USER'S STAKED LP AMOUNT
+  
   const { onStake } = useStake(pid)
   const { onUnstake } = useUnstake(pid)
 
@@ -49,7 +49,7 @@ const Stake: React.FC<StakeProps> = ({ lpContract, pid, tokenName }) => {
 
   const [onPresentWithdraw] = useModal(
     <WithdrawModal
-      max={stakedBalance}
+      max={stakedLPBalance}
       onConfirm={onUnstake}
       tokenName={tokenName}
     />,
@@ -74,7 +74,7 @@ const Stake: React.FC<StakeProps> = ({ lpContract, pid, tokenName }) => {
         <StyledCardContentInner>
           <StyledCardHeader>
             <CardIcon><img src="https://s2.coinmarketcap.com/static/img/coins/64x64/7083.png" height={50}/></CardIcon>
-            <Value value={getBalanceNumber(stakedBalance, 18)} />
+            <Value value={getBalanceNumber(stakedLPBalance, 18)} />
             <Label text={`${tokenName} Locked`} />
           </StyledCardHeader>
           <StyledCardActions>
@@ -86,15 +86,23 @@ const Stake: React.FC<StakeProps> = ({ lpContract, pid, tokenName }) => {
               />
             ) : (
               <>
-                <Button
-                  disabled={stakedBalance.eq(new BigNumber(0))}
-                  text="Unstake"
-                  onClick={onPresentWithdraw}
-                />
-                <StyledActionSpacer />
-                <IconButton onClick={onPresentDeposit}>
-                  <AddIcon />
-                </IconButton>
+                {stakedLPBalance.eq(new BigNumber(0)) ? (
+                  <Button
+                    text="Stake"
+                    onClick={onPresentWithdraw}
+                  />
+                ) : (
+                  <>
+                    <Button
+                      text="Unstake"
+                      onClick={onPresentWithdraw}
+                    />
+                    <StyledActionSpacer/>
+                    <IconButton onClick={onPresentDeposit}>
+                      <AddIcon />
+                    </IconButton>
+                  </>
+                )}
               </>
             )}
           </StyledCardActions>

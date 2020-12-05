@@ -11,7 +11,7 @@ interface PageHeaderProps {
   hasLP?: boolean
 }
 
-const PageHeader: React.FC<PageHeaderProps> = ({ icon, subtitle, title, hasLP }) => {
+const PageHeader: React.FC<PageHeaderProps> = ({ icon, subtitle, title, hasLP = true }) => {
   return (
     <Container size="lg">
       <StyledPageHeader>

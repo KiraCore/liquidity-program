@@ -8,7 +8,7 @@ import useKira from './useKira'
 import useBlock from './useBlock'
 
 const useStakedLPBalance = () => {
-  const [balance, setBalance] = useState(new BigNumber(0))
+  const [balance, setBalance] = useState(new BigNumber(-1))
   const { account }: { account: string } = useWallet()
   const kira = useKira()
   const kiraStakingContract = getKiraStakingContract(kira)

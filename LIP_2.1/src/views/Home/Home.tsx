@@ -48,7 +48,7 @@ const Home: React.FC = () => {
       <PageHeader
         icon={<img src={kira} height={90} />}
         title="Kira staking is Ready"
-        subtitle={hasLP ? "Lock your KEX-ETH UNI-V2 LP tokens to earn extra APY!" : "You do not have LP tokens, add ETH and KEX to the Uniswap Pool first!"}
+        subtitle={hasLP ? "Lock your KEX-ETH UNI-V2 LP tokens to earn extra APY!" : "You do not have any LP tokens yet, add ETH and KEX to the Uniswap Pool first!"}
         hasLP={hasLP}
       />
       <Container size="lg">
@@ -58,7 +58,7 @@ const Home: React.FC = () => {
       <div style={{ margin: '0 auto' }}>
         {!!account ? (
           <Button 
-            text="Lock Tokens" 
+            text="Lock LP Tokens" 
             to={`/pools/${poolId}`} 
             variant="secondary" 
             connected={true}

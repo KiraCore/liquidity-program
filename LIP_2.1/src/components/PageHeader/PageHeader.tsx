@@ -22,7 +22,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({ icon, subtitle, title, hasLP = 
         ) : (
           <StyledWarning>{subtitle}</StyledWarning>
         )}
-        {!hasLP && (<StyledLink href={config.UNISWAP_POOL_LINK} target="_blank">To Uniswap Pool</StyledLink>)}
+        {!hasLP && (<StyledLink href={config.UNISWAP_POOL_LINK} target="_blank">Click Here To Add Liquidity</StyledLink>)}
       </StyledPageHeader>
     </Container>
   )

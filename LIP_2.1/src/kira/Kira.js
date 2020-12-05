@@ -11,7 +11,10 @@ export class Kira {
   constructor(provider, networkId = 42, testing, options) {
     var realProvider
 
-    if (typeof provider === 'string') {
+    if (!provider) {
+      realProvider = new Web3.providers.HttpProvider(`https://${config.NETWORK}.infura.io/v3/${config.INFURA_PROJECT_ID}`)
+    } else if (typeof provider === 'string') {
+      console.log(options.defaultAccount)
       if (provider.includes('wss')) {
         realProvider = new Web3.providers.WebsocketProvider(
           provider,
@@ -24,7 +27,7 @@ export class Kira {
         )
       }
     } else {
-      realProvider = new Web3.providers.HttpProvider(`https://${config.NETWORK}.infura.io/v3/${config.INFURA_PROJECT_ID}`)
+      realProvider = provider      
     }
 
     this.web3 = new Web3(realProvider)

@@ -10,7 +10,7 @@ import useBlock from './useBlock'
 import useKira from './useKira'
 
 const useTokenBalance = (isKex: boolean) => {
-  const [balance, setBalance] = useState(new BigNumber(0))
+  const [balance, setBalance] = useState(new BigNumber(-1))
   const {
     account,
     ethereum,

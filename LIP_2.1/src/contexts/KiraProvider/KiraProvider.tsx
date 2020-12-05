@@ -3,6 +3,8 @@ import React, { createContext, useEffect, useState } from 'react'
 import { useWallet } from 'use-wallet'
 
 import { Kira } from '../../kira'
+import { Account } from '../../kira/lib/accounts'
+import { provider } from 'web3-core'
 
 export interface KiraContext {
   kira?: typeof Kira
@@ -19,7 +21,10 @@ declare global {
 }
 
 const KiraProvider: React.FC = ({ children }) => {
-  const { ethereum }: { ethereum: any } = useWallet()
+  const {
+    account,
+    ethereum,
+  }: { account: string; ethereum: any } = useWallet()
   const [kira, setKira] = useState<any>()
 
   // @ts-ignore
@@ -40,7 +45,7 @@ const KiraProvider: React.FC = ({ children }) => {
     })
     setKira(kiraLib)
     window.kirasauce = kiraLib
-  }, [ethereum])
+  }, [ethereum, account])
 
   return <Context.Provider value={{ kira }}>{children}</Context.Provider>
 }

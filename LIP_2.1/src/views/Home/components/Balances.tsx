@@ -83,7 +83,7 @@ const Balances: React.FC = () => {
        <Card>
         <CardContent>
           <StyledCardContainer>
-            <Label text="Reward Information" weight={600} size={20}/>
+            <Label text="Reward Program" weight={600} size={20}/>
             <Spacer size="sm"/>
 
             <StyledInfoContainer>
@@ -92,6 +92,7 @@ const Balances: React.FC = () => {
                 <Label text="$"/>
                 <Value
                   value={valueOfLockedAssets.toNumber()}
+                  decimals={0}
                 />
               </StyledInfoValue>
             </StyledInfoContainer>
@@ -101,6 +102,7 @@ const Balances: React.FC = () => {
               <StyledInfoValue>
                 <Value
                   value={getBalanceNumber(APY)}
+                  decimals={0}
                 />
                 <Label text=" %"/>
               </StyledInfoValue>
@@ -126,6 +128,7 @@ const Balances: React.FC = () => {
                   <Label text="$"/>
                   <Value
                     value={lockedUserBalance.toNumber()}
+                    decimals={0}
                   />
                 </StyledInfoValue>
               </StyledInfoContainer>
@@ -192,7 +195,7 @@ const Balances: React.FC = () => {
         <Card>
           <CardContent>
             <StyledCardContainer>
-              <Label text="Reward Information" weight={600} size={20}/>
+              <Label text="Reward Program" weight={600} size={20}/>
               <Spacer size="sm"/>
 
               <StyledInfoContainer>
@@ -201,6 +204,7 @@ const Balances: React.FC = () => {
                   <Label text="$"/>
                   <Value
                     value={valueOfLockedAssets.toNumber()}
+                    decimals={0}
                   />
                 </StyledInfoValue>
               </StyledInfoContainer>
@@ -210,6 +214,7 @@ const Balances: React.FC = () => {
                 <StyledInfoValue>
                   <Value
                     value={getBalanceNumber(APY)}
+                    decimals={0}
                   />
                   <Label text=" %"/>
                 </StyledInfoValue>

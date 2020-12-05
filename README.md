@@ -53,6 +53,21 @@ RWTopxNIGH2njxWuafRX8gi0AYlSTBmOaFtR9ztTZCVVWXTDrTIn73hkeNiBJAY=
 
 ```
 
+## LIP_2
+
+**Liquidity Incentivization**
+
+_NOTE: This contract rewards those who lock LP tokens with extra tokens deposited to the contract address_
+
+```
+
+   LOCKING CONTRACT: TBD
+      POOL CONTRACT: 0x1BfffB738D69167D5592160A47D5404A3cF5a846
+ KEX ERC20 CONTRACT: 0x16980b3B4a3f9D89E33311B5aa8f80303E5ca4F8
+      WETH CONTRACT: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+```
+
+
 ## LIP_3
 
 **Liquidity Auction**

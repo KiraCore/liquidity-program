@@ -5,7 +5,7 @@ import Footer from '../Footer'
 const Page: React.FC = ({ children }) => (
   <StyledPage>
     <StyledMain>{children}</StyledMain>
-    {/* <Footer /> */}
+    <Footer />
   </StyledPage>
 )
 

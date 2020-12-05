@@ -12,6 +12,7 @@ import useModal from './hooks/useModal'
 import theme from './theme'
 import Farms from './views/Farms'
 import Home from './views/Home'
+import config from './config'
 
 const App: React.FC = () => {
   const [mobileMenu, setMobileMenu] = useState(false)
@@ -48,7 +49,7 @@ const Providers: React.FC = ({ children }) => {
       <UseWalletProvider
         chainId={42}
         connectors={{
-          walletconnect: { rpcUrl: 'https://api.infura.io/v1/jsonrpc/kovan' },
+          walletconnect: { rpcUrl: `https://api.infura.io/v1/jsonrpc/${config.NETWORK}` },
         }}
       >
         <KiraProvider>

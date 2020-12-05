@@ -59,12 +59,41 @@ RWTopxNIGH2njxWuafRX8gi0AYlSTBmOaFtR9ztTZCVVWXTDrTIn73hkeNiBJAY=
 
 _NOTE: This contract rewards those who lock LP tokens with extra tokens deposited to the contract address_
 
-```
+* [Deployment Documentation](./LIP_2/README.md)
+* [Application Binary Interface](./LIP_2/ABI.json)
+* [Improvement Proposal](https://github.com/KiraCore/docs/blob/master/spec/liquidity-program/lip_2.md)
+* [Audit Report](./LIP_2/audit.pdf)
 
-   LOCKING CONTRACT: TBD
-      POOL CONTRACT: 0x1BfffB738D69167D5592160A47D5404A3cF5a846
+```
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+KIRA Network Liquidity Incentivization Program Contract Address:
+0x59A9c0300818df7b5Bd6ffefF8D8DC7453686A4F
+
+         Network: Ethereum
+     Distributes: KEX ERC20
+ Accepts Locking: KEX-WETH-UNI-V2
+Staking Frontend: https://stake.kira.network
+
+  LP TOKEN CONTRACT: 0x1BfffB738D69167D5592160A47D5404A3cF5a846
  KEX ERC20 CONTRACT: 0x16980b3B4a3f9D89E33311B5aa8f80303E5ca4F8
       WETH CONTRACT: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+
+ABI SHA256 Checksum:
+de14b3b2ddc52841b7ae30e9712371dac3b01a8dca36df1a04d10e1314852685  ./ABI.json
+-----BEGIN PGP SIGNATURE-----
+Version: Keybase OpenPGP v2.1.13
+Comment: https://keybase.io/crypto
+
+wsBcBAABCgAGBQJfyu0EAAoJEMd1XMN/y97LJOwH/iOoYcYXDCd5grj+qmCXbXaJ
+4qAtayoBngT8LDD93LRmGceYOSkD+aH9S7F1vWCgphEMR7RTsBKMxeCsfsz4hm6L
+n1IevhapQYBGsB1hN0vdb7tu9LIeQZ4w9Y4wfHzrA0wUKnaGKNC9f/7XhkwrdmOG
+SGm5F27PVlLNFwh7E74j+PpisDngpze5SL2L6bIRQjq3sw3pYYiojt8d6N7wAJgi
+RZklJaYRjt7+s2qCQa1ioz2ClISM7b/egAkNsGlN6b6Mh59PeXQQOMjkdb/iwsN+
+uHGUaB0P57bKs0v3NlYm0Y022CRKIqv0iVnEDaiHctqdNuWLddKzgyVrRFSREUM=
+=DyIf
+-----END PGP SIGNATURE-----
 ```
 
 

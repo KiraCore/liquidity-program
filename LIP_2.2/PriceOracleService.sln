@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PriceOracleService", "PriceOracleService.csproj", "{4D45BE24-E0D3-42FF-B650-38659C3C4D61}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4D45BE24-E0D3-42FF-B650-38659C3C4D61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D45BE24-E0D3-42FF-B650-38659C3C4D61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D45BE24-E0D3-42FF-B650-38659C3C4D61}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4D45BE24-E0D3-42FF-B650-38659C3C4D61}.Debug|x64.Build.0 = Debug|Any CPU
+		{4D45BE24-E0D3-42FF-B650-38659C3C4D61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D45BE24-E0D3-42FF-B650-38659C3C4D61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D45BE24-E0D3-42FF-B650-38659C3C4D61}.Release|x64.ActiveCfg = Release|Any CPU
+		{4D45BE24-E0D3-42FF-B650-38659C3C4D61}.Release|x64.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {12B2E75D-3654-4815-93E1-7294C45AE456}
+	EndGlobalSection
+EndGlobal

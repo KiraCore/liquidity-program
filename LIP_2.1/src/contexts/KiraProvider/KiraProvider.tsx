@@ -1,10 +1,6 @@
 import React, { createContext, useEffect, useState } from 'react'
-
 import { useWallet } from 'use-wallet'
-
 import { Kira } from '../../kira'
-import { Account } from '../../kira/lib/accounts'
-import { provider } from 'web3-core'
 
 export interface KiraContext {
   kira?: typeof Kira

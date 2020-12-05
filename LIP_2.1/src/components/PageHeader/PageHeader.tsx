@@ -22,7 +22,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({ icon, subtitle, title, hasLP = 
         ) : (
           <StyledWarning>{subtitle}</StyledWarning>
         )}
-        {!hasLP && (<StyledLink href={config.UNISWAP_POOL_LINK} target="_blank">To Uniswap Pool</StyledLink>)}
+        {!hasLP && (<StyledLink href={config.UNISWAP_POOL_LINK} target="_blank">Click Here To Add Liquidity</StyledLink>)}
       </StyledPageHeader>
     </Container>
   )
@@ -32,6 +32,7 @@ const StyledLink=styled.a`
   margin-top: 10px;
   color: ${(props) => props.theme.color.red[500]};
 `
+
 const StyledPageHeader = styled.div`
   align-items: center;
   box-sizing: border-box;
@@ -52,10 +53,10 @@ const StyledIcon = styled.div`
 
 const StyledTitle = styled.h1`
   color: ${(props) => props.theme.color.purple[500]};
-  font-size: 42px;
+  font-size: 45px;
   text-align: center;
   font-weight: 600;
-  margin: 10px;
+  margin: 0;
   padding: 0;
 `
 
@@ -63,7 +64,7 @@ const StyledSubtitle = styled.h3`
   color: ${(props) => props.theme.color.purple[400]};
   font-size: 18px;
   font-weight: 300;
-  margin: 0;
+  margin-top: 10px;
   padding: 0;
   text-align: center;
 `
@@ -72,7 +73,7 @@ const StyledWarning = styled.h3`
   color: ${(props) => props.theme.color.red[600]};
   font-size: 18px;
   font-weight: 300;
-  margin: 0;
+  margin-top: 10px;
   padding: 0;
   text-align: center;
 `

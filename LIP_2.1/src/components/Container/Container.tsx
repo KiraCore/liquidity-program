@@ -3,7 +3,7 @@ import styled, { ThemeContext } from 'styled-components'
 
 interface ContainerProps {
   children?: React.ReactNode,
-  size?: 'sm' | 'md' | 'lg' | 'xlg'
+  size?: 'sm' | 'md' | 'lg'
 }
 
 const Container: React.FC<ContainerProps> = ({ children, size = 'md' }) => {
@@ -14,12 +14,9 @@ const Container: React.FC<ContainerProps> = ({ children, size = 'md' }) => {
       width = siteWidth / 2
       break
     case 'md':
-      width = siteWidth * 2 / 3
-      break
-    case 'lg':
       width = siteWidth * 4 / 5
       break
-    case 'xlg':
+    case 'lg':
     default:
       width = siteWidth
   }
@@ -40,6 +37,7 @@ const StyledContainer = styled.div<StyledContainerProps>`
   max-width: ${props => props.width}px;
   padding: 0 ${props => props.theme.spacing[4]}px;
   width: 100%;
+  background-color: #fff;
 `
 
 export default Container

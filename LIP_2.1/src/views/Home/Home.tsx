@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { useWallet } from 'use-wallet'
 import { provider } from 'web3-core'
 import styled from 'styled-components'
@@ -10,42 +10,68 @@ import PageHeader from '../../components/PageHeader'
 import Spacer from '../../components/Spacer'
 import Balances from './components/Balances'
 import useFarms from '../../hooks/useFarms'
+import useModal from '../../hooks/useModal'
+import WalletProviderModal from '../../components/WalletProviderModal'
+import useStakedLPBalance from '../../hooks/useStakedLPBalance'
+import useTokenBalance from '../../hooks/useTokenBalance'
 
 const Home: React.FC = () => {
   const [farms] = useFarms()
   const [poolId, setPoolId] = useState('');
   const { account }: { account: string; ethereum: provider } = useWallet()
+  const [hasLP, setHasLP] = useState(false);
 
+  const stakedLPBalance = useStakedLPBalance()          // USER'S LP TOKEN AMOUNT LOCED IN STAKING CONTRACT
+  const tokenBalance = useTokenBalance(false) // GET LP AMOUNT IN USER'S METAMASK
+
+  const [onPresentWalletProviderModal] = useModal(
+    <WalletProviderModal />,
+    'provider',
+  )
+  
   useEffect(() => {
     if (farms && farms[0]) {
       setPoolId(farms[0].id)
     }
   }, [farms])
 
+  const handleUnlockClick = useCallback(() => {
+    onPresentWalletProviderModal()
+  }, [onPresentWalletProviderModal])
+
+  useEffect(() => {
+    setHasLP(stakedLPBalance.toNumber() === 0 && tokenBalance.toNumber() === 0)
+  }, [stakedLPBalance, tokenBalance])
+
   return (
     <Page>
       <PageHeader
         icon={<img src={kira} height={90} />}
         title="Kira staking is Ready"
-        subtitle="Lock your KEX-ETH UNI-V2 LP tokens to earn extra APY!"
+        subtitle={hasLP ? "Lock your KEX-ETH UNI-V2 LP tokens to earn extra APY!" : "You do not have LP tokens, add ETH and KEX to the Uniswap Pool first!"}
+        hasLP={hasLP}
       />
-
       <Container size="lg">
         <Balances />
       </Container>
       <Spacer size="lg" />
-      {!!account && (
-        <div
-          style={{
-            margin: '0 auto',
-          }}
-        >
-          <Button text="Lock Tokens" to={`/pools/${poolId}`} variant="secondary" />
-        </div>
-      )}
-      {!!account && (
-        <Spacer size="lg" />
-      )}
+      <div style={{ margin: '0 auto' }}>
+        {!!account ? (
+          <Button 
+            text="Lock Tokens" 
+            to={`/pools/${poolId}`} 
+            variant="secondary" 
+            connected={true}
+          />
+        ) : (
+          <Button 
+            text="Connect Wallet" 
+            variant="secondary"
+            onClick={handleUnlockClick}
+          />
+        )}
+      </div>
+      <Spacer size="lg" />
       <StyledInfo>
         💡<b>Pro Tip</b>: Make sure you connected Metamask and selected "Ethereum Mainnet" network!
       </StyledInfo>

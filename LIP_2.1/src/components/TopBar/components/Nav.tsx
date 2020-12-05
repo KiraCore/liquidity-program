@@ -34,6 +34,7 @@ const Nav: React.FC = () => {
 const StyledNav = styled.nav`
   align-items: center;
   display: flex;
+  flex-wrap: wrap;
 `
 
 const StyledLink = styled(NavLink)`

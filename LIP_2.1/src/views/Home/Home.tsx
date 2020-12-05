@@ -51,7 +51,7 @@ const Home: React.FC = () => {
         subtitle={hasLP ? "Lock your KEX-ETH UNI-V2 LP tokens to earn extra APY!" : "You do not have LP tokens, add ETH and KEX to the Uniswap Pool first!"}
         hasLP={hasLP}
       />
-      <Container size="lg">
+      <Container size="md">
         <Balances />
       </Container>
       <Spacer size="lg" />

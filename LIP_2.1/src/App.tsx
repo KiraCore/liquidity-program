@@ -28,7 +28,7 @@ const App: React.FC = () => {
     <Providers>
       <Router>
         <TopBar onPresentMobileMenu={handlePresentMobileMenu} />
-        <MobileMenu onDismiss={handleDismissMobileMenu} visible={mobileMenu} />
+        {/* <MobileMenu onDismiss={handleDismissMobileMenu} visible={mobileMenu} /> */}
         <Switch>
           <Route path="/" exact>
             <Home />
@@ -38,7 +38,6 @@ const App: React.FC = () => {
           </Route>
         </Switch>
       </Router>
-      <Disclaimer />
     </Providers>
   )
 }
@@ -53,29 +52,13 @@ const Providers: React.FC = ({ children }) => {
         }}
       >
         <KiraProvider>
-            <FarmsProvider>
-              <ModalsProvider>{children}</ModalsProvider>
-            </FarmsProvider>
+          <FarmsProvider>
+            <ModalsProvider>{children}</ModalsProvider>
+          </FarmsProvider>
         </KiraProvider>
       </UseWalletProvider>
     </ThemeProvider>
   )
-}
-
-const Disclaimer: React.FC = () => {
-  const markSeen = useCallback(() => {
-    localStorage.setItem('disclaimer', 'seen')
-  }, [])
-
-  const [onPresentDisclaimerModal] = useModal(
-    <DisclaimerModal onConfirm={markSeen} />,
-  )
-
-  useEffect(() => {
-    
-  }, [])
-
-  return <div />
 }
 
 export default App

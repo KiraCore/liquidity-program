@@ -47,7 +47,7 @@ const Providers: React.FC = ({ children }) => {
   return (
     <ThemeProvider theme={theme}>
       <UseWalletProvider
-        chainId={42}
+        chainId={1}
         connectors={{
           walletconnect: { rpcUrl: `https://api.infura.io/v1/jsonrpc/${config.NETWORK}` },
         }}

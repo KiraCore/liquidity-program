@@ -2,13 +2,16 @@ import config from '../../config.js'
 
 export const contractAddresses = {
   kira: {
-    42: config.KEX_CONTRACT,
+    1: config.KEX_CONTRACT,
+    42: config.KEX_CONTRACT
   },
   kiraStaking: {
-    42: config.LOCKING_CONTRACT,
+    1: config.LOCKING_CONTRACT,
+    42: config.LOCKING_CONTRACT
   },
   weth: {
-    42: config.WETH_CONTRACT,
+    1: config.WETH_CONTRACT,
+    42: config.WETH_CONTRACT
   },
 }
 
@@ -16,9 +19,11 @@ export const supportedPools = [
   {
     pid: 0,
     lpAddresses: {
-      42: config.LP_CONTRACT,
+      1: config.LP_CONTRACT,
+      42: config.LP_CONTRACT
     },
     tokenAddresses: {
+      1: config.KEX_CONTRACT,
       42: config.KEX_CONTRACT
     },
     name: 'KEX-ETH Pool',

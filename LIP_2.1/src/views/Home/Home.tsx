@@ -75,7 +75,7 @@ const Home: React.FC = () => {
       </div>
       <Spacer size="lg" />
       <div>
-      {!!account ? (
+      {!account ? (
         <StyledInfo>
           💡<b>Pro Tip</b>: Make sure you connected Metamask and selected "Ethereum Mainnet" network!
         </StyledInfo>

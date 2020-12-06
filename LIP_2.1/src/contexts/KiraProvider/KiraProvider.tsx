@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useState } from 'react'
 import { useWallet } from 'use-wallet'
 import { Kira } from '../../kira'
+import config from '../../../src/config.js'
 
 export interface KiraContext {
   kira?: typeof Kira
@@ -28,8 +29,10 @@ const KiraProvider: React.FC = ({ children }) => {
   // @ts-ignore
 
   useEffect(() => {
-    const chainId = ethereum && Number(ethereum.chainId)
-    console.log(`Chain ID: ${chainId}`);
+    const chainId = config.NETWORK === "mainnet" ? 1 : 42;
+    console.log(`       Chain ID: ${chainId}`);
+    console.log(`Ethereum Object:`);
+    console.log(ethereum);
     const kiraLib = new Kira(ethereum, chainId, false, {
       defaultAccount: ethereum && ethereum.selectedAddress,
       defaultConfirmations: 1,

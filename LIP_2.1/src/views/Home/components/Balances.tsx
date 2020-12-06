@@ -51,9 +51,11 @@ const Balances: React.FC = () => {
       const SECOND_PER_YEAR = 3600 * 24 * 365.25;
       const kexPriceInWeth = allInfo[0] ? allInfo[0].tokenPriceInWeth : new BigNumber(0);
       const totalWethValue = allInfo[0] ? allInfo[0].totalWethValue : new BigNumber(0);
+      const apyPercentage = allInfo[0] ? ((kexPriceInWeth.times(rewardPerSecond).times(SECOND_PER_YEAR)).div(totalWethValue)).times(100) : new BigNumber(0);
       console.log(`  KEX Value in WETH: ${kexPriceInWeth}`);
       console.log(`Total Value in WETH: ${totalWethValue}`);
-      setAPY(allInfo[0] ? kexPriceInWeth.times(rewardPerSecond).times(SECOND_PER_YEAR).div(totalWethValue) : new BigNumber(0))
+      console.log(`                APY: ${apyPercentage}%`); // to get percentage you need to multiply by 100!
+      setAPY(apyPercentage)
     }
   }, [allInfo, rewardPerSecond])
 

@@ -22,7 +22,7 @@ const Nav: React.FC = () => {
         Pools
       </StyledLink>
       <StyledAbsoluteLink
-        href="https://medium.com/kira-core"
+        href="https://medium.com/kira-core/kira-liquidity-reward-program-23d2b2f88fe7"
         target="_blank"
       >
         About

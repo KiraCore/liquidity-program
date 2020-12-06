@@ -74,9 +74,18 @@ const Home: React.FC = () => {
         )}
       </div>
       <Spacer size="lg" />
-      <StyledInfo>
-        💡<b>Pro Tip</b>: Make sure you connected Metamask and selected "Ethereum Mainnet" network!
-      </StyledInfo>
+      <div>
+      {!account ? (
+        <StyledInfo>
+          💡<b>Pro Tip</b>: Make sure you connected Metamask and selected "Ethereum Mainnet" network!
+        </StyledInfo>
+        ) : (
+          <StyledInfo>
+          💡<b>Pro Tip</b>: Your TVL equals to your liquidity share in the pool, the cumulative value of KEX and ETH in USD
+        </StyledInfo>
+          )}
+      </div>
+      
     </Page>
   )
 }

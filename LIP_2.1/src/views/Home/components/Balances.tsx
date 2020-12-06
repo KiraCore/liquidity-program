@@ -39,7 +39,7 @@ const Balances: React.FC = () => {
     async function fetchTotalSupply() {
       const reward = await getRewardRate(kiraStakingContract)
       console.log(`Rewards Rate: ${reward}`);
-      setRewardPerSecond(reward.dividedBy(6)) // KEX has 6 decimals and rate is set in lowest denom
+      setRewardPerSecond(reward.dividedBy(1000000)) // KEX has 6 decimals and rate is set in lowest denom
     }
     if (kira) {
       fetchTotalSupply()

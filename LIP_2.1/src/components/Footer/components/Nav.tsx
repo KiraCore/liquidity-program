@@ -6,7 +6,7 @@ const Nav: React.FC = () => {
     <StyledNav>
       <StyledLink
         target="_blank"
-        href="https://github.com/KiraCore/liquidity-program/"
+        href="https://stake-contract.kira.network"
       >
         Contract
       </StyledLink>

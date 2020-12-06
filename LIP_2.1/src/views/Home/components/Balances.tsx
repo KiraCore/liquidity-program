@@ -49,13 +49,13 @@ const Balances: React.FC = () => {
   useEffect(() => {
     if (allInfo[0] && rewardPerSecond) {
       const SECOND_PER_YEAR = 3600 * 24 * 365.25;
-      const kexPriceInWeth = allInfo[0] ? allInfo[0].tokenPriceInWeth : new BigNumber(0);
-      const totalWethValue = allInfo[0] ? allInfo[0].totalWethValue : new BigNumber(0);
-      const apyPercentage = allInfo[0] ? ((kexPriceInWeth.times(rewardPerSecond).times(SECOND_PER_YEAR)).div(totalWethValue)).times(100) : new BigNumber(0);
+      var kexPriceInWeth = allInfo[0] ? allInfo[0].tokenPriceInWeth : new BigNumber(0);
+      var totalWethValue = allInfo[0] ? allInfo[0].totalWethValue : new BigNumber(0);
+      var apyPercentage = allInfo[0] ? ((kexPriceInWeth.times(rewardPerSecond).times(SECOND_PER_YEAR)).div(totalWethValue)).times(100) : new BigNumber(0);
       console.log(`  KEX Value in WETH: ${kexPriceInWeth}`);
       console.log(`Total Value in WETH: ${totalWethValue}`);
       console.log(`                APY: ${apyPercentage}%`); // to get percentage you need to multiply by 100!
-      setAPY(apyPercentage)
+      setAPY(apyPercentage);
     }
   }, [allInfo, rewardPerSecond])
 
@@ -66,7 +66,9 @@ const Balances: React.FC = () => {
     console.log(`Rewards Per Second: ${rewardPerSecond}`);
     if (totalLPInStakingContract.toNumber() > 0) {
       const SECOND_PER_MONTH = ((3600 * 24 * 365.25) / 12);
-      setROI((stakedLPBalance.dividedBy(totalLPInStakingContract)).multipliedBy(rewardPerSecond).multipliedBy(SECOND_PER_MONTH))
+      var monthlyRoi = (stakedLPBalance.dividedBy(totalLPInStakingContract)).multipliedBy(rewardPerSecond).multipliedBy(SECOND_PER_MONTH);
+      console.log(`       Monthly ROI: ${monthlyRoi}`);
+      setROI(monthlyRoi);
     }
   }, [stakedLPBalance, totalLPInStakingContract, rewardPerSecond])
 

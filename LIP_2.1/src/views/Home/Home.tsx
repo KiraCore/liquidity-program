@@ -40,7 +40,9 @@ const Home: React.FC = () => {
   }, [onPresentWalletProviderModal])
 
   useEffect(() => {
-    setHasLP(!account || (stakedLPBalance.toNumber() > 0 && tokenBalance.toNumber() > 0) || (stakedLPBalance.toNumber() === -1 && tokenBalance.toNumber() === -1))
+    console.log(`   User Staked LP: ${stakedLPBalance}`)
+    console.log(`User Available LP: ${tokenBalance}`)
+    setHasLP(!account || (stakedLPBalance.toNumber() > 0 || tokenBalance.toNumber() > 0) || (stakedLPBalance.toNumber() === -1 && tokenBalance.toNumber() === -1))
   }, [stakedLPBalance, tokenBalance])
 
   return (

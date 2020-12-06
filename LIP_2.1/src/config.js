@@ -1,7 +1,7 @@
 require('dotenv/config')
 
 const config = {
-    NETWORK: "mainnet",
+    NETWORK: process.env.REACT_APP_ENVIRONMENT === "production" ? "mainnet" : "kovan",
     KEX_CONTRACT: process.env.REACT_APP_KEX_CONTRACT || '0x16980b3B4a3f9D89E33311B5aa8f80303E5ca4F8',
     LOCKING_CONTRACT: process.env.REACT_APP_LOCKING_CONTRACT || '0x59A9c0300818df7b5Bd6ffefF8D8DC7453686A4F',
     LP_CONTRACT: process.env.REACT_APP_LP_CONTRACT || '0x1BfffB738D69167D5592160A47D5404A3cF5a846',

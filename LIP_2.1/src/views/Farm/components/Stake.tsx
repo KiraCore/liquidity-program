@@ -74,7 +74,7 @@ const Stake: React.FC<StakeProps> = ({ lpContract, pid, tokenName }) => {
         <StyledCardContentInner>
           <StyledCardHeader>
             <CardIcon><img src="https://s2.coinmarketcap.com/static/img/coins/64x64/7083.png" height={50}/></CardIcon>
-            <Value value={getBalanceNumber(stakedLPBalance, 18)} decimals={6}/>
+            <Value value={getBalanceNumber(stakedLPBalance, 18)} decimals={12}/>
             <Label text={`${tokenName} Locked`} />
           </StyledCardHeader>
           <StyledCardActions>
@@ -89,7 +89,7 @@ const Stake: React.FC<StakeProps> = ({ lpContract, pid, tokenName }) => {
                 {stakedLPBalance.eq(new BigNumber(0)) ? (
                   <Button
                     text="Stake"
-                    onClick={onPresentWithdraw}
+                    onClick={onPresentDeposit}
                   />
                 ) : (
                   <>

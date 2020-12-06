@@ -29,6 +29,7 @@ const KiraProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     const chainId = ethereum && Number(ethereum.chainId)
+    console.log(`Chain ID: ${chainId}`);
     const kiraLib = new Kira(ethereum, chainId, false, {
       defaultAccount: ethereum && ethereum.selectedAddress,
       defaultConfirmations: 1,

@@ -12,9 +12,9 @@ export class Kira {
     var realProvider
 
     if (!provider) {
+      console.log("INFURA HTTP PROVIDER URL: ", `https://${config.NETWORK}.infura.io/v3/${config.INFURA_PROJECT_ID}`)
       realProvider = new Web3.providers.HttpProvider(`https://${config.NETWORK}.infura.io/v3/${config.INFURA_PROJECT_ID}`)
     } else if (typeof provider === 'string') {
-      console.log(options.defaultAccount)
       if (provider.includes('wss')) {
         realProvider = new Web3.providers.WebsocketProvider(
           provider,

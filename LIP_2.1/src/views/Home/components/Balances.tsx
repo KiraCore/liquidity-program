@@ -54,8 +54,8 @@ const Balances: React.FC = () => {
       var apyPercentage = allInfo[0] ? ((kexPriceInWeth.times(rewardPerSecond).times(SECOND_PER_YEAR)).div(totalWethValue)).times(100) : new BigNumber(0);
       console.log(`  KEX Value in WETH: ${kexPriceInWeth}`);
       console.log(`Total Value in WETH: ${totalWethValue}`);
-      console.log(`                APY: ${apyPercentage}%`); // to get percentage you need to multiply by 100!
-      setAPY(apyPercentage);
+      setAPY(apyPercentage)
+      console.log(`                APY: ${APY}%`); // to get percentage you need to multiply by 100!
     }
   }, [allInfo, rewardPerSecond])
 
@@ -67,9 +67,9 @@ const Balances: React.FC = () => {
     if (totalLPInStakingContract.toNumber() > 0) {
       const SECOND_PER_MONTH = ((3600 * 24 * 365.25) / 12);
       var monthlyRoi = (stakedLPBalance.dividedBy(totalLPInStakingContract)).multipliedBy(rewardPerSecond).multipliedBy(SECOND_PER_MONTH);
-      console.log(`       Monthly ROI: ${monthlyRoi}`);
-      setROI(monthlyRoi);
+      setROI(monthlyRoi)
     }
+    console.log(`       Monthly ROI: ${ROI}`);
   }, [stakedLPBalance, totalLPInStakingContract, rewardPerSecond])
 
   useEffect(() => {
@@ -110,7 +110,7 @@ const Balances: React.FC = () => {
               <Label text="- Annual Percentage Yield" color='#333333'/>
               <StyledInfoValue>
                 <Value
-                  value={getBalanceNumber(APY)}
+                  value={APY.toNumber()}
                   decimals={0}
                 />
                 <Label text=" %"/>
@@ -146,7 +146,8 @@ const Balances: React.FC = () => {
                 <Label text="- Your Monthly Reward" color='#333333'/>
                 <StyledInfoValue>
                   <Value
-                    value={getBalanceNumber(ROI)}
+                    value={ROI.toNumber()}
+                    decimals={2}
                   />
                   <Label text="KEX"/>
                 </StyledInfoValue>
@@ -222,7 +223,7 @@ const Balances: React.FC = () => {
                 <Label text="- Annual Percentage Yield" color='#333333'/>
                 <StyledInfoValue>
                   <Value
-                    value={getBalanceNumber(APY)}
+                    value={APY.toNumber()}
                     decimals={0}
                   />
                   <Label text=" %"/>

@@ -38,7 +38,8 @@ const Balances: React.FC = () => {
   useEffect(() => {
     async function fetchTotalSupply() {
       const reward = await getRewardRate(kiraStakingContract)
-      setRewardPerSecond(reward)
+      console.log(`Rewards Rate: ${reward}`);
+      setRewardPerSecond(reward.dividedBy(6)) // KEX has 6 decimals and rate is set in lowest denom
     }
     if (kira) {
       fetchTotalSupply()
@@ -47,19 +48,23 @@ const Balances: React.FC = () => {
 
   useEffect(() => {
     if (allInfo[0] && rewardPerSecond) {
-      const SECOND_PER_YEAR = 3600 * 24 * 365.25
+      const SECOND_PER_YEAR = 3600 * 24 * 365.25;
       const kexPriceInWeth = allInfo[0] ? allInfo[0].tokenPriceInWeth : new BigNumber(0);
-      setAPY(allInfo[0] ? kexPriceInWeth.times(rewardPerSecond).times(SECOND_PER_YEAR).div(allInfo[0].totalWethValue) : new BigNumber(0))
+      const totalWethValue = allInfo[0] ? allInfo[0].totalWethValue : new BigNumber(0);
+      console.log(`  KEX Value in WETH: ${kexPriceInWeth}`);
+      console.log(`Total Value in WETH: ${totalWethValue}`);
+      setAPY(allInfo[0] ? kexPriceInWeth.times(rewardPerSecond).times(SECOND_PER_YEAR).div(totalWethValue) : new BigNumber(0))
     }
   }, [allInfo, rewardPerSecond])
 
   // GET ROI PER MONTH
   useEffect(() => {
-    console.log(`  Total LP Tokens: ${totalLPInStakingContract}`);
-    console.log(`Staked LP Balance: ${stakedLPBalance}`);
+    console.log(`   Total LP Tokens: ${totalLPInStakingContract}`);
+    console.log(` Staked LP Balance: ${stakedLPBalance}`);
+    console.log(`Rewards Per Second: ${rewardPerSecond}`);
     if (totalLPInStakingContract.toNumber() > 0) {
       const SECOND_PER_MONTH = ((3600 * 24 * 365.25) / 12);
-      setROI(stakedLPBalance.dividedBy(totalLPInStakingContract).multipliedBy(rewardPerSecond).multipliedBy(SECOND_PER_MONTH))
+      setROI((stakedLPBalance.dividedBy(totalLPInStakingContract)).multipliedBy(rewardPerSecond).multipliedBy(SECOND_PER_MONTH))
     }
   }, [stakedLPBalance, totalLPInStakingContract, rewardPerSecond])
 

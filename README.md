@@ -15,6 +15,7 @@ _NOTE: The owner of the contract has the privilege of whitelisting and blacklist
 * [Improvement Proposal](https://github.com/KiraCore/docs/blob/master/spec/liquidity-program/lip_1.md)
 * [Token Logo 256x256](./LIP_1/doc/KEX-256x256.png)
 * [Token Logo 32x32](./LIP_1/doc/KEX-32x32.png)
+* [Token Logo Vector](./LIP_1/doc/KEX-vector.svg)
 * [Audit Report](./LIP_1/audit.pdf)
 
 ![picture 1](./LIP_1/doc/KEX-256x256.png)  

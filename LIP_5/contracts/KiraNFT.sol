@@ -1,9 +1,9 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
+import '@openzeppelin/contracts/access/Ownable.sol';
+import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 
 interface IKexFarm {
     function rewardedStones(address staker) external view returns (uint256);
@@ -23,9 +23,9 @@ contract KiraNFT is ERC1155, Ownable {
 
     mapping(uint256 => Card) public cards;
 
-    string tokenUri = "https://nft-be.vercel.app/api/item/";
+    string tokenUri = 'https://nft-be.vercel.app/api/item/';
 
-    constructor() ERC1155("https://nft-be.vercel.app/api/item/") {}
+    constructor() ERC1155('https://nft-be.vercel.app/api/item/') {}
 
     function setTokenURI(string calldata _uri) public onlyOwner {
         tokenUri = _uri;
@@ -35,13 +35,9 @@ contract KiraNFT is ERC1155, Ownable {
      * @notice Convert uint256 to string
      * @param _i Unsigned integer to convert to string
      */
-    function _uint2str(uint256 _i)
-        internal
-        pure
-        returns (string memory _uintAsString)
-    {
+    function _uint2str(uint256 _i) internal pure returns (string memory _uintAsString) {
         if (_i == 0) {
-            return "0";
+            return '0';
         }
         uint256 j = _i;
         uint256 len;
@@ -80,7 +76,7 @@ contract KiraNFT is ERC1155, Ownable {
         uint24 quantity,
         uint256 amount
     ) public onlyOwner {
-        require(cards[id].value == 0, "The card is already exists!");
+        require(cards[id].value == 0, 'The card is already exists!');
         cards[id] = Card(quantity, 0, amount);
     }
 
@@ -89,10 +85,7 @@ contract KiraNFT is ERC1155, Ownable {
         uint24[] memory quantities,
         uint256[] memory amounts
     ) public onlyOwner {
-        require(
-            ids.length == quantities.length && ids.length == amounts.length,
-            "Cards aren't consistent!"
-        );
+        require(ids.length == quantities.length && ids.length == amounts.length, "Cards aren't consistent!");
 
         for (uint24 i = 0; i < ids.length; i++) {
             addCard(ids[i], quantities[i], amounts[i]);
@@ -104,21 +97,21 @@ contract KiraNFT is ERC1155, Ownable {
         return true;
     }
 
-    function isCardPayable(uint256 id) public view returns (bool) {
-        if (cards[id].quantity == cards[id].sold) {
+    function isCardPayable(uint256 id, uint256 count) public view returns (bool) {
+        if (cards[id].quantity < cards[id].sold + count) {
             return false;
         }
 
         return true;
     }
 
-    function buy(uint256 id) public {
+    function buy(uint256 id, uint256 count) external {
         address sender = msg.sender;
-        require(isCardPayable(id), "Card is not payable!");
-        uint256 amount = cards[id].value;
-        require(_farmer.payment(sender, amount), "Payment problem!");
-        _mint(sender, id, 1, "");
-        cards[id].sold = cards[id].sold.add(1);
+        require(isCardPayable(id, count), 'Card is not payable!');
+        uint256 amount = cards[id].value.mul(count);
+        require(_farmer.payment(sender, amount), 'Payment problem!');
+        _mint(sender, id, count, '');
+        cards[id].sold = cards[id].sold.add(count);
     }
 
     function mint(

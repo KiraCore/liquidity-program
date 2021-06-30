@@ -1,12 +1,12 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/utils/Context.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
-import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "./KiraAccessControl.sol";
+import '@openzeppelin/contracts/utils/Context.sol';
+import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
+import '@openzeppelin/contracts/token/ERC1155/IERC1155.sol';
+import '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
+import '@openzeppelin/contracts/utils/math/SafeMath.sol';
+import './KiraAccessControl.sol';
 
 contract NFTStaking is Context, ERC1155Holder {
     using SafeMath for uint256;
@@ -43,10 +43,7 @@ contract NFTStaking is Context, ERC1155Holder {
     }
 
     modifier onlyManager {
-        require(
-            accessControl.hasManagerRole(_msgSender()),
-            "Need manager role"
-        );
+        require(accessControl.hasManagerRole(_msgSender()), 'Need manager role');
         _;
     }
 
@@ -55,15 +52,9 @@ contract NFTStaking is Context, ERC1155Holder {
      * @param _accessControl is new access control contract
      */
     function updateAccessControl(KiraAccessControl _accessControl) public {
-        require(
-            accessControl.hasAdminRole(_msgSender()),
-            "updateAccessControl: Sender must be admin"
-        );
+        require(accessControl.hasAdminRole(_msgSender()), 'updateAccessControl: Sender must be admin');
 
-        require(
-            address(_accessControl) != address(0),
-            "updateAccessControl: New access controls cannot be ZERO address"
-        );
+        require(address(_accessControl) != address(0), 'updateAccessControl: New access controls cannot be ZERO address');
 
         accessControl = _accessControl;
     }
@@ -73,11 +64,7 @@ contract NFTStaking is Context, ERC1155Holder {
      * @param _staker is the address of staker
      * @return _total
      */
-    function totalStakeOf(uint256 poolId, address _staker)
-        public
-        view
-        returns (uint256)
-    {
+    function totalStakeOf(uint256 poolId, address _staker) public view returns (uint256) {
         return balances[poolId][_staker].amount;
     }
 
@@ -93,11 +80,7 @@ contract NFTStaking is Context, ERC1155Holder {
      * @notice get the first staked time
      * @return firstStakedAt
      */
-    function getFirstStakedAtOf(uint256 poolId, address _staker)
-        public
-        view
-        returns (uint256)
-    {
+    function getFirstStakedAtOf(uint256 poolId, address _staker) public view returns (uint256) {
         return balances[poolId][_staker].firstStakedAt;
     }
 
@@ -105,11 +88,7 @@ contract NFTStaking is Context, ERC1155Holder {
      * @notice get total claimed reward of staker
      * @return rewardSoFar
      */
-    function getRewardSoFarOf(uint256 poolId, address _staker)
-        public
-        view
-        returns (uint256)
-    {
+    function getRewardSoFarOf(uint256 poolId, address _staker) public view returns (uint256) {
         return balances[poolId][_staker].rewardSoFar;
     }
 
@@ -117,11 +96,7 @@ contract NFTStaking is Context, ERC1155Holder {
      * @notice calculate reward of staker
      * @return reward is the reward amount of the staker
      */
-    function rewardOf(uint256 poolId, address _staker)
-        public
-        view
-        returns (uint256)
-    {
+    function rewardOf(uint256 poolId, address _staker) public view returns (uint256) {
         POOL memory poolInfo = stakingPools[poolId];
         STAKE memory stakeDetail = balances[poolId][_staker];
 
@@ -132,10 +107,7 @@ contract NFTStaking is Context, ERC1155Holder {
 
         timePassed = timeNow - stakeDetail.lastClaimedAt;
 
-        uint256 _totalReward =
-            stakeDetail.amount.mul(poolInfo.rewardPerNFT).mul(timePassed).div(
-                30 days
-            );
+        uint256 _totalReward = stakeDetail.amount.mul(poolInfo.rewardPerNFT).mul(timePassed).div(30 days);
 
         if (_totalReward > poolInfo.totalRewards) return poolInfo.totalRewards;
         return _totalReward;
@@ -162,13 +134,7 @@ contract NFTStaking is Context, ERC1155Holder {
     function stake(uint256 poolId, uint256 _amount) external {
         POOL memory poolInfo = stakingPools[poolId];
 
-        poolInfo.nftToken.safeTransferFrom(
-            _msgSender(),
-            address(this),
-            poolInfo.nftTokenId,
-            _amount,
-            ""
-        );
+        poolInfo.nftToken.safeTransferFrom(_msgSender(), address(this), poolInfo.nftTokenId, _amount, '');
 
         STAKE storage _stake = balances[poolId][_msgSender()];
 
@@ -185,9 +151,7 @@ contract NFTStaking is Context, ERC1155Holder {
 
         _stake.lastClaimedAt = block.timestamp;
         _stake.amount = _stake.amount.add(_amount);
-        stakingPools[poolId].totalStakes = stakingPools[poolId].totalStakes.add(
-            _amount
-        );
+        stakingPools[poolId].totalStakes = stakingPools[poolId].totalStakes.add(_amount);
 
         emit Stake(poolId, _msgSender(), _amount);
     }
@@ -195,31 +159,28 @@ contract NFTStaking is Context, ERC1155Holder {
     /**
      * @notice unstake current staking
      */
-    function unstake(uint256 poolId) external {
-        require(balances[poolId][_msgSender()].amount > 0, "Not staking");
+    function unstake(uint256 poolId, uint256 count) external {
+        require(balances[poolId][_msgSender()].amount > 0, 'Not staking');
 
         POOL memory poolInfo = stakingPools[poolId];
         STAKE storage _stake = balances[poolId][_msgSender()];
-        uint256 reward = rewardOf(poolId, _msgSender());
+        uint256 reward = rewardOf(poolId, _msgSender()).div(_stake.amount).mul(count);
 
         poolInfo.rewardToken.transfer(_msgSender(), reward);
-        poolInfo.nftToken.safeTransferFrom(
-            address(this),
-            _msgSender(),
-            poolInfo.nftTokenId,
-            _stake.amount,
-            ""
-        );
+        poolInfo.nftToken.safeTransferFrom(address(this), _msgSender(), poolInfo.nftTokenId, count, '');
 
-        poolInfo.totalStakes = poolInfo.totalStakes.sub(_stake.amount);
+        poolInfo.totalStakes = poolInfo.totalStakes.sub(count);
         poolInfo.totalRewards = poolInfo.totalRewards.sub(reward);
 
-        _stake.amount = 0;
+        _stake.amount = _stake.amount.sub(count);
         _stake.rewardSoFar = _stake.rewardSoFar.add(reward);
-        _stake.firstStakedAt = 0;
-        _stake.lastClaimedAt = 0;
 
-        emit Unstake(poolId, _msgSender(), _stake.amount);
+        if (_stake.amount == 0) {
+            _stake.firstStakedAt = 0;
+            _stake.lastClaimedAt = 0;
+        }
+
+        emit Unstake(poolId, _msgSender(), count);
     }
 
     /**
@@ -239,14 +200,8 @@ contract NFTStaking is Context, ERC1155Holder {
      * @param poolId is the pool id to contribute reward
      * @param amount is the amount to put
      */
-    function withdrawRewards(uint256 poolId, uint256 amount)
-        external
-        onlyManager
-    {
-        require(
-            stakingPools[poolId].totalRewards >= amount,
-            "NFTStaking.withdrawRewards: Not enough remaining rewards!"
-        );
+    function withdrawRewards(uint256 poolId, uint256 amount) external onlyManager {
+        require(stakingPools[poolId].totalRewards >= amount, 'NFTStaking.withdrawRewards: Not enough remaining rewards!');
         POOL storage poolInfo = stakingPools[poolId];
         poolInfo.rewardToken.transfer(_msgSender(), amount);
         poolInfo.totalRewards = poolInfo.totalRewards.sub(amount);
@@ -260,23 +215,9 @@ contract NFTStaking is Context, ERC1155Holder {
         uint256 totalStakes,
         uint256 rewardPerNFT
     ) external onlyManager {
-        require(
-            stakingPools[poolId].rewardPerNFT == 0,
-            "NFTStaking.addPool: Pool already exists!"
-        );
-        require(
-            stakingPools[poolId].poolId == 0,
-            "NFTStaking.addPool: poolId already exists!"
-        );
+        require(stakingPools[poolId].rewardPerNFT == 0, 'NFTStaking.addPool: Pool already exists!');
+        require(stakingPools[poolId].poolId == 0, 'NFTStaking.addPool: poolId already exists!');
 
-        stakingPools[poolId] = POOL(
-            poolId,
-            nftToken,
-            nftTokenId,
-            rewardToken,
-            totalStakes,
-            0,
-            rewardPerNFT
-        );
+        stakingPools[poolId] = POOL(poolId, nftToken, nftTokenId, rewardToken, totalStakes, 0, rewardPerNFT);
     }
 }

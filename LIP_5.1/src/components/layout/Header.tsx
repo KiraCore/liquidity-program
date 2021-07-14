@@ -40,8 +40,10 @@ const Header = ({ data }: HeaderProps) => {
       <KiraLogo />
       <Spacer />
       <Flex direction="row" display={{ base: 'none', md: 'flex' }}>
-        {HEADER_MENUS.map(({ label, active }) => (
-          <NavButton text={label} key={label} active={active} />
+        {HEADER_MENUS.map(({ label, href, active }) => (
+          <a href={href}>
+            <NavButton text={label} key={label} active={active} />
+          </a>
         ))}
         <NavMenuButton options={['EN']} text="EN" />
       </Flex>

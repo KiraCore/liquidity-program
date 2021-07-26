@@ -25,6 +25,7 @@ contract ControllerRegistrar {
     Proposal[] public proposals;
     uint256 public executed_proposal_index = 0;
 
+    // Events
     event SetActived(address _owner);
     event SetChanged(uint256 _threshold, uint256 _count);
     event ProposedChange(uint256 _proposal_index);
@@ -51,6 +52,7 @@ contract ControllerRegistrar {
         proposals[0].addrs_to_add.push(msg.sender);
     }
 
+    // modifiers
     modifier onlyOwner() {
         require(msg.sender == owner, "Only owner can call this.");
         _;

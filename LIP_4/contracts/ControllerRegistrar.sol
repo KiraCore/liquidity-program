@@ -23,7 +23,7 @@ contract ControllerRegistrar {
     mapping(address => mapping(uint256 => bool)) public approved;
 
     Proposal[] public proposals;
-    uint256 public last_approved_index = 0;
+    uint256 public executed_proposal_index = 0;
 
     event SetActived(address _owner);
     event SetChanged(uint256 _threshold, uint256 _count);
@@ -87,6 +87,12 @@ contract ControllerRegistrar {
         emit SetActived(owner);
     }
 
+    /**
+     * @dev internal function that tries to apply changes
+     *
+     *  For the safety reasons threshold value can never be lower then ceiling(count / 2) + 1.
+     *  If any of the values is not set then it should remain unmodified
+     */
     function applyChange(
         address[] memory addrs_to_add,
         address[] memory addrs_to_del,
@@ -123,8 +129,6 @@ contract ControllerRegistrar {
      * @param addrs_to_add accounts to be added
      * @param addrs_to_del accounts to be removed
      * @param new_threshold defines minimum number of accounts required to manage the accounts list.
-     *  For the safety reasons threshold value can never be lower then ceiling(count / 2) + 1.
-     *  If any of the values is not set then it should remain unmodified
      */
     function setChange(
         address[] calldata addrs_to_add,
@@ -150,6 +154,7 @@ contract ControllerRegistrar {
      * @param addrs_to_add accounts to be added
      * @param addrs_to_del accounts to be removed
      * @param new_threshold defines minimum number of accounts required to manage the accounts list.
+     *
      *  Proposal passes and changes are applied only if approveProposal tx was submitted by no less then treshold number of accounts.
      *  If proposal passes then changes are applied and all proposals older then the one that passed should be cancelled/rejected.
      *  If any of the values is not set then it should remain unmodified.
@@ -179,12 +184,18 @@ contract ControllerRegistrar {
      * @dev only controller
      * @dev only active
      * @param proposal_index index of the proposal
+     *
+     *  If proposal passes then changes are applied and all proposals older then the one that passed should be cancelled/rejected
      */
     function approveProposal(uint256 proposal_index)
         external
         onlyController
         onlyActive
     {
+        require(
+            proposal_index > executed_proposal_index,
+            "this proposal is cancelled"
+        );
         require(proposal_index < proposals.length, "no such proposal exists");
         require(
             approved[msg.sender][proposal_index] == false,
@@ -206,6 +217,7 @@ contract ControllerRegistrar {
                 revert NotEnoughThreshold(proposal.new_threshold, count);
             }
 
+            executed_proposal_index = proposal_index;
             emit ExecutedProposal(proposal_index);
         }
 

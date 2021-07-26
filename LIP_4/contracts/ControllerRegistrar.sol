@@ -79,6 +79,15 @@ contract ControllerRegistrar {
         _;
     }
 
+    // view functions
+    function isActive() external view returns (bool) {
+        return active;
+    }
+
+    function getOwner() external view returns (address) {
+        return owner;
+    }
+
     /**
      * @dev Defines if initial setup was completed
      * @dev only owner

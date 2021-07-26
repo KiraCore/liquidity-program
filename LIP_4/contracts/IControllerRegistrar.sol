@@ -6,7 +6,11 @@ import "hardhat/console.sol";
 interface IControllerRegistrar {
     function isActive() external view returns (bool);
 
+    function getThreshold() external view returns (uint256);
+
     function getOwner() external view returns (address);
+
+    function isWhitelisted(address account) external view returns (bool);
 
     function setActivate() external;
 

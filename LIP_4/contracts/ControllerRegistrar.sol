@@ -88,6 +88,14 @@ contract ControllerRegistrar {
         return owner;
     }
 
+    function getThreshold() external view returns (uint256) {
+        return threshold;
+    }
+
+    function isWhitelisted(address account) external view returns (bool) {
+        return whitelisted[account];
+    }
+
     /**
      * @dev Defines if initial setup was completed
      * @dev only owner
@@ -205,7 +213,7 @@ contract ControllerRegistrar {
     {
         require(
             proposal_index > executed_proposal_index,
-            "this proposal is cancelled"
+            "this proposal was cancelled"
         );
         require(proposal_index < proposals.length, "no such proposal exists");
         require(
@@ -218,7 +226,7 @@ contract ControllerRegistrar {
         approved[msg.sender][proposal_index] = true;
         proposals[proposal_index].approve_count += 1;
 
-        if (proposal.approve_count + 1 >= proposal.new_threshold) {
+        if (proposal.approve_count + 1 >= threshold) {
             bool applied = applyChange(
                 proposal.addrs_to_add,
                 proposal.addrs_to_del,

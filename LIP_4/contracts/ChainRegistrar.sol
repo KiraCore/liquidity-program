@@ -15,11 +15,27 @@ contract ChainRegistrar {
 
     mapping(string => Chain) chains;
 
+    struct Proposal {
+        string chainid;
+        address controller;
+        address bank;
+        uint256 approve_count;
+    }
+
+    mapping(address => mapping(uint256 => bool)) public approved;
+
+    Proposal[] public proposals;
+    uint256 public executed_proposal_index = 0;
+
     // Events
     event RegisteredChain(string chainid);
+    event ProposedChange(uint256 _proposal_index);
+    event ApprovedProposal(uint256 _proposal_index, address _by);
+    event ExecutedProposal(uint256 _proposal_index);
 
     constructor() {
-        // constructor
+        Proposal memory root_proposal = Proposal("", address(0), address(0), 0);
+        proposals.push(root_proposal);
     }
 
     /**
@@ -67,5 +83,110 @@ contract ChainRegistrar {
         });
 
         emit RegisteredChain(chainid);
+    }
+
+    /**
+     * @dev add a proposal by one of XARC-1 controllers
+     * @dev only XARC-1 controller
+     * @dev only XARC-1 is active
+     * @param chainid chain id
+     * @param controller XARC-1 contract address
+     * @param bank XARC-3 contract address
+     *
+     *  Proposal to change XARC-1 and/or XARC-3 contracts, proposal can be raised by any account in the XARC-1 accounts list.
+     *  This function can only be used when the XARC-1 contract is active.
+     *  Proposal passes and changes are applied only if approveProposal tx was submitted by no less then XARC-1 treshold number of accounts.
+     *  If proposal passes then changes are applied and all proposals associated with the chain-id older then the one that passed should be cancelled/rejected.
+     */
+    function proposeChange(
+        string memory chainid,
+        address controller,
+        address bank
+    ) external {
+        require(controller != address(0), "controller address should not be 0");
+        require(bank != address(0), "bank address should not be 0");
+        require(bytes(chainid).length > 0, "chainid should not be empty");
+        require(
+            chains[chainid].registered == true,
+            "the chain was not registered before"
+        );
+
+        IControllerRegistrar XARC_1 = IControllerRegistrar(
+            chains[chainid].controller
+        );
+
+        bool isActived = XARC_1.isActive();
+        require(isActived == true, "XARC-1 should be active");
+
+        bool isWhitelisted = XARC_1.isWhitelisted(msg.sender);
+        require(
+            isWhitelisted == true,
+            "proposal can only be raised by one of the XARC-1 accounts list"
+        );
+
+        uint256 index = proposals.length;
+        proposals.push(
+            Proposal({
+                chainid: chainid,
+                controller: controller,
+                bank: bank,
+                approve_count: 0
+            })
+        );
+
+        emit ProposedChange(index);
+    }
+
+    /**
+     * @dev approve a proposal by one of XARC-1 controllers
+     * @dev only XARC-1 controller
+     * @dev only XARC-1 is active
+     * @param proposal_index index of the proposal
+     *
+     *  Proposal passes and changes are applied only if approveProposal tx was submitted by no less then XARC-1 treshold number of accounts.
+     *  If proposal passes then changes are applied and all proposals associated with the chain-id older then the one that passed should be cancelled/rejected.
+     */
+    function approveProposal(uint256 proposal_index) external {
+        require(
+            proposal_index > executed_proposal_index,
+            "this proposal was cancelled"
+        );
+        require(proposal_index < proposals.length, "no such proposal exists");
+        require(
+            approved[msg.sender][proposal_index] == false,
+            "proposal already approved by the sender"
+        );
+
+        Proposal memory proposal = proposals[proposal_index];
+        address original_controller = chains[proposal.chainid].controller;
+
+        IControllerRegistrar XARC_1 = IControllerRegistrar(original_controller);
+
+        bool isActived = XARC_1.isActive();
+        require(isActived == true, "XARC-1 should be active");
+
+        bool isWhitelisted = XARC_1.isWhitelisted(msg.sender);
+        require(
+            isWhitelisted == true,
+            "proposal can only be approved by one of the XARC-1 accounts list"
+        );
+
+        uint256 threshold = XARC_1.getThreshold();
+
+        approved[msg.sender][proposal_index] = true;
+        proposals[proposal_index].approve_count += 1;
+
+        if (proposal.approve_count + 1 >= threshold) {
+            chains[proposal.chainid] = Chain({
+                controller: proposal.controller,
+                bank: proposal.bank,
+                registered: true
+            });
+
+            executed_proposal_index = proposal_index;
+            emit ExecutedProposal(proposal_index);
+        }
+
+        emit ApprovedProposal(proposal_index, msg.sender);
     }
 }

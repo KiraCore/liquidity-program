@@ -226,6 +226,8 @@ contract ControllerRegistrar {
         approved[msg.sender][proposal_index] = true;
         proposals[proposal_index].approve_count += 1;
 
+        emit ApprovedProposal(proposal_index, msg.sender);
+
         if (proposal.approve_count + 1 >= threshold) {
             bool applied = applyChange(
                 proposal.addrs_to_add,
@@ -239,7 +241,5 @@ contract ControllerRegistrar {
             executed_proposal_index = proposal_index;
             emit ExecutedProposal(proposal_index);
         }
-
-        emit ApprovedProposal(proposal_index, msg.sender);
     }
 }

@@ -4,8 +4,6 @@ pragma solidity ^0.8.0;
 import "hardhat/console.sol";
 import "./IControllerRegistrar.sol";
 
-// error NotEnoughThreshold(uint256 threshold, uint256 total_count);
-
 contract ChainRegistrar {
     struct Chain {
         address controller; // must be a valid XARC-1 contract address
@@ -14,6 +12,7 @@ contract ChainRegistrar {
     }
 
     mapping(string => Chain) chains;
+    mapping(address => address) bank2controller;
 
     struct Proposal {
         string chainid;
@@ -36,6 +35,19 @@ contract ChainRegistrar {
     constructor() {
         Proposal memory root_proposal = Proposal("", address(0), address(0), 0);
         proposals.push(root_proposal);
+    }
+
+    // view functions
+    function isXARC2() external view returns (bool) {
+        return true;
+    }
+
+    function getControllerFromBankAddress(address bank)
+        external
+        view
+        returns (address)
+    {
+        return bank2controller[bank];
     }
 
     /**
@@ -81,6 +93,7 @@ contract ChainRegistrar {
             bank: bank,
             registered: true
         });
+        bank2controller[bank] = controller;
 
         emit RegisteredChain(chainid);
     }
@@ -176,17 +189,18 @@ contract ChainRegistrar {
         approved[msg.sender][proposal_index] = true;
         proposals[proposal_index].approve_count += 1;
 
+        emit ApprovedProposal(proposal_index, msg.sender);
+
         if (proposal.approve_count + 1 >= threshold) {
             chains[proposal.chainid] = Chain({
                 controller: proposal.controller,
                 bank: proposal.bank,
                 registered: true
             });
+            bank2controller[proposal.bank] = proposal.controller;
 
             executed_proposal_index = proposal_index;
             emit ExecutedProposal(proposal_index);
         }
-
-        emit ApprovedProposal(proposal_index, msg.sender);
     }
 }

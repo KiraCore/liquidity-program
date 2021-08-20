@@ -19,28 +19,21 @@ contract BankRegistrar is ERC1155 {
         Rejected
     }
 
-    bool public active; // defines if initial setup was completed
-    address public owner; // initial deployer of the contract
+    enum ProposalType {
+        Change,
+        Deposit,
+        Withdraw
+    }
 
-    address xarc2; // must be a valid XARC-2 contract address
-    address xarc1; // must be a valid XARC-1 contract address. this address is queried based on xarc2
-    uint256 deposit_fee; // minimum fee  that must be paid to deposit
-    uint256 withdraw_fee; // minimum fee that must be paid to withdraw
-    uint256 proposer_reward; // reward for proposing withdraws/deposits
-    uint256 confirmations; // minimum number of confirmations required
-
-    bool freeze_deposit; // enable/disable deposits
-    bool freeze_withdraw; // enable/disable withdraws
-
-    struct Proposal {
-        address xarc2;
-        uint256 deposit_fee;
-        uint256 withdraw_fee;
-        uint256 proposer_reward;
-        uint256 confirmations;
-        bool freeze_deposit;
-        bool freeze_withdraw;
-        uint256 approve_count;
+    struct Settings {
+        address xarc2; // must be a valid XARC-2 contract address
+        address xarc1; // must be a valid XARC-1 contract address. this address is queried based on xarc2
+        uint256 deposit_fee; // minimum fee  that must be paid to deposit
+        uint256 withdraw_fee; // minimum fee that must be paid to withdraw
+        uint256 proposer_reward; // reward for proposing withdraws/deposits
+        uint256 confirmations; // minimum number of confirmations required
+        bool freeze_deposit; // enable/disable deposits
+        bool freeze_withdraw; // enable/disable withdraws
     }
 
     struct Order {
@@ -48,19 +41,30 @@ contract BankRegistrar is ERC1155 {
         uint256 amount;
         address token_addr;
         uint256 block_number;
-        uint256 approve_count;
         TransferStatus status;
     }
 
-    mapping(address => mapping(uint256 => bool)) public approved;
+    struct Proposal {
+        ProposalType ptype;
+        Settings settings;
+        uint256[] accept;
+        uint256[] reject;
+        uint256 approve_count;
+    }
 
-    Proposal[] public proposals;
-    uint256 public executed_proposal_index = 0;
+    bool public active; // defines if initial setup was completed
+    address public owner; // initial deployer of the contract
+    Settings public settings;
 
     Order[] public deposits;
     uint256 public executed_deposit_index = 0;
     Order[] public withdraws;
     uint256 public executed_withdraw_index = 0;
+
+    mapping(address => mapping(uint256 => bool)) public approved;
+
+    Proposal[] public proposals;
+    uint256 public executed_proposal_index = 0;
 
     // Events
     event SetActived(address _owner);
@@ -80,14 +84,12 @@ contract BankRegistrar is ERC1155 {
 
     constructor() ERC1155("") {
         owner = msg.sender;
+        uint256[] memory empty;
         Proposal memory root_proposal = Proposal(
-            address(0),
-            0,
-            0,
-            0,
-            0,
-            false,
-            false,
+            ProposalType.Change,
+            Settings(address(0), address(0), 0, 0, 0, 0, false, false),
+            empty,
+            empty,
             0
         );
         proposals.push(root_proposal);
@@ -96,7 +98,6 @@ contract BankRegistrar is ERC1155 {
             0,
             address(0),
             0,
-            0,
             TransferStatus.Pending
         );
         deposits.push(deposit);
@@ -104,7 +105,6 @@ contract BankRegistrar is ERC1155 {
             address(0),
             0,
             address(0),
-            0,
             0,
             TransferStatus.Pending
         );
@@ -132,10 +132,12 @@ contract BankRegistrar is ERC1155 {
 
     modifier onlyActiveController() {
         require(
-            xarc1 != address(0),
+            settings.xarc1 != address(0),
             "XARC1 contract address should not be zero"
         );
-        IControllerRegistrar controller_registrar = IControllerRegistrar(xarc1);
+        IControllerRegistrar controller_registrar = IControllerRegistrar(
+            settings.xarc1
+        );
 
         bool isActive = controller_registrar.isActive();
         require(isActive == true, "XARC1 contract should be active");
@@ -211,24 +213,28 @@ contract BankRegistrar is ERC1155 {
         // TODO
         // [ ] all input values are optional
 
-        xarc2 = _registrar;
-        xarc1 = getXARC1(xarc2);
-        deposit_fee = _deposit_fee;
-        withdraw_fee = _withdraw_fee;
-        proposer_reward = _proposer_reward;
-        confirmations = _confirmations;
-        freeze_deposit = _freeze_deposit;
-        freeze_withdraw = _freeze_withdraw;
+        address xarc1 = getXARC1(_registrar);
+
+        settings = Settings(
+            _registrar,
+            xarc1,
+            _deposit_fee,
+            _withdraw_fee,
+            _proposer_reward,
+            _confirmations,
+            _freeze_deposit,
+            _freeze_withdraw
+        );
 
         emit SetChanged(
-            xarc2,
+            _registrar,
             xarc1,
-            deposit_fee,
-            withdraw_fee,
-            proposer_reward,
-            confirmations,
-            freeze_deposit,
-            freeze_withdraw
+            _deposit_fee,
+            _withdraw_fee,
+            _proposer_reward,
+            _confirmations,
+            _freeze_deposit,
+            _freeze_withdraw
         );
     }
 
@@ -253,22 +259,24 @@ contract BankRegistrar is ERC1155 {
             _registrar != address(0),
             "XARC2 contract address should not be zero"
         );
+        Settings memory _settings = Settings(
+            _registrar,
+            address(0),
+            _deposit_fee,
+            _withdraw_fee,
+            _proposer_reward,
+            _confirmations,
+            _freeze_deposit,
+            _freeze_withdraw
+        );
         IChainRegistrar chain_registrar = IChainRegistrar(_registrar);
         bool isXARC2 = chain_registrar.isXARC2();
         require(isXARC2 == true, "XARC2 contract address is invalid");
 
         uint256 index = proposals.length;
+        uint256[] memory empty;
         proposals.push(
-            Proposal({
-                xarc2: _registrar,
-                deposit_fee: _deposit_fee,
-                withdraw_fee: _withdraw_fee,
-                proposer_reward: _proposer_reward,
-                confirmations: _confirmations,
-                freeze_deposit: _freeze_deposit,
-                freeze_withdraw: _freeze_withdraw,
-                approve_count: 0
-            })
+            Proposal(ProposalType.Change, _settings, empty, empty, 0)
         );
 
         emit ProposedChange(index);
@@ -301,22 +309,26 @@ contract BankRegistrar is ERC1155 {
         approved[msg.sender][proposal_index] = true;
         proposals[proposal_index].approve_count += 1;
 
-        IControllerRegistrar controller_registrar = IControllerRegistrar(xarc1);
+        IControllerRegistrar controller_registrar = IControllerRegistrar(
+            settings.xarc1
+        );
         uint256 threshold = controller_registrar.getThreshold();
 
         emit ApprovedProposal(proposal_index, msg.sender);
 
         if (proposal.approve_count + 1 >= threshold) {
-            xarc2 = proposal.xarc2;
-            xarc1 = getXARC1(xarc2);
-            deposit_fee = proposal.deposit_fee;
-            withdraw_fee = proposal.withdraw_fee;
-            proposer_reward = proposal.proposer_reward;
-            confirmations = proposal.confirmations;
-            freeze_deposit = proposal.freeze_deposit;
-            freeze_withdraw = proposal.freeze_withdraw;
+            if (proposal.ptype == ProposalType.Change) {
+                settings = proposal.settings;
+                settings.xarc1 = getXARC1(settings.xarc2);
 
-            executed_proposal_index = proposal_index;
+                executed_proposal_index = proposal_index;
+            } else if (proposal.ptype == ProposalType.Deposit) {
+                // do accept and reject for deposits
+                // distribute fees
+            } else if (proposal.ptype == ProposalType.Withdraw) {
+                // do accept and reject for withdraws
+                // distribute fees
+            }
             emit ExecutedProposal(proposal_index);
         }
     }
@@ -338,32 +350,22 @@ contract BankRegistrar is ERC1155 {
         uint256[] calldata accept,
         uint256[] calldata reject
     ) external onlyActive onlyActiveController {
+        // TODO: check block heights
+        // TODO: remove old proposals to save space.
         require(
             accept.length > 0 || reject.length > 0,
             "either accept or reject is required"
         );
-        for (uint256 i = 0; i < accept.length; i++) {
-            uint256 index = accept[i];
-            require(
-                (executed_deposit_index < index) && (index < deposits.length),
-                "invalid deposit index to accept. either expired or not exist"
-            );
-            deposits[index].approve_count += 1;
-
-            // TODO: check threshold and process deposit & mark accepted
-            deposits[index].status = TransferStatus.Accepted;
-        }
-        for (uint256 i = 0; i < reject.length; i++) {
-            uint256 index = reject[i];
-            require(
-                (executed_deposit_index < index) && (index < deposits.length),
-                "invalid deposit index to withdraw. either expired or not exist"
-            );
-            deposits[index].approve_count -= 1;
-
-            // TODO: check threshold and process deposit & mark rejected
-            deposits[index].status = TransferStatus.Rejected;
-        }
+        uint256 index = proposals.length;
+        proposals.push(
+            Proposal(
+                ProposalType.Deposit,
+                Settings(address(0), address(0), 9, 0, 0, 0, false, false),
+                accept,
+                reject,
+                0
+            )
+        );
     }
 
     /**
@@ -375,8 +377,14 @@ contract BankRegistrar is ERC1155 {
      * @param token_addr the address of the depositing token
      */
     function deposit(uint256 amount, address token_addr) public payable {
-        require(freeze_deposit == false, "currently deposit is freezed");
-        require(msg.value == deposit_fee, "should set the correct deposit fee");
+        require(
+            settings.freeze_deposit == false,
+            "currently deposit is freezed"
+        );
+        require(
+            msg.value == settings.deposit_fee,
+            "should set the correct deposit fee"
+        );
 
         IERC20 token = IERC20(token_addr);
         token.transferFrom(msg.sender, address(this), amount);
@@ -387,7 +395,6 @@ contract BankRegistrar is ERC1155 {
                 token_addr: token_addr,
                 amount: amount,
                 block_number: block.number,
-                approve_count: 0,
                 status: TransferStatus.Pending
             })
         );
@@ -402,15 +409,16 @@ contract BankRegistrar is ERC1155 {
      * @param token_addr the address of the withdrawing token
      */
     function withdraw(uint256 amount, address token_addr) public payable {
-        require(freeze_withdraw == false, "currently withdraw is freezed");
         require(
-            msg.value == withdraw_fee,
+            settings.freeze_withdraw == false,
+            "currently withdraw is freezed"
+        );
+        require(
+            msg.value == settings.withdraw_fee,
             "should set the correct withdraw fee"
         );
-        uint256 user_balance = balanceOf(
-            msg.sender,
-            uint256(uint160(token_addr))
-        );
+        IERC20 token = IERC20(token_addr);
+        uint256 user_balance = token.balanceOf(address(this));
         require(user_balance >= amount, "not enough locked funds to withdraw");
 
         withdraws.push(
@@ -419,7 +427,6 @@ contract BankRegistrar is ERC1155 {
                 token_addr: token_addr,
                 amount: amount,
                 block_number: block.number,
-                approve_count: 0,
                 status: TransferStatus.Pending
             })
         );
@@ -480,28 +487,27 @@ contract BankRegistrar is ERC1155 {
         );
         Order memory order = deposits[deposit_index];
 
+        // TODO: should check if not present in any active proposals
         require(
-            order.status == TransferStatus.Rejected || order.approve_count == 0,
+            order.status == TransferStatus.Rejected,
             "deposit should be rejected or not present in any active proposals"
         );
 
-        uint256 user_balance = balanceOf(
-            order.user,
-            uint256(uint160(order.token_addr))
-        );
-        require(
-            user_balance >= order.amount,
-            "not enough locked funds to refund"
-        );
+        // IERC20 token = IERC20(order.token_addr);
+        // uint256 user_balance = token.balanceOf(address(this));
+        // require(
+        //     user_balance >= order.amount,
+        //     "not enough locked funds to refund"
+        // );
 
-        IERC20 token = IERC20(order.token_addr);
-        uint256 total_refundable = token.balanceOf(address(this));
-        require(
-            total_refundable >= order.amount,
-            "not enough funds in the contract"
-        );
+        // IERC20 token = IERC20(order.token_addr);
+        // uint256 total_refundable = token.balanceOf(address(this));
+        // require(
+        //     total_refundable >= order.amount,
+        //     "not enough funds in the contract"
+        // );
 
-        _burn(order.user, uint256(uint160(order.token_addr)), order.amount);
-        token.transfer(order.user, order.amount);
+        // _burn(order.user, uint256(uint160(order.token_addr)), order.amount);
+        // token.transfer(order.user, order.amount);
     }
 }

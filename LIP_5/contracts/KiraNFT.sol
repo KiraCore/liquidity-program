@@ -23,9 +23,9 @@ contract KiraNFT is ERC1155, Ownable {
 
     mapping(uint256 => Card) public cards;
 
-    string tokenUri = 'https://github.com/KiraCore/liquidity-program/tree/master/LIP_5/metadata/';
+    string tokenUri = 'https://raw.githubusercontent.com/KiraCore/liquidity-program/master/LIP_5/metadata/';
 
-    constructor() ERC1155('https://github.com/KiraCore/liquidity-program/tree/master/LIP_5/metadata/') {}
+    constructor() ERC1155('https://raw.githubusercontent.com/KiraCore/liquidity-program/master/LIP_5/metadata/') {}
 
     function setTokenURI(string calldata _uri) public onlyOwner {
         tokenUri = _uri;

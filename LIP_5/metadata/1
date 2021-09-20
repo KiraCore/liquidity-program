@@ -1,7 +1,7 @@
 {
-  "image": "https://github.com/KiraCore/liquidity-program/tree/LIP_5/LIP_5/resources/1.jpg",
+  "image": "https://raw.githubusercontent.com/KiraCore/liquidity-program/LIP_5/LIP_5/resources/1.jpg",
   "name": "Samael",
   "description": "Mage - KIRA Team",
   "attributes": [{ "trait_type": "Rarity", "value": "Common" }],
-  "animation_url": "https://github.com/KiraCore/liquidity-program/tree/LIP_5/LIP_5/resources/1.mp4"
+  "animation_url": "https://raw.githubusercontent.com/KiraCore/liquidity-program/LIP_5/LIP_5/resources/1.mp4"
 }

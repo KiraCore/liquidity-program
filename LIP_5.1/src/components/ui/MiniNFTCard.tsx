@@ -60,7 +60,7 @@ const MiniNFTCard = ({ nft: { id, title, image, stakedBalance, unstakedBalance }
       });
 
       reloadMyCollection();
-    } catch (e) {
+    } catch (e: any) {
       toast({
         title: 'Transaction Failed',
         description: e.message,
@@ -94,7 +94,7 @@ const MiniNFTCard = ({ nft: { id, title, image, stakedBalance, unstakedBalance }
 
       reloadMyCollection();
       reloadClaimable();
-    } catch (e) {
+    } catch (e: any) {
       toast({
         title: 'Transaction Failed',
         description: e.message,

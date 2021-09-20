@@ -77,7 +77,7 @@ const NFTMintModal = ({ isOpen = false, onClose, loadCardInfo, data, nftId, nftI
 
         onClose();
         loadCardInfo();
-      } catch (e) {
+      } catch (e: any) {
         toast({
           title: 'Transaction Failed',
           description: e.message,

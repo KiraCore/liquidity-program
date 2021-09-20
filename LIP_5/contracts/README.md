@@ -253,6 +253,8 @@ KiraNFT=0xD33269a1eeD3aFBC2a78Ee1c98704580c2AC7Dc1
 npx hardhat verify --network rinkeby $KiraNFT
 ```
 
+-----
+
 ### Metadata
 
 Metadata is located under `/metadata` directory.

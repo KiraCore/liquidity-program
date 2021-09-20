@@ -100,7 +100,7 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
 
       updateInfo();
       onClose();
-    } catch (e) {
+    } catch (e: any) {
       toast({
         title: 'Transaction Failed',
         description: e.message,
@@ -133,7 +133,7 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
         isClosable: true,
       });
       loadAllowance();
-    } catch (e) {
+    } catch (e: any) {
       toast({
         title: 'Transaction Failed',
         description: e.message,

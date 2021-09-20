@@ -1,7 +1,7 @@
 const hre = require('hardhat');
 
 async function main() {
-  const tokenAddress = '0xDacd486ca05d47d745E81F31E296Ce299fe35236'; // RINKEBY
+  const tokenAddress = '0xb03a58Df62CD548603685f9E17a337d64AC056E1'; // RINKEBY
 
   const KexFarm = await hre.ethers.getContractFactory('KexFarm');
   const kexFarm = await KexFarm.deploy(tokenAddress); // TODO

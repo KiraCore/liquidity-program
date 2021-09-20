@@ -23,9 +23,9 @@ contract KiraNFT is ERC1155, Ownable {
 
     mapping(uint256 => Card) public cards;
 
-    string tokenUri = 'https://nft-be.vercel.app/api/item/';
+    string tokenUri = 'https://github.com/KiraCore/liquidity-program/tree/master/LIP_5/metadata/';
 
-    constructor() ERC1155('https://nft-be.vercel.app/api/item/') {}
+    constructor() ERC1155('https://github.com/KiraCore/liquidity-program/tree/master/LIP_5/metadata/') {}
 
     function setTokenURI(string calldata _uri) public onlyOwner {
         tokenUri = _uri;
@@ -92,7 +92,7 @@ contract KiraNFT is ERC1155, Ownable {
         }
     }
 
-    function setFarmerAddress(IKexFarm farmer) external returns (bool) {
+    function setFarmerAddress(IKexFarm farmer) public onlyOwner returns (bool) {
         _farmer = farmer;
         return true;
     }

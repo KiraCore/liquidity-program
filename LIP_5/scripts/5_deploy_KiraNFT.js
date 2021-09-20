@@ -1,7 +1,7 @@
 const hre = require('hardhat');
 
 async function main() {
-  const kexFarmAddr = '0xc024Fd37C136026df0aAD9EA2178AA81566fE097';
+  const kexFarmAddr = '0x995179A0ae6Df352d1f49555fd8C8495D8Bb61B1';
 
   const KiraNFT = await hre.ethers.getContractFactory('KiraNFT');
   const kiraNFT = await KiraNFT.deploy();

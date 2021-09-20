@@ -1,7 +1,7 @@
 const hre = require('hardhat');
 
 async function main() {
-  const accessControl = '0x742C6AFd68bB1fe511FB06081443cD08bc542511'; // RINKEBY
+  const accessControl = '0x0c9FCeF7F6272d2c1053839b1069b4b5f884D4E3'; // RINKEBY
 
   const NFTStaking = await hre.ethers.getContractFactory('NFTStaking');
 

@@ -252,3 +252,11 @@ Verify the contract
 KiraNFT=0xD33269a1eeD3aFBC2a78Ee1c98704580c2AC7Dc1
 npx hardhat verify --network rinkeby $KiraNFT
 ```
+
+### Metadata
+
+Metadata is located under `/metadata` directory.
+
+It contains the information (NFT image, description, name, attributes, etc) for each NFT. Currently we have 6 NFTs.
+
+For now, we are uploading to github for NFT images and metadata. We can consider about IPFS for this.

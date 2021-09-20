@@ -1,0 +1,7 @@
+{
+  "image": "https://raw.githubusercontent.com/KiraCore/liquidity-program/LIP_5/LIP_5/resources/2.jpg",
+  "name": "Azrael",
+  "description": "Dark Mage - Attar Team",
+  "attributes": [{ "trait_type": "Rarity", "value": "Common" }],
+  "animation_url": "https://raw.githubusercontent.com/KiraCore/liquidity-program/LIP_5/LIP_5/resources/2.mov"
+}

@@ -42,7 +42,7 @@ contract NFTStaking is Context, ERC1155Holder {
         accessControl = _accessControl;
     }
 
-    modifier onlyManager {
+    modifier onlyManager() {
         require(accessControl.hasManagerRole(_msgSender()), 'Need manager role');
         _;
     }
@@ -212,12 +212,11 @@ contract NFTStaking is Context, ERC1155Holder {
         IERC1155 nftToken,
         uint256 nftTokenId,
         IERC20 rewardToken,
-        uint256 totalStakes,
         uint256 rewardPerNFT
     ) external onlyManager {
         require(stakingPools[poolId].rewardPerNFT == 0, 'NFTStaking.addPool: Pool already exists!');
         require(stakingPools[poolId].poolId == 0, 'NFTStaking.addPool: poolId already exists!');
 
-        stakingPools[poolId] = POOL(poolId, nftToken, nftTokenId, rewardToken, totalStakes, 0, rewardPerNFT);
+        stakingPools[poolId] = POOL(poolId, nftToken, nftTokenId, rewardToken, 0, 0, rewardPerNFT);
     }
 }

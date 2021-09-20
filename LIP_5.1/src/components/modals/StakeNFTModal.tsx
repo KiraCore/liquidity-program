@@ -88,7 +88,7 @@ const StakeNFTModal = ({ isOpen = false, onClose, data, nftId, reloadMyCollectio
 
         onClose();
         reloadMyCollection();
-      } catch (e) {
+      } catch (e: any) {
         toast({
           title: 'Transaction Failed',
           description: e.message,
@@ -122,7 +122,7 @@ const StakeNFTModal = ({ isOpen = false, onClose, data, nftId, reloadMyCollectio
         isClosable: true,
       });
       loadApproved();
-    } catch (e) {
+    } catch (e: any) {
       toast({
         title: 'Transaction Failed',
         description: e.message,

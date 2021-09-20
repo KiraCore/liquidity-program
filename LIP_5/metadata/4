@@ -1,5 +1,5 @@
 {
-  "image": "https://github.com/KiraCore/liquidity-program/tree/LIP_5/LIP_5/resources/4.jpg",
+  "image": "https://raw.githubusercontent.com/KiraCore/liquidity-program/LIP_5/LIP_5/resources/4.jpg",
   "name": "Lucy",
   "description": "Cyborg - Attar Team",
   "attributes": [{ "trait_type": "Rarity", "value": "Common" }]

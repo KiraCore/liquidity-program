@@ -264,3 +264,20 @@ It contains the information (NFT image, description, name, attributes, etc) for 
 For now, we are uploading to github for NFT images and metadata. We can consider about IPFS for this.
 
 ### Testing
+
+##### Add NFT Card Information
+
+With a deployer account, we can add the following information to each NFT. (call `KiraNFT`'s `addCard` function.)
+- how many instances are available
+- how many Crystals are needed to buy one instance
+##### Get NFTs
+
+There are two ways to get NFTs.
+
+- With a deployer account, we can mint NFTs to any accounts for testing purpose.
+- We can use KexFarm. To do this, we can send the MockKex tokens to a testing user and then farm Crystals from MockKEX. After getting some Crystals, we can buy NFTs.
+##### Add pools (ERC1155 vs ERC20 pair) to NFTStaking
+
+To be able to stake KiraNFT to get MockKex tokens, we need to add pools to each KiraNFT. Currently we have 6 NFT, so need to add 6 pools to NFTStaking.
+
+Check `NFTStaking`'s `addPool` function in the above.

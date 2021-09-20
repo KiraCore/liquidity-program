@@ -7,16 +7,6 @@ const abi = [
         "internalType": "contract KiraAccessControl",
         "name": "_accessControl",
         "type": "address"
-      },
-      {
-        "internalType": "contract RewardDistributor",
-        "name": "_distributor",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC1155",
-        "name": "_nftToken",
-        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
@@ -27,15 +17,15 @@ const abi = [
     "inputs": [
       {
         "indexed": true,
-        "internalType": "address",
-        "name": "_staker",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "poolId",
+        "type": "uint256"
       },
       {
         "indexed": false,
-        "internalType": "uint256",
-        "name": "nftTokenId",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "staker",
+        "type": "address"
       },
       {
         "indexed": false,
@@ -52,15 +42,15 @@ const abi = [
     "inputs": [
       {
         "indexed": true,
-        "internalType": "address",
-        "name": "_staker",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "poolId",
+        "type": "uint256"
       },
       {
         "indexed": false,
-        "internalType": "uint256",
-        "name": "nftTokenId",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "staker",
+        "type": "address"
       },
       {
         "indexed": false,
@@ -77,15 +67,15 @@ const abi = [
     "inputs": [
       {
         "indexed": true,
-        "internalType": "address",
-        "name": "_staker",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "poolId",
+        "type": "uint256"
       },
       {
         "indexed": false,
-        "internalType": "uint256",
-        "name": "nftTokenId",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "staker",
+        "type": "address"
       },
       {
         "indexed": false,
@@ -101,7 +91,58 @@ const abi = [
     "inputs": [
       {
         "internalType": "uint256",
+        "name": "poolId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "contract IERC1155",
+        "name": "nftToken",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
         "name": "nftTokenId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "contract IERC20",
+        "name": "rewardToken",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "rewardPerNFT",
+        "type": "uint256"
+      }
+    ],
+    "name": "addPool",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "poolId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "addRewards",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "poolId",
         "type": "uint256"
       }
     ],
@@ -114,7 +155,7 @@ const abi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "nftTokenId",
+        "name": "poolId",
         "type": "uint256"
       },
       {
@@ -138,7 +179,7 @@ const abi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "nftTokenId",
+        "name": "poolId",
         "type": "uint256"
       },
       {
@@ -162,7 +203,7 @@ const abi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "nftTokenId",
+        "name": "poolId",
         "type": "uint256"
       }
     ],
@@ -259,7 +300,7 @@ const abi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "nftTokenId",
+        "name": "poolId",
         "type": "uint256"
       },
       {
@@ -283,7 +324,7 @@ const abi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "nftTokenId",
+        "name": "poolId",
         "type": "uint256"
       },
       {
@@ -320,7 +361,7 @@ const abi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "nftTokenId",
+        "name": "poolId",
         "type": "uint256"
       },
       {
@@ -344,7 +385,12 @@ const abi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "nftTokenId",
+        "name": "poolId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "count",
         "type": "uint256"
       }
     ],
@@ -369,12 +415,17 @@ const abi = [
   {
     "inputs": [
       {
-        "internalType": "contract RewardDistributor",
-        "name": "_distributor",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "poolId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
       }
     ],
-    "name": "updateDistributor",
+    "name": "withdrawRewards",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

@@ -244,6 +244,11 @@ const abi = [
         "internalType": "uint256",
         "name": "id",
         "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "count",
+        "type": "uint256"
       }
     ],
     "name": "buy",
@@ -309,6 +314,11 @@ const abi = [
       {
         "internalType": "uint256",
         "name": "id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "count",
         "type": "uint256"
       }
     ],

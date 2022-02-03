@@ -24,7 +24,7 @@ ETHERSCAN_API_KEY=
 
 ### MockKex
 
-We need to deploy MockKex for testing but we don't need it for production. In production, just use the ERC20 KEX token address.
+We need to deploy MockKex for testing but we don't need it for production. In production, just use the [ERC20 KEX token address](https://eth.kira.network).
 
 ### KiraAccessControl
 This is a smart contract which manages the roles of accounts for other smart contracts. There are two roles: `ADMIN` & `MANAGER`. It contains the functions to add/remove roles to account. Deployer is being set as `ADMIN` by default. Only admins can add/remove roles to other accounts.
@@ -70,7 +70,7 @@ Only the owner can call `setFarmerAddress`. This just updates the farmer (`KexFa
 
 ##### `buy`
 
-The is a public function that any user can call to buy the NFT with `Crystal`s through the `farmer`. It will decrease the `Crystal`s from user's account on farmer contract. Instead, it mints the NFT to the caller.
+There is a public function that any user can call to buy the NFT with `Crystal`s through the `farmer`. It will decrease the `Crystal`s from user's account on farmer contract. Instead, it mints the NFT to the caller.
 
 * `uint256 id`: the token id
 * `uint256 count`: the number of the instance to buy

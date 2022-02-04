@@ -23,6 +23,7 @@ ACCESS_CONTROL_ADDRESS=
 - `PRIVATE_KEY`: Private key of the deployer account
 - `ETHERSCAN_API_KEY`: You can signup on etherscan.io and can get the api key. This key will be used to verify the smart contracts on etherscan.
 - `ACCESS_CONTROL_ADDRESS`: Smart contract which manges the roles of accounts for other smart contract
+- `NFT_STAKING_ADDRESS`: Smart contract which allows to earn KEX ERC20, for staking KIRA NFT tokens
 
 ## Smart contracts
 
@@ -206,7 +207,7 @@ npx hardhat verify --network kovan $KIRA_TOKEN_ADDRESS "KIRA Network" "KEX" "300
 # Sets a manager role for the deployer address
 npx hardhat run scripts/2_deploy_AccessControl.js --network kovan
 # KiraAccessControl on RINKEBY: 0x0c9FCeF7F6272d2c1053839b1069b4b5f884D4E3
-# KiraAccessControl on KOVAN: TBD
+# KiraAccessControl on KOVAN: 0x8cDC897BCE72Df659096Ef31CdF0a4DDaDCCEA8F
 # KiraAccessControl on MAINNET: TBD
 
 # Save ACCESS_CONTROL_ADDRESS as env variable
@@ -223,7 +224,7 @@ npx hardhat verify --network kovan $ACCESS_CONTROL_ADDRESS
 # Requires `ACCESS_CONTROL_ADDRESS` set in env variables
 npx hardhat run scripts/3_deploy_NFTStaking.js --network kovan
 # NFTStaking on RINKEBY: 0x0433c6CB94863850eb3fECE472A482f228F65b2E
-# NFTStaking on KOVAN: TBD
+# NFTStaking on KOVAN: 0x52510ba27b024199764ad0FD85aca3B8a29801D3
 # NFTStaking on MAINNET: TBD
 
 # Save NFT_STAKING_ADDRESS as env variable
@@ -240,7 +241,7 @@ npx hardhat verify --network kovan $NFT_STAKING_ADDRESS $ACCESS_CONTROL_ADDRESS
 # Requires `KIRA_TOKEN_ADDRESS` set in env variables
 npx hardhat run scripts/4_deploy_KexFarm.js --network kovan 
 # KexFarm on RINKEBY: 0x995179A0ae6Df352d1f49555fd8C8495D8Bb61B1
-# KexFarm on KOVAN: TBD
+# KexFarm on KOVAN: 0x21cfa4a7cD1ECC8e214c0A05457c48680aae548e
 # KexFarm on MAINNET: TBD
 
 # Save NFT_FARM_ADDRESS as env variable
@@ -252,8 +253,6 @@ npx hardhat verify --network kovan $NFT_FARM_ADDRESS $KIRA_TOKEN_ADDRESS
 ```
 
 ##### Deploy & Verify KiraNFT Mint Contract
-
-Update the `KexFarm` address inside `scripts/5_deploy_KiraNFT.js` with the above deployed one.
 
 ```sh
 # Sets the `KexFarm` address for `KiraNFT` minter contract

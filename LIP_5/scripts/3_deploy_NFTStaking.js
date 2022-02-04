@@ -1,6 +1,4 @@
 const hre = require('hardhat');
-
-// accessControl Address
 const ACCESS_CONTROL_ADDRESS = process.env.ACCESS_CONTROL_ADDRESS;
 
 async function main() {

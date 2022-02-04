@@ -5,20 +5,25 @@
 
 # 1. Dependency Setup
 
-## Install Node.js, NPM and other dependencies
+## Install Node.js, NPM, Yarn and other dependencies
 
 _NOTE: Only Ubuntu 20.04 is supported_
 
-```
+```sh
 sudo apt update
 sudo apt install curl
-curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh
+curl -sL https://deb.nodesource.com/setup_17.x -o nodesource_setup.sh
 sudo bash nodesource_setup.sh
-sudo apt install nodejs
+sudo apt-get install -y nodejs xclip
 node -v && npm -v
 
-apt-get install xclip
-npm install -g truffle-export-abi
+npm install -g truffle-export-abip
+
+# Install Yarn
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+sudo apt update
+sudo apt install yarn
 ```
 
 ## Install Git & Clone the repo on Ubuntu 20.04
@@ -82,25 +87,30 @@ LIP_ID="LIP_1"
 echo "PRIVATE_KEY=0xXXX...XXX" > $HOME/liquidity-program/$LIP_ID/.env
 ```
 
-### `INFURA_APIKEY`
+### `INFURA_APIKEY` & `INFURA_PROJECT_ID`
 
 Sign up for a free api key at https://infura.io/dashboard to deploy to public networks.
 
 - Create an account on [infura.io](https://infura.io)
 - Create a new Project on your infura account
 - Go to Settings Tab
-- Use the Project ID as `INFURA_APIKEY`
+- Use the Project ID as `INFURA_APIKEY` or `INFURA_PROJECT_ID` depending on the LIP requirements (they are both used the same way, the naming might be inconsistent between LIP's)
 
 ```
 echo "INFURA_APIKEY=XXX...XXX" >> $HOME/liquidity-program/$LIP_ID/.env
+
+echo "INFURA_PROJECT_ID=XXX...XXX" >> $HOME/liquidity-program/$LIP_ID/.env
 ```
 
-### `ETHERSCAN_APIKEY`
+### `ETHERSCAN_APIKEY` & `ETHERSCAN_API_KEY`
 
 - Generate the Etherscan API Key for free at https://etherscan.io/myapikey.
+- Note that the naming might be inconsistent, always reffer to the LIP requirements readme
 
 ```
 echo "ETHERSCAN_APIKEY=XXX...XXX" >> $HOME/liquidity-program/$LIP_ID/.env
+
+echo "ETHERSCAN_API_KEY=XXX...XXX" >> $HOME/liquidity-program/$LIP_ID/.env
 ```
 
 ### `KIRA_TOKEN_ADDRESS`
@@ -109,6 +119,22 @@ echo "ETHERSCAN_APIKEY=XXX...XXX" >> $HOME/liquidity-program/$LIP_ID/.env
 
 ```
 echo "KIRA_TOKEN_ADDRESS=0xZZZ...ZZZ" >> $HOME/liquidity-program/$LIP_ID/.env
+```
+
+### `ACCESS_CONTROL_ADDRESS`
+
+- Smart contract which manages the roles of accounts for other NFT smart contract, see access control function in LIP_5
+
+```
+echo "ACCESS_CONTROL_ADDRESS=0xZZZ...ZZZ" >> $HOME/liquidity-program/$LIP_ID/.env
+```
+
+### `NFT_FARM_ADDRESS`
+
+- Smart contract which manages NFT farming using stones, see kex farm function in LIP_5
+
+```
+echo "NFT_FARM_ADDRESS=0xZZZ...ZZZ" >> $HOME/liquidity-program/$LIP_ID/.env
 ```
 
 # 3. Testnet used and faucet references

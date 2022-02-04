@@ -4,6 +4,8 @@ LIP_5 is a collection of smart contracts for KEX staking & KIRA NFT farming.
 
 ## Install dependencies
 
+Before you begin, check Common Guide's [Dependency Setup Section](../setup.md#1.-Dependency-Setup)
+
 ```
 yarn
 ```
@@ -14,11 +16,13 @@ yarn
 INFURA_PROJECT_ID=
 PRIVATE_KEY=
 ETHERSCAN_API_KEY=
+ACCESS_CONTROL_ADDRESS=
 ```
 
 - `INFURA_PROJECT_ID`: You can signup on infura.io and can get the project id on settings page.
 - `PRIVATE_KEY`: Private key of the deployer account
 - `ETHERSCAN_API_KEY`: You can signup on etherscan.io and can get the api key. This key will be used to verify the smart contracts on etherscan.
+- `ACCESS_CONTROL_ADDRESS`: Smart contract which manges the roles of accounts for other smart contract
 
 ## Smart contracts
 
@@ -178,81 +182,93 @@ This is a public function to calculate & update the rewards for an account. The 
 
 ### Deployment guides
 
-##### Deploy MockKex
+##### Deploy & Verify MockKex Contract
 
 ```sh
-npx hardhat run scripts/1_deploy_MockKex.js --network rinkeby
-MockKex deployed to: 0xb03a58Df62CD548603685f9E17a337d64AC056E1
+# Once deployed, it will mint `300000000 KEX` on the deployer account for testing purpose.
+npx hardhat run scripts/1_deploy_MockKex.js --network kovan
+# KEX on RINKEBY: 0xb03a58Df62CD548603685f9E17a337d64AC056E1
+# KEX on KOVAN: 0x539fa9544ea8f82a701b6d3c6a6f0e2ebe307ea6
+# KEX on MAINNET: 0x16980b3B4a3f9D89E33311B5aa8f80303E5ca4F8
+
+# Save KIRA_TOKEN_ADDRESS as env variable
+echo "KIRA_TOKEN_ADDRESS=0x539fa9544ea8f82a701b6d3c6a6f0e2ebe307ea6" >> ./.env && \
+ . ./.env
+
+# Verify test KEX address 
+npx hardhat verify --network kovan $KIRA_TOKEN_ADDRESS "KIRA Network" "KEX" "300000000000000"
 ```
 
-Verify the contract
-```sh
-MockKex=0xb03a58Df62CD548603685f9E17a337d64AC056E1
-npx hardhat verify --network rinkeby $MockKex "Mock Kex" "MKEX" "100000000000000000000000000"
-```
-
-Once deployed, it will mint `100000000 MKEX` on the deployer account for testing purpose.
-
-##### KiraAccessControl
-
-```sh
-npx hardhat run scripts/2_deploy_AccessControl.js --network rinkeby
-KiraAccessControl deployed to: 0x0c9FCeF7F6272d2c1053839b1069b4b5f884D4E3
-```
-
-`scripts/2_deploy_AccessControl.js` also sets a manager role for the deployer address
-
-Verify the contract
-```sh
-KiraAccessControl=0x0c9FCeF7F6272d2c1053839b1069b4b5f884D4E3
-npx hardhat verify --network rinkeby $KiraAccessControl
-```
-
-##### NFTStaking
-
-Update the `KiraAccessControl` address inside `scripts/3_deploy_NFTStaking.js` with the above deployed one.
+##### Deploy & Verify KiraAccessControl Contract
 
 ```sh
-npx hardhat run scripts/3_deploy_NFTStaking.js --network rinkeby
-NFTStaking deployed to: 0x0433c6CB94863850eb3fECE472A482f228F65b2E
+
+# Sets a manager role for the deployer address
+npx hardhat run scripts/2_deploy_AccessControl.js --network kovan
+# KiraAccessControl on RINKEBY: 0x0c9FCeF7F6272d2c1053839b1069b4b5f884D4E3
+# KiraAccessControl on KOVAN: TBD
+# KiraAccessControl on MAINNET: TBD
+
+# Save ACCESS_CONTROL_ADDRESS as env variable
+echo "ACCESS_CONTROL_ADDRESS=0x0c9FCeF7F6272d2c1053839b1069b4b5f884D4E3" >> ./.env && \
+ . ./.env
+
+# Verify access control contract
+npx hardhat verify --network kovan $ACCESS_CONTROL_ADDRESS
 ```
 
-Verify the contract
+##### Deploy & Verify NFTStaking Contract
+
 ```sh
-NFTStaking=0x0433c6CB94863850eb3fECE472A482f228F65b2E
-npx hardhat verify --network rinkeby $NFTStaking $KiraAccessControl
+# Requires `ACCESS_CONTROL_ADDRESS` set in env variables
+npx hardhat run scripts/3_deploy_NFTStaking.js --network kovan
+# NFTStaking on RINKEBY: 0x0433c6CB94863850eb3fECE472A482f228F65b2E
+# NFTStaking on KOVAN: TBD
+# NFTStaking on MAINNET: TBD
+
+# Save NFT_STAKING_ADDRESS as env variable
+echo "NFT_STAKING_ADDRESS=0x0433c6CB94863850eb3fECE472A482f228F65b2E" >> ./.env && \
+ . ./.env
+
+# verify NFT staking contract
+npx hardhat verify --network kovan $NFT_STAKING_ADDRESS $ACCESS_CONTROL_ADDRESS
 ```
 
-##### KexFarm
-
-Update the `MockKex` address inside `scripts/4_deploy_KexFarm.js` with the above deployed one ($MockKex).
+##### Deploy & Verify KexFarm Contract
 
 ```sh
-npx hardhat run scripts/4_deploy_KexFarm.js --network rinkeby
-KexFarm deployed to: 0x995179A0ae6Df352d1f49555fd8C8495D8Bb61B1
+# Requires `KIRA_TOKEN_ADDRESS` set in env variables
+npx hardhat run scripts/4_deploy_KexFarm.js --network kovan 
+# KexFarm on RINKEBY: 0x995179A0ae6Df352d1f49555fd8C8495D8Bb61B1
+# KexFarm on KOVAN: TBD
+# KexFarm on MAINNET: TBD
+
+# Save NFT_FARM_ADDRESS as env variable
+echo "NFT_FARM_ADDRESS=0x0c9FCeF7F6272d2c1053839b1069b4b5f884D4E3" >> ./.env && \
+ . ./.env
+
+# verify NFT farming contract
+npx hardhat verify --network kovan $NFT_FARM_ADDRESS $KIRA_TOKEN_ADDRESS
 ```
 
-Verify the contract
-```sh
-KexFarm=0x995179A0ae6Df352d1f49555fd8C8495D8Bb61B1
-npx hardhat verify --network rinkeby $KexFarm $MockKex
-```
-
-##### KiraNFT
+##### Deploy & Verify KiraNFT Mint Contract
 
 Update the `KexFarm` address inside `scripts/5_deploy_KiraNFT.js` with the above deployed one.
 
 ```sh
-npx hardhat run scripts/5_deploy_KiraNFT.js --network rinkeby
-KiraNFT deployed to: 0xD33269a1eeD3aFBC2a78Ee1c98704580c2AC7Dc1
-```
+# Sets the `KexFarm` address for `KiraNFT` minter contract
+# Requires `NFT_FARM_ADDRESS` set in env variables
+npx hardhat run scripts/5_deploy_KiraNFT.js --network kovan
+# KiraNFT on RINKEBY: 0xD33269a1eeD3aFBC2a78Ee1c98704580c2AC7Dc1
+# KiraNFT on KOVAN: TBD
+# KiraNFT on MAINNET: TBD
 
-`scripts/5_deploy_KiraNFT.js` also sets the `KexFarm` address for `KiraNFT`
+# Save NFT_MINTING_ADDRESS as env variable
+echo "NFT_MINTING_ADDRESS=0xD33269a1eeD3aFBC2a78Ee1c98704580c2AC7Dc1" >> ./.env && \
+ . ./.env
 
-Verify the contract
-```sh
-KiraNFT=0xD33269a1eeD3aFBC2a78Ee1c98704580c2AC7Dc1
-npx hardhat verify --network rinkeby $KiraNFT
+# Verify NFT minting contract
+npx hardhat verify --network kovan $NFT_MINTING_ADDRESS
 ```
 
 -----

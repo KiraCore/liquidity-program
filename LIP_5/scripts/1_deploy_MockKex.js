@@ -2,11 +2,11 @@ const hre = require('hardhat');
 
 async function main() {
   const MockKex = await hre.ethers.getContractFactory('MockKex');
-  const mockKex = await MockKex.deploy('Mock Kex', 'MKEX', hre.ethers.utils.parseEther('100000000'));
+  const mockKex = await MockKex.deploy('KIRA Network', 'KEX', hre.ethers.utils.parseEther('300000000'));
 
   await mockKex.deployed();
 
-  console.log('MockKex deployed to:', mockKex.address);
+  console.log('Test KEX deployed to:', mockKex.address);
 }
 
 main()

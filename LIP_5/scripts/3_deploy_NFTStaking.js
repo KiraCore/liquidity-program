@@ -1,14 +1,15 @@
 const hre = require('hardhat');
 
-async function main() {
-  const accessControl = '0x0c9FCeF7F6272d2c1053839b1069b4b5f884D4E3'; // RINKEBY
+// accessControl Address
+const ACCESS_CONTROL_ADDRESS = process.env.ACCESS_CONTROL_ADDRESS;
 
+async function main() {
   const NFTStaking = await hre.ethers.getContractFactory('NFTStaking');
 
-  nftStaking = await NFTStaking.deploy(accessControl);
+  nftStaking = await NFTStaking.deploy(ACCESS_CONTROL_ADDRESS);
   await nftStaking.deployed();
 
-  console.log('NFTStaking deployed to:', nftStaking.address);
+  console.log('NFTStaking deployed to: ', nftStaking.address, ', by access control address: ', ACCESS_CONTROL_ADDRESS);
 }
 
 main()

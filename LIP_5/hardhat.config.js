@@ -32,6 +32,10 @@ module.exports = {
     localhost: {
       url: 'http://127.0.0.1:7545',
     },
+    kovan: {
+      url: `https://kovan.infura.io/v3/${INFURA_PROJECT_ID}`,
+      accounts: [`0x${PRIVATE_KEY}`],
+    },
     rinkeby: {
       url: `https://rinkeby.infura.io/v3/${INFURA_PROJECT_ID}`,
       accounts: [`0x${PRIVATE_KEY}`],

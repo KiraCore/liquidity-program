@@ -1,16 +1,14 @@
 const hre = require('hardhat');
 
 async function main() {
-  const kexFarmAddr = '0x995179A0ae6Df352d1f49555fd8C8495D8Bb61B1';
-
+  const NFT_FARM_ADDRESS = process.env.NFT_FARM_ADDRESS;
   const KiraNFT = await hre.ethers.getContractFactory('KiraNFT');
   const kiraNFT = await KiraNFT.deploy();
 
   await kiraNFT.deployed();
+  await kiraNFT.setFarmerAddress(NFT_FARM_ADDRESS);
 
-  await kiraNFT.setFarmerAddress(kexFarmAddr);
-
-  console.log('KiraNFT deployed to:', kiraNFT.address);
+  console.log('KiraNFT minting deployed to: ', kiraNFT.address, ' and connected with the stone farming: ', $NFT_FARM_ADDRESS);
 }
 
 main()

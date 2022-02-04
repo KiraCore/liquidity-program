@@ -9,7 +9,7 @@ async function main() {
   await kiraAccessControl.deployed();
   await kiraAccessControl.addManagerRole(owner.address);
 
-  console.log('KiraAccessControl deployed to:', kiraAccessControl.address);
+  console.log('KiraAccessControl deployed to:', kiraAccessControl.address, ' and connected with the deployer: ', owner.address);
 }
 
 main()

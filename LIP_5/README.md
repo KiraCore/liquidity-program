@@ -211,11 +211,10 @@ npx hardhat run scripts/2_deploy_AccessControl.js --network kovan
 # KiraAccessControl on MAINNET: TBD
 
 # Save ACCESS_CONTROL_ADDRESS as env variable
-echo "ACCESS_CONTROL_ADDRESS=0x0c9FCeF7F6272d2c1053839b1069b4b5f884D4E3" >> ./.env && \
- . ./.env
+echo "ACCESS_CONTROL_ADDRESS=0x8cDC897BCE72Df659096Ef31CdF0a4DDaDCCEA8F" >> ./.env
 
 # Verify access control contract
-npx hardhat verify --network kovan $ACCESS_CONTROL_ADDRESS
+. ./.env && npx hardhat verify --network kovan $ACCESS_CONTROL_ADDRESS
 ```
 
 ##### Deploy & Verify NFTStaking Contract
@@ -228,11 +227,10 @@ npx hardhat run scripts/3_deploy_NFTStaking.js --network kovan
 # NFTStaking on MAINNET: TBD
 
 # Save NFT_STAKING_ADDRESS as env variable
-echo "NFT_STAKING_ADDRESS=0x0433c6CB94863850eb3fECE472A482f228F65b2E" >> ./.env && \
- . ./.env
+echo "NFT_STAKING_ADDRESS=0x52510ba27b024199764ad0FD85aca3B8a29801D3" >> ./.env
 
 # verify NFT staking contract
-npx hardhat verify --network kovan $NFT_STAKING_ADDRESS $ACCESS_CONTROL_ADDRESS
+. ./.env && npx hardhat verify --network kovan $NFT_STAKING_ADDRESS $ACCESS_CONTROL_ADDRESS
 ```
 
 ##### Deploy & Verify KexFarm Contract
@@ -245,11 +243,10 @@ npx hardhat run scripts/4_deploy_KexFarm.js --network kovan
 # KexFarm on MAINNET: TBD
 
 # Save NFT_FARM_ADDRESS as env variable
-echo "NFT_FARM_ADDRESS=0x0c9FCeF7F6272d2c1053839b1069b4b5f884D4E3" >> ./.env && \
- . ./.env
+echo "NFT_FARM_ADDRESS=0x21cfa4a7cD1ECC8e214c0A05457c48680aae548e" >> ./.env
 
 # verify NFT farming contract
-npx hardhat verify --network kovan $NFT_FARM_ADDRESS $KIRA_TOKEN_ADDRESS
+. ./.env && npx hardhat verify --network kovan $NFT_FARM_ADDRESS $KIRA_TOKEN_ADDRESS
 ```
 
 ##### Deploy & Verify KiraNFT Mint Contract
@@ -259,26 +256,28 @@ npx hardhat verify --network kovan $NFT_FARM_ADDRESS $KIRA_TOKEN_ADDRESS
 # Requires `NFT_FARM_ADDRESS` set in env variables
 npx hardhat run scripts/5_deploy_KiraNFT.js --network kovan
 # KiraNFT on RINKEBY: 0xD33269a1eeD3aFBC2a78Ee1c98704580c2AC7Dc1
-# KiraNFT on KOVAN: TBD
+# KiraNFT on KOVAN: 0x3b21dC7E2CEaDD3aBEa617abE9619bC9A7648fb8
 # KiraNFT on MAINNET: TBD
 
 # Save NFT_MINTING_ADDRESS as env variable
-echo "NFT_MINTING_ADDRESS=0xD33269a1eeD3aFBC2a78Ee1c98704580c2AC7Dc1" >> ./.env && \
- . ./.env
+echo "NFT_MINTING_ADDRESS=0x3b21dC7E2CEaDD3aBEa617abE9619bC9A7648fb8" >> ./.env
 
 # Verify NFT minting contract
-npx hardhat verify --network kovan $NFT_MINTING_ADDRESS
+. ./.env && npx hardhat verify --network kovan $NFT_MINTING_ADDRESS
 ```
 
 -----
 
 ### Metadata
 
-Metadata is located under `/metadata` directory.
+Metadata is located under `/metadata-<network>` directory.
 
-It contains the information (NFT image, description, name, attributes, etc) for each NFT. Currently we have 6 NFTs.
+It contains the information (NFT image, description, name, attributes, etc) for each NFT. Currently we have 14 NFTs.
 
-For now, we are uploading to github for NFT images and metadata. We can consider about IPFS for this.
+The `LIP_5\contracts\KiraNFT.sol` must be updated every time to contain a correct `tokenUri` referencing a **folder** in IPFS
+
+* KOVAN METADATA: `https://ipfs.io/ipfs/QmbRLTnLXSfGsVwwXUifuUTa2BTULHXxLkESQ2m4aVMhJ9/`
+* MAINNET METADATA: ``
 
 ### Testing
 

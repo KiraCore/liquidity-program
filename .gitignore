@@ -9,3 +9,6 @@ LIP_4/.env
 LIP_4/node_modules
 LIP_4/cache
 LIP_4/artifacts
+LIP_5.1/node_modules
+LIP_5.1/.env
+LIP_5.1/yarn.lock

@@ -1,0 +1,21 @@
+version: 1
+applications:
+  - frontend:
+      phases:
+        preBuild:
+          commands:
+            - nvm install 14
+            - yarn install
+        build:
+          commands:
+            - yarn run build
+            - echo "REACT_APP_INFURA_KEY=$REACT_APP_INFURA_KEY" >> ./.env
+            - echo "REACT_APP_INFURA_NETWORK=$REACT_APP_INFURA_NETWORK" >> ./.env
+      artifacts:
+        baseDirectory: build
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
+    appRoot: LIP_5.1

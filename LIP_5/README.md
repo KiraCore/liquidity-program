@@ -256,11 +256,11 @@ echo "NFT_FARM_ADDRESS=0x21cfa4a7cD1ECC8e214c0A05457c48680aae548e" >> ./.env
 # Requires `NFT_FARM_ADDRESS` set in env variables
 npx hardhat run scripts/5_deploy_KiraNFT.js --network kovan
 # KiraNFT on RINKEBY: 0xD33269a1eeD3aFBC2a78Ee1c98704580c2AC7Dc1
-# KiraNFT on KOVAN: 0x3b21dC7E2CEaDD3aBEa617abE9619bC9A7648fb8
+# KiraNFT on KOVAN: 0xB4454c3BeA54f10095e288534EaadE857B79f325
 # KiraNFT on MAINNET: TBD
 
 # Save NFT_MINTING_ADDRESS as env variable
-echo "NFT_MINTING_ADDRESS=0x3b21dC7E2CEaDD3aBEa617abE9619bC9A7648fb8" >> ./.env
+echo "NFT_MINTING_ADDRESS=0xB4454c3BeA54f10095e288534EaadE857B79f325" >> ./.env
 
 # Verify NFT minting contract
 . ./.env && npx hardhat verify --network kovan $NFT_MINTING_ADDRESS
@@ -277,7 +277,7 @@ It contains the information (NFT image, description, name, attributes, etc) for 
 The `LIP_5\contracts\KiraNFT.sol` must be updated every time to contain a correct `tokenUri` referencing a **folder** in IPFS
 
 * KOVAN METADATA: `https://ipfs.io/ipfs/QmbRLTnLXSfGsVwwXUifuUTa2BTULHXxLkESQ2m4aVMhJ9/`
-* MAINNET METADATA: ``
+* MAINNET METADATA: `TBD`
 
 ### Testing
 

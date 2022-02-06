@@ -14,7 +14,7 @@ REACT_APP_INFURA_NETWORK=
 ```
 
 You can get infura key from https://infura.io.
-For testing, set the `REACT_APP_INFURA_NETWORK` to `rinkeby` or `ropsten`. For the production, use `mainnet`.
+For testing, set the `REACT_APP_INFURA_NETWORK` to `kovan`, `rinkeby` or `ropsten`. For the production, use `mainnet`.
 
 ## Scripts
 
@@ -41,3 +41,25 @@ The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+## Quick Install
+
+```
+cd $HOME && \
+ rm -fvr ./liquidity-program && \
+ git clone https://github.com/KiraCore/liquidity-program.git -b master && \
+ cd ./liquidity-program/LIP_5.1 && touch ./.env && chmod 777 ./.env && yarn install && \
+ echo "LIP_5.1: Installation suceeded" || echo "LIP_5.1: Installation failed"
+```
+
+## Quick Start
+
+```
+cd $HOME/liquidity-program/LIP_5.1 && \
+ echo "REACT_APP_INFURA_KEY=XXX...XXX" >> ./.env && \
+ echo "REACT_APP_INFURA_NETWORK=XXX...XXX" >> ./.env && \
+ echo "MOCK_KEX_CONTRACT_ADDR=XXX...XXX" >> ./.env && \
+ echo "NFT_STAKING_CONTRACT_ADDR=XXX...XXX" >> ./.env && \
+ echo "KEX_FARM_CONTRACT_ADDR=XXX...XXX" >> ./.env && \
+ echo "NFT_CONTRACT_ADDR=XXX...XXX" >> ./.env 
+```

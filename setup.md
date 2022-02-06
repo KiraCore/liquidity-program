@@ -94,11 +94,22 @@ Sign up for a free api key at https://infura.io/dashboard to deploy to public ne
 - Create an account on [infura.io](https://infura.io)
 - Create a new Project on your infura account
 - Go to Settings Tab
-- Use the Project ID as `INFURA_APIKEY` or `INFURA_PROJECT_ID` depending on the LIP requirements (they are both used the same way, the naming might be inconsistent between LIP's)
+- Use the Project Secret as `INFURA_APIKEY`
 
 ```
 echo "INFURA_APIKEY=XXX...XXX" >> $HOME/liquidity-program/$LIP_ID/.env
+```
 
+### `INFURA_PROJECT_ID`
+
+Sign up for a free api key at https://infura.io/dashboard to deploy to public networks.
+
+- Create an account on [infura.io](https://infura.io)
+- Create a new Project on your infura account
+- Go to Settings Tab
+- Use the Project ID as `INFURA_PROJECT_ID`
+
+```
 echo "INFURA_PROJECT_ID=XXX...XXX" >> $HOME/liquidity-program/$LIP_ID/.env
 ```
 

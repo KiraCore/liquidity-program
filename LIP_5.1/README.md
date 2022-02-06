@@ -47,7 +47,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 ```
 cd $HOME && \
  rm -fvr ./liquidity-program && \
- git clone https://github.com/KiraCore/liquidity-program.git -b master && \
+ git clone https://github.com/KiraCore/liquidity-program.git -b LIP_5 && \
  cd ./liquidity-program/LIP_5.1 && touch ./.env && chmod 777 ./.env && yarn install && \
  echo "LIP_5.1: Installation suceeded" || echo "LIP_5.1: Installation failed"
 ```

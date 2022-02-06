@@ -1,8 +1,6 @@
-export const CHAIN_ID = 4;
-export const RPC_URL = 'https://rinkeby.eth.aragon.network/';
-
-
-export const MOCK_KEX_CONTRACT_ADDR = process.env.REACT_APP_MOCK_KEX_CONTRACT_ADDR ? process.env.REACT_APP_MOCK_KEX_CONTRACT_ADDR : "";
-export const NFT_CONTRACT_ADDR = process.env.REACT_APP_NFT_CONTRACT_ADDR ? process.env.REACT_APP_NFT_CONTRACT_ADDR : "";
-export const KEX_FARM_CONTRACT_ADDR = process.env.REACT_APP_KEX_FARM_CONTRACT_ADDR ? process.env.REACT_APP_KEX_FARM_CONTRACT_ADDR : "";
-export const NFT_STAKING_CONTRACT_ADDR = process.env.REACT_APP_NFT_STAKING_CONTRACT_ADDR ? process.env.REACT_APP_NFT_STAKING_CONTRACT_ADDR : "";
+export const ETHEREUM_RPC_URL = process.env.REACT_APP_ETHEREUM_RPC_URL ? process.env.REACT_APP_ETHEREUM_RPC_URL : "";
+export const ETHEREUM_CHAIN_ID = process.env.REACT_APP_ETHEREUM_CHAIN_ID ? process.env.REACT_APP_ETHEREUM_CHAIN_ID : "";
+export const KIRA_TOKEN_ADDRESS = process.env.REACT_APP_KIRA_TOKEN_ADDRESS ? process.env.REACT_APP_KIRA_TOKEN_ADDRESS : "";
+export const NFT_MINTING_ADDRESS = process.env.REACT_APP_NFT_MINTING_ADDRESS ? process.env.REACT_APP_NFT_MINTING_ADDRESS : "";
+export const NFT_FARM_ADDRESS = process.env.REACT_APP_NFT_FARM_ADDRESS ? process.env.REACT_APP_NFT_FARM_ADDRESS : "";
+export const NFT_STAKING_ADDRESS = process.env.REACT_APP_NFT_STAKING_ADDRESS ? process.env.REACT_APP_NFT_STAKING_ADDRESS : "";

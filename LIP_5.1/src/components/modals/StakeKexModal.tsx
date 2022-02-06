@@ -5,7 +5,7 @@ import { Input } from '@chakra-ui/input';
 import { Flex, Text } from '@chakra-ui/layout';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from '@chakra-ui/modal';
 import { useState } from 'react';
-import { KEX_FARM_CONTRACT_ADDR } from 'src/config';
+import { NFT_FARM_ADDRESS } from 'src/config';
 import { useContracts } from 'src/hooks/useContracts';
 import { FARM_RATE } from 'src/utils/constants';
 import { ethers } from 'ethers';
@@ -116,7 +116,7 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
   const onApprove = async () => {
     setLoading(true);
     try {
-      const txApprove = await token.approve(KEX_FARM_CONTRACT_ADDR, ethers.constants.MaxUint256);
+      const txApprove = await token.approve(NFT_FARM_ADDRESS, ethers.constants.MaxUint256);
       toast({
         title: 'Pending Transaction',
         description: 'Approving KEX',

@@ -17,6 +17,7 @@ INFURA_PROJECT_ID=
 PRIVATE_KEY=
 ETHERSCAN_API_KEY=
 ACCESS_CONTROL_ADDRESS=
+NFT_STAKING_ADDRESS=
 ```
 
 - `INFURA_PROJECT_ID`: You can signup on infura.io and can get the project id on settings page.
@@ -252,7 +253,6 @@ echo "NFT_FARM_ADDRESS=0x21cfa4a7cD1ECC8e214c0A05457c48680aae548e" >> ./.env
 ##### Deploy & Verify KiraNFT Mint Contract
 
 ```sh
-# Sets the `KexFarm` address for `KiraNFT` minter contract
 # Requires `NFT_FARM_ADDRESS` set in env variables
 npx hardhat run scripts/5_deploy_KiraNFT.js --network kovan
 # KiraNFT on RINKEBY: 0xD33269a1eeD3aFBC2a78Ee1c98704580c2AC7Dc1

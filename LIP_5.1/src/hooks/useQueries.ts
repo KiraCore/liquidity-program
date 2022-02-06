@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { KEX_FARM_CONTRACT_ADDR } from "src/config";
+import { NFT_FARM_ADDRESS } from "src/config";
 import { QueryDataTypes } from "src/types/queryDataTypes";
 import { useContracts } from "./useContracts";
 
@@ -22,7 +22,7 @@ export function useQueries(account: string | null): QueryDataTypes {
       const stakedBalance = await stakingPool.farmed(account);
       setStakedBalance(stakedBalance);
 
-      const allowance = await token.allowance(account, KEX_FARM_CONTRACT_ADDR);
+      const allowance = await token.allowance(account, NFT_FARM_ADDRESS);
       setAllowance(allowance);
     }
   }
@@ -37,7 +37,7 @@ export function useQueries(account: string | null): QueryDataTypes {
 
   async function loadAllowance() {
     if (account !== null) {
-      const allowance = await token.allowance(account, KEX_FARM_CONTRACT_ADDR);
+      const allowance = await token.allowance(account, NFT_FARM_ADDRESS);
       setAllowance(allowance);
     }
   }

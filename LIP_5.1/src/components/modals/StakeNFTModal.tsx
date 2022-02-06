@@ -6,7 +6,7 @@ import { Flex, Text } from '@chakra-ui/layout';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from '@chakra-ui/modal';
 import { useToast } from '@chakra-ui/toast';
 import { useEffect, useState } from 'react';
-import { NFT_STAKING_CONTRACT_ADDR } from 'src/config';
+import { NFT_STAKING_ADDRESS } from 'src/config';
 import { useContracts } from 'src/hooks/useContracts';
 import { QueryDataTypes } from 'src/types/queryDataTypes';
 import { useWallet } from 'use-wallet';
@@ -32,7 +32,7 @@ const StakeNFTModal = ({ isOpen = false, onClose, data, nftId, reloadMyCollectio
 
   async function updateInfo(id: number) {
     if (account) {
-      const approved = await nft.isApprovedForAll(account, NFT_STAKING_CONTRACT_ADDR);
+      const approved = await nft.isApprovedForAll(account, NFT_STAKING_ADDRESS);
       setApproved(approved);
 
       const balance = await nft.balanceOf(account, id);
@@ -42,7 +42,7 @@ const StakeNFTModal = ({ isOpen = false, onClose, data, nftId, reloadMyCollectio
 
   async function loadApproved() {
     if (account) {
-      const approved = await nft.isApprovedForAll(account, NFT_STAKING_CONTRACT_ADDR);
+      const approved = await nft.isApprovedForAll(account, NFT_STAKING_ADDRESS);
       setApproved(approved);
     }
   }
@@ -105,7 +105,7 @@ const StakeNFTModal = ({ isOpen = false, onClose, data, nftId, reloadMyCollectio
   const onApprove = async () => {
     setLoading(true);
     try {
-      const txApprove = await nft.setApprovalForAll(NFT_STAKING_CONTRACT_ADDR, true);
+      const txApprove = await nft.setApprovalForAll(NFT_STAKING_ADDRESS, true);
       toast({
         title: 'Pending Transaction',
         description: 'Approving NFT',

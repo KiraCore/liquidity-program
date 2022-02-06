@@ -4,7 +4,7 @@ import App from './App';
 import { ChakraProvider } from '@chakra-ui/react';
 
 import { UseWalletProvider } from 'use-wallet';
-import { CHAIN_ID, RPC_URL } from 'src/config';
+import { ETHEREUM_CHAIN_ID, ETHEREUM_RPC_URL } from 'src/config';
 import { extendTheme } from '@chakra-ui/react';
 import customTheme from 'src/theme';
 import Fonts from 'src/fonts';
@@ -28,9 +28,9 @@ ReactDOM.render(
     <ChakraProvider theme={theme}>
       <Fonts />
       <UseWalletProvider
-        chainId={CHAIN_ID}
+        chainId={ETHEREUM_CHAIN_ID}
         connectors={{
-          walletconnect: { rpcUrl: RPC_URL },
+          walletconnect: { rpcUrl: ETHEREUM_RPC_URL },
         }}
       >
         <App />

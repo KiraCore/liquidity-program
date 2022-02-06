@@ -5,6 +5,10 @@ LIP_3.2/.vs/
 LIP_3.2/bin/
 LIP_3.2/obj/
 LIP_3.2/Properties/
+LIP_4/.env
+LIP_4/node_modules
+LIP_4/cache
+LIP_4/artifacts
 LIP_5.1/node_modules
 LIP_5.1/.env
 LIP_5.1/yarn.lock

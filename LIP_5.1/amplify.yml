@@ -8,7 +8,6 @@ applications:
             - yarn install
         build:
           commands:
-            - yarn run build
             - echo "REACT_APP_INFURA_KEY=$REACT_APP_INFURA_KEY" >> ./.env
             - echo "REACT_APP_ETHEREUM_RPC_URL=$REACT_APP_ETHEREUM_RPC_URL" >> ./.env
             - echo "REACT_APP_ETHEREUM_CHAIN_ID=$REACT_APP_ETHEREUM_CHAIN_ID" >> ./.env
@@ -17,6 +16,7 @@ applications:
             - echo "REACT_APP_NFT_STAKING_ADDRESS=$REACT_APP_NFT_STAKING_ADDRESS" >> ./.env
             - echo "REACT_APP_NFT_FARM_ADDRESS=$REACT_APP_NFT_FARM_ADDRESS" >> ./.env
             - echo "REACT_APP_NFT_MINTING_ADDRESS=$REACT_APP_NFT_MINTING_ADDRESS" >> ./.env
+            - yarn run build
       artifacts:
         baseDirectory: build
         files:

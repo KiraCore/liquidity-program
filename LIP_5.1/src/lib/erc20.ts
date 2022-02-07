@@ -331,12 +331,12 @@ export const create = (address: string, provider: any) => {
   // READ
   const decimals = () =>
     contract.decimals().then((val: number) => val);
-  
+
   const balanceOf = (address: string) =>
-    contract.balanceOf(address).then((val: BigNumber) => parseFloat(ethers.utils.formatUnits(val, decimals)));
+    contract.balanceOf(address).then((val: BigNumber) => parseFloat(ethers.utils.formatUnits(val, (<number>(<unknown>decimals)))));
 
   const allowance = (owner: string, spender: string) =>
-    contract.allowance(owner, spender).then((val: BigNumber) => parseFloat(ethers.utils.formatUnits(val, decimals)));
+    contract.allowance(owner, spender).then((val: BigNumber) => parseFloat(ethers.utils.formatUnits(val, (<number>(<unknown>decimals)))));
     //contract.allowance(owner, spender).then((val: BigNumber) => parseFloat(ethers.utils.formatEther(val)));
 
   // WRITE

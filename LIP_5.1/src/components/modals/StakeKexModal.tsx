@@ -64,7 +64,7 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
     if (!value) return;
 
     var decimalFactor = Math.pow(10,kexDecimals as number);
-    var fullDenomValue = Math.floor(value * decimalFactor);
+    var fullDenomValue = ethers.BigNumber.from(Math.floor(value * decimalFactor));
 
     // TODO: DEBUG REMOVE LOGS
     console.log("StakeKexModal => onConfirm: ")

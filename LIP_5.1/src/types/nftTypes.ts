@@ -37,6 +37,7 @@ export interface NFTCollection {
 }
 
 export interface Card {
+  metadata: NFTMetadata;
   quantity: number;
   sold: number;
   value: BigNumber;

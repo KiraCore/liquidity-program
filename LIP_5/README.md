@@ -271,9 +271,16 @@ echo "NFT_MINTING_ADDRESS=0xB4454c3BeA54f10095e288534EaadE857B79f325" >> ./.env
 
 ## Metadata
 
-Metadata is located under `/metadata-<network>` directory.
+Metadata is located under `/metadata-<network>` directory. The metadata standards used can be found [here](https://docs.opensea.io/docs/metadata-standards)
 
 It contains the information (NFT image, description, name, attributes, etc) for each NFT. Currently we have 14 NFTs.
+
+Available `trait_types` attributes and the corresponding possible `values`:
+
+* `ID` - `<number>`
+* `Tier` - `Common`, `Uncommon`, `Rare`
+* `Camp` - `BOSE`, `KIRA`
+* `Type` - `Hacker`,
 
 The `LIP_5\contracts\KiraNFT.sol` must be updated every time to contain a correct `tokenUri` referencing a **folder** in IPFS
 

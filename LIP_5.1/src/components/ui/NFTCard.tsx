@@ -25,13 +25,12 @@ const NFTCard = ({ nft: { id, title, image }, onMint, card, data }: NFTCardProps
   const mintDisabled =
     !account || nKrystals === undefined || nMinted === undefined || nTotal === undefined || !krystalBalance || parseInt(nKrystals.toString()) > krystalBalance;
 
-  const attributes = [
-    { label: 'ID', value: '12312412346784' },
-    { label: 'Tier', value: 'Common' },
-    { label: 'Camp', value: 'BOSE Army' },
-    { label: 'Type', value: 'Hacker' },
-    { label: 'Transferable', value: 'Yes' },
-    { label: 'Burnable', value: 'Yes' },
+  let metadata = card?.metadata ? card.metadata : undefined;
+  let attributes = metadata?.attributes ? card.metadata : [
+    { trait_type: "ID", value: id },
+    { trait_type: "Tier", value: "???" },
+    { trait_type: "Camp", value: "???" },
+    { trait_type: "Type", value: "???" }
   ];
 
   return (
@@ -99,8 +98,8 @@ const NFTCard = ({ nft: { id, title, image }, onMint, card, data }: NFTCardProps
         </Text>
         <UnorderedList listStyleType="none" ml="0">
           {attributes.map((attr) => (
-            <ListItem display="flex" mb="8px" fontSize="14px" key={attr.label}>
-              <Text fontWeight="600">{attr.label}:&nbsp;</Text>
+            <ListItem display="flex" mb="8px" fontSize="14px" key={attr.trait_type}>
+              <Text fontWeight="600">{attr.trait_type}:&nbsp;</Text>
               {attr.value}
             </ListItem>
           ))}

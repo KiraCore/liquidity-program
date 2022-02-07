@@ -330,13 +330,13 @@ export const create = (address: string, provider: any) => {
 
   // READ
   const decimals = () =>
-    contract.decimals().then((val: number) => val);
+    contract.decimals().then((val: BigNumber) => val);
 
   const balanceOf = (address: string) =>
-    contract.balanceOf(address).then((val: BigNumber) => parseFloat(ethers.utils.formatUnits(val, (<number>(<unknown>decimals)))));
+    contract.balanceOf(address).then((val: BigNumber) => parseFloat(ethers.utils.formatUnits(val, (<BigNumber>(<unknown>decimals)))));
 
   const allowance = (owner: string, spender: string) =>
-    contract.allowance(owner, spender).then((val: BigNumber) => parseFloat(ethers.utils.formatUnits(val, (<number>(<unknown>decimals)))));
+    contract.allowance(owner, spender).then((val: BigNumber) => parseFloat(ethers.utils.formatUnits(val, (<BigNumber>(<unknown>decimals)))));
     //contract.allowance(owner, spender).then((val: BigNumber) => parseFloat(ethers.utils.formatEther(val)));
 
   // WRITE

@@ -31,8 +31,8 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
   const krystalsPerHour = value ? (value * 3600 * FARM_RATE) / Math.pow(10, 22) : 0;
 
   // TODO: DEBUG ONLY, REMOVE FOR MAINNET
-  console.log("StakeKexModal.tsx => StakeKexModal => data")
-  console.log(data)
+  // console.log("StakeKexModal.tsx => StakeKexModal => data")
+  // console.log(data)
 
   const onInputChange = (e: any) => {
     const v = parseFloat(e.target.value);

@@ -29,8 +29,8 @@ export function useQueries(account: string | null): QueryDataTypes {
       setAllowance(allowance/decimalFactor);
 
       // TODO: DEBUG ONLY, REMOVE FOR MAINNET
-      console.log("useQueries.ts => updateInfo:")
-      console.log({account: account, kexDecimals: kexDecimals, kexBalance: kexBalance, stakedBalance: stakedBalance, allowance: allowance })
+      // console.log("useQueries.ts => updateInfo:")
+      // console.log({account: account, kexDecimals: kexDecimals, kexBalance: kexBalance, stakedBalance: stakedBalance, allowance: allowance })
     }
   }
 

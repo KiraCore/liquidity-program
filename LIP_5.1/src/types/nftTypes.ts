@@ -27,7 +27,7 @@ export interface NFTMetadata {
   description: string;
   image: string;
   animation_url?: string;
-  attributes: NFTAttributes[];
+  attributes: Array<NFTAttributes>;
 }
 
 export interface NFTCollection {

@@ -26,7 +26,7 @@ export function useContracts() {
 
   // TODO: DEBUG ONLY, REMOVE FOR MAINNET
   console.log("useContracts.ts => useContracts()")
-  console.log({ ethers: ethers, token: token, nft: nft, stakingPool: stakingPool, nftStaking: nftStaking })
+  console.log({ signer: signer, token: KIRA_TOKEN_ADDRESS, nft: NFT_MINTING_ADDRESS, stakingPool: NFT_FARM_ADDRESS, nftStaking: NFT_STAKING_ADDRESS  })
 
   return { ethers, token, nft, stakingPool, nftStaking };
 }

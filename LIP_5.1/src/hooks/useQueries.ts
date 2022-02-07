@@ -27,7 +27,7 @@ export function useQueries(account: string | null): QueryDataTypes {
 
       // TODO: DEBUG ONLY, REMOVE FOR MAINNET
       console.log("useQueries.ts => updateInfo:")
-      console.log({kexBalance: kexBalance, stakedBalance: stakedBalance, allowance: allowance })
+      console.log({account: account, kexBalance: kexBalance, stakedBalance: stakedBalance, allowance: allowance })
     }
   }
 

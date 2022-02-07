@@ -329,11 +329,15 @@ export const create = (address: string, provider: any) => {
   const contract = new Contract(address, abi, provider);
 
   // READ
+  const decimals = () =>
+    contract.decimals().then((val: number) => val);
+  
   const balanceOf = (address: string) =>
-    contract.balanceOf(address).then((val: BigNumber) => parseFloat(ethers.utils.formatEther(val)));
+    contract.balanceOf(address).then((val: BigNumber) => parseFloat(ethers.utils.formatUnits(val, decimals)));
 
   const allowance = (owner: string, spender: string) =>
-    contract.allowance(owner, spender).then((val: BigNumber) => parseFloat(ethers.utils.formatEther(val)));
+    contract.allowance(owner, spender).then((val: BigNumber) => parseFloat(ethers.utils.formatUnits(val, decimals)));
+    //contract.allowance(owner, spender).then((val: BigNumber) => parseFloat(ethers.utils.formatEther(val)));
 
   // WRITE
   const approve = (spender: string, value: BigNumber) => contract.approve(spender, value);

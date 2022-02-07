@@ -35,6 +35,10 @@ const NFTMintModal = ({ isOpen = false, onClose, loadCardInfo, data, nftId, nftI
 
   async function updateInfo(id: number) {
     const card = await nft.cards(id);
+    
+    // TODO: Debug only logs
+    console.log("NFTMintModal.txs => updateInfo:")
+    console.log({card: card})
     setCard(card);
   }
 

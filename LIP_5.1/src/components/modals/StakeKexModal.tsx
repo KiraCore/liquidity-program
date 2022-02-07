@@ -26,7 +26,7 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
   const [value, setValue] = useState<number | undefined>(undefined);
   const [isLoading, setLoading] = useState<boolean>(false);
   const toast = useToast();
-  const { kexBalance, krystalBalance, stakedBalance, allowance, updateInfo, loadAllowance } = data;
+  const { kexDecimals, kexBalance, krystalBalance, stakedBalance, allowance, updateInfo, loadAllowance } = data;
   const total = stake ? kexBalance : stakedBalance;
   const krystalsPerHour = value ? (value * 3600 * FARM_RATE) / Math.pow(10, 22) : 0;
 
@@ -63,10 +63,17 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
   const onConfirm = async () => {
     if (!value) return;
 
+    var decimalFactor = Math.pow(10,kexDecimals as number);
+    var fullDenomValue = Math.floor(value * decimalFactor);
+
+    // TODO: DEBUG REMOVE LOGS
+    console.log("StakeKexModal => onConfirm: ")
+    console.log({value: value, fullDenomValue: fullDenomValue, decimalFactor: decimalFactor, kexDecimals: kexDecimals})
+
     setLoading(true);
     try {
       if (stake) {
-        const txStake = await stakingPool.stake(ethers.utils.parseEther(value.toString()));
+        const txStake = await stakingPool.stake(fullDenomValue);
         toast({
           title: 'Pending Transaction',
           description: `Staking ${value} KEX`,
@@ -83,7 +90,7 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
           isClosable: true,
         });
       } else {
-        const txWithdraw = await stakingPool.withdraw(ethers.utils.parseEther(value.toString()));
+        const txWithdraw = await stakingPool.withdraw(fullDenomValue);
         toast({
           title: 'Pending Transaction',
           description: `Unstaking ${value} KEX`,

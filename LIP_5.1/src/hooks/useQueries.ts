@@ -6,6 +6,7 @@ import { useContracts } from "./useContracts";
 
 export function useQueries(account: string | null): QueryDataTypes {
   const { token, stakingPool } = useContracts();
+  const [kexDecimals, setKexDecimals] = useState<number | undefined>(undefined);
   const [kexBalance, setKexBalance] = useState<number | undefined>(undefined);
   const [stakedBalance, setStakedBalance] = useState<number | undefined>(undefined);
   const [allowance, setAllowance] = useState<number | undefined>(undefined);
@@ -14,6 +15,8 @@ export function useQueries(account: string | null): QueryDataTypes {
   async function updateInfo() {
     if (account) {
       const kexDecimals = await token.decimals();
+      setKexDecimals(kexDecimals);
+
       var decimalFactor = Math.pow(10,kexDecimals);
 
       const kexBalance = await token.balanceOf(account);
@@ -27,14 +30,11 @@ export function useQueries(account: string | null): QueryDataTypes {
 
       const allowance = await token.allowance(account, NFT_FARM_ADDRESS);
       setAllowance(allowance/decimalFactor);
-
-      // TODO: DEBUG ONLY, REMOVE FOR MAINNET
-      // console.log("useQueries.ts => updateInfo:")
-      // console.log({account: account, kexDecimals: kexDecimals, kexBalance: kexBalance, stakedBalance: stakedBalance, allowance: allowance })
     }
   }
 
   useEffect(() => {
+    setKexDecimals(undefined);
     setKexBalance(undefined);
     setKrystalBalance(undefined);
     setStakedBalance(undefined);
@@ -49,5 +49,5 @@ export function useQueries(account: string | null): QueryDataTypes {
     }
   }
 
-  return { kexBalance, krystalBalance, stakedBalance, allowance, loadAllowance, updateInfo };
+  return { kexDecimals, kexBalance, krystalBalance, stakedBalance, allowance, loadAllowance, updateInfo };
 }

@@ -29,6 +29,7 @@ const MainContent = ({ data }: MainContentProps) => {
 
     const cardInfo: { [key: string]: Card } = {};
     cards.forEach((card: Card, index: number) => {
+      // commonCollection.nfts[index].image = card.
       cardInfo[commonCollection.nfts[index].id] = card;
     });
 

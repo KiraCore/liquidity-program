@@ -22,6 +22,11 @@ const MainContent = ({ data }: MainContentProps) => {
 
   async function updateInfo() {
     const cards = await Promise.all(commonCollection.nfts.map(({ id }: NFT) => nft.cards(id)));
+
+    // TODO: Debug only logs
+    console.log("MainContext.txs => updateInfo:")
+    console.log({cards: cards})
+
     const cardInfo: { [key: string]: Card } = {};
     cards.forEach((card: Card, index: number) => {
       cardInfo[commonCollection.nfts[index].id] = card;

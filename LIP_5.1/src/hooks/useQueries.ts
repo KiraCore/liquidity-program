@@ -26,7 +26,7 @@ export function useQueries(account: string | null): QueryDataTypes {
       setKrystalBalance(krystalBalance);
 
       const stakedBalance = await stakingPool.farmed(account);
-      setStakedBalance(stakedBalance);
+      setStakedBalance(stakedBalance/decimalFactor);
 
       const allowance = await token.allowance(account, NFT_FARM_ADDRESS);
       setAllowance(allowance/decimalFactor);

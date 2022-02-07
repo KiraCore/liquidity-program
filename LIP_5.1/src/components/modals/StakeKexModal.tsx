@@ -30,6 +30,10 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
   const total = stake ? kexBalance : stakedBalance;
   const krystalsPerHour = value ? (value * 3600 * FARM_RATE) / Math.pow(10, 22) : 0;
 
+  // TODO: DEBUG ONLY, REMOVE FOR MAINNET
+  console.log("StakeKexModal.tsx => StakeKexModal => data")
+  console.log(data)
+
   const onInputChange = (e: any) => {
     const v = parseFloat(e.target.value);
     setValue(isNaN(v) || v < 0 ? undefined : v);

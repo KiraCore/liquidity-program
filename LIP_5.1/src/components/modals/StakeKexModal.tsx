@@ -27,7 +27,6 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
   const [isLoading, setLoading] = useState<boolean>(false);
   const toast = useToast();
   const { kexBalance, krystalBalance, stakedBalance, allowance, updateInfo, loadAllowance } = data;
-
   const total = stake ? kexBalance : stakedBalance;
   const krystalsPerHour = value ? (value * 3600 * FARM_RATE) / Math.pow(10, 22) : 0;
 

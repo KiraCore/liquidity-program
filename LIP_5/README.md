@@ -254,6 +254,7 @@ echo "NFT_FARM_ADDRESS=0x21cfa4a7cD1ECC8e214c0A05457c48680aae548e" >> ./.env
 
 ```sh
 # Requires `NFT_FARM_ADDRESS` set in env variables
+# The setFarm address funciton is trigerred automatically
 npx hardhat run scripts/5_deploy_KiraNFT.js --network kovan
 # KiraNFT on RINKEBY: 0xD33269a1eeD3aFBC2a78Ee1c98704580c2AC7Dc1
 # KiraNFT on KOVAN: 0xB4454c3BeA54f10095e288534EaadE857B79f325
@@ -281,7 +282,7 @@ The `LIP_5\contracts\KiraNFT.sol` must be updated every time to contain a correc
 
 ## Testing
 
-#### Add NFT Card Information
+### Add NFT Card Information
 
 For each NFT call `KiraNFT`'s `addCard` function and create cards as per the table defined below:
 
@@ -308,15 +309,23 @@ For each NFT call `KiraNFT`'s `addCard` function and create cards as per the tab
 | 13 | KIRA     | 3     | 30000 |
 | 14 | Lilith   | 3     | 90000 |
 
-
 #### Get NFTs
 
 There are two ways to get NFTs.
 
 - With a deployer account, we can mint NFTs to any accounts for testing purpose.
 - We can use KexFarm. To do this, we can send the MockKex tokens to a testing user and then farm Crystals from MockKEX. After getting some Crystals, we can buy NFTs.
+
 ##### Add pools (ERC1155 vs ERC20 pair) to NFTStaking
 
-To be able to stake KiraNFT to get MockKex tokens, we need to add pools to each KiraNFT. Currently we have 6 NFT, so need to add 6 pools to NFTStaking.
+To be able to stake KiraNFT to get MockKex tokens, we need to add pools to each KiraNFT. Currently we have `n` NFT's, so need to add `n` pools to NFTStaking.
 
 Check `NFTStaking`'s `addPool` function in the above.
+
+```
+poolId 
+nftToken
+nftTokenId
+rewardToken
+rewardPerNFT
+```

@@ -24,5 +24,9 @@ export function useContracts() {
 
   const nftStaking = createNFTStaking(NFT_STAKING_ADDRESS, signer);
 
+  // TODO: DEBUG ONLY, REMOVE FOR MAINNET
+  console.log("useContracts.ts => useContracts()")
+  console.log({ ethers: ethers, token: token, nft: nft, stakingPool: stakingPool, nftStaking: nftStaking })
+
   return { ethers, token, nft, stakingPool, nftStaking };
 }

@@ -13,8 +13,10 @@ export function useQueries(account: string | null): QueryDataTypes {
 
   async function updateInfo() {
     if (account) {
+      const kexDecimals = await token.decimals();
+
       const kexBalance = await token.balanceOf(account);
-      setKexBalance(kexBalance);
+      setKexBalance(kexBalance/kexDecimals);
 
       const krystalBalance = await stakingPool.rewardedStones(account);
       setKrystalBalance(krystalBalance);
@@ -23,11 +25,11 @@ export function useQueries(account: string | null): QueryDataTypes {
       setStakedBalance(stakedBalance);
 
       const allowance = await token.allowance(account, NFT_FARM_ADDRESS);
-      setAllowance(allowance);
+      setAllowance(allowance/kexDecimals);
 
       // TODO: DEBUG ONLY, REMOVE FOR MAINNET
       console.log("useQueries.ts => updateInfo:")
-      console.log({account: account, kexBalance: kexBalance, stakedBalance: stakedBalance, allowance: allowance })
+      console.log({account: account, kexDecimals: kexDecimals, kexBalance: kexBalance, stakedBalance: stakedBalance, allowance: allowance })
     }
   }
 

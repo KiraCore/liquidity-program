@@ -30,6 +30,10 @@ export function useQueries(account: string | null): QueryDataTypes {
 
       const allowance = await token.allowance(account, NFT_FARM_ADDRESS);
       setAllowance(allowance/decimalFactor);
+
+      // TODO: DEBUG LOG ONLY
+      console.log("useQueries.ts => updateInfo:")
+      console.log({account: account, decimalFactor: decimalFactor, kexBalance: kexBalance, krystalBalance: krystalBalance, stakedBalance: stakedBalance, allowance: allowance})
     }
   }
 

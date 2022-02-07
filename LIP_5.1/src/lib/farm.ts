@@ -320,7 +320,7 @@ export const create = (address: string, provider: any) => {
   const rewardedStones = (address: string) =>
     contract.rewardedStones(address).then((v: BigNumber) => parseFloat(ethers.utils.formatEther(v)));
   const farmed = (address: string) =>
-    contract.farmed(address).then((v: BigNumber) => parseFloat(ethers.utils.formatEther(v)));
+    contract.farmed(address).then((v: BigNumber) => parseFloat(ethers.utils.formatUnits(v, 0)));
   const minContribution = () => contract.minContribution().then((v: BigNumber) => ethers.utils.formatEther(v));
   const maxContribution = () => contract.maxContribution().then((v: BigNumber) => ethers.utils.formatEther(v));
 

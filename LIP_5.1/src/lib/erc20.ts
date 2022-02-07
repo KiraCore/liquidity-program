@@ -333,13 +333,13 @@ export const create = (address: string, provider: any) => {
     contract.decimals().then((val: BigNumber) => val);
 
   console.log("erc20tx => decimals:")
-  console.log({decimals: decimals, decimals2: contract.decimals})
-  
+  console.log({decimals: decimals()})
+
   const balanceOf = (address: string) =>
-    contract.balanceOf(address).then((val: BigNumber) => parseFloat(ethers.utils.formatUnits(val, (<BigNumber>(<unknown>decimals)))));
+    contract.balanceOf(address).then((val: BigNumber) => parseFloat(ethers.utils.formatUnits(val, <number>decimals())));
 
   const allowance = (owner: string, spender: string) =>
-    contract.allowance(owner, spender).then((val: BigNumber) => parseFloat(ethers.utils.formatUnits(val, (<BigNumber>(<unknown>decimals)))));
+    contract.allowance(owner, spender).then((val: BigNumber) => parseFloat(ethers.utils.formatUnits(val, <number>decimals())));
     //contract.allowance(owner, spender).then((val: BigNumber) => parseFloat(ethers.utils.formatEther(val)));
 
   // WRITE

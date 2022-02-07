@@ -8,8 +8,7 @@ applications:
             - yarn install
         build:
           commands:
-            - echo "REACT_APP_INFURA_KEY=$REACT_APP_INFURA_KEY" >> ./.env
-            - echo "REACT_APP_ETHEREUM_RPC_URL=$REACT_APP_ETHEREUM_RPC_URL" >> ./.env
+            - echo "REACT_APP_INFURA_PROJECT_ID=$REACT_APP_INFURA_PROJECT_ID" >> ./.env
             - echo "REACT_APP_ETHEREUM_CHAIN_ID=$REACT_APP_ETHEREUM_CHAIN_ID" >> ./.env
             - echo "REACT_APP_INFURA_NETWORK=$REACT_APP_INFURA_NETWORK" >> ./.env
             - echo "REACT_APP_KIRA_TOKEN_ADDRESS=$REACT_APP_KIRA_TOKEN_ADDRESS" >> ./.env

@@ -5,7 +5,7 @@ import { create as createERC20 } from '../lib/erc20';
 import { create as createERC1155 } from '../lib/erc1155';
 import { create as createStakingPool } from '../lib/farm';
 import { create as createNFTStaking } from '../lib/nftstake';
-import { NFT_FARM_ADDRESS, KIRA_TOKEN_ADDRESS, NFT_MINTING_ADDRESS, NFT_STAKING_ADDRESS } from 'src/config';
+import { NFT_FARM_ADDRESS, KIRA_TOKEN_ADDRESS, NFT_MINTING_ADDRESS, NFT_STAKING_ADDRESS, INFURA_NETWORK, INFURA_PROJECT_ID } from 'src/config';
 
 export function useContracts() {
   const { ethereum }: { ethereum: any } = useWallet();
@@ -17,7 +17,7 @@ export function useContracts() {
 
   const nft = createERC1155(
     NFT_MINTING_ADDRESS,
-    signer ? signer : new EthersProviders.InfuraProvider(process.env.REACT_APP_INFURA_NETWORK, process.env.REACT_APP_INFURA_KEY),
+    signer ? signer : new EthersProviders.InfuraProvider(INFURA_NETWORK, INFURA_PROJECT_ID),
   );
 
   const stakingPool = createStakingPool(NFT_FARM_ADDRESS, signer);

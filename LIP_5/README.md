@@ -268,7 +268,7 @@ echo "NFT_MINTING_ADDRESS=0xB4454c3BeA54f10095e288534EaadE857B79f325" >> ./.env
 
 -----
 
-### Metadata
+## Metadata
 
 Metadata is located under `/metadata-<network>` directory.
 
@@ -279,14 +279,37 @@ The `LIP_5\contracts\KiraNFT.sol` must be updated every time to contain a correc
 * KOVAN METADATA: `https://ipfs.io/ipfs/QmbRLTnLXSfGsVwwXUifuUTa2BTULHXxLkESQ2m4aVMhJ9/`
 * MAINNET METADATA: `TBD`
 
-### Testing
+## Testing
 
-##### Add NFT Card Information
+#### Add NFT Card Information
 
-With a deployer account, we can add the following information to each NFT. (call `KiraNFT`'s `addCard` function.)
-- how many instances are available
-- how many Crystals are needed to buy one instance
-##### Get NFTs
+For each NFT call `KiraNFT`'s `addCard` function and create cards as per the table defined below:
+
+- `id` - the NFT identifier as per metadata index (`id`)
+- `count` - the number of NFT's to exit (`quantity`)
+- `price` - a number of stones needed to acquire a token (`amount`)
+
+| id | name     | count | price |
+|----|----------|-------|-------|
+|  1 | Samael   | 10    | 3000  |
+|  2 | Mikhaela | 10    | 3000  |
+|  3 | Kali     | 10    | 3000  |
+|  4 | Lucy     | 10    | 3000  |
+|  5 | Maalik   | 10    | 3000  |
+|  6 | Azrael   | 10    | 3000  |
+| | | | |
+|  7 | CZ       | 6     | 9000  |
+|  8 | Bose     | 6     | 9000  |
+|  9 | Jae      | 6     | 9000  |
+| 10 | Vitalik  | 6     | 9000  |
+| 11 | Gavin    | 6     | 9000  |
+| | | | |
+| 12 | Asmodat  | 3     | 15000 |
+| 13 | KIRA     | 3     | 30000 |
+| 14 | Lilith   | 3     | 90000 |
+
+
+#### Get NFTs
 
 There are two ways to get NFTs.
 

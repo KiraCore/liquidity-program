@@ -9,7 +9,7 @@ https://lip5.kira.network/
 ## Environment variables
 
 ```
-REACT_APP_INFURA_KEY=
+REACT_APP_INFURA_PROJECT_ID=
 REACT_APP_INFURA_NETWORK=
 ```
 
@@ -56,8 +56,7 @@ cd $HOME && \
 
 ```
 cd $HOME/liquidity-program/LIP_5.1 && \
- echo "REACT_APP_INFURA_KEY=XXX...XXX" >> ./.env && \
- echo "REACT_APP_ETHEREUM_RPC_URL=https://kovan.infura.io/v3/9f39881c4d9b48f8b9b865ea9a5add18" >> ./.env && \
+ echo "REACT_APP_INFURA_PROJECT_ID=9f39881c4d9b48f8b9b865ea9a5add18" >> ./.env && \
  echo "REACT_APP_ETHEREUM_CHAIN_ID=42"  >> ./.env && \
  echo "REACT_APP_INFURA_NETWORK=kovan" >> ./.env && \
  echo "REACT_APP_KIRA_TOKEN_ADDRESS=0x539fa9544ea8f82a701b6d3c6a6f0e2ebe307ea6" >> ./.env && \

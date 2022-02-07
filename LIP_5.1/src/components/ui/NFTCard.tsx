@@ -25,8 +25,7 @@ const NFTCard = ({ nft: { id, title, image }, onMint, card, data }: NFTCardProps
   const mintDisabled =
     !account || nKrystals === undefined || nMinted === undefined || nTotal === undefined || !krystalBalance || parseInt(nKrystals.toString()) > krystalBalance;
 
-  let metadata = card?.metadata ? card.metadata : undefined;
-  let attributes = metadata?.attributes ? card.metadata : [
+  const attributes = card?.metadata?.attributes ? card.metadata.attributes : [
     { trait_type: "ID", value: id },
     { trait_type: "Tier", value: "???" },
     { trait_type: "Camp", value: "???" },

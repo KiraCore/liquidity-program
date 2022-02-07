@@ -279,8 +279,9 @@ Available `trait_types` attributes and the corresponding possible `values`:
 
 * `ID` - `<number>`
 * `Tier` - `Common`, `Uncommon`, `Rare`
-* `Camp` - `BOSE`, `KIRA`
-* `Type` - `Hacker`,
+* `Camp` - `BOSE`, `KIRA`, `COSMOS`, `POLKADOT`, `BINANCE`, `ETHEREUM`
+* `Type` - `Hacker`, `Mage`, `Cyborg`, `Human`, `Übermensch`, `OG`
+* `Gender` - `Male`, `Female`, `???`
 
 The `LIP_5\contracts\KiraNFT.sol` must be updated every time to contain a correct `tokenUri` referencing a **folder** in IPFS
 

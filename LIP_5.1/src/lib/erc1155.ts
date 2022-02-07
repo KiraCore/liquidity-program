@@ -1,5 +1,5 @@
 import { Contract, ethers } from 'ethers';
-import { Card } from 'src/types/nftTypes';
+import { Card, NFTMetadata } from 'src/types/nftTypes';
 
 const abi = [
   {
@@ -594,12 +594,17 @@ export const create = (address: string, provider: any) => {
 
   const cards = (id: number): Card => contract.cards(id).then((res: any) => {
     return contract.uri(id).then((metaUrl: string) => fetch(metaUrl).then(fetchRes => {
-      return ({
-        metadata: fetchRes.json(),
-        quantity: res.quantity, 
-        sold: res.sold.toNumber(), 
-        value: ethers.utils.formatEther(res.value)
-      })
+      if (!fetchRes.ok) {
+        throw new Error(fetchRes.statusText)
+      }
+      return fetchRes.json().then((metadata: NFTMetadata) => {
+        return ({
+          metadata: metadata,
+          quantity: res.quantity, 
+          sold: res.sold.toNumber(), 
+          value: ethers.utils.formatEther(res.value)
+        })
+      }) 
     }).catch((e: any) => console.error(e))).catch((e: any) => console.error(e));
   }).catch((e: any) => console.error(e));
 

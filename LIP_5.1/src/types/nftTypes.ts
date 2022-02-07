@@ -17,6 +17,19 @@ export interface NFT {
   unstakedBalance?: number;
 }
 
+export interface NFTAttributes {
+  trait_type: string;
+  value: string;
+}
+
+export interface NFTMetadata {
+  title: string;
+  description: string;
+  image: string;
+  animation_url?: string;
+  attributes: NFTAttributes[];
+}
+
 export interface NFTCollection {
   title: string;
   description: string;

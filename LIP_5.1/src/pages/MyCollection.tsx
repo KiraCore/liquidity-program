@@ -70,6 +70,7 @@ const MyCollection = ({ data }: MyCollectionProps) => {
 
   useEffect(() => {
     setOwnInfo({});
+    setCardInfo({});
     if (account) {
       updateInfo();
     }

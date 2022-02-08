@@ -33,10 +33,12 @@ const MainContent = ({ data }: MainContentProps) => {
     [ commonCards, uncommonCards, rareCards ].forEach(cards  => {
       cards.forEach(card => {
         let id = card?.metadata.attributes?.find(x => x.trait_type == "ID")?.value;
-        if (typeof id !== undefined) {
-          cardInfo[Number.parseInt(id as string)] = card;
+        let cardId = id ? Number.parseInt(id) : 0;
+        if (cardId > 0) {
+          console.warn("MainContext.txs => updateInfo: Found card ", cardId, ", upadting info...")
+          cardInfo[cardId] = card;
         } else {
-          console.warn("MainContext.txs => updateInfo: Could NOT find card id in attributes!")
+          console.warn("MainContext.txs => updateInfo: Could NOT find card with id: ", cardId)
           console.warn({card: card})
         }
       });
@@ -45,6 +47,9 @@ const MainContent = ({ data }: MainContentProps) => {
     //cards.forEach((card: Card, index: number) => {
     //  cardInfo[commonCollection.nfts[index].id] = card;
     //});
+
+    console.log("MainContext.txs => updateInfo => cardInfos:")
+    console.log({cardInfo: cardInfo})
 
     setCardInfo({ ...cardInfo });
   }
@@ -71,8 +76,8 @@ const MainContent = ({ data }: MainContentProps) => {
       <HeroSection data={data} />
       <StorySection />
       <CollectionSection collection={commonCollection} cardInfo={cardInfo} onMint={showMintModal} data={data} />
-      <CollectionSection collection={uncommonCollection} cardInfo={{}} onMint={showMintModal} data={data} />
-      <CollectionSection collection={rareCollection} cardInfo={{}} onMint={showMintModal} data={data} />
+      <CollectionSection collection={uncommonCollection} cardInfo={cardInfo} onMint={showMintModal} data={data} />
+      <CollectionSection collection={rareCollection} cardInfo={cardInfo} onMint={showMintModal} data={data} />
       {selectedId !== undefined && (
         <NFTMintModal
           data={data}

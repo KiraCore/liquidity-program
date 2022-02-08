@@ -1,4 +1,6 @@
 const hre = require('hardhat');
+const fs = require('fs');
+
 const KIRA_TOKEN_ADDRESS = process.env.KIRA_TOKEN_ADDRESS;
 
 async function main() {  
@@ -9,9 +11,7 @@ async function main() {
 
   console.log('KexFarm deployed to:', kexFarm.address, ' and connected with the token address: ', KIRA_TOKEN_ADDRESS);
 
-  var txtFile = new File("result.txt");
-  txtFile.write(kexFarm.address);
-  txtFile.close();
+  fs.writeFileSync("result.txt", kexFarm.address)
 }
 
 main()

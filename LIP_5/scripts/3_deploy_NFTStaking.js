@@ -1,4 +1,6 @@
 const hre = require('hardhat');
+const fs = require('fs');
+
 const ACCESS_CONTROL_ADDRESS = process.env.ACCESS_CONTROL_ADDRESS;
 
 async function main() {
@@ -9,9 +11,7 @@ async function main() {
 
   console.log('NFTStaking deployed to: ', nftStaking.address, ', by access control address: ', ACCESS_CONTROL_ADDRESS);
 
-  var txtFile = new File("result.txt");
-  txtFile.write(nftStaking.address);
-  txtFile.close();
+  fs.writeFileSync("result.txt", nftStaking.address)
 }
 
 main()

@@ -1,4 +1,6 @@
 const hre = require('hardhat');
+const fs = require('fs');
+
 const NFT_FARM_ADDRESS = process.env.NFT_FARM_ADDRESS;
 
 async function main() {
@@ -10,9 +12,7 @@ async function main() {
 
   console.log('KiraNFT minting deployed to: ', kiraNFT.address, ' and connected with the stone farming: ', NFT_FARM_ADDRESS);
 
-  var txtFile = new File("result.txt");
-  txtFile.write(kiraNFT.address);
-  txtFile.close();
+  fs.writeFileSync("result.txt", kiraNFT.address)
 }
 
 main()

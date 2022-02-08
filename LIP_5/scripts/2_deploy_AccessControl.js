@@ -1,4 +1,5 @@
 const hre = require('hardhat');
+const fs = require('fs');
 
 async function main() {
   [owner] = await ethers.getSigners();
@@ -11,9 +12,7 @@ async function main() {
 
   console.log('KiraAccessControl deployed to:', kiraAccessControl.address, ' and connected with the deployer: ', owner.address);
 
-  var txtFile = new File("result.txt");
-  txtFile.write(kiraAccessControl.address);
-  txtFile.close();
+  fs.writeFileSync("result.txt", kiraAccessControl.address)
 }
 
 main()

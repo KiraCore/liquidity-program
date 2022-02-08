@@ -269,14 +269,18 @@ echo "NFT_MINTING_ADDRESS=0xB4454c3BeA54f10095e288534EaadE857B79f325" >> ./.env
 
 ### Quick Deploy
 
-This is a quick & dirty one-line bash command enabling deployment of all contracts at once
+This is a quick & dirty one-line bash command enabling deployment of all contracts at once. At the end of execution a list of all created contracts is displayed. Only `NETWORK`, `KIRA_TOKEN_ADDRESS`, `PRIVATE_KEY`, `ETHERSCAN_API_KEY` and `INFURA_PROJECT_ID` must be specified before the script is tarted.
 
 ```sh
 RESULT_FILE="./result.txt" && NETWORK="kovan" && KIRA_TOKEN_ADDRESS="0x539fa9544ea8f82a701b6d3c6a6f0e2ebe307ea6" && \
  echo "Cloning smartcontracts repo..." && \
  cd $HOME && rm -fvr ./liquidity-program && \
  git clone https://github.com/KiraCore/liquidity-program.git -b "LIP_5" && \
- cd ./liquidity-program/LIP_5 && touch ./.env && chmod 777 ./.env && yarn 
+ cd ./liquidity-program/LIP_5 && touch ./.env && chmod 777 ./.env && yarn && \
+ echo "PRIVATE_KEY=XXX...XXX" >> ./.env && \
+ echo "ETHERSCAN_API_KEY=XXX...XXX" >> ./.env && \
+ echo "INFURA_PROJECT_ID=XXX...XXX" >> ./.env &&  \
+ echo "KIRA_TOKEN_ADDRESS=$KIRA_TOKEN_ADDRESS" >> ./.env && \
  echo "Started 2_deploy_AccessControl.js => " && \
  rm -fv $RESULT_FILE && npx hardhat run scripts/2_deploy_AccessControl.js --network $NETWORK && \
  ACCESS_CONTROL_ADDRESS=$(cat $RESULT_FILE) && echo "ACCESS_CONTROL_ADDRESS=$ACCESS_CONTROL_ADDRESS" >> ./.env && \
@@ -288,12 +292,13 @@ RESULT_FILE="./result.txt" && NETWORK="kovan" && KIRA_TOKEN_ADDRESS="0x539fa9544
  echo "Started 4_deploy_KexFarm.js => " && \
  rm -fv $RESULT_FILE && npx hardhat run scripts/4_deploy_KexFarm.js --network $NETWORK && \
  NFT_FARM_ADDRESS=$(cat $RESULT_FILE) && echo "NFT_FARM_ADDRESS=$NFT_FARM_ADDRESS" >> ./.env && \
- sleep 60 && npx hardhat verify --network $NETWORK $NFT_FARM_ADDRESS $KIRA_TOKEN_ADDRESS
+ sleep 60 && npx hardhat verify --network $NETWORK $NFT_FARM_ADDRESS $KIRA_TOKEN_ADDRESS && \
  echo "Started 5_deploy_KiraNFT.js => " && \
  rm -fv $RESULT_FILE && npx hardhat run scripts/5_deploy_KiraNFT.js --network $NETWORK && \
  NFT_MINTING_ADDRESS=$(cat $RESULT_FILE) && echo "NFT_MINTING_ADDRESS=$NFT_MINTING_ADDRESS" >> ./.env && \
  sleep 60 && npx hardhat verify --network $NETWORK $NFT_MINTING_ADDRESS && \
  rm -fv $RESULT_FILE && cat ./.env && echo "Deployment Suceeded !!!" || echo "Deployment Failed :("
+ 
 ```
 
 -----

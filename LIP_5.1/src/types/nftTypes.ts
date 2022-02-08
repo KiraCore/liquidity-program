@@ -7,7 +7,6 @@ export interface NFT {
   type?: string;
 
   title: string;
-  description: string;
   image: string;
   staked?: boolean;
   animation_url?: string;

@@ -16,14 +16,14 @@ type NFTCardProps = {
 };
 
 const NFTCard = ({ id, onMint, card, data }: NFTCardProps) => {
-  const nKrystals = card ? card.value : undefined;
+  const nKrystals = card?.value ? card.value : 0;
   const nMinted = card ? card.sold : undefined;
-  const nTotal = card ? card.quantity : undefined;
+  const nTotal = card?.quantity ? card.quantity : 0;
   const { account } = useWallet();
   const { krystalBalance } = data;
 
   const mintDisabled =
-    !account || nKrystals === undefined || nMinted === undefined || nTotal === undefined || !krystalBalance || parseInt(nKrystals.toString()) > krystalBalance;
+    !account || nKrystals <= 0 || !nMinted || nTotal <= 0 || !krystalBalance || parseInt(nKrystals.toString()) > krystalBalance;
 
   const attributes = card?.metadata?.attributes ? card.metadata.attributes : [
       { trait_type: "ID", value: id.toString() }  
@@ -33,13 +33,13 @@ const NFTCard = ({ id, onMint, card, data }: NFTCardProps) => {
   const camp = attributes?.find(x => x.trait_type == "Camp")?.value;
   const gender = attributes?.find(x => x.trait_type == "Gender")?.value;
   const type = attributes?.find(x => x.trait_type == "Type")?.value;
-  const short_description = (name != "???") ? `${name}, ${camp} - ${gender} ${type}` : "Loading from IPFS gateway...";
+  const short_description = (name != "???") ? `${name} | ${camp} - ${gender} ${type}` : "Loading from IPFS gateway...";
   const long_description = card?.metadata?.description ? card.metadata.description : "Loading data, please be patient, this might take a while...";
   const image = card?.metadata?.image ? card.metadata.image : "/images/loading.png";
 
   // TODO: REMOVE LOGS, DEBUG ONLY
-  console.log("NFTCard => render: ", id)
-  console.log({name: name, image: image, short_description: short_description, card: card})
+  // console.log("NFTCard => render: ", id)
+  // console.log({name: name, image: image, short_description: short_description, card: card})
 
   return (
     <Box
@@ -130,8 +130,8 @@ const NFTCard = ({ id, onMint, card, data }: NFTCardProps) => {
         </Heading>
         <Flex direction="row" marginRight="10" alignItems="center" mb="40px">
           <Image src={IMG_CRYSTAL} width="3" marginRight="2" />
-          {nKrystals === undefined && <Button isLoading variant="ghost" width="fit-content" color="white" height="16px" />}
-          {nKrystals !== undefined && (
+          {(nKrystals <= 0) && <Button isLoading variant="ghost" width="fit-content" color="white" height="16px" />}
+          {(nKrystals > 0) && (
             <Text fontSize="small" color="white" fontWeight="semibold" mr="8px">
               {nKrystals}
             </Text>
@@ -153,8 +153,8 @@ const NFTCard = ({ id, onMint, card, data }: NFTCardProps) => {
               <Text fontSize="small" color="white" fontWeight="semibold" textAlign="center">
                 MINTED OF
               </Text>
-              {nTotal === undefined && <Button isLoading variant="ghost" width="fit-content" color="white" height="16px" />}
-              {nTotal !== undefined && (
+              {(nTotal <= 0) && <Button isLoading variant="ghost" width="fit-content" color="white" height="16px" />}
+              {(nTotal > 0) && (
                 <Text fontSize="small" color="white" fontWeight="semibold" ml="4px">
                   {nTotal}
                 </Text>

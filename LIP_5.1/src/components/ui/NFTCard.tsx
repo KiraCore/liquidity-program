@@ -33,13 +33,9 @@ const NFTCard = ({ id, onMint, card, data }: NFTCardProps) => {
   const camp = attributes?.find(x => x.trait_type == "Camp")?.value;
   const gender = attributes?.find(x => x.trait_type == "Gender")?.value;
   const type = attributes?.find(x => x.trait_type == "Type")?.value;
-  const short_description = `${name}, ${camp} - ${gender} ${type}`
-  const long_description = card?.metadata?.description ? card.metadata.description : "Loading data, please be patient, this might take a while..." 
-  const image = card?.metadata?.image ? card.metadata.image : "/images/loading.png"
-  
-  if (name == "???") {
-    short_description = "Loading from IPFS gateway..."
-  }
+  const short_description = (name != "???") ? `${name}, ${camp} - ${gender} ${type}` : "Loading from IPFS gateway...";
+  const long_description = card?.metadata?.description ? card.metadata.description : "Loading data, please be patient, this might take a while...";
+  const image = card?.metadata?.image ? card.metadata.image : "/images/loading.png";
 
   // TODO: REMOVE LOGS, DEBUG ONLY
   console.log("NFTCard => render: ", id)

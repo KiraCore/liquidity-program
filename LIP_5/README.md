@@ -347,24 +347,24 @@ For each NFT call `NFT_MINTING_ADDRESS` - `KiraNFT`'s `addCard` function and cre
 - `count` - the number of NFT's to exit (`quantity`)
 - `price` - a number of `Kristals` needed to acquire a token (`amount`)
 
-| id | name     | count | price |
-|----|----------|-------|-------|
-|  1 | Samael   | 10    | 3600  |
-|  2 | Mikhaela | 10    | 3600  |
-|  3 | Kali     | 10    | 3600  |
-|  4 | Lucy     | 10    | 3600  |
-|  5 | Maalik   | 10    | 3600  |
-|  6 | Azrael   | 10    | 3600  |
+| id | name     | count | price  |
+|----|----------|-------|--------|
+|  1 | Samael   | 10    | 10000  |
+|  2 | Mikhaela | 10    | 20000  |
+|  3 | Kali     | 10    | 20000  |
+|  4 | Lucy     | 10    | 20000  |
+|  5 | Maalik   | 10    | 10000  |
+|  6 | Azrael   | 10    | 20000  |
 | | | | |
-|  7 | CZ       | 6     | 9000  |
-|  8 | Bose     | 6     | 9000  |
-|  9 | Jae      | 6     | 9000  |
-| 10 | Vitalik  | 6     | 9000  |
-| 11 | Gavin    | 6     | 9000  |
+|  7 | CZ       | 6     | 70000  |
+|  8 | Bose     | 6     | 70000  |
+|  9 | Jae      | 6     | 70000  |
+| 10 | Vitalik  | 6     | 70000  |
+| 11 | Gavin    | 6     | 70000  |
 | | | | |
-| 12 | Asmodat  | 3     | 15000 |
-| 13 | KIRA     | 3     | 30000 |
-| 14 | Lilith   | 3     | 90000 |
+| 12 | Asmodat  | 3     | 140000 |
+| 13 | KIRA     | 3     | 280000 |
+| 14 | Lilith   | 3     | 560000 |
 
 #### Get NFTs
 

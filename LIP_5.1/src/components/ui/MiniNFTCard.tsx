@@ -1,7 +1,7 @@
 import { Image } from '@chakra-ui/image';
 import { Box, Flex, Text } from '@chakra-ui/layout';
 import { IMG_KEX, SVG_INSTANCE } from 'src/assets/images';
-import { NFT } from 'src/types/nftTypes';
+import { Card, NFT } from 'src/types/nftTypes';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { useEffect, useState } from 'react';
 import { useToast } from '@chakra-ui/toast';
@@ -14,12 +14,13 @@ import { Button } from '@chakra-ui/button';
 
 type MiniNFTCardProps = {
   nft: NFT;
+  card: Card;
   staked: boolean;
   onStake: (nftId: number) => any;
   reloadMyCollection: () => any;
 };
 
-const MiniNFTCard = ({ nft: { id, title, image, stakedBalance, unstakedBalance }, staked, onStake, reloadMyCollection }: MiniNFTCardProps) => {
+const MiniNFTCard = ({ nft: { id, stakedBalance, unstakedBalance }, card, staked, onStake, reloadMyCollection }: MiniNFTCardProps) => {
   const { nftStaking } = useContracts();
   const [loading, setLoading] = useState<boolean>(false);
   const { account } = useWallet();
@@ -137,7 +138,7 @@ const MiniNFTCard = ({ nft: { id, title, image, stakedBalance, unstakedBalance }
     >
       <Box height="201px">
         {/* <Image src={image} objectFit="cover" alt={title} height="100%" /> */}
-        <LazyLoadImage src={image} height="100%" effect="blur" alt={title} style={{ objectFit: 'cover', height: '100%' }} />
+        <LazyLoadImage src={card?.metadata?.image} height="100%" effect="blur" alt={card?.metadata?.name} style={{ objectFit: 'cover', height: '100%' }} />
       </Box>
 
       {staked && (

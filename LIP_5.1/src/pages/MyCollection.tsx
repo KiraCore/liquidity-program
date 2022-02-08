@@ -5,9 +5,9 @@ import { useEffect, useState } from 'react';
 import StakeNFTModal from 'src/components/modals/StakeNFTModal';
 import { PrimaryButton } from 'src/components/ui';
 import { useContracts } from 'src/hooks/useContracts';
-import { NFT, Owned } from 'src/types/nftTypes';
+import { Card, NFT, Owned } from 'src/types/nftTypes';
 import { QueryDataTypes } from 'src/types/queryDataTypes';
-import { commonCollection } from 'src/utils/nfts';
+import { commonCollection, rareCollection, uncommonCollection } from 'src/utils/nfts';
 import { useWallet } from 'use-wallet';
 import MiniCollectionSection from './sections/MiniCollection';
 
@@ -23,6 +23,7 @@ const MyCollection = ({ data }: MyCollectionProps) => {
   const [ownInfo, setOwnInfo] = useState<{ [key: string]: Owned }>({});
   const [isOpenStakeModal, openStakeModal] = useState<boolean>(false);
   const [selectedId, setSelectedId] = useState<number | undefined>(undefined);
+  const [cardInfo, setCardInfo] = useState<{ [key: string]: Card }>({});
 
   async function updateInfo() {
     if (!account) return;
@@ -42,6 +43,30 @@ const MyCollection = ({ data }: MyCollectionProps) => {
     });
 
     setOwnInfo({ ...ownInfo });
+
+    const commonCards = Promise.all(commonCollection.nfts.map(({ id }: NFT) => nft.cards(id)));
+    const uncommonCards = Promise.all(uncommonCollection.nfts.map(({ id }: NFT) => nft.cards(id)));
+    const rareCards = Promise.all(rareCollection.nfts.map(({ id }: NFT) => nft.cards(id)));
+    const cardsCollection = await Promise.all([ commonCards, uncommonCards, rareCards ]);
+
+    console.log("MyCollection.txs => updateInfo:")
+    console.log({cardsCollection: cardsCollection})
+
+    const cardInfo: { [key: string]: Card } = {};
+
+    cardsCollection.forEach(cards  => {
+      cards.forEach(card => {
+        let id = card?.metadata.attributes?.find(x => x.trait_type == "ID")?.value;
+        if (typeof id !== undefined) {
+          cardInfo[Number.parseInt(id as string)] = card;
+        } else {
+          console.warn("MainContext.txs => updateInfo: Could NOT find card id in attributes!")
+          console.warn({card: card})
+        }
+      });
+    });
+
+    setCardInfo({ ...cardInfo });
   }
 
   useEffect(() => {
@@ -86,6 +111,7 @@ const MyCollection = ({ data }: MyCollectionProps) => {
     nfts,
     staked: optStaked,
     reloadMyCollection: updateInfo,
+    cardInfo: cardInfo,
   };
 
   return (

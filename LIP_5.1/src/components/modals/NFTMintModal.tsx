@@ -108,7 +108,7 @@ const NFTMintModal = ({ isOpen = false, onClose, loadCardInfo, data, nftId, nftI
           lineHeight="33.6px"
         >
           <Flex alignItems="center" direction="row">
-            <Image src={nftInfo?.image} width="72px" height="72px" borderRadius="16px" mr="24px" />
+            <Image src={cardInfo?.metadata?.image} width="72px" height="72px" borderRadius="16px" mr="24px" />
             <Flex direction="column">
               <Text color="gray.secondary">Confirm Minting</Text>
               <Text color="blue.dark">Mage male Kira: Samael</Text>

@@ -26,10 +26,16 @@ const NFTCard = ({ id, onMint, card, data }: NFTCardProps) => {
     !account || nKrystals === undefined || nMinted === undefined || nTotal === undefined || !krystalBalance || parseInt(nKrystals.toString()) > krystalBalance;
 
   let attributes = card?.metadata?.attributes;
+  let name = card?.metadata?.name ? card.metadata.name : "???";
   let camp = attributes?.find(x => x.trait_type == "Camp")?.value;
   let gender = attributes?.find(x => x.trait_type == "Gender")?.value;
   let type = attributes?.find(x => x.trait_type == "Type")?.value;
-  let short_description = `${card.metadata.name}, ${camp} - ${gender} ${type}`
+  let short_description = `${name}, ${camp} - ${gender} ${type}`
+  let image = card?.metadata?.image ? card.metadata.image : "/images/loading.png"
+  
+  if (name == "???") {
+    short_description = "Loading from IPFS gateway..."
+  }
 
   return (
     <Box
@@ -112,7 +118,7 @@ const NFTCard = ({ id, onMint, card, data }: NFTCardProps) => {
       </Box>
       <Box height={{ base: '320px', md: '440px' }}>
         {/* <Image src={image} objectFit="cover" alt={short_description} height="100%" /> */}
-        <LazyLoadImage src={card?.metadata?.image} height="100%" effect="blur" alt={short_description} style={{ objectFit: 'cover', height: '100%' }} />
+        <LazyLoadImage src={image} height="100%" effect="blur" alt={short_description} style={{ objectFit: 'cover', height: '100%' }} />
       </Box>
       <Box height="196px" p={{ base: '18px', md: '24px' }}>
         <Heading as="h3" fontSize="20px" lineHeight="30px" mb="12px" whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">

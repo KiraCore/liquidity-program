@@ -9,6 +9,10 @@ async function main() {
   await kiraNFT.setFarmerAddress(NFT_FARM_ADDRESS);
 
   console.log('KiraNFT minting deployed to: ', kiraNFT.address, ' and connected with the stone farming: ', NFT_FARM_ADDRESS);
+
+  var txtFile = new File("result.txt");
+  txtFile.write(kiraNFT.address);
+  txtFile.close();
 }
 
 main()

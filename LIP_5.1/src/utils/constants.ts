@@ -1,4 +1,4 @@
-export const FARM_RATE = 11574074074074075;
+export const FARM_RATE = 1;
 export const HEADER_MENUS = [
   { label: 'ABOUT', href: 'https://kira.network/about.html' },
   { label: 'TECHNOLOGY', href: 'https://kira.network/technology.html' },

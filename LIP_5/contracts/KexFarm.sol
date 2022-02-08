@@ -15,7 +15,8 @@ struct Staker {
 contract KexFarm is Ownable, Authorizable {
     using SafeMath for uint256;
 
-    uint256 public limit = 10000 * 10**18;
+    // Staking limit is 10'000 KEX
+    uint256 public limit = 10000 * 10**6;
     uint256 public total;
 
     mapping(address => Staker) public stakers;
@@ -60,16 +61,16 @@ contract KexFarm is Ownable, Authorizable {
             return stakers[staker].stones;
         }
 
+        //.amount.div(1e18).mul(_seconds).mul(11574074074074075).div(1e4)
         uint256 _seconds =
             block.timestamp.sub(stakers[staker].timestamp).div(1 seconds);
         return
             stakers[staker].stones.add(
                 stakers[staker]
                     .amount
-                    .div(1e18)
                     .mul(_seconds)
-                    .mul(11574074074074075)
-                    .div(1e4)
+                    .div(1e6)
+                    .div(3600)
             );
     }
 

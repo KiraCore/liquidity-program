@@ -2,14 +2,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 
 export interface NFT {
   id: number;
-  tier: string;
-  camp?: string;
-  type?: string;
-
-  title: string;
-  image: string;
   staked?: boolean;
-  animation_url?: string;
   stakedBalance?: number;
   unstakedBalance?: number;
 }

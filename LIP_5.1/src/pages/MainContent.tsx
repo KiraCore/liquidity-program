@@ -6,7 +6,7 @@ import { useContracts } from 'src/hooks/useContracts';
 import HeroSection from 'src/pages/sections/Hero';
 import { Card, NFT } from 'src/types/nftTypes';
 import { QueryDataTypes } from 'src/types/queryDataTypes';
-import { commonCollection, uncommonCollection } from 'src/utils/nfts';
+import { commonCollection, rareCollection, uncommonCollection } from 'src/utils/nfts';
 import CollectionSection from './sections/Collection';
 import StorySection from './sections/Story';
 
@@ -21,16 +21,31 @@ const MainContent = ({ data }: MainContentProps) => {
   const [cardInfo, setCardInfo] = useState<{ [key: string]: Card }>({});
 
   async function updateInfo() {
-    const cards = await Promise.all(commonCollection.nfts.map(({ id }: NFT) => nft.cards(id)));
+    const commonCards = Promise.all(commonCollection.nfts.map(({ id }: NFT) => nft.cards(id)));
+    const uncommonCards = Promise.all(uncommonCollection.nfts.map(({ id }: NFT) => nft.cards(id)));
+    const rareCards = Promise.all(rareCollection.nfts.map(({ id }: NFT) => nft.cards(id)));
+    const cardsCollection = await Promise.all([ commonCards, uncommonCards, rareCards ]);
 
-    // TODO: Debug only logs
     console.log("MainContext.txs => updateInfo:")
-    console.log({cards: cards})
+    console.log({cardsCollection: cardsCollection})
 
     const cardInfo: { [key: string]: Card } = {};
-    cards.forEach((card: Card, index: number) => {
-      cardInfo[commonCollection.nfts[index].id] = card;
+
+    cardsCollection.forEach(cards  => {
+      cards.forEach(card => {
+        let id = card?.metadata.attributes?.find(x => x.trait_type == "ID")?.value;
+        if (typeof id !== undefined) {
+          cardInfo[Number.parseInt(id as string)] = card;
+        } else {
+          console.warn("MainContext.txs => updateInfo: Could NOT find card id in attributes!")
+          console.warn({card: card})
+        }
+      });
     });
+
+    //cards.forEach((card: Card, index: number) => {
+    //  cardInfo[commonCollection.nfts[index].id] = card;
+    //});
 
     setCardInfo({ ...cardInfo });
   }
@@ -50,7 +65,7 @@ const MainContent = ({ data }: MainContentProps) => {
     openMintModal(true);
   };
 
-  const selectedNft = selectedId ? [...commonCollection.nfts, ...uncommonCollection.nfts].find((nft) => nft.id === selectedId) : undefined;
+  const selectedNft = selectedId ? [...commonCollection.nfts, ...uncommonCollection.nfts, ...rareCollection.nfts].find((nft) => nft.id === selectedId) : undefined;
   const selectedCardInfo = selectedId ? cardInfo[selectedId] : undefined;
   return (
     <Box minHeight="calc(100vh - 350px)" bgImage="url('/images/bg.svg')" bgPosition="top left" bgRepeat="no-repeat">
@@ -58,6 +73,7 @@ const MainContent = ({ data }: MainContentProps) => {
       <StorySection />
       <CollectionSection collection={commonCollection} cardInfo={cardInfo} onMint={showMintModal} data={data} />
       <CollectionSection collection={uncommonCollection} cardInfo={{}} onMint={showMintModal} data={data} />
+      <CollectionSection collection={rareCollection} cardInfo={{}} onMint={showMintModal} data={data} />
       {selectedId !== undefined && (
         <NFTMintModal
           data={data}

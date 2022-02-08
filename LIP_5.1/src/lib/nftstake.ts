@@ -438,7 +438,7 @@ export const create = (address: string, provider: any) => {
   // READ
   // const cards = (id: number) => contract.cards(id).then((val: any) => val);
   const totalStakeOf = (id: number, address: string) => contract.totalStakeOf(id, address).then((val: any) => val.toNumber());
-  const rewardOf = (id: number, address: string) => contract.rewardOf(id, address).then((val: any) => ethers.utils.formatEther(val));
+  const rewardOf = (id: number, address: string) => contract.rewardOf(id, address).then((val: any) => ethers.utils.formatUnits(val, 0));
   // const isCardPayable = (id: number) => contract.isCardPayable(id).then((val: any) => val);
   // const rewardedStones = (address: string) =>
   //   contract.rewardedStones(address).then((v: BigNumber) => parseFloat(ethers.utils.formatEther(v)));

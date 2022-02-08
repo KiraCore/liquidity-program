@@ -28,7 +28,7 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
   const toast = useToast();
   const { kexDecimals, kexBalance, krystalBalance, stakedBalance, allowance, updateInfo, loadAllowance } = data;
   const total = stake ? kexBalance : stakedBalance;
-  const krystalsPerHour = value ? (value * 3600 * FARM_RATE) / Math.pow(10, 22) : 0;
+  const krystalsPerHour = value ? (value * FARM_RATE) / Math.pow(10, 6) : 0;
 
   // TODO: DEBUG ONLY, REMOVE FOR MAINNET
   // console.log("StakeKexModal.tsx => StakeKexModal => data")

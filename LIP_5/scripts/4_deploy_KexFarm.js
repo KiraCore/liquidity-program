@@ -8,6 +8,10 @@ async function main() {
   await kexFarm.deployed();
 
   console.log('KexFarm deployed to:', kexFarm.address, ' and connected with the token address: ', KIRA_TOKEN_ADDRESS);
+
+  var txtFile = new File("result.txt");
+  txtFile.write(kexFarm.address);
+  txtFile.close();
 }
 
 main()

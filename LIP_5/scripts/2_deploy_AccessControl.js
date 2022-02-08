@@ -10,6 +10,10 @@ async function main() {
   await kiraAccessControl.addManagerRole(owner.address);
 
   console.log('KiraAccessControl deployed to:', kiraAccessControl.address, ' and connected with the deployer: ', owner.address);
+
+  var txtFile = new File("result.txt");
+  txtFile.write(kiraAccessControl.address);
+  txtFile.close();
 }
 
 main()

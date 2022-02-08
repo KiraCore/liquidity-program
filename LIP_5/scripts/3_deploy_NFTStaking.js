@@ -8,6 +8,10 @@ async function main() {
   await nftStaking.deployed();
 
   console.log('NFTStaking deployed to: ', nftStaking.address, ', by access control address: ', ACCESS_CONTROL_ADDRESS);
+
+  var txtFile = new File("result.txt");
+  txtFile.write(nftStaking.address);
+  txtFile.close();
 }
 
 main()

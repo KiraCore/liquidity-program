@@ -180,6 +180,17 @@ This is a payment function to buy a NFT using `Crystals` from KiraNFT contract. 
 
 This is a public function to calculate & update the rewards for an account. The calculation is based on the passed seconds since the last update.
 
+
+########################
+
+ACCESS_CONTROL_ADDRESS=0x7DbEB0eFAa805D93Fae3Fa3200B24288824B1a45
+NFT_STAKING_ADDRESS=0xD5c14C9B86b141e8EF501F831757a1a5F04f6168
+NFT_FARM_ADDRESS=0xf1dEEf91220A106f5A75c237FD3A4A0Ca1Cc0f3d
+NFT_MINTING_ADDRESS=0x77AA192c101278250054B6d9Ed848e1c5b74Db7c
+
+
+#######################
+
 -----
 
 ### Deployment guides
@@ -208,11 +219,11 @@ npx hardhat verify --network kovan $KIRA_TOKEN_ADDRESS "KIRA Network" "KEX" "300
 # Sets a manager role for the deployer address
 npx hardhat run scripts/2_deploy_AccessControl.js --network kovan
 # KiraAccessControl on RINKEBY: 0x0c9FCeF7F6272d2c1053839b1069b4b5f884D4E3
-# KiraAccessControl on KOVAN: 0x8cDC897BCE72Df659096Ef31CdF0a4DDaDCCEA8F
+# KiraAccessControl on KOVAN: 0x7DbEB0eFAa805D93Fae3Fa3200B24288824B1a45
 # KiraAccessControl on MAINNET: TBD
 
 # Save ACCESS_CONTROL_ADDRESS as env variable
-echo "ACCESS_CONTROL_ADDRESS=0x8cDC897BCE72Df659096Ef31CdF0a4DDaDCCEA8F" >> ./.env
+echo "ACCESS_CONTROL_ADDRESS=0x7DbEB0eFAa805D93Fae3Fa3200B24288824B1a45" >> ./.env
 
 # Verify access control contract
 . ./.env && npx hardhat verify --network kovan $ACCESS_CONTROL_ADDRESS
@@ -224,11 +235,11 @@ echo "ACCESS_CONTROL_ADDRESS=0x8cDC897BCE72Df659096Ef31CdF0a4DDaDCCEA8F" >> ./.e
 # Requires `ACCESS_CONTROL_ADDRESS` set in env variables
 npx hardhat run scripts/3_deploy_NFTStaking.js --network kovan
 # NFTStaking on RINKEBY: 0x0433c6CB94863850eb3fECE472A482f228F65b2E
-# NFTStaking on KOVAN: 0x52510ba27b024199764ad0FD85aca3B8a29801D3
+# NFTStaking on KOVAN: 0xD5c14C9B86b141e8EF501F831757a1a5F04f6168
 # NFTStaking on MAINNET: TBD
 
 # Save NFT_STAKING_ADDRESS as env variable
-echo "NFT_STAKING_ADDRESS=0x52510ba27b024199764ad0FD85aca3B8a29801D3" >> ./.env
+echo "NFT_STAKING_ADDRESS=0xD5c14C9B86b141e8EF501F831757a1a5F04f6168" >> ./.env
 
 # verify NFT staking contract
 . ./.env && npx hardhat verify --network kovan $NFT_STAKING_ADDRESS $ACCESS_CONTROL_ADDRESS
@@ -240,11 +251,11 @@ echo "NFT_STAKING_ADDRESS=0x52510ba27b024199764ad0FD85aca3B8a29801D3" >> ./.env
 # Requires `KIRA_TOKEN_ADDRESS` set in env variables
 npx hardhat run scripts/4_deploy_KexFarm.js --network kovan 
 # KexFarm on RINKEBY: 0x995179A0ae6Df352d1f49555fd8C8495D8Bb61B1
-# KexFarm on KOVAN: 0x21cfa4a7cD1ECC8e214c0A05457c48680aae548e
+# KexFarm on KOVAN: 0xf1dEEf91220A106f5A75c237FD3A4A0Ca1Cc0f3d
 # KexFarm on MAINNET: TBD
 
 # Save NFT_FARM_ADDRESS as env variable
-echo "NFT_FARM_ADDRESS=0x21cfa4a7cD1ECC8e214c0A05457c48680aae548e" >> ./.env
+echo "NFT_FARM_ADDRESS=0xf1dEEf91220A106f5A75c237FD3A4A0Ca1Cc0f3d" >> ./.env
 
 # verify NFT farming contract
 . ./.env && npx hardhat verify --network kovan $NFT_FARM_ADDRESS $KIRA_TOKEN_ADDRESS
@@ -257,11 +268,11 @@ echo "NFT_FARM_ADDRESS=0x21cfa4a7cD1ECC8e214c0A05457c48680aae548e" >> ./.env
 # The setFarm address funciton is trigerred automatically
 npx hardhat run scripts/5_deploy_KiraNFT.js --network kovan
 # KiraNFT on RINKEBY: 0xD33269a1eeD3aFBC2a78Ee1c98704580c2AC7Dc1
-# KiraNFT on KOVAN: 0xB4454c3BeA54f10095e288534EaadE857B79f325
+# KiraNFT on KOVAN: 0x77AA192c101278250054B6d9Ed848e1c5b74Db7c
 # KiraNFT on MAINNET: TBD
 
 # Save NFT_MINTING_ADDRESS as env variable
-echo "NFT_MINTING_ADDRESS=0xB4454c3BeA54f10095e288534EaadE857B79f325" >> ./.env
+echo "NFT_MINTING_ADDRESS=0x77AA192c101278250054B6d9Ed848e1c5b74Db7c" >> ./.env
 
 # Verify NFT minting contract
 . ./.env && npx hardhat verify --network kovan $NFT_MINTING_ADDRESS
@@ -275,28 +286,32 @@ This is a quick & dirty one-line bash command enabling deployment of all contrac
 RESULT_FILE="./result.txt" && NETWORK="kovan" && KIRA_TOKEN_ADDRESS="0x539fa9544ea8f82a701b6d3c6a6f0e2ebe307ea6" && \
  echo "Cloning smartcontracts repo..." && \
  cd $HOME && rm -fvr ./liquidity-program && \
- git clone https://github.com/KiraCore/liquidity-program.git -b "LIP_5" && \
+ git clone https://github.com/KiraCore/liquidity-program.git -b LIP_5 && \
  cd ./liquidity-program/LIP_5 && touch ./.env && chmod 777 ./.env && yarn && \
  echo "PRIVATE_KEY=XXX...XXX" >> ./.env && \
  echo "ETHERSCAN_API_KEY=XXX...XXX" >> ./.env && \
  echo "INFURA_PROJECT_ID=XXX...XXX" >> ./.env &&  \
  echo "KIRA_TOKEN_ADDRESS=$KIRA_TOKEN_ADDRESS" >> ./.env && \
- echo "Started 2_deploy_AccessControl.js => " && \
+ echo "Deploying 2_deploy_AccessControl.js => " && \
  rm -fv $RESULT_FILE && npx hardhat run scripts/2_deploy_AccessControl.js --network $NETWORK && \
  ACCESS_CONTROL_ADDRESS=$(cat $RESULT_FILE) && echo "ACCESS_CONTROL_ADDRESS=$ACCESS_CONTROL_ADDRESS" >> ./.env && \
- sleep 60 && npx hardhat verify --network $NETWORK $ACCESS_CONTROL_ADDRESS && \
- echo "Started 3_deploy_NFTStaking.js => " && \
+ echo "Veryfying 2_deploy_AccessControl.js => " && sleep 300 && \
+ ( npx hardhat verify --network $NETWORK $ACCESS_CONTROL_ADDRESS || echo "Already verified" ) && \
+ echo "Deploying 3_deploy_NFTStaking.js => " && \
  rm -fv $RESULT_FILE && npx hardhat run scripts/3_deploy_NFTStaking.js --network $NETWORK && \
  NFT_STAKING_ADDRESS=$(cat $RESULT_FILE) && echo "NFT_STAKING_ADDRESS=$NFT_STAKING_ADDRESS" >> ./.env && \
- sleep 60 && npx hardhat verify --network $NETWORK $NFT_STAKING_ADDRESS $ACCESS_CONTROL_ADDRESS && \
- echo "Started 4_deploy_KexFarm.js => " && \
+ echo "Veryfying 3_deploy_NFTStaking.js => " && sleep 300 && \
+ ( npx hardhat verify --network $NETWORK $NFT_STAKING_ADDRESS $ACCESS_CONTROL_ADDRESS || echo "Already verified" ) && \
+ echo "Deploying 4_deploy_KexFarm.js => " && \
  rm -fv $RESULT_FILE && npx hardhat run scripts/4_deploy_KexFarm.js --network $NETWORK && \
  NFT_FARM_ADDRESS=$(cat $RESULT_FILE) && echo "NFT_FARM_ADDRESS=$NFT_FARM_ADDRESS" >> ./.env && \
- sleep 60 && npx hardhat verify --network $NETWORK $NFT_FARM_ADDRESS $KIRA_TOKEN_ADDRESS && \
+ echo "Veryfying 4_deploy_KexFarm.js => " && sleep 300 && \
+ ( npx hardhat verify --network $NETWORK $NFT_FARM_ADDRESS $KIRA_TOKEN_ADDRESS || echo "Already verified" ) && \
  echo "Started 5_deploy_KiraNFT.js => " && \
  rm -fv $RESULT_FILE && npx hardhat run scripts/5_deploy_KiraNFT.js --network $NETWORK && \
  NFT_MINTING_ADDRESS=$(cat $RESULT_FILE) && echo "NFT_MINTING_ADDRESS=$NFT_MINTING_ADDRESS" >> ./.env && \
- sleep 60 && npx hardhat verify --network $NETWORK $NFT_MINTING_ADDRESS && \
+ echo "Veryfying 5_deploy_KiraNFT.js => " && sleep 300 && \
+ ( npx hardhat verify --network $NETWORK $NFT_MINTING_ADDRESS || echo "Already verified" ) && \
  rm -fv $RESULT_FILE && cat ./.env && echo "Deployment Suceeded !!!" || echo "Deployment Failed :("
  
 ```
@@ -326,20 +341,20 @@ The `LIP_5\contracts\KiraNFT.sol` must be updated every time to contain a correc
 
 ### Add NFT Card Information
 
-For each NFT call `KiraNFT`'s `addCard` function and create cards as per the table defined below:
+For each NFT call `NFT_MINTING_ADDRESS` - `KiraNFT`'s `addCard` function and create cards as per the table defined below:
 
 - `id` - the NFT identifier as per metadata index (`id`)
 - `count` - the number of NFT's to exit (`quantity`)
-- `price` - a number of stones needed to acquire a token (`amount`)
+- `price` - a number of `Kristals` needed to acquire a token (`amount`)
 
 | id | name     | count | price |
 |----|----------|-------|-------|
-|  1 | Samael   | 10    | 3000  |
-|  2 | Mikhaela | 10    | 3000  |
-|  3 | Kali     | 10    | 3000  |
-|  4 | Lucy     | 10    | 3000  |
-|  5 | Maalik   | 10    | 3000  |
-|  6 | Azrael   | 10    | 3000  |
+|  1 | Samael   | 10    | 3600  |
+|  2 | Mikhaela | 10    | 3600  |
+|  3 | Kali     | 10    | 3600  |
+|  4 | Lucy     | 10    | 3600  |
+|  5 | Maalik   | 10    | 3600  |
+|  6 | Azrael   | 10    | 3600  |
 | | | | |
 |  7 | CZ       | 6     | 9000  |
 |  8 | Bose     | 6     | 9000  |

@@ -48,8 +48,9 @@ const MyCollection = ({ data }: MyCollectionProps) => {
     const uncommonCards = await Promise.all(uncommonCollection.nfts.map(({ id }: NFT) => nft.cards(id)));
     const rareCards = await Promise.all(rareCollection.nfts.map(({ id }: NFT) => nft.cards(id)));
 
-    console.log("MyCollection.txs => updateInfo:")
-    console.log({commonCards: commonCards, uncommonCards: uncommonCards, rareCards: rareCards})
+    // TODO: Remove, debug only
+    // console.log("MyCollection.txs => updateInfo:")
+    // console.log({commonCards: commonCards, uncommonCards: uncommonCards, rareCards: rareCards})
 
     const cardInfo: { [key: string]: Card } = {};
 
@@ -57,7 +58,7 @@ const MyCollection = ({ data }: MyCollectionProps) => {
       cards.forEach(card => {
         let id = card?.metadata.attributes?.find(x => x.trait_type == "ID")?.value;
         if (id) {
-          console.info("MyCollection.txs => updateInfo: Found card ", id, ", upadting info...")
+          // console.info("MyCollection.txs => updateInfo: Found card ", id, ", upadting info...")
           cardInfo[Number.parseInt(id)] = card;
         } else {
           console.warn("MainContext.txs => updateInfo: Could NOT find card id in attributes!")

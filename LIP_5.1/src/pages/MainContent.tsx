@@ -25,8 +25,9 @@ const MainContent = ({ data }: MainContentProps) => {
     const uncommonCards = await Promise.all(uncommonCollection.nfts.map(({ id }: NFT) => nft.cards(id)));
     const rareCards = await Promise.all(rareCollection.nfts.map(({ id }: NFT) => nft.cards(id)));
 
-    console.log("MainContext.txs => updateInfo:")
-    console.log({commonCards: commonCards, uncommonCards: uncommonCards, rareCards: rareCards})
+    // TODO: Remove, debug only
+    // console.log("MainContext.txs => updateInfo:")
+    // console.log({commonCards: commonCards, uncommonCards: uncommonCards, rareCards: rareCards})
 
     const cardInfo: { [key: string]: Card } = {};
 
@@ -34,7 +35,7 @@ const MainContent = ({ data }: MainContentProps) => {
       cards.forEach(card => {
         let id = card?.metadata.attributes?.find(x => x.trait_type == "ID")?.value;
         if (id) {
-          console.info("MainContext.txs => updateInfo: Found card ", id, ", upadting info...")
+          // console.info("MainContext.txs => updateInfo: Found card ", id, ", upadting info...")
           cardInfo[Number.parseInt(id)] = card;
         } else {
           console.warn("MainContext.txs => updateInfo: Could NOT find card with id: ", id)
@@ -43,12 +44,9 @@ const MainContent = ({ data }: MainContentProps) => {
       });
     });
 
-    //cards.forEach((card: Card, index: number) => {
-    //  cardInfo[commonCollection.nfts[index].id] = card;
-    //});
-
-    console.log("MainContext.txs => updateInfo => cardInfos:")
-    console.log({cardInfo: cardInfo})
+    // TODO: Remove, debug only
+    // console.log("MainContext.txs => updateInfo => cardInfos:")
+    // console.log({cardInfo: cardInfo})
 
     setCardInfo({ ...cardInfo });
   }

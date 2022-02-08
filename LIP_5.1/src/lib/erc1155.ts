@@ -636,16 +636,12 @@ export const create = (address: string, provider: any) => {
           metadata: metadata,
           quantity: res.quantity, 
           sold: res.sold.toNumber(), 
-          value: ethers.utils.formatEther(res.value)
+          value: ethers.utils.formatUnits(res.value, 0)
         })
       }) 
     }).catch((e: any) => console.error(e))
   }).catch((e: any) => console.error(e));
   }).catch((e: any) => console.error(e));
-
-  // const cards = (id: number): Card => contract.cards(id).then((res: any) => {
-  //   return ({ quantity: res.quantity, sold: res.sold.toNumber(), value: ethers.utils.formatEther(res.value)})
-  // }).catch((e: any) => console.error(e));
 
   const isApprovedForAll = (account: string, operator: string) => contract.isApprovedForAll(account, operator);
 

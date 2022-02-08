@@ -30,9 +30,9 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
   const total = stake ? kexBalance : stakedBalance;
   const krystalsPerHour = value ? (value * DAILY_FARM_RATE) / 24 : 0;
 
-  // TODO: DEBUG ONLY, REMOVE FOR MAINNET
-  // console.log("StakeKexModal.tsx => StakeKexModal => data")
-  // console.log(data)
+  const unstakedKex = kexBalance ? kexBalance : 0;
+  const stakedKex = stakedBalance ? stakedBalance : 0;
+  const maxStakeReached = stakedKex >= 10000;
 
   const onInputChange = (e: any) => {
     const v = parseFloat(e.target.value);
@@ -40,7 +40,16 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
   };
 
   const onUseAll = () => {
-    setValue(stake ? kexBalance : stakedBalance);
+    if(stake) {
+      if (maxStakeReached) {
+        setValue(0);
+      } else {
+        let delta = 10000 - stakedKex;
+        setValue(unstakedKex > delta ? delta : unstakedKex);
+      }
+    } else {
+      setValue(stakedBalance);
+    }
   };
 
   let ready = false,
@@ -52,7 +61,7 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
     ready = kexBalance !== undefined && allowance !== undefined && !!value && value <= kexBalance;
     invalidInput = value !== undefined && kexBalance !== undefined && (value > kexBalance || value === 0);
     enableApprove = value !== undefined && allowance !== undefined && ready && value > allowance;
-    enableConfirm = value !== undefined && allowance !== undefined && ready && value <= allowance;
+    enableConfirm = value !== undefined && allowance !== undefined && ready && value <= allowance && !maxStakeReached;
   } else {
     ready = stakedBalance !== undefined && !!value && value <= stakedBalance;
     invalidInput = value !== undefined && stakedBalance !== undefined && (value > stakedBalance || value === 0);
@@ -67,8 +76,8 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
     var fullDenomValue = ethers.BigNumber.from(Math.floor(value * decimalFactor));
 
     // TODO: DEBUG REMOVE LOGS
-    console.log("StakeKexModal => onConfirm: ")
-    console.log({value: value, fullDenomValue: fullDenomValue, decimalFactor: decimalFactor, kexDecimals: kexDecimals})
+    // console.log("StakeKexModal => onConfirm: ")
+    // console.log({value: value, fullDenomValue: fullDenomValue, decimalFactor: decimalFactor, kexDecimals: kexDecimals})
 
     setLoading(true);
     try {
@@ -179,6 +188,11 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
             {total !== undefined && (
               <Text fontSize="16px" lineHeight="26.24px" color="blue.dark">
                 {total.toLocaleString()}
+              </Text>
+            )}
+            { stake && (
+              <Text mr="8px" fontSize="12px" lineHeight="26.24px" color="red.dark">
+                {"Maximum 10'000 KEX per wallet!"}
               </Text>
             )}
           </Flex>

@@ -336,6 +336,8 @@ For each NFT call `NFT_MINTING_ADDRESS` - `KiraNFT`'s `addCard` function and cre
 - `count` - the number of NFT's to exit (`quantity`)
 - `price` - a number of `Kristals` needed to acquire a token (`amount`)
 
+The krystals are non divisable and their issuance is fixed at `1 krystal` per `1 KEX` per `24 hours`. The maximum amount that can be staked by individual is fixed to `10'000` KEX. Effectively the maximum number of krystals that can be created every day is `10'000`.
+
 | id | name     | count | price  |
 |----|----------|-------|--------|
 |  1 | Samael   | 10    | 10000  |

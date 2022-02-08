@@ -31,6 +31,7 @@ const NFTCard = ({ id, onMint, card, data }: NFTCardProps) => {
   let gender = attributes?.find(x => x.trait_type == "Gender")?.value;
   let type = attributes?.find(x => x.trait_type == "Type")?.value;
   let short_description = `${name}, ${camp} - ${gender} ${type}`
+  let long_description = card?.metadata?.description ? card.metadata.description : "Loading data, please be patient, this might take a while..." 
   let image = card?.metadata?.image ? card.metadata.image : "/images/loading.png"
   
   if (name == "???") {
@@ -98,7 +99,7 @@ const NFTCard = ({ id, onMint, card, data }: NFTCardProps) => {
             },
           }}
         >
-          Description: {card.metadata.description}
+          {long_description}
         </Text>
         <UnorderedList listStyleType="none" ml="0">
           {attributes.map((attr) => (

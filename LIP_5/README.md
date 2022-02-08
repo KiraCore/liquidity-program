@@ -180,17 +180,6 @@ This is a payment function to buy a NFT using `Crystals` from KiraNFT contract. 
 
 This is a public function to calculate & update the rewards for an account. The calculation is based on the passed seconds since the last update.
 
-
-########################
-
-ACCESS_CONTROL_ADDRESS=0x7DbEB0eFAa805D93Fae3Fa3200B24288824B1a45
-NFT_STAKING_ADDRESS=0xD5c14C9B86b141e8EF501F831757a1a5F04f6168
-NFT_FARM_ADDRESS=0xf1dEEf91220A106f5A75c237FD3A4A0Ca1Cc0f3d
-NFT_MINTING_ADDRESS=0x77AA192c101278250054B6d9Ed848e1c5b74Db7c
-
-
-#######################
-
 -----
 
 ### Deployment guides
@@ -219,11 +208,11 @@ npx hardhat verify --network kovan $KIRA_TOKEN_ADDRESS "KIRA Network" "KEX" "300
 # Sets a manager role for the deployer address
 npx hardhat run scripts/2_deploy_AccessControl.js --network kovan
 # KiraAccessControl on RINKEBY: 0x0c9FCeF7F6272d2c1053839b1069b4b5f884D4E3
-# KiraAccessControl on KOVAN: 0x7DbEB0eFAa805D93Fae3Fa3200B24288824B1a45
+# KiraAccessControl on KOVAN: 0xad81b3ab9439b71b3F0BD1EA2bBbF5e9D086d0C1
 # KiraAccessControl on MAINNET: TBD
 
 # Save ACCESS_CONTROL_ADDRESS as env variable
-echo "ACCESS_CONTROL_ADDRESS=0x7DbEB0eFAa805D93Fae3Fa3200B24288824B1a45" >> ./.env
+echo "ACCESS_CONTROL_ADDRESS=0xad81b3ab9439b71b3F0BD1EA2bBbF5e9D086d0C1" >> ./.env
 
 # Verify access control contract
 . ./.env && npx hardhat verify --network kovan $ACCESS_CONTROL_ADDRESS
@@ -235,11 +224,11 @@ echo "ACCESS_CONTROL_ADDRESS=0x7DbEB0eFAa805D93Fae3Fa3200B24288824B1a45" >> ./.e
 # Requires `ACCESS_CONTROL_ADDRESS` set in env variables
 npx hardhat run scripts/3_deploy_NFTStaking.js --network kovan
 # NFTStaking on RINKEBY: 0x0433c6CB94863850eb3fECE472A482f228F65b2E
-# NFTStaking on KOVAN: 0xD5c14C9B86b141e8EF501F831757a1a5F04f6168
+# NFTStaking on KOVAN: 0xEA6Aa53447Dd99389Fd9418272E9685926f43525
 # NFTStaking on MAINNET: TBD
 
 # Save NFT_STAKING_ADDRESS as env variable
-echo "NFT_STAKING_ADDRESS=0xD5c14C9B86b141e8EF501F831757a1a5F04f6168" >> ./.env
+echo "NFT_STAKING_ADDRESS=0xEA6Aa53447Dd99389Fd9418272E9685926f43525" >> ./.env
 
 # verify NFT staking contract
 . ./.env && npx hardhat verify --network kovan $NFT_STAKING_ADDRESS $ACCESS_CONTROL_ADDRESS
@@ -251,11 +240,11 @@ echo "NFT_STAKING_ADDRESS=0xD5c14C9B86b141e8EF501F831757a1a5F04f6168" >> ./.env
 # Requires `KIRA_TOKEN_ADDRESS` set in env variables
 npx hardhat run scripts/4_deploy_KexFarm.js --network kovan 
 # KexFarm on RINKEBY: 0x995179A0ae6Df352d1f49555fd8C8495D8Bb61B1
-# KexFarm on KOVAN: 0xf1dEEf91220A106f5A75c237FD3A4A0Ca1Cc0f3d
+# KexFarm on KOVAN: 0xe89841b13b7e23e560D5f1FdD8591BDE466d68c4
 # KexFarm on MAINNET: TBD
 
 # Save NFT_FARM_ADDRESS as env variable
-echo "NFT_FARM_ADDRESS=0xf1dEEf91220A106f5A75c237FD3A4A0Ca1Cc0f3d" >> ./.env
+echo "NFT_FARM_ADDRESS=0xe89841b13b7e23e560D5f1FdD8591BDE466d68c4" >> ./.env
 
 # verify NFT farming contract
 . ./.env && npx hardhat verify --network kovan $NFT_FARM_ADDRESS $KIRA_TOKEN_ADDRESS
@@ -268,11 +257,11 @@ echo "NFT_FARM_ADDRESS=0xf1dEEf91220A106f5A75c237FD3A4A0Ca1Cc0f3d" >> ./.env
 # The setFarm address funciton is trigerred automatically
 npx hardhat run scripts/5_deploy_KiraNFT.js --network kovan
 # KiraNFT on RINKEBY: 0xD33269a1eeD3aFBC2a78Ee1c98704580c2AC7Dc1
-# KiraNFT on KOVAN: 0x77AA192c101278250054B6d9Ed848e1c5b74Db7c
+# KiraNFT on KOVAN: 0x8D7A7162271f7a124d9BBd305B18deDaEeC5721C
 # KiraNFT on MAINNET: TBD
 
 # Save NFT_MINTING_ADDRESS as env variable
-echo "NFT_MINTING_ADDRESS=0x77AA192c101278250054B6d9Ed848e1c5b74Db7c" >> ./.env
+echo "NFT_MINTING_ADDRESS=0x8D7A7162271f7a124d9BBd305B18deDaEeC5721C" >> ./.env
 
 # Verify NFT minting contract
 . ./.env && npx hardhat verify --network kovan $NFT_MINTING_ADDRESS

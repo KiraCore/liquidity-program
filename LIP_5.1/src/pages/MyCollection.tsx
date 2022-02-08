@@ -44,17 +44,16 @@ const MyCollection = ({ data }: MyCollectionProps) => {
 
     setOwnInfo({ ...ownInfo });
 
-    const commonCards = Promise.all(commonCollection.nfts.map(({ id }: NFT) => nft.cards(id)));
-    const uncommonCards = Promise.all(uncommonCollection.nfts.map(({ id }: NFT) => nft.cards(id)));
-    const rareCards = Promise.all(rareCollection.nfts.map(({ id }: NFT) => nft.cards(id)));
-    const cardsCollection = await Promise.all([ commonCards, uncommonCards, rareCards ]);
+    const commonCards = await Promise.all(commonCollection.nfts.map(({ id }: NFT) => nft.cards(id)));
+    const uncommonCards = await Promise.all(uncommonCollection.nfts.map(({ id }: NFT) => nft.cards(id)));
+    const rareCards = await Promise.all(rareCollection.nfts.map(({ id }: NFT) => nft.cards(id)));
 
     console.log("MyCollection.txs => updateInfo:")
-    console.log({cardsCollection: cardsCollection})
+    console.log({commonCards: commonCards, uncommonCards: uncommonCards, rareCards: rareCards})
 
     const cardInfo: { [key: string]: Card } = {};
 
-    cardsCollection.forEach(cards  => {
+    [commonCards, uncommonCards, rareCards].forEach(cards  => {
       cards.forEach(card => {
         let id = card?.metadata.attributes?.find(x => x.trait_type == "ID")?.value;
         if (typeof id !== undefined) {

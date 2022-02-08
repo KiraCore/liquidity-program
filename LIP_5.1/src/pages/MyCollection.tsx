@@ -56,8 +56,9 @@ const MyCollection = ({ data }: MyCollectionProps) => {
     [commonCards, uncommonCards, rareCards].forEach(cards  => {
       cards.forEach(card => {
         let id = card?.metadata.attributes?.find(x => x.trait_type == "ID")?.value;
-        if (typeof id !== undefined) {
-          cardInfo[Number.parseInt(id as string)] = card;
+        if (id) {
+          console.info("MyCollection.txs => updateInfo: Found card ", id, ", upadting info...")
+          cardInfo[Number.parseInt(id)] = card;
         } else {
           console.warn("MainContext.txs => updateInfo: Could NOT find card id in attributes!")
           console.warn({card: card})

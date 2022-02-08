@@ -616,19 +616,19 @@ export const create = (address: string, provider: any) => {
         let type = metadata.attributes?.find(x => x.trait_type == "Type")?.value;
         let tier = metadata.attributes?.find(x => x.trait_type == "Tier")?.value;
             
-        if(typeof a_id == undefined) {
+        if(!a_id) {
           metadata.attributes.push({ trait_type: "ID", value: id.toString() });
         }
-        if(typeof camp == undefined) {
+        if(!camp) {
           metadata.attributes.push({ trait_type: "Camp", value: "???" });
         }
-        if(typeof gender == undefined) {
+        if(!gender) {
           metadata.attributes.push({ trait_type: "Gender", value: "???" });
         }
-        if(typeof type == undefined) {
+        if(!type) {
           metadata.attributes.push({ trait_type: "Type", value: "???" });
         }
-        if(typeof tier == undefined) {
+        if(!tier) {
           metadata.attributes.push({ trait_type: "Camp", value: "???" });
         }
 

@@ -33,12 +33,11 @@ const MainContent = ({ data }: MainContentProps) => {
     [ commonCards, uncommonCards, rareCards ].forEach(cards  => {
       cards.forEach(card => {
         let id = card?.metadata.attributes?.find(x => x.trait_type == "ID")?.value;
-        let cardId = id ? Number.parseInt(id) : 0;
-        if (cardId > 0) {
-          console.warn("MainContext.txs => updateInfo: Found card ", cardId, ", upadting info...")
-          cardInfo[cardId] = card;
+        if (id) {
+          console.info("MainContext.txs => updateInfo: Found card ", id, ", upadting info...")
+          cardInfo[Number.parseInt(id)] = card;
         } else {
-          console.warn("MainContext.txs => updateInfo: Could NOT find card with id: ", cardId)
+          console.warn("MainContext.txs => updateInfo: Could NOT find card with id: ", id)
           console.warn({card: card})
         }
       });

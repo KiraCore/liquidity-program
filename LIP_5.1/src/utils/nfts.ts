@@ -7,8 +7,6 @@ export const commonCollection: NFTCollection = {
     {
       id: 1,
       tier: 'Common',
-      transferrable: true,
-      burnable: true,
       title: 'Samael, Mage - KIRA Team',
       description: '',
       image: '/images/1.jpeg',
@@ -17,8 +15,6 @@ export const commonCollection: NFTCollection = {
     {
       id: 2,
       tier: 'Common',
-      transferrable: true,
-      burnable: true,
       title: 'Azrael, Dark Mage - Attar Team',
       description: '',
       image: "/images/2.jpeg",
@@ -27,8 +23,6 @@ export const commonCollection: NFTCollection = {
     {
       id: 3,
       tier: 'Common',
-      transferrable: true,
-      burnable: true,
       title: 'Maalik, White Hacker - KIRA Team',
       description: '',
       image: "/images/3.png",
@@ -36,8 +30,6 @@ export const commonCollection: NFTCollection = {
     {
       id: 4,
       tier: 'Common',
-      transferrable: true,
-      burnable: true,
       title: 'Lucy, Cyborg - Attar Team',
       description: '',
       image: "/images/4.jpeg",
@@ -45,8 +37,6 @@ export const commonCollection: NFTCollection = {
     {
       id: 5,
       tier: 'Common',
-      transferrable: true,
-      burnable: true,
       title: 'Mikhaela, Cyborg - KIRA Team',
       description: '',
       image: "/images/5.jpeg",
@@ -54,8 +44,6 @@ export const commonCollection: NFTCollection = {
     {
       id: 6,
       tier: 'Common',
-      transferrable: true,
-      burnable: true,
       title: 'Kali, White Hacker - KIRA Team',
       description: '',
       image: "/images/6.jpeg",

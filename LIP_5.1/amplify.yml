@@ -8,6 +8,7 @@ applications:
             - yarn install
         build:
           commands:
+            - echo "REACT_APP_IPFS_GATEWAY=$REACT_APP_IPFS_GATEWAY" >> ./.env
             - echo "REACT_APP_INFURA_PROJECT_ID=$REACT_APP_INFURA_PROJECT_ID" >> ./.env
             - echo "REACT_APP_ETHEREUM_CHAIN_ID=$REACT_APP_ETHEREUM_CHAIN_ID" >> ./.env
             - echo "REACT_APP_INFURA_NETWORK=$REACT_APP_INFURA_NETWORK" >> ./.env

@@ -1,4 +1,5 @@
 import { Contract, ethers } from 'ethers';
+import { IPFS_GATEWAY } from 'src/config';
 import { Card, NFTMetadata } from 'src/types/nftTypes';
 
 const abi = [
@@ -588,16 +589,49 @@ export const create = (address: string, provider: any) => {
 
   const maxSupply = (card: number) => contract.tokenMaxSupply(card);
 
-  const uri = (id: number) => contract.uri(id);
-  
-  const metadata = (id: number) => contract.uri(id).then((r1: string) => fetch(r1).then(r2 => r2.json()));
-
   const cards = (id: number): Card => contract.cards(id).then((res: any) => {
-    return contract.uri(id).then((metaUrl: string) => fetch(metaUrl).then(fetchRes => {
+    return contract.uri(id).then((metaUrl: string) => {
+      
+      if(metaUrl.startsWith("ipfs://")) {
+        metaUrl = metaUrl.replace("ipfs://", IPFS_GATEWAY);
+      }
+
+      return fetch(metaUrl).then(fetchRes => {
       if (!fetchRes.ok) {
         throw new Error(fetchRes.statusText)
       }
       return fetchRes.json().then((metadata: NFTMetadata) => {
+
+        if(metadata.image.startsWith("ipfs://")) {
+          metadata.image = metadata.image.replace("ipfs://", IPFS_GATEWAY);
+        }
+
+        if(metadata.animation_url?.startsWith("ipfs://") == true) {
+          metadata.animation_url = metadata.animation_url.replace("ipfs://", IPFS_GATEWAY);
+        }
+
+        let a_id = metadata.attributes?.find(x => x.trait_type == "ID")?.value;
+        let camp = metadata.attributes?.find(x => x.trait_type == "Camp")?.value;
+        let gender = metadata.attributes?.find(x => x.trait_type == "Gender")?.value;
+        let type = metadata.attributes?.find(x => x.trait_type == "Type")?.value;
+        let tier = metadata.attributes?.find(x => x.trait_type == "Tier")?.value;
+            
+        if(typeof a_id == undefined) {
+          metadata.attributes.push({ trait_type: "ID", value: id.toString() });
+        }
+        if(typeof camp == undefined) {
+          metadata.attributes.push({ trait_type: "Camp", value: "???" });
+        }
+        if(typeof gender == undefined) {
+          metadata.attributes.push({ trait_type: "Gender", value: "???" });
+        }
+        if(typeof type == undefined) {
+          metadata.attributes.push({ trait_type: "Type", value: "???" });
+        }
+        if(typeof tier == undefined) {
+          metadata.attributes.push({ trait_type: "Camp", value: "???" });
+        }
+
         return ({
           metadata: metadata,
           quantity: res.quantity, 
@@ -605,7 +639,8 @@ export const create = (address: string, provider: any) => {
           value: ethers.utils.formatEther(res.value)
         })
       }) 
-    }).catch((e: any) => console.error(e))).catch((e: any) => console.error(e));
+    }).catch((e: any) => console.error(e))
+  }).catch((e: any) => console.error(e));
   }).catch((e: any) => console.error(e));
 
   // const cards = (id: number): Card => contract.cards(id).then((res: any) => {
@@ -619,5 +654,5 @@ export const create = (address: string, provider: any) => {
 
   const purchaseNFT = (id: number, quantity: number) => contract.buy(id);
 
-  return { balanceOf, uri, metadata, isApprovedForAll, setApprovalForAll, tokenSupply, maxSupply, cards, purchaseNFT };
+  return { balanceOf, isApprovedForAll, setApprovalForAll, tokenSupply, maxSupply, cards, purchaseNFT };
 };

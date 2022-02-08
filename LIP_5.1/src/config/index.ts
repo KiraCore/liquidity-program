@@ -6,3 +6,5 @@ export const NFT_STAKING_ADDRESS = String(process.env.REACT_APP_NFT_STAKING_ADDR
 export const INFURA_NETWORK = String(process.env.REACT_APP_INFURA_NETWORK);
 export const INFURA_PROJECT_ID = String(process.env.REACT_APP_INFURA_PROJECT_ID);
 export const ETHEREUM_RPC_URL = "https://".concat(INFURA_NETWORK).concat(".infura.io/v3/").concat(INFURA_PROJECT_ID);
+export const IPFS_GATEWAY = process.env.REACT_APP_IPFS_GATEWAY ? String(process.env.REACT_APP_IPFS_GATEWAY) : "https://gateway.pinata.cloud/ipfs/";
+

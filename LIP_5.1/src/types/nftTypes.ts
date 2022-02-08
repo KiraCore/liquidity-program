@@ -5,8 +5,6 @@ export interface NFT {
   tier: string;
   camp?: string;
   type?: string;
-  transferrable: boolean;
-  burnable: boolean;
 
   title: string;
   description: string;
@@ -23,7 +21,7 @@ export interface NFTAttributes {
 }
 
 export interface NFTMetadata {
-  title: string;
+  name: string;
   description: string;
   image: string;
   animation_url?: string;

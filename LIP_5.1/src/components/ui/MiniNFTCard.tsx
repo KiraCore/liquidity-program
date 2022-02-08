@@ -26,6 +26,12 @@ const MiniNFTCard = ({ nft: { id, title, image, stakedBalance, unstakedBalance }
   const toast = useToast();
   const [claimable, setClaimable] = useState<BigNumber | undefined>(undefined);
 
+  //let attributes = card?.metadata?.attributes;
+  //let camp = attributes?.find(x => x.trait_type == "Camp")?.value;
+  //let gender = attributes?.find(x => x.trait_type == "Gender")?.value;
+  //let type = attributes?.find(x => x.trait_type == "Type")?.value;
+  //let short_description = `${card.metadata.name}, ${camp} - ${gender} ${type}`
+
   const reloadClaimable = () => {
     if (account) {
       setClaimable(undefined);

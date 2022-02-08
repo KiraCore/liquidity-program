@@ -280,12 +280,12 @@ Available `trait_types` attributes and the corresponding possible `values`:
 * `ID` - `<number>`
 * `Tier` - `Common`, `Uncommon`, `Rare`
 * `Camp` - `BOSE`, `KIRA`, `COSMOS`, `POLKADOT`, `BINANCE`, `ETHEREUM`
-* `Type` - `Hacker`, `Mage`, `Cyborg`, `Human`, `Übermensch`, `OG`
-* `Gender` - `Male`, `Female`, `???`
+* `Type` - `Hacker`, `Mage`, `Cyborg`, `Human`, `Übermensch`, `OG`, `Shinigami`
+* `Gender` - `Male`, `Female`
 
-The `LIP_5\contracts\KiraNFT.sol` must be updated every time to contain a correct `tokenUri` referencing a **folder** in IPFS
+The `LIP_5\contracts\KiraNFT.sol` must be updated every time to contain a correct `tokenUri` referencing a **folder** in IPFS. It is also possible to call the contract using `setTokenURI` function and update the metadata if needed.
 
-* KOVAN METADATA: `https://ipfs.io/ipfs/QmbRLTnLXSfGsVwwXUifuUTa2BTULHXxLkESQ2m4aVMhJ9/`
+* KOVAN METADATA: `ipfs://QmRT4JjEUrRqQwC16AP7UVDqe1NpH2FCNEk5X2AezzHj5M/`
 * MAINNET METADATA: `TBD`
 
 ## Testing

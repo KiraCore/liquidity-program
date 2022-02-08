@@ -56,6 +56,7 @@ cd $HOME && \
 
 ```
 cd $HOME/liquidity-program/LIP_5.1 && \
+ echo "REACT_APP_IPFS_GATEWAY=https://ipfs.io/ipfs/" >> ./.env && \
  echo "REACT_APP_INFURA_PROJECT_ID=9f39881c4d9b48f8b9b865ea9a5add18" >> ./.env && \
  echo "REACT_APP_ETHEREUM_CHAIN_ID=42"  >> ./.env && \
  echo "REACT_APP_INFURA_NETWORK=kovan" >> ./.env && \

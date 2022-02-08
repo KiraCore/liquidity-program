@@ -1,7 +1,7 @@
 import { Image } from '@chakra-ui/image';
 import { Box, Flex, Heading, ListItem, Text, UnorderedList } from '@chakra-ui/layout';
 import { IMG_CRYSTAL, SVG_TELEGRAM_WHITE, SVG_TWITTER_WHITE } from 'src/assets/images';
-import { Card, NFT } from 'src/types/nftTypes';
+import { Card, NFT, NFTAttributes, NFTMetadata } from 'src/types/nftTypes';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import OutlinedButton from './OutlinedButton';
 import { Button } from '@chakra-ui/button';
@@ -9,13 +9,13 @@ import { useWallet } from 'use-wallet';
 import { QueryDataTypes } from 'src/types/queryDataTypes';
 
 type NFTCardProps = {
-  nft: NFT;
+  id: number;
   onMint: (id: number) => any;
   card: Card;
   data: QueryDataTypes;
 };
 
-const NFTCard = ({ nft: { id, title, image }, onMint, card, data }: NFTCardProps) => {
+const NFTCard = ({ id, onMint, card, data }: NFTCardProps) => {
   const nKrystals = card ? card.value : undefined;
   const nMinted = card ? card.sold : undefined;
   const nTotal = card ? card.quantity : undefined;
@@ -25,12 +25,11 @@ const NFTCard = ({ nft: { id, title, image }, onMint, card, data }: NFTCardProps
   const mintDisabled =
     !account || nKrystals === undefined || nMinted === undefined || nTotal === undefined || !krystalBalance || parseInt(nKrystals.toString()) > krystalBalance;
 
-  const attributes = card?.metadata?.attributes ? card.metadata.attributes : [
-    { trait_type: "ID", value: id },
-    { trait_type: "Tier", value: "???" },
-    { trait_type: "Camp", value: "???" },
-    { trait_type: "Type", value: "???" }
-  ];
+  let attributes = card?.metadata?.attributes;
+  let camp = attributes?.find(x => x.trait_type == "Camp")?.value;
+  let gender = attributes?.find(x => x.trait_type == "Gender")?.value;
+  let type = attributes?.find(x => x.trait_type == "Type")?.value;
+  let short_description = `${card.metadata.name}, ${camp} - ${gender} ${type}`
 
   return (
     <Box
@@ -93,7 +92,7 @@ const NFTCard = ({ nft: { id, title, image }, onMint, card, data }: NFTCardProps
             },
           }}
         >
-          KIRA’s and Attar’s army of Hackers, Cyborgs, and Mages, battling against each other for financial freedom or dystopian state.
+          Description: {card.metadata.description}
         </Text>
         <UnorderedList listStyleType="none" ml="0">
           {attributes.map((attr) => (
@@ -112,12 +111,12 @@ const NFTCard = ({ nft: { id, title, image }, onMint, card, data }: NFTCardProps
         </Flex>
       </Box>
       <Box height={{ base: '320px', md: '440px' }}>
-        {/* <Image src={image} objectFit="cover" alt={title} height="100%" /> */}
-        <LazyLoadImage src={image} height="100%" effect="blur" alt={title} style={{ objectFit: 'cover', height: '100%' }} />
+        {/* <Image src={image} objectFit="cover" alt={short_description} height="100%" /> */}
+        <LazyLoadImage src={card?.metadata?.image} height="100%" effect="blur" alt={short_description} style={{ objectFit: 'cover', height: '100%' }} />
       </Box>
       <Box height="196px" p={{ base: '18px', md: '24px' }}>
         <Heading as="h3" fontSize="20px" lineHeight="30px" mb="12px" whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">
-          {title}
+          {short_description}
         </Heading>
         <Flex direction="row" marginRight="10" alignItems="center" mb="40px">
           <Image src={IMG_CRYSTAL} width="3" marginRight="2" />

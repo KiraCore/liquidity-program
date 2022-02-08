@@ -26,7 +26,7 @@ const CollectionSection = ({ collection, onMint, cardInfo, data }: CollectionSec
       </Box>
       <SimpleGrid minChildWidth={{ base: '270px', md: '356px' }} spacingX="20px" spacingY={{ base: '24px', lg: '56px' }}>
         {nfts?.map((nft: NFT) => (
-          <NFTCard nft={nft} key={nft.id} card={cardInfo[nft.id]} onMint={onMint} data={data} />
+          <NFTCard id={nft.id} key={nft.id} card={cardInfo[nft.id]} onMint={onMint} data={data} />
         ))}
       </SimpleGrid>
     </Container>

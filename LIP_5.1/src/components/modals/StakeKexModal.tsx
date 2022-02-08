@@ -7,7 +7,7 @@ import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay 
 import { useState } from 'react';
 import { NFT_FARM_ADDRESS } from 'src/config';
 import { useContracts } from 'src/hooks/useContracts';
-import { FARM_RATE } from 'src/utils/constants';
+import { DAILY_FARM_RATE } from 'src/utils/constants';
 import { ethers } from 'ethers';
 import { OutlinedButton, PrimaryButton } from '../ui';
 import { useToast } from '@chakra-ui/toast';
@@ -28,7 +28,7 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
   const toast = useToast();
   const { kexDecimals, kexBalance, krystalBalance, stakedBalance, allowance, updateInfo, loadAllowance } = data;
   const total = stake ? kexBalance : stakedBalance;
-  const krystalsPerHour = value ? (value * FARM_RATE) / Math.pow(10, 6) : 0;
+  const krystalsPerHour = value ? (value * DAILY_FARM_RATE) / 24 : 0;
 
   // TODO: DEBUG ONLY, REMOVE FOR MAINNET
   // console.log("StakeKexModal.tsx => StakeKexModal => data")

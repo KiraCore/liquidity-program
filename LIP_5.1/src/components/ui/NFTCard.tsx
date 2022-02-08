@@ -25,20 +25,25 @@ const NFTCard = ({ id, onMint, card, data }: NFTCardProps) => {
   const mintDisabled =
     !account || nKrystals === undefined || nMinted === undefined || nTotal === undefined || !krystalBalance || parseInt(nKrystals.toString()) > krystalBalance;
 
-  let attributes = card?.metadata?.attributes ? card.metadata.attributes : [
+  const attributes = card?.metadata?.attributes ? card.metadata.attributes : [
       { trait_type: "ID", value: id.toString() }  
     ];
-  let name = card?.metadata?.name ? card.metadata.name : "???";
-  let camp = attributes?.find(x => x.trait_type == "Camp")?.value;
-  let gender = attributes?.find(x => x.trait_type == "Gender")?.value;
-  let type = attributes?.find(x => x.trait_type == "Type")?.value;
-  let short_description = `${name}, ${camp} - ${gender} ${type}`
-  let long_description = card?.metadata?.description ? card.metadata.description : "Loading data, please be patient, this might take a while..." 
-  let image = card?.metadata?.image ? card.metadata.image : "/images/loading.png"
+
+  const name = card?.metadata?.name ? card.metadata.name : "???";
+  const camp = attributes?.find(x => x.trait_type == "Camp")?.value;
+  const gender = attributes?.find(x => x.trait_type == "Gender")?.value;
+  const type = attributes?.find(x => x.trait_type == "Type")?.value;
+  const short_description = `${name}, ${camp} - ${gender} ${type}`
+  const long_description = card?.metadata?.description ? card.metadata.description : "Loading data, please be patient, this might take a while..." 
+  const image = card?.metadata?.image ? card.metadata.image : "/images/loading.png"
   
   if (name == "???") {
     short_description = "Loading from IPFS gateway..."
   }
+
+  // TODO: REMOVE LOGS, DEBUG ONLY
+  console.log("NFTCard => render: ", id)
+  console.log({name: name, image: image, short_description: short_description, card: card})
 
   return (
     <Box

@@ -61,7 +61,7 @@ contract KexFarm is Ownable, Authorizable {
             return stakers[staker].stones;
         }
 
-        //.amount.div(1e18).mul(_seconds).mul(11574074074074075).div(1e4)
+        // Earn Rate = 1 Krystal every 24 hours per each 1 KEX staked
         uint256 _seconds =
             block.timestamp.sub(stakers[staker].timestamp).div(1 seconds);
         return
@@ -70,7 +70,7 @@ contract KexFarm is Ownable, Authorizable {
                     .amount
                     .mul(_seconds)
                     .div(1e6)
-                    .div(3600)
+                    .div(86400)
             );
     }
 

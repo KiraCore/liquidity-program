@@ -592,7 +592,7 @@ export const create = (address: string, provider: any) => {
   const cards = (id: number): Card => contract.cards(id).then((res: any) => {
     return contract.uri(id).then((metaUrl: string) => {
       
-      if(metaUrl.startsWith("ipfs://")) {
+      if(metaUrl?.includes("ipfs://") == true) {
         metaUrl = metaUrl.replace("ipfs://", IPFS_GATEWAY);
       }
 
@@ -602,11 +602,11 @@ export const create = (address: string, provider: any) => {
       }
       return fetchRes.json().then((metadata: NFTMetadata) => {
 
-        if(metadata.image.startsWith("ipfs://")) {
+        if(metadata.image?.includes("ipfs://") == true) {
           metadata.image = metadata.image.replace("ipfs://", IPFS_GATEWAY);
         }
 
-        if(metadata.animation_url?.startsWith("ipfs://") == true) {
+        if(metadata.animation_url?.includes("ipfs://") == true) {
           metadata.animation_url = metadata.animation_url.replace("ipfs://", IPFS_GATEWAY);
         }
 

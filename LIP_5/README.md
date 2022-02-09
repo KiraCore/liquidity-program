@@ -210,10 +210,11 @@ npx hardhat verify --network kovan $KIRA_TOKEN_ADDRESS "KIRA Network" "KEX" "300
 npx hardhat run scripts/2_deploy_AccessControl.js --network kovan
 # KiraAccessControl on RINKEBY: 0x0c9FCeF7F6272d2c1053839b1069b4b5f884D4E3
 # KiraAccessControl on KOVAN: 0xad81b3ab9439b71b3F0BD1EA2bBbF5e9D086d0C1
+# KiraAccessControl on ROPSTEN: 0x37551E4E9401094673c01200556f8deAa816C117
 # KiraAccessControl on MAINNET: TBD
 
 # Save ACCESS_CONTROL_ADDRESS as env variable
-echo "ACCESS_CONTROL_ADDRESS=0xad81b3ab9439b71b3F0BD1EA2bBbF5e9D086d0C1" >> ./.env
+echo "ACCESS_CONTROL_ADDRESS=0x37551E4E9401094673c01200556f8deAa816C117" >> ./.env
 
 # Verify access control contract
 . ./.env && npx hardhat verify --network kovan $ACCESS_CONTROL_ADDRESS
@@ -226,6 +227,7 @@ echo "ACCESS_CONTROL_ADDRESS=0xad81b3ab9439b71b3F0BD1EA2bBbF5e9D086d0C1" >> ./.e
 npx hardhat run scripts/3_deploy_NFTStaking.js --network kovan
 # NFTStaking on RINKEBY: 0x0433c6CB94863850eb3fECE472A482f228F65b2E
 # NFTStaking on KOVAN: 0xEA6Aa53447Dd99389Fd9418272E9685926f43525
+# NFTStaking on ROPSTEN: 0x80d4d0Fa13b945E2b331f719F9B32F6f33f5c90d
 # NFTStaking on MAINNET: TBD
 
 # Save NFT_STAKING_ADDRESS as env variable
@@ -242,6 +244,7 @@ echo "NFT_STAKING_ADDRESS=0xEA6Aa53447Dd99389Fd9418272E9685926f43525" >> ./.env
 npx hardhat run scripts/4_deploy_KexFarm.js --network kovan 
 # KexFarm on RINKEBY: 0x995179A0ae6Df352d1f49555fd8C8495D8Bb61B1
 # KexFarm on KOVAN: 0xe89841b13b7e23e560D5f1FdD8591BDE466d68c4
+# KexFarm on ROPSTEN: 0x334F7e7C7aBB0A314a9750d8CA076A3561B71432
 # KexFarm on MAINNET: TBD
 
 # Save NFT_FARM_ADDRESS as env variable
@@ -259,6 +262,7 @@ echo "NFT_FARM_ADDRESS=0xe89841b13b7e23e560D5f1FdD8591BDE466d68c4" >> ./.env
 npx hardhat run scripts/5_deploy_KiraNFT.js --network kovan
 # KiraNFT on RINKEBY: 0xD33269a1eeD3aFBC2a78Ee1c98704580c2AC7Dc1
 # KiraNFT on KOVAN: 0x8D7A7162271f7a124d9BBd305B18deDaEeC5721C
+# KiraNFT on ROPSTEN: 0x07D87E94AE77b50A3FB3E9F1983E39d69cA50F6C
 # KiraNFT on MAINNET: TBD
 
 # Save NFT_MINTING_ADDRESS as env variable

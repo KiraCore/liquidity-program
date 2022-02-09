@@ -191,10 +191,11 @@ This is a public function to calculate & update the rewards for an account. The 
 npx hardhat run scripts/1_deploy_MockKex.js --network kovan
 # KEX on RINKEBY: 0xb03a58Df62CD548603685f9E17a337d64AC056E1
 # KEX on KOVAN: 0x539fa9544ea8f82a701b6d3c6a6f0e2ebe307ea6
+# KEX on ROPSTEN: 0x2CDA738623354c93eB974F3C90175F249d611CA4
 # KEX on MAINNET: 0x16980b3B4a3f9D89E33311B5aa8f80303E5ca4F8
 
 # Save KIRA_TOKEN_ADDRESS as env variable
-echo "KIRA_TOKEN_ADDRESS=0x539fa9544ea8f82a701b6d3c6a6f0e2ebe307ea6" >> ./.env && \
+echo "KIRA_TOKEN_ADDRESS=0x2CDA738623354c93eB974F3C90175F249d611CA4" >> ./.env && \
  . ./.env
 
 # Verify test KEX address 
@@ -272,7 +273,7 @@ echo "NFT_MINTING_ADDRESS=0x8D7A7162271f7a124d9BBd305B18deDaEeC5721C" >> ./.env
 This is a quick & dirty one-line bash command enabling deployment of all contracts at once. At the end of execution a list of all created contracts is displayed. Only `NETWORK`, `KIRA_TOKEN_ADDRESS`, `PRIVATE_KEY`, `ETHERSCAN_API_KEY` and `INFURA_PROJECT_ID` must be specified before the script is tarted.
 
 ```sh
-RESULT_FILE="./result.txt" && NETWORK="kovan" && KIRA_TOKEN_ADDRESS="0x539fa9544ea8f82a701b6d3c6a6f0e2ebe307ea6" && \
+RESULT_FILE="./result.txt" && NETWORK="ropsten" && KIRA_TOKEN_ADDRESS="0x2CDA738623354c93eB974F3C90175F249d611CA4" && \
  echo "Cloning smartcontracts repo..." && \
  cd $HOME && rm -fvr ./liquidity-program && \
  git clone https://github.com/KiraCore/liquidity-program.git -b LIP_5 && \

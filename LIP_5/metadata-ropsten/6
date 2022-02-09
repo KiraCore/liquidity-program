@@ -1,0 +1,10 @@
+{
+  "image": "ipfs://QmUuazE7AcuFqUQudG9iM63SryX4e2X5zf6F9AVQfKwssy",
+  "name": "Azrael",
+  "description": "BOSE - Female Mage",
+  "attributes": [{ "trait_type": "Rarity", "value": "Common" },
+    { "trait_type": "Type", "value": "Mage" },
+    { "trait_type": "Gender", "value": "Female" },
+    { "trait_type": "Camp", "value": "BOSE" }],
+  "animation_url": "ipfs://QmSoEFdenMd8WXMAQtKxNwRXTNzaUSJBpK6h5bRnscPWSz"
+}

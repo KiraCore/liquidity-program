@@ -1,0 +1,9 @@
+{
+  "image": "ipfs://QmZoyX2wd466Cj7PqRnuA5sd9YpzPZWpBgF1HpALnmxLTk",
+  "name": "Lilith",
+  "description": "MILANA OG",
+  "attributes": [{ "trait_type": "Rarity", "value": "Rare" },
+    { "trait_type": "Type", "value": "OG" },
+    { "trait_type": "Gender", "value": "Female" },
+    { "trait_type": "Camp", "value": "KIRA" }]
+}

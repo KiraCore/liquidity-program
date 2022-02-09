@@ -1,0 +1,9 @@
+{
+  "image": "ipfs://Qmc2BsTngQTeGRvyacgeGLM2ugZEeD22KLfJ9vQ9F6Wr2Y",
+  "name": "Kali",
+  "description": "KIRA - Female Hacker",
+  "attributes": [{ "trait_type": "Rarity", "value": "Common" },
+    { "trait_type": "Type", "value": "Hacker" },
+    { "trait_type": "Gender", "value": "Female" },
+    { "trait_type": "Camp", "value": "KIRA" }]
+}

@@ -58,9 +58,9 @@ cd $HOME && \
 cd $HOME/liquidity-program/LIP_5.1 && \
  echo "REACT_APP_IPFS_GATEWAY=https://ipfs.io/ipfs/" >> ./.env && \
  echo "REACT_APP_INFURA_PROJECT_ID=9f39881c4d9b48f8b9b865ea9a5add18" >> ./.env && \
- echo "REACT_APP_ETHEREUM_CHAIN_ID=42"  >> ./.env && \
- echo "REACT_APP_INFURA_NETWORK=kovan" >> ./.env && \
- echo "REACT_APP_KIRA_TOKEN_ADDRESS=0x539fa9544ea8f82a701b6d3c6a6f0e2ebe307ea6" >> ./.env && \
+ echo "REACT_APP_ETHEREUM_CHAIN_ID=3"  >> ./.env && \
+ echo "REACT_APP_INFURA_NETWORK=ropsten" >> ./.env && \
+ echo "REACT_APP_KIRA_TOKEN_ADDRESS=0x2CDA738623354c93eB974F3C90175F249d611CA4" >> ./.env && \
  echo "REACT_APP_NFT_STAKING_ADDRESS=0xEA6Aa53447Dd99389Fd9418272E9685926f43525" >> ./.env && \
  echo "REACT_APP_NFT_FARM_ADDRESS=0xe89841b13b7e23e560D5f1FdD8591BDE466d68c4" >> ./.env && \
  echo "REACT_APP_NFT_MINTING_ADDRESS=0x8D7A7162271f7a124d9BBd305B18deDaEeC5721C" >> ./.env 

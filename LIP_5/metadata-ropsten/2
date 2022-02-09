@@ -1,0 +1,9 @@
+{
+  "image": "ipfs://QmUJLZEzcuRFZsmKdVnFvjk1529UKcbU7EnHwwQfzvkqS8",
+  "name": "Mikhaela",
+  "description": "KIRA - Female Cyborg",
+  "attributes": [{ "trait_type": "Rarity", "value": "Common" },
+    { "trait_type": "Type", "value": "Cyborg" },
+    { "trait_type": "Gender", "value": "Female" },
+    { "trait_type": "Camp", "value": "KIRA" }]
+}

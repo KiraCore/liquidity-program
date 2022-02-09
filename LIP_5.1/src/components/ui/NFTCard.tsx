@@ -16,9 +16,9 @@ type NFTCardProps = {
 };
 
 const NFTCard = ({ id, onMint, card, data }: NFTCardProps) => {
-  const nKrystals = card?.value ? card.value : 0;
+  const nKrystals = card?.value ? Number.parseInt(card.value.toString()) : -1;
   const nMinted = card ? card.sold : -1;
-  const nTotal = card?.quantity ? card.quantity : 0;
+  const nTotal = card?.quantity ? card.quantity : -1;
   const { account } = useWallet();
   const { krystalBalance } = data;
 
@@ -130,7 +130,12 @@ const NFTCard = ({ id, onMint, card, data }: NFTCardProps) => {
         </Heading>
         <Flex direction="row" marginRight="10" alignItems="center" mb="40px">
           <Image src={IMG_CRYSTAL} width="3" marginRight="2" />
-          {(nKrystals <= 0) && <Button isLoading variant="ghost" width="fit-content" color="white" height="16px" />}
+          {(nKrystals < 0) && <Button isLoading variant="ghost" width="fit-content" color="white" height="16px" />}
+          {(nKrystals === 0) && (
+            <Text fontSize="small" color="white" fontWeight="semibold" mr="8px">
+              {"???"}
+            </Text>
+          )}
           {(nKrystals > 0) && (
             <Text fontSize="small" color="white" fontWeight="semibold" mr="8px">
               {nKrystals}
@@ -153,7 +158,12 @@ const NFTCard = ({ id, onMint, card, data }: NFTCardProps) => {
               <Text fontSize="small" color="white" fontWeight="semibold" textAlign="center">
                 MINTED OF
               </Text>
-              {(nTotal <= 0) && <Button isLoading variant="ghost" width="fit-content" color="white" height="16px" />}
+              {(nKrystals < 0)  && <Button isLoading variant="ghost" width="fit-content" color="white" height="16px" />}
+              {(nKrystals >= 0 && nTotal <= 0) && (
+                <Text fontSize="small" color="white" fontWeight="semibold" ml="4px">
+                  {"???"}
+                </Text>
+              )}
               {(nTotal > 0) && (
                 <Text fontSize="small" color="white" fontWeight="semibold" ml="4px">
                   {nTotal}

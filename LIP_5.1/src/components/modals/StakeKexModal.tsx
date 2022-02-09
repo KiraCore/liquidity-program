@@ -192,7 +192,7 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
             )}
           </Flex>
 
-          { stake && (
+          { ( stake === true ) && (
             <Flex alignItems="center" direction="row" mb="12px">
               <Text mr="8px" fontSize="14px" lineHeight="26.24px" color="red.dark">
               {"Maximum 10'000 KEX per wallet!"}

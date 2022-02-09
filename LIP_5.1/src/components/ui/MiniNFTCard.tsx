@@ -3,7 +3,7 @@ import { Box, Flex, Text } from '@chakra-ui/layout';
 import { IMG_KEX, SVG_INSTANCE } from 'src/assets/images';
 import { Card, NFT } from 'src/types/nftTypes';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useToast } from '@chakra-ui/toast';
 import { useContracts } from 'src/hooks/useContracts';
 import OutlinedButton from './OutlinedButton';
@@ -27,18 +27,20 @@ const MiniNFTCard = ({ nft: { id, stakedBalance, unstakedBalance }, card, staked
   const toast = useToast();
   const [claimable, setClaimable] = useState<BigNumber | undefined>(undefined);
 
-  const reloadClaimable = () => {
+  const image = card?.metadata?.image ? card.metadata.image : "/images/loading.png";
+
+  const reloadClaimable = useCallback(() => {
     if (account) {
       setClaimable(undefined);
       nftStaking.rewardOf(id, account).then((reward: BigNumber) => {
         setClaimable(reward);
       });
     }
-  };
+  }, [id, account, nftStaking]);
 
   useEffect(() => {
     reloadClaimable();
-  }, [id, account]);
+  }, [id, account, reloadClaimable]);
 
   const onUnstake = async () => {
     setLoading(true);
@@ -132,7 +134,7 @@ const MiniNFTCard = ({ nft: { id, stakedBalance, unstakedBalance }, card, staked
     >
       <Box height="201px">
         {/* <Image src={image} objectFit="cover" alt={title} height="100%" /> */}
-        <LazyLoadImage src={card?.metadata?.image} height="100%" effect="blur" alt={card?.metadata?.name} style={{ objectFit: 'cover', height: '100%' }} />
+        <LazyLoadImage src={image} height="100%" effect="blur" alt={card?.metadata?.name} style={{ objectFit: 'cover', height: '100%' }} />
       </Box>
 
       {staked && (

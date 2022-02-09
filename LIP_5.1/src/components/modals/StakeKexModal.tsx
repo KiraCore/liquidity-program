@@ -61,7 +61,7 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
     ready = kexBalance !== undefined && allowance !== undefined && !!value && value <= kexBalance;
     invalidInput = value !== undefined && kexBalance !== undefined && (value > kexBalance || value === 0);
     enableApprove = value !== undefined && allowance !== undefined && ready && value > allowance;
-    enableConfirm = value !== undefined && allowance !== undefined && ready && value <= allowance && !maxStakeReached;
+    enableConfirm = value !== undefined && allowance !== undefined && ready && value <= allowance && !maxStakeReached && (stakedKex + value) <= 10000 ;
   } else {
     ready = stakedBalance !== undefined && !!value && value <= stakedBalance;
     invalidInput = value !== undefined && stakedBalance !== undefined && (value > stakedBalance || value === 0);
@@ -192,10 +192,10 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
             )}
           </Flex>
 
-          { ( stake === true ) && (
+          { stake && (
             <Flex alignItems="center" direction="row" mb="12px">
-              <Text mr="8px" fontSize="14px" lineHeight="26.24px" color="red.dark">
-              {"Maximum 10'000 KEX per wallet!"}
+              <Text mr="8px" fontSize="14px" lineHeight="26.24px" color="darkred">
+              {"Maximum 10,000 KEX per wallet!"}
               </Text>
             </Flex> 
           )}
@@ -246,7 +246,7 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
             <Text fontSize="16px" lineHeight="26.24px" color="gray.secondary" mr="8px">
               {stake ? 'Krystals per hour:' : 'Krystals Received:'}
             </Text>
-            {stake && <Text color="#298DFF">{(+krystalsPerHour.toFixed(3)).toLocaleString()}</Text>}
+            {stake && <Text color="#298DFF">{(+krystalsPerHour.toFixed(1)).toLocaleString()}</Text>}
             {!stake &&
               (krystalBalance === undefined ? (
                 <Button isLoading variant="ghost" width="fit-content" color="blue.dark" height="16px" />

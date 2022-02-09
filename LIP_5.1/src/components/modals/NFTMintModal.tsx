@@ -133,7 +133,7 @@ const NFTMintModal = ({ isOpen = false, onClose, loadCardInfo, data, nftId, nftI
           </Flex>
           <Flex alignItems="center" direction="row" mb="12px">
             <Text mr="8px" fontSize="16px" lineHeight="26.24px" color="gray.quaternary">
-              Your Krystals balance
+              Your Balance
             </Text>
             {krystalBalance === undefined && <Button isLoading variant="ghost" width="fit-content" />}
             {krystalBalance !== undefined && (

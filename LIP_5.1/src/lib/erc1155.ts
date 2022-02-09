@@ -592,7 +592,7 @@ export const create = (address: string, provider: any) => {
   const cards = (id: number): Card => contract.cards(id).then((res: any) => {
     return contract.uri(id).then((metaUrl: string) => {
       
-      if(metaUrl?.includes("ipfs://") == true) {
+      if(metaUrl?.includes("ipfs://") === true) {
         metaUrl = metaUrl.replace("ipfs://", IPFS_GATEWAY);
       }
 
@@ -602,19 +602,19 @@ export const create = (address: string, provider: any) => {
       }
       return fetchRes.json().then((metadata: NFTMetadata) => {
 
-        if(metadata.image?.includes("ipfs://") == true) {
+        if(metadata.image?.includes("ipfs://") === true) {
           metadata.image = metadata.image.replace("ipfs://", IPFS_GATEWAY);
         }
 
-        if(metadata.animation_url?.includes("ipfs://") == true) {
+        if(metadata.animation_url?.includes("ipfs://") === true) {
           metadata.animation_url = metadata.animation_url.replace("ipfs://", IPFS_GATEWAY);
         }
 
-        let a_id = metadata.attributes?.find(x => x.trait_type == "ID")?.value;
-        let camp = metadata.attributes?.find(x => x.trait_type == "Camp")?.value;
-        let gender = metadata.attributes?.find(x => x.trait_type == "Gender")?.value;
-        let type = metadata.attributes?.find(x => x.trait_type == "Type")?.value;
-        let tier = metadata.attributes?.find(x => x.trait_type == "Tier")?.value;
+        let a_id = metadata.attributes?.find(x => x.trait_type === "ID")?.value;
+        let camp = metadata.attributes?.find(x => x.trait_type === "Camp")?.value;
+        let gender = metadata.attributes?.find(x => x.trait_type === "Gender")?.value;
+        let type = metadata.attributes?.find(x => x.trait_type === "Type")?.value;
+        let rarity = metadata.attributes?.find(x => x.trait_type === "Rarity")?.value;
             
         if(!a_id) {
           metadata.attributes.push({ trait_type: "ID", value: id.toString() });
@@ -628,15 +628,38 @@ export const create = (address: string, provider: any) => {
         if(!type) {
           metadata.attributes.push({ trait_type: "Type", value: "???" });
         }
-        if(!tier) {
-          metadata.attributes.push({ trait_type: "Camp", value: "???" });
+        if(!rarity) {
+          metadata.attributes.push({ trait_type: "Rarity", value: "???" });
         }
 
         return ({
           metadata: metadata,
           quantity: res.quantity, 
           sold: res.sold.toNumber(), 
-          value: ethers.utils.formatUnits(res.value, 0)
+          value: ethers.utils.formatUnits(res.value, 0),
+          getName(): String {
+            return metadata?.name ? metadata.name : "???"
+          },
+          getCamp(): String {
+            let camp = metadata?.attributes?.find(x => x.trait_type === "Camp")?.value
+            return camp ? camp : "???"
+          },
+          getGender(): String {
+            let gender = metadata?.attributes?.find(x => x.trait_type === "Gender")?.value
+            return gender ? gender : "???"
+          },
+          getType(): String {
+            let type = metadata?.attributes?.find(x => x.trait_type === "Type")?.value
+            return type ? type : "???"
+          },
+          getRarity(): String {
+            let rarity = metadata?.attributes?.find(x => x.trait_type === "Rarity")?.value
+            return rarity ? rarity : "???"
+          },
+          getID(): String {
+            let id = metadata?.attributes?.find(x => x.trait_type === "ID")?.value
+            return id ? id : "???"
+          }
         })
       }) 
     }).catch((e: any) => console.error(e))
@@ -648,7 +671,13 @@ export const create = (address: string, provider: any) => {
   // WRITE
   const setApprovalForAll = (operator: string, approved: boolean) => contract.setApprovalForAll(operator, approved);
 
-  const purchaseNFT = (id: number, quantity: number) => contract.buy(id);
+  const purchaseNFT = (id: number, count: number) => {
+    let bnId = ethers.BigNumber.from(id);
+    let bcCnt = ethers.BigNumber.from(count);
+    console.log("erc1155.ts => purchaseNFT")
+    console.log({bnId: bnId, bcCnt: bcCnt})
+    return contract.buy(bnId, bcCnt);
+  } 
 
   return { balanceOf, isApprovedForAll, setApprovalForAll, tokenSupply, maxSupply, cards, purchaseNFT };
 };

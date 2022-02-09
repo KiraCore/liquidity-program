@@ -190,12 +190,15 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
                 {total.toLocaleString()}
               </Text>
             )}
-            { stake && (
-              <Text mr="8px" fontSize="12px" lineHeight="26.24px" color="red.dark">
-                {"Maximum 10'000 KEX per wallet!"}
-              </Text>
-            )}
           </Flex>
+
+          { stake && (
+            <Flex alignItems="center" direction="row" mb="12px">
+              <Text mr="8px" fontSize="14px" lineHeight="26.24px" color="red.dark">
+              {"Maximum 10'000 KEX per wallet!"}
+              </Text>
+            </Flex> 
+          )}
 
           <FormControl>
             <Flex
@@ -216,7 +219,7 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
                 lineHeight="26.24px"
                 type="number"
                 min={0}
-                value={value === undefined ? 'lol' : value} // funny dev, right?
+                value={value === undefined ? '' : value}
                 onChange={onInputChange}
                 ml="16px"
               />
@@ -234,7 +237,7 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
                 _hover={{ boxShadow: '0 0 8px rgb(41 142 255 / 80%)' }}
                 onClick={onUseAll}
               >
-                Use all
+                MAX
               </Button>
             </Flex>
           </FormControl>

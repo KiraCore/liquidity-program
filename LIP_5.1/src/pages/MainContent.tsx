@@ -33,7 +33,7 @@ const MainContent = ({ data }: MainContentProps) => {
 
     [ commonCards, uncommonCards, rareCards ].forEach(cards  => {
       cards.forEach(card => {
-        let id = card?.metadata.attributes?.find(x => x.trait_type == "ID")?.value;
+        let id = card?.getID();
         if (id) {
           // console.info("MainContext.txs => updateInfo: Found card ", id, ", upadting info...")
           cardInfo[Number.parseInt(id)] = card;

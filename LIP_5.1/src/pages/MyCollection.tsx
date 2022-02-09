@@ -56,7 +56,7 @@ const MyCollection = ({ data }: MyCollectionProps) => {
 
     [commonCards, uncommonCards, rareCards].forEach(cards  => {
       cards.forEach(card => {
-        let id = card?.metadata.attributes?.find(x => x.trait_type == "ID")?.value;
+        let id = card?.getID();
         if (id) {
           // console.info("MyCollection.txs => updateInfo: Found card ", id, ", upadting info...")
           cardInfo[Number.parseInt(id)] = card;
@@ -83,10 +83,10 @@ const MyCollection = ({ data }: MyCollectionProps) => {
     .filter((item: NFT) => !!item.stakedBalance || !!item.unstakedBalance);
 
   const collections = [
-    { index: 0, tier: null, label: 'ALL' },
-    { index: 1, tier: 'Common', label: 'COMMON' },
-    { index: 2, tier: 'Uncommon', label: 'UNCOMMON' },
-    { index: 3, tier: 'Rare', label: 'RARE' },
+    { index: 0, rarity: null, label: 'ALL' },
+    { index: 1, rarity: 'Common', label: 'COMMON' },
+    { index: 2, rarity: 'Uncommon', label: 'UNCOMMON' },
+    { index: 3, rarity: 'Rare', label: 'RARE' },
   ];
 
   const optStyle = {
@@ -130,7 +130,7 @@ const MyCollection = ({ data }: MyCollectionProps) => {
                   _focus={{ boxShadow: 'none' }}
                   _active={{ background: 'initial' }}
                   mr={{ base: '4px', md: '24px' }}
-                  key={collection.tier}
+                  key={collection.rarity}
                   fontSize={{ base: '12px', md: '14px' }}
                 >
                   {collection.label}
@@ -156,13 +156,13 @@ const MyCollection = ({ data }: MyCollectionProps) => {
               <MiniCollectionSection {...options} />
             </TabPanel>
             <TabPanel px="0" py="64px">
-              <MiniCollectionSection {...options} tier="Common" />
+              <MiniCollectionSection {...options} rarity="Common" />
             </TabPanel>
             <TabPanel px="0" py="64px">
-              <MiniCollectionSection {...options} tier="Uncommon" />
+              <MiniCollectionSection {...options} rarity="Uncommon" />
             </TabPanel>
             <TabPanel px="0" py="64px">
-              <MiniCollectionSection {...options} tier="Rare" />
+              <MiniCollectionSection {...options} rarity="Rare" />
             </TabPanel>
           </TabPanels>
         </Tabs>

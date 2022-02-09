@@ -5,7 +5,7 @@ import { Card, NFT } from 'src/types/nftTypes';
 type MiniCollectionSectionProps = {
   nfts: NFT[];
   staked: boolean;
-  tier?: string;
+  rarity?: string;
   onStake: (nftId: number) => any;
   reloadMyCollection: () => any;
   cardInfo: {
@@ -13,11 +13,11 @@ type MiniCollectionSectionProps = {
   };
 };
 
-const MiniCollectionSection = ({ nfts, staked, tier, cardInfo, onStake, reloadMyCollection }: MiniCollectionSectionProps) => {
+const MiniCollectionSection = ({ nfts, staked, rarity, cardInfo, onStake, reloadMyCollection }: MiniCollectionSectionProps) => {
   return (
     <SimpleGrid minChildWidth="264px" spacingX="12px" spacingY="35px">
       {nfts
-        ?.filter((nft: NFT) => (staked ? !!nft.stakedBalance : !!nft.unstakedBalance) && (!tier || tier === cardInfo[nft.id]?.metadata?.attributes?.find(x => x.trait_type == "Tier")?.value))
+        ?.filter((nft: NFT) => (staked ? !!nft.stakedBalance : !!nft.unstakedBalance) && (!rarity || rarity === cardInfo[nft.id]?.getRarity()))
         .map((nft: NFT) => (
           <MiniNFTCard nft={nft} key={nft.id} card={cardInfo[nft.id]} staked={staked} onStake={onStake} reloadMyCollection={reloadMyCollection} />
         ))}

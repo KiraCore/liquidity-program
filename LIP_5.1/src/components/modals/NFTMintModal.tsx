@@ -23,6 +23,8 @@ type NFTMintModalProps = {
   cardInfo: Card | undefined;
 };
 
+
+
 const NFTMintModal = ({ isOpen = false, onClose, loadCardInfo, data, nftId, nftInfo, cardInfo }: NFTMintModalProps) => {
   const { krystalBalance } = data;
   const [value, setValue] = useState<number | undefined>(undefined);
@@ -35,10 +37,10 @@ const NFTMintModal = ({ isOpen = false, onClose, loadCardInfo, data, nftId, nftI
 
   async function updateInfo(id: number) {
     const card = await nft.cards(id);
-    
+
     // TODO: Debug only logs
-    console.log("NFTMintModal.txs => updateInfo:")
-    console.log({card: card})
+    // console.log("NFTMintModal.txs => updateInfo:")
+    // console.log({card: card})
     setCard(card);
   }
 
@@ -56,13 +58,16 @@ const NFTMintModal = ({ isOpen = false, onClose, loadCardInfo, data, nftId, nftI
 
   const nRemain: number | undefined = card === undefined ? undefined : card.quantity - card.sold;
   const invalidInput = value !== undefined && nRemain !== undefined && (value > nRemain || value === 0);
-  const disabledMint = !value || !nRemain;
+  const disabledMint = !value || !nRemain || invalidInput;
 
   const onMint = async () => {
     if (value !== undefined && nRemain !== undefined && value <= nRemain && value > 0) {
       setLoading(true);
       try {
+        console.log("NFTMintModal.txs => onMint:");
+        console.log({nftId: nftId, value: value})
         const txStake = await nft.purchaseNFT(nftId, value);
+        console.log({txStake: txStake})
         toast({
           title: 'Pending Transaction',
           description: `Minting ${value} NFT${value > 1 ? 's' : ''} (Id: ${nftId})`,
@@ -70,6 +75,7 @@ const NFTMintModal = ({ isOpen = false, onClose, loadCardInfo, data, nftId, nftI
           duration: 5000,
           isClosable: true,
         });
+        console.log("Awaiting txStake...");
         await txStake.wait();
         toast({
           title: 'Transaction Done',
@@ -89,6 +95,7 @@ const NFTMintModal = ({ isOpen = false, onClose, loadCardInfo, data, nftId, nftI
           duration: 5000,
           isClosable: true,
         });
+        console.error("NFT Minting failed, see detailed error below:");
         console.error(e);
       }
       setLoading(false);
@@ -111,7 +118,7 @@ const NFTMintModal = ({ isOpen = false, onClose, loadCardInfo, data, nftId, nftI
             <Image src={cardInfo?.metadata?.image} width="72px" height="72px" borderRadius="16px" mr="24px" />
             <Flex direction="column">
               <Text color="gray.secondary">Confirm Minting</Text>
-              <Text color="blue.dark">Mage male Kira: Samael</Text>
+              <Text color="blue.dark">{cardInfo?.getName()}</Text>
             </Flex>
           </Flex>
         </ModalHeader>
@@ -159,7 +166,7 @@ const NFTMintModal = ({ isOpen = false, onClose, loadCardInfo, data, nftId, nftI
                 fontSize="16px"
                 lineHeight="26.24px"
                 type="number"
-                value={value === undefined ? 'lol' : value} // funny dev, right?
+                value={value === undefined ? '' : value}
                 onChange={onInputChange}
               />
             </FormControl>

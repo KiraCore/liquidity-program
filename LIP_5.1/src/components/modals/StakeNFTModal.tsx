@@ -178,7 +178,7 @@ const StakeNFTModal = ({ isOpen = false, onClose, data, nftId, reloadMyCollectio
                 fontSize="16px"
                 lineHeight="26.24px"
                 type="number"
-                value={value === undefined ? 'lol' : value} // funny dev, right?
+                value={value === undefined ? '' : value}
                 onChange={onInputChange}
               />
             </FormControl>

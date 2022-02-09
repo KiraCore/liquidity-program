@@ -1,7 +1,7 @@
 import { Image } from '@chakra-ui/image';
 import { Box, Flex, Heading, ListItem, Text, UnorderedList } from '@chakra-ui/layout';
 import { IMG_CRYSTAL, SVG_TELEGRAM_WHITE, SVG_TWITTER_WHITE } from 'src/assets/images';
-import { Card, NFT, NFTAttributes, NFTMetadata } from 'src/types/nftTypes';
+import { Card } from 'src/types/nftTypes';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import OutlinedButton from './OutlinedButton';
 import { Button } from '@chakra-ui/button';
@@ -17,29 +17,29 @@ type NFTCardProps = {
 
 const NFTCard = ({ id, onMint, card, data }: NFTCardProps) => {
   const nKrystals = card?.value ? card.value : 0;
-  const nMinted = card ? card.sold : undefined;
+  const nMinted = card ? card.sold : -1;
   const nTotal = card?.quantity ? card.quantity : 0;
   const { account } = useWallet();
   const { krystalBalance } = data;
 
   const mintDisabled =
-    !account || nKrystals <= 0 || !nMinted || nTotal <= 0 || !krystalBalance || parseInt(nKrystals.toString()) > krystalBalance;
+    !account || nKrystals <= 0 || nMinted < 0 || nTotal <= 0 || !krystalBalance || krystalBalance < nKrystals || nMinted >= nTotal ;
 
   const attributes = card?.metadata?.attributes ? card.metadata.attributes : [
       { trait_type: "ID", value: id.toString() }  
     ];
 
-  const name = card?.metadata?.name ? card.metadata.name : "???";
-  const camp = attributes?.find(x => x.trait_type == "Camp")?.value;
-  const gender = attributes?.find(x => x.trait_type == "Gender")?.value;
-  const type = attributes?.find(x => x.trait_type == "Type")?.value;
-  const short_description = (name != "???") ? `${name} | ${camp} - ${gender} ${type}` : "Loading from IPFS gateway...";
+  const name = card?.getName();
+  const camp = card?.getCamp(); 
+  const gender = card?.getGender();
+  const type = card?.getType();
+  const short_description = (name !== "???" && name !== undefined) ? `${name} | ${camp} - ${gender} ${type}` : "Loading from IPFS gateway...";
   const long_description = card?.metadata?.description ? card.metadata.description : "Loading data, please be patient, this might take a while...";
   const image = card?.metadata?.image ? card.metadata.image : "/images/loading.png";
 
   // TODO: REMOVE LOGS, DEBUG ONLY
   // console.log("NFTCard => render: ", id)
-  // console.log({name: name, image: image, short_description: short_description, card: card})
+  // console.log({name: name, image: image, short_description: short_description, card: card, mintDisabled: mintDisabled, nKrystals: nKrystals, nMinted: nMinted, nTotal: nTotal})
 
   return (
     <Box
@@ -144,8 +144,8 @@ const NFTCard = ({ id, onMint, card, data }: NFTCardProps) => {
           </Box>
           <Box flex="1">
             <Flex direction="row" alignItems="center" justifyContent="center">
-              {nMinted === undefined && <Button isLoading variant="ghost" width="fit-content" color="white" height="16px" />}
-              {nMinted !== undefined && (
+              {(nMinted < 0) && <Button isLoading variant="ghost" width="fit-content" color="white" height="16px" />}
+              {(nMinted >= 0) && (
                 <Text fontSize="small" color="white" fontWeight="semibold" mr="4px">
                   {nMinted}
                 </Text>

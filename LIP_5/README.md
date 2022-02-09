@@ -76,7 +76,7 @@ Only the owner can call `setFarmerAddress`. This just updates the farmer (`KexFa
 
 ##### `buy`
 
-There is a public function that any user can call to buy the NFT with `Crystal`s through the `farmer`. It will decrease the `Crystal`s from user's account on farmer contract. Instead, it mints the NFT to the caller.
+There is a public function that any user can call to buy the NFT with `Krystal`s through the `farmer`. It will decrease the `Krystal`s from user's account on farmer contract. Instead, it mints the NFT to the caller.
 
 * `uint256 id`: the token id
 * `uint256 count`: the number of the instance to buy
@@ -145,7 +145,7 @@ The smart contract also contains the view functions to query the current staking
 
 ### KexFarm
 
-This is a smart contract that users can stake their ERC20 token and get `Crystals` which will be used to buy NFTs.
+This is a smart contract that users can stake their ERC20 token and get `Krystals` which will be used to buy NFTs.
 
 ##### `setTokenAddress`
 
@@ -171,10 +171,10 @@ This is a public view function that returns how many KEX has farmed for the cert
 
 ##### `payment`
 
-This is a payment function to buy a NFT using `Crystals` from KiraNFT contract. Only callable from authorized account. We need to add the KiraNFT contract address as authorized.
+This is a payment function to buy a NFT using `Krystals` from KiraNFT contract. Only callable from authorized account. We need to add the KiraNFT contract address as authorized.
 
-* `address buyer`: the account to buy NFT using `Crystals`
-* `uint256 amount`: `Crystal` amount
+* `address buyer`: the account to buy NFT using `Krystals`
+* `uint256 amount`: `Krystal` amount
 
 ##### `rewardedStones`
 

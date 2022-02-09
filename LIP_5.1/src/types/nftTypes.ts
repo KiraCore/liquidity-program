@@ -31,6 +31,12 @@ export interface Card {
   quantity: number;
   sold: number;
   value: BigNumber;
+  getName(): string;
+  getCamp(): string;
+  getGender(): string;
+  getRarity(): string;
+  getType(): string;
+  getID(): string;
 }
 
 export interface Owned {

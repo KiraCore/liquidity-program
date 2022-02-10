@@ -63,7 +63,7 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
         uint total = 0;
         for (uint i = 0; i < stakingPoolsCount; i++) {
             POOL memory pool = stakingPools[i];
-            address poolRewardToken = address(pool.rewardToken)
+            address poolRewardToken = address(pool.rewardToken);
             if (token == poolRewardToken) {
                 total = total.sum(pool.totalRewards);
             }

@@ -7,6 +7,7 @@ import '@openzeppelin/contracts/token/ERC1155/IERC1155.sol';
 import '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
 import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
+import 'hardhat/console.sol';
 
 contract NFTStaking is Context, ERC1155Holder, Ownable {
     using SafeMath for uint256;
@@ -33,13 +34,13 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
     mapping(uint256 => POOL) stakingPools;
     mapping(uint256 => mapping(address => STAKE)) balances;
 
+    constructor() {
+        stakingPoolsCount = 0;
+    }
+
     event Stake(uint256 indexed poolId, address staker, uint256 amount);
     event Unstake(uint256 indexed poolId, address staker, uint256 amount);
     event Withdraw(uint256 indexed poolId, address staker, uint256 amount);
-
-    constructor() public {
-        stakingPoolsCount = 0;
-    }
 
     /**
      * @notice get all existing staking pools
@@ -203,19 +204,17 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
     }
 
     function addPool(
-        uint256 poolId,
         IERC1155 nftToken,
         uint256 nftTokenId,
         IERC20 rewardToken,
         uint256 rewardPerNFT
     ) public onlyOwner {
-        // When new staking pools are added, they must be iterative
-        // Although new poolId could be easily calculated, it is left as parameter to ensure explicity
-        require(poolId != stakingPoolsCount, abi.encodePacked("NFTStaking.addPool: Expected Pool ID ", stakingPoolsCount, ", but got ", poolId));
+        uint poolId = stakingPoolsCount + 1;
         require(stakingPools[poolId].rewardPerNFT == 0, 'NFTStaking.addPool: Pool already exists!');
         require(stakingPools[poolId].poolId == 0, 'NFTStaking.addPool: poolId already exists!');
 
         stakingPools[poolId] = POOL(poolId, nftToken, nftTokenId, rewardToken, 0, 0, rewardPerNFT);
         stakingPoolsCount++;
+        console.log('SUCCESS: New Staking Pool with ID %s was created', poolId)
     }
 }

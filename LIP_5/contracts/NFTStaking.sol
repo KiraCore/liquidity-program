@@ -1,6 +1,5 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
-pragma experimental ABIEncoderV2;
 
 import '@openzeppelin/contracts/utils/Context.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
@@ -44,16 +43,32 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
     }
 
     /**
-     * @notice get all existing staking pools
+     * @notice get all existing staking pool id's
      * @return stakingPools
      */
-    function getStakingPool() public view returns (POOL[] memory) {
-      POOL[] memory pools = new POOL[](stakingPoolsCount);
+    function getStakingPools() public view returns (uint[] memory) {
+      uint[] memory pools = new uint[](stakingPoolsCount);
       for (uint i = 0; i < stakingPoolsCount; i++) {
-          POOL storage pool = stakingPools[i];
-          pools[i] = pool;
+          pools[i] = stakingPools[i].poolId;
       }
       return pools;
+    }
+
+    /**
+     * @notice get pool rewards by specific token 
+     * @param token is the address to look for rewards with
+     * @return sum of all remaining rewards in specific token among all pools
+     */
+    function getPoolRewards(address token) public view returns (uint256) {
+        uint total = 0;
+        for (uint i = 0; i < stakingPoolsCount; i++) {
+            POOL memory pool = stakingPools[i];
+            address poolRewardToken = address(pool.rewardToken)
+            if (token == poolRewardToken) {
+                total = total.sum(pool.totalRewards);
+            }
+        }
+        return total;
     }
 
     /**
@@ -189,15 +204,21 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
         emit Unstake(poolId, _msgSender(), count);
     }
 
+    
+
     /**
-     * @notice function to put staking rewards in the contract
+     * @notice function to notify contract how many rewards to assign for the pool
      * @param poolId is the pool id to contribute reward
      * @param amount is the amount to put
      */
-    function addRewards(uint256 poolId, uint256 amount) public {
-        require(amount > 0, "NFTStaking.addRewards: Can't add zero amount!");
+    function notifyRewards(uint256 poolId, uint256 amount) public onlyOwner {
+        require(amount > 0, "NFTStaking.notifyRewards: Can't add zero amount!");
+
         POOL storage poolInfo = stakingPools[poolId];
-        poolInfo.rewardToken.transfer(address(this), amount);
+        uint total = poolInfo.rewardToken.balanceOf(address(this));
+        uint reserved = getPoolRewards(address(poolInfo.rewardToken));
+
+        require(total.sub(reserved) >= amount, "NFTStaking.notifyRewards: Can't add more tokens than available");
         poolInfo.totalRewards = poolInfo.totalRewards.add(amount);
     }
 
@@ -224,6 +245,6 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
         require(stakingPools[poolId].poolId == 0, 'NFTStaking.addPool: poolId already exists!');
 
         stakingPools[poolId] = POOL(poolId, nftToken, nftTokenId, rewardToken, 0, 0, rewardPerNFT);
-        ++stakingPoolsCount;
+        stakingPoolsCount++;
     }
 }

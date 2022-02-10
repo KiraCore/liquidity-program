@@ -181,11 +181,11 @@ echo "KIRA_TOKEN_ADDRESS=0x2CDA738623354c93eB974F3C90175F249d611CA4" >> ./.env &
 
 ```sh
 npx hardhat run scripts/1_deploy_NFTStaking.js --network kovan
-# NFTStaking on ROPSTEN: 0x0c2E83A80F9c7b83599a69087a3953Ec351bc9E2
+# NFTStaking on ROPSTEN: 0xdbf955C4f1637b163337483CA73a886e08c18677
 # NFTStaking on MAINNET: TBD
 
 # Save NFT_STAKING_ADDRESS as env variable
-echo "NFT_STAKING_ADDRESS=0x0c2E83A80F9c7b83599a69087a3953Ec351bc9E2" >> ./.env
+echo "NFT_STAKING_ADDRESS=0xdbf955C4f1637b163337483CA73a886e08c18677" >> ./.env
 
 # verify NFT staking contract
 . ./.env && npx hardhat verify --network kovan $NFT_STAKING_ADDRESS

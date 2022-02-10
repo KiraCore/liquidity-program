@@ -1,5 +1,6 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
+pragma experimental ABIEncoderV2;
 
 import '@openzeppelin/contracts/utils/Context.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
@@ -7,7 +8,7 @@ import '@openzeppelin/contracts/token/ERC1155/IERC1155.sol';
 import '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
 import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
-import 'hardhat/console.sol';
+
 
 contract NFTStaking is Context, ERC1155Holder, Ownable {
     using SafeMath for uint256;
@@ -34,25 +35,34 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
     mapping(uint256 => POOL) stakingPools;
     mapping(uint256 => mapping(address => STAKE)) balances;
 
-    constructor() {
-        stakingPoolsCount = 0;
-    }
-
     event Stake(uint256 indexed poolId, address staker, uint256 amount);
     event Unstake(uint256 indexed poolId, address staker, uint256 amount);
     event Withdraw(uint256 indexed poolId, address staker, uint256 amount);
+
+    constructor() {
+        stakingPoolsCount = 0;
+    }
 
     /**
      * @notice get all existing staking pools
      * @return stakingPools
      */
-    function getStakingPools() public view returns (POOL[] memory){
+    function getStakingPool() public view returns (POOL[] memory) {
       POOL[] memory pools = new POOL[](stakingPoolsCount);
       for (uint i = 0; i < stakingPoolsCount; i++) {
           POOL storage pool = stakingPools[i];
           pools[i] = pool;
       }
       return pools;
+    }
+
+    /**
+     * @notice get staking pool by id
+     * @param poolId is the staking pool identifier
+     * @return stakingPool
+     */
+    function getStakingPool(uint256 poolId) public view returns (POOL memory) {
+      return stakingPools[poolId];
     }
 
     /**
@@ -204,17 +214,16 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
     }
 
     function addPool(
+        uint256 poolId,
         IERC1155 nftToken,
         uint256 nftTokenId,
         IERC20 rewardToken,
         uint256 rewardPerNFT
     ) public onlyOwner {
-        uint poolId = stakingPoolsCount;
         require(stakingPools[poolId].rewardPerNFT == 0, 'NFTStaking.addPool: Pool already exists!');
         require(stakingPools[poolId].poolId == 0, 'NFTStaking.addPool: poolId already exists!');
 
         stakingPools[poolId] = POOL(poolId, nftToken, nftTokenId, rewardToken, 0, 0, rewardPerNFT);
-        stakingPoolsCount++;
-        console.log('SUCCESS: New Staking Pool with ID %s was created', poolId);
+        ++stakingPoolsCount;
     }
 }

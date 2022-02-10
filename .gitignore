@@ -14,3 +14,4 @@ LIP_5.1/.env
 LIP_5.1/yarn.lock
 LIP_5.1/build
 LIP_5.1/package-lock.json
+node_modules/

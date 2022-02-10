@@ -29,12 +29,30 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
     }
 
     /// @dev map poolId to staking Pool detail
+    uint public stakingPoolsCount;
     mapping(uint256 => POOL) stakingPools;
     mapping(uint256 => mapping(address => STAKE)) balances;
 
     event Stake(uint256 indexed poolId, address staker, uint256 amount);
     event Unstake(uint256 indexed poolId, address staker, uint256 amount);
     event Withdraw(uint256 indexed poolId, address staker, uint256 amount);
+
+    constructor() public {
+        stakingPoolsCount = 0;
+    }
+
+    /**
+     * @notice get all existing staking pools
+     * @return stakingPools
+     */
+    function getStakingPools() public view returns (POOL[] memory){
+      POOL[] memory pools = new POOL[](stakingPoolsCount);
+      for (uint i = 0; i < stakingPoolsCount; i++) {
+          POOL storage pool = stakingPools[i];
+          pools[i] = pool;
+      }
+      return pools;
+    }
 
     /**
      * @notice calculate total stakes of staker
@@ -191,9 +209,13 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
         IERC20 rewardToken,
         uint256 rewardPerNFT
     ) public onlyOwner {
+        // When new staking pools are added, they must be iterative
+        // Although new poolId could be easily calculated, it is left as parameter to ensure explicity
+        require(poolId != stakingPoolsCount, abi.encodePacked("NFTStaking.addPool: Expected Pool ID ", stakingPoolsCount, ", but got ", poolId));
         require(stakingPools[poolId].rewardPerNFT == 0, 'NFTStaking.addPool: Pool already exists!');
         require(stakingPools[poolId].poolId == 0, 'NFTStaking.addPool: poolId already exists!');
 
         stakingPools[poolId] = POOL(poolId, nftToken, nftTokenId, rewardToken, 0, 0, rewardPerNFT);
+        stakingPoolsCount++;
     }
 }

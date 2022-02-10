@@ -165,10 +165,10 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
      * @param poolId is the pool id to contribute reward
      * @param amount is the amount to put
      */
-    function addRewards(uint256 poolId, uint256 amount) public onlyOwner {
+    function addRewards(uint256 poolId, uint256 amount) public {
         require(amount > 0, "NFTStaking.addRewards: Can't add zero amount!");
         POOL storage poolInfo = stakingPools[poolId];
-        poolInfo.rewardToken.transferFrom(_msgSender(), address(this), amount);
+        poolInfo.rewardToken.transfer(address(this), amount);
         poolInfo.totalRewards = poolInfo.totalRewards.add(amount);
     }
 

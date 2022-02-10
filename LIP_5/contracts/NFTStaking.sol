@@ -209,12 +209,12 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
         IERC20 rewardToken,
         uint256 rewardPerNFT
     ) public onlyOwner {
-        uint poolId = stakingPoolsCount + 1;
+        uint poolId = stakingPoolsCount;
         require(stakingPools[poolId].rewardPerNFT == 0, 'NFTStaking.addPool: Pool already exists!');
         require(stakingPools[poolId].poolId == 0, 'NFTStaking.addPool: poolId already exists!');
 
         stakingPools[poolId] = POOL(poolId, nftToken, nftTokenId, rewardToken, 0, 0, rewardPerNFT);
         stakingPoolsCount++;
-        console.log('SUCCESS: New Staking Pool with ID %s was created', poolId)
+        console.log('SUCCESS: New Staking Pool with ID %s was created', poolId);
     }
 }

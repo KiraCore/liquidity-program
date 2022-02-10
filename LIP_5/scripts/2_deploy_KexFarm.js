@@ -5,7 +5,7 @@ const KIRA_TOKEN_ADDRESS = process.env.KIRA_TOKEN_ADDRESS;
 
 async function main() {  
   const KexFarm = await hre.ethers.getContractFactory('KexFarm');
-  const kexFarm = await KexFarm.deploy(KIRA_TOKEN_ADDRESS); // TODO
+  const kexFarm = await KexFarm.deploy(KIRA_TOKEN_ADDRESS);
 
   await kexFarm.deployed();
 

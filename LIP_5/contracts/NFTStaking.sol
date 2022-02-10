@@ -8,25 +8,24 @@ import '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
 import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 
+struct STAKE {
+    uint256 amount;
+    uint256 rewardSoFar;
+    uint256 firstStakedAt;
+    uint256 lastClaimedAt;
+}
+
+struct POOL {
+    uint256 poolId;
+    IERC1155 nftToken;
+    uint256 nftTokenId;
+    uint256 totalStakes;
+    uint256 totalRewards;
+    uint256 rewardPerNFT;
+}
 
 contract NFTStaking is Context, ERC1155Holder, Ownable {
     using SafeMath for uint256;
-
-    struct STAKE {
-        uint256 amount;
-        uint256 rewardSoFar;
-        uint256 firstStakedAt;
-        uint256 lastClaimedAt;
-    }
-
-    struct POOL {
-        uint256 poolId;
-        IERC1155 nftToken;
-        uint256 nftTokenId;
-        uint256 totalStakes;
-        uint256 totalRewards;
-        uint256 rewardPerNFT;
-    }
 
     /// @dev map poolId to staking Pool detail
     uint public stakingPoolsCount;
@@ -37,6 +36,10 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
     constructor(IERC20 _tokenAddress) {
         _token = _tokenAddress;
         stakingPoolsCount = 0;
+    }
+
+    function setTokenAddress(IERC20 token_) external onlyOwner {
+        _token = token_;
     }
 
     event Stake(uint256 indexed poolId, address staker, uint256 amount);

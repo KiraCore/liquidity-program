@@ -2,15 +2,23 @@ import { Contract, ethers } from 'ethers';
 
 const abi = [
   {
+    "anonymous": false,
     "inputs": [
       {
-        "internalType": "contract KiraAccessControl",
-        "name": "_accessControl",
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
         "type": "address"
       }
     ],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
+    "name": "OwnershipTransferred",
+    "type": "event"
   },
   {
     "anonymous": false,
@@ -297,6 +305,26 @@ const abi = [
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -384,6 +412,19 @@ const abi = [
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint256",
         "name": "poolId",
         "type": "uint256"
@@ -395,19 +436,6 @@ const abi = [
       }
     ],
     "name": "unstake",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "contract KiraAccessControl",
-        "name": "_accessControl",
-        "type": "address"
-      }
-    ],
-    "name": "updateAccessControl",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

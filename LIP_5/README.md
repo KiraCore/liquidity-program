@@ -168,7 +168,6 @@ This is a public function to calculate & update the rewards for an account. The 
 ##### Define LIP_1 KEX Contract Address
 
 ```sh
-# KEX on RINKEBY: 0xb03a58Df62CD548603685f9E17a337d64AC056E1
 # KEX on KOVAN: 0x539fa9544ea8f82a701b6d3c6a6f0e2ebe307ea6
 # KEX on ROPSTEN: 0x2CDA738623354c93eB974F3C90175F249d611CA4
 # KEX on MAINNET: 0x16980b3B4a3f9D89E33311B5aa8f80303E5ca4F8
@@ -182,13 +181,11 @@ echo "KIRA_TOKEN_ADDRESS=0x2CDA738623354c93eB974F3C90175F249d611CA4" >> ./.env &
 
 ```sh
 npx hardhat run scripts/1_deploy_NFTStaking.js --network kovan
-# NFTStaking on RINKEBY: 0x0433c6CB94863850eb3fECE472A482f228F65b2E
-# NFTStaking on KOVAN: 0xEA6Aa53447Dd99389Fd9418272E9685926f43525
-# NFTStaking on ROPSTEN: 0x80d4d0Fa13b945E2b331f719F9B32F6f33f5c90d
+# NFTStaking on ROPSTEN: 0x2Ae00EcF86396f923D6eef91DdeEd60e5dD7CBeC
 # NFTStaking on MAINNET: TBD
 
 # Save NFT_STAKING_ADDRESS as env variable
-echo "NFT_STAKING_ADDRESS=0xEA6Aa53447Dd99389Fd9418272E9685926f43525" >> ./.env
+echo "NFT_STAKING_ADDRESS=0x2Ae00EcF86396f923D6eef91DdeEd60e5dD7CBeC" >> ./.env
 
 # verify NFT staking contract
 . ./.env && npx hardhat verify --network kovan $NFT_STAKING_ADDRESS
@@ -199,8 +196,6 @@ echo "NFT_STAKING_ADDRESS=0xEA6Aa53447Dd99389Fd9418272E9685926f43525" >> ./.env
 ```sh
 # Requires `KIRA_TOKEN_ADDRESS` set in env variables
 npx hardhat run scripts/2_deploy_KexFarm.js --network kovan 
-# KexFarm on RINKEBY: 0x995179A0ae6Df352d1f49555fd8C8495D8Bb61B1
-# KexFarm on KOVAN: 0xe89841b13b7e23e560D5f1FdD8591BDE466d68c4
 # KexFarm on ROPSTEN: 0x334F7e7C7aBB0A314a9750d8CA076A3561B71432
 # KexFarm on MAINNET: TBD
 
@@ -217,8 +212,6 @@ echo "NFT_FARM_ADDRESS=0xe89841b13b7e23e560D5f1FdD8591BDE466d68c4" >> ./.env
 # Requires `NFT_FARM_ADDRESS` set in env variables
 # The setFarm address funciton is trigerred automatically
 npx hardhat run scripts/3_deploy_KiraNFT.js --network kovan
-# KiraNFT on RINKEBY: 0xD33269a1eeD3aFBC2a78Ee1c98704580c2AC7Dc1
-# KiraNFT on KOVAN: 0x8D7A7162271f7a124d9BBd305B18deDaEeC5721C
 # KiraNFT on ROPSTEN: 0x07D87E94AE77b50A3FB3E9F1983E39d69cA50F6C
 # KiraNFT on MAINNET: TBD
 
@@ -234,15 +227,19 @@ echo "NFT_MINTING_ADDRESS=0x8D7A7162271f7a124d9BBd305B18deDaEeC5721C" >> ./.env
 This is a quick & dirty one-line bash command enabling deployment of all contracts at once. At the end of execution a list of all created contracts is displayed. Only `NETWORK`, `KIRA_TOKEN_ADDRESS`, `PRIVATE_KEY`, `ETHERSCAN_API_KEY` and `INFURA_PROJECT_ID` must be specified before the script is tarted.
 
 ```sh
-RESULT_FILE="./result.txt" && NETWORK="ropsten" && KIRA_TOKEN_ADDRESS="0x2CDA738623354c93eB974F3C90175F249d611CA4" && \
+NETWORK="ropsten" && \
+KIRA_TOKEN_ADDRESS="0x2CDA738623354c93eB974F3C90175F249d611CA4" && \
+PRIVATE_KEY="XXX...XXX" && \
+ETHERSCAN_API_KEY="XXX...XXX" && \
+INFURA_PROJECT_ID="XXX...XXX" && \
  echo "Cloning smartcontracts repo..." && cd $HOME && rm -fvr ./liquidity-program && \
  git clone https://github.com/KiraCore/liquidity-program.git -b LIP_5 && \
  cd ./liquidity-program/LIP_5 && touch ./.env && chmod 777 ./.env && yarn && \
- echo "PRIVATE_KEY=XXX...XXX" >> ./.env && \
- echo "ETHERSCAN_API_KEY=XXX...XXX" >> ./.env && \
- echo "INFURA_PROJECT_ID=XXX...XXX" >> ./.env &&  \
+ echo "PRIVATE_KEY=$PRIVATE_KEY" >> ./.env && \
+ echo "ETHERSCAN_API_KEY=$ETHERSCAN_API_KEY" >> ./.env && \
+ echo "INFURA_PROJECT_ID=$INFURA_PROJECT_ID" >> ./.env &&  \
  echo "KIRA_TOKEN_ADDRESS=$KIRA_TOKEN_ADDRESS" >> ./.env && \
- echo "Deploying 1_deploy_NFTStaking.js => " && \
+ echo "Deploying 1_deploy_NFTStaking.js => " && RESULT_FILE="./result.txt" && \
  rm -fv $RESULT_FILE && npx hardhat run scripts/1_deploy_NFTStaking.js --network $NETWORK && \
  NFT_STAKING_ADDRESS=$(cat $RESULT_FILE) && echo "NFT_STAKING_ADDRESS=$NFT_STAKING_ADDRESS" >> ./.env && \
  echo "Veryfying 1_deploy_NFTStaking.js => " && sleep 180 && \

@@ -17,7 +17,6 @@ struct STAKE {
 
 struct POOL {
     uint256 poolId;
-    IERC1155 nftToken;
     uint256 nftTokenId;
     uint256 totalStakes;
     uint256 totalRewards;
@@ -32,14 +31,20 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
     mapping(uint256 => POOL) stakingPools;
     mapping(uint256 => mapping(address => STAKE)) balances;
     IERC20 private _token;
+    IERC1155 private _nftToken;
 
-    constructor(IERC20 _tokenAddress) {
-        _token = _tokenAddress;
+    constructor(IERC20 tokenAddress, IERC1155 nftTokenAddress) {
+        _token = tokenAddress;
+        _nftToken = nftTokenAddress;
         stakingPoolsCount = 0;
     }
 
-    function setTokenAddress(IERC20 token_) external onlyOwner {
-        _token = token_;
+    function setTokenAddress(IERC20 tokenAddress) external onlyOwner {
+        _token = tokenAddress;
+    }
+
+    function setNftTokenAddress(IERC1155 nftTokenAddress) external onlyOwner {
+        _nftToken = nftTokenAddress;
     }
 
     event Stake(uint256 indexed poolId, address staker, uint256 amount);
@@ -66,8 +71,42 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
      * @param poolId is the staking pool identifier
      * @return stakingPool
      */
-    function getStakingPool(uint256 poolId) public view returns (POOL memory) {
+    function getPool(uint256 poolId) public view returns (POOL memory) {
       return stakingPools[poolId];
+    }
+
+    /**
+     * @notice gets staking pool by NFT id with highest remaining rewards
+     * @param nftId is the NFT identifier
+     * @param _staker is the staker for whom we are looking for the best pool
+     * @return stakingPool
+     */
+    function getPool(uint256 nftId, address _staker) public view returns (POOL memory) {
+        POOL memory poolInfo;
+        for (uint i = 0; i < stakingPoolsCount; i++) {
+            uint256 poolNftId = stakingPools[i].nftTokenId;
+            uint256 poolRewards = rewardOf(i, _staker);
+            if (poolNftId == nftId) {
+                poolInfo = stakingPools[i];
+                if (poolRewards > 0) {
+                    poolInfo = stakingPools[i];
+                    break;
+                }
+            }
+        }
+      return poolInfo;
+    }
+
+    /**
+     * @notice gets staking pool stake
+     * @param nftId is the NFT identifier
+     * @param _staker is the staker for whose stake we are looking for
+     * @return stakingPool
+     */
+    function getBalance(uint256 nftId, address _staker) public view returns (STAKE memory) {
+        POOL memory poolInfo = getPool(nftId, _staker);
+        uint poolId = poolInfo.poolId;
+        return balances[poolId][_staker];
     }
 
     /**
@@ -139,13 +178,13 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
     }
 
     /**
-     * @notice stake KEX
-     * @param _amount is the kex amount to stake
+     * @notice stake NFT
+     * @param _amount is the NFT count to stake
      */
     function stake(uint256 poolId, uint256 _amount) external {
         POOL memory poolInfo = stakingPools[poolId];
 
-        poolInfo.nftToken.safeTransferFrom(_msgSender(), address(this), poolInfo.nftTokenId, _amount, '');
+        _nftToken.safeTransferFrom(_msgSender(), address(this), poolInfo.nftTokenId, _amount, '');
 
         STAKE storage _stake = balances[poolId][_msgSender()];
 
@@ -178,7 +217,7 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
         uint256 reward = rewardOf(poolId, _msgSender()).div(_stake.amount).mul(count);
 
         _token.transfer(_msgSender(), reward);
-        poolInfo.nftToken.safeTransferFrom(address(this), _msgSender(), poolInfo.nftTokenId, count, '');
+        _nftToken.safeTransferFrom(address(this), _msgSender(), poolInfo.nftTokenId, count, '');
 
         poolInfo.totalStakes = poolInfo.totalStakes.sub(count);
         poolInfo.totalRewards = poolInfo.totalRewards.sub(reward);
@@ -211,9 +250,9 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
     }
 
     /**
-     * @notice function to put staking rewards in the contract
+     * @notice function to claim staking rewards from the contract
      * @param poolId is the pool id to contribute reward
-     * @param amount is the amount to put
+     * @param amount is the amount to claim
      */
     function withdrawRewards(uint256 poolId, uint256 amount) public onlyOwner {
         require(stakingPools[poolId].totalRewards >= amount, 'NFTStaking.withdrawRewards: Not enough remaining rewards!');
@@ -223,7 +262,6 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
     }
 
     function addPool(
-        IERC1155 nftToken,
         uint256 nftTokenId,
         uint256 rewardPerNFT
     ) public onlyOwner {
@@ -231,7 +269,7 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
         require(stakingPools[poolId].rewardPerNFT == 0, 'NFTStaking.addPool: Pool already exists!');
         require(stakingPools[poolId].poolId == 0, 'NFTStaking.addPool: poolId already exists!');
 
-        stakingPools[poolId] = POOL(poolId, nftToken, nftTokenId, 0, 0, rewardPerNFT);
+        stakingPools[poolId] = POOL(poolId, nftTokenId, 0, 0, rewardPerNFT);
         stakingPoolsCount++;
     }
 }

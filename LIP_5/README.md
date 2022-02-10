@@ -239,21 +239,21 @@ INFURA_PROJECT_ID="XXX...XXX" && \
  echo "ETHERSCAN_API_KEY=$ETHERSCAN_API_KEY" >> ./.env && \
  echo "INFURA_PROJECT_ID=$INFURA_PROJECT_ID" >> ./.env &&  \
  echo "KIRA_TOKEN_ADDRESS=$KIRA_TOKEN_ADDRESS" >> ./.env && \
- echo "Deploying 1_deploy_NFTStaking.js => " && RESULT_FILE="./result.txt" && \
- rm -fv $RESULT_FILE && npx hardhat run scripts/1_deploy_NFTStaking.js --network $NETWORK && \
- NFT_STAKING_ADDRESS=$(cat $RESULT_FILE) && echo "NFT_STAKING_ADDRESS=$NFT_STAKING_ADDRESS" >> ./.env && \
- echo "Veryfying 1_deploy_NFTStaking.js => " && sleep 180 && \
- ( npx hardhat verify --network $NETWORK $NFT_STAKING_ADDRESS || echo "Already verified" ) && \
- echo "Deploying 2_deploy_KexFarm.js => " && \
+ echo "Deploying 1_deploy_KexFarm.js => " && \
  rm -fv $RESULT_FILE && npx hardhat run scripts/2_deploy_KexFarm.js --network $NETWORK && \
  NFT_FARM_ADDRESS=$(cat $RESULT_FILE) && echo "NFT_FARM_ADDRESS=$NFT_FARM_ADDRESS" >> ./.env && \
- echo "Veryfying 2_deploy_KexFarm.js => " && sleep 180 && \
+ echo "Veryfying 1_deploy_KexFarm.js => " && sleep 180 && \
  ( npx hardhat verify --network $NETWORK $NFT_FARM_ADDRESS $KIRA_TOKEN_ADDRESS || echo "Already verified" ) && \
- echo "Started 3_deploy_KiraNFT.js => " && \
+ echo "Started 2_deploy_KiraNFT.js => " && \
  rm -fv $RESULT_FILE && npx hardhat run scripts/3_deploy_KiraNFT.js --network $NETWORK && \
  NFT_MINTING_ADDRESS=$(cat $RESULT_FILE) && echo "NFT_MINTING_ADDRESS=$NFT_MINTING_ADDRESS" >> ./.env && \
- echo "Veryfying 3_deploy_KiraNFT.js => " && sleep 180 && \
+ echo "Veryfying 2_deploy_KiraNFT.js => " && sleep 180 && \
  ( npx hardhat verify --network $NETWORK $NFT_MINTING_ADDRESS || echo "Already verified" ) && \
+ echo "Deploying 3_deploy_NFTStaking.js => " && RESULT_FILE="./result.txt" && \
+ rm -fv $RESULT_FILE && npx hardhat run scripts/1_deploy_NFTStaking.js --network $NETWORK && \
+ NFT_STAKING_ADDRESS=$(cat $RESULT_FILE) && echo "NFT_STAKING_ADDRESS=$NFT_STAKING_ADDRESS" >> ./.env && \
+ echo "Veryfying 3_deploy_NFTStaking.js => " && sleep 180 && \
+ ( npx hardhat verify --network $NETWORK $NFT_STAKING_ADDRESS $KIRA_TOKEN_ADDRESS $NFT_MINTING_ADDRESS || echo "Already verified" ) && \
  rm -fv $RESULT_FILE && cat ./.env && echo "Deployment Suceeded !!!" || echo "Deployment Failed :("
  
 ```

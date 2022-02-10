@@ -6,12 +6,10 @@ import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/token/ERC1155/IERC1155.sol';
 import '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
 import '@openzeppelin/contracts/utils/math/SafeMath.sol';
-import './KiraAccessControl.sol';
+import '@openzeppelin/contracts/access/Ownable.sol';
 
-contract NFTStaking is Context, ERC1155Holder {
+contract NFTStaking is Context, ERC1155Holder, Ownable {
     using SafeMath for uint256;
-
-    KiraAccessControl accessControl;
 
     struct STAKE {
         uint256 amount;
@@ -37,27 +35,6 @@ contract NFTStaking is Context, ERC1155Holder {
     event Stake(uint256 indexed poolId, address staker, uint256 amount);
     event Unstake(uint256 indexed poolId, address staker, uint256 amount);
     event Withdraw(uint256 indexed poolId, address staker, uint256 amount);
-
-    constructor(KiraAccessControl _accessControl) {
-        accessControl = _accessControl;
-    }
-
-    modifier onlyManager() {
-        require(accessControl.hasManagerRole(_msgSender()), 'Need manager role');
-        _;
-    }
-
-    /**
-     * @notice change access control contract
-     * @param _accessControl is new access control contract
-     */
-    function updateAccessControl(KiraAccessControl _accessControl) public {
-        require(accessControl.hasAdminRole(_msgSender()), 'updateAccessControl: Sender must be admin');
-
-        require(address(_accessControl) != address(0), 'updateAccessControl: New access controls cannot be ZERO address');
-
-        accessControl = _accessControl;
-    }
 
     /**
      * @notice calculate total stakes of staker
@@ -188,7 +165,7 @@ contract NFTStaking is Context, ERC1155Holder {
      * @param poolId is the pool id to contribute reward
      * @param amount is the amount to put
      */
-    function addRewards(uint256 poolId, uint256 amount) external onlyManager {
+    function addRewards(uint256 poolId, uint256 amount) public onlyOwner {
         require(amount > 0, "NFTStaking.addRewards: Can't add zero amount!");
         POOL storage poolInfo = stakingPools[poolId];
         poolInfo.rewardToken.transferFrom(_msgSender(), address(this), amount);
@@ -200,7 +177,7 @@ contract NFTStaking is Context, ERC1155Holder {
      * @param poolId is the pool id to contribute reward
      * @param amount is the amount to put
      */
-    function withdrawRewards(uint256 poolId, uint256 amount) external onlyManager {
+    function withdrawRewards(uint256 poolId, uint256 amount) public onlyOwner {
         require(stakingPools[poolId].totalRewards >= amount, 'NFTStaking.withdrawRewards: Not enough remaining rewards!');
         POOL storage poolInfo = stakingPools[poolId];
         poolInfo.rewardToken.transfer(_msgSender(), amount);
@@ -213,7 +190,7 @@ contract NFTStaking is Context, ERC1155Holder {
         uint256 nftTokenId,
         IERC20 rewardToken,
         uint256 rewardPerNFT
-    ) external onlyManager {
+    ) public onlyOwner {
         require(stakingPools[poolId].rewardPerNFT == 0, 'NFTStaking.addPool: Pool already exists!');
         require(stakingPools[poolId].poolId == 0, 'NFTStaking.addPool: poolId already exists!');
 

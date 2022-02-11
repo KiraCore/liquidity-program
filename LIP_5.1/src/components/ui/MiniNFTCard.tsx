@@ -165,13 +165,13 @@ const MiniNFTCard = ({ owned, card, onStake, reloadMyCollection }: MiniNFTCardPr
           <Flex direction="row" alignItems="center" mb="8px">
             <Image src={SVG_INSTANCE} width="3" mr="8px" />
             <Text fontSize="12px" color="white">
-              {unstakedBalance} unstaked {unstakedBalance >= 1 ? 'card' : 'cards'}
+              {unstakedBalance} unstaked {unstakedBalance == 1 ? 'card' : 'cards'}
             </Text>
           </Flex>
           <Flex direction="row" alignItems="center" mb="8px">
             <Image src={SVG_INSTANCE} width="3" mr="8px" />
             <Text fontSize="12px" color="white">
-              {stakedBalance} staked {stakedBalance >= 1 ? 'card' : 'cards'}
+              {stakedBalance} staked {stakedBalance == 1 ? 'card' : 'cards'}
             </Text>
           </Flex>
           <Flex direction="row" alignItems="center" justifyContent="space-between">

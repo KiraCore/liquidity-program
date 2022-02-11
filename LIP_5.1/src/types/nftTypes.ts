@@ -40,6 +40,22 @@ export interface Card {
 }
 
 export interface Owned {
+  id: number;
   stakedBalance?: number;
   unstakedBalance?: number;
+}
+
+export interface POOL {
+  poolId: number;
+  nftTokenId: number;
+  totalStakes: number;
+  totalRewards: number;
+  rewardPerNFT: number;
+}
+
+export interface BALANCE {
+  amount: number;
+  rewardSoFar: number;
+  firstStakedAt: number;
+  lastClaimedAt: number;
 }

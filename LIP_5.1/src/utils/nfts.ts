@@ -1,4 +1,4 @@
-import { NFTCollection } from "src/types/nftTypes";
+import { NFT, NFTCollection } from "src/types/nftTypes";
 
 export const commonCollection: NFTCollection = {
   title: 'Common Collection',
@@ -36,3 +36,10 @@ export const rareCollection: NFTCollection = {
       { id: 14 }
     ],
 };
+
+
+export function getAllNFT(){
+  return Array.from(commonCollection.nfts.values()).concat(
+    Array.from(uncommonCollection.nfts.values())).concat(
+      Array.from(rareCollection.nfts.values()));
+}

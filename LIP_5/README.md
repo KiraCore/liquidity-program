@@ -177,25 +177,11 @@ echo "KIRA_TOKEN_ADDRESS=0x2CDA738623354c93eB974F3C90175F249d611CA4" >> ./.env &
  . ./.env
 ```
 
-##### Deploy & Verify NFTStaking Contract
-
-```sh
-npx hardhat run scripts/1_deploy_NFTStaking.js --network kovan
-# NFTStaking on ROPSTEN: 0xdbf955C4f1637b163337483CA73a886e08c18677
-# NFTStaking on MAINNET: TBD
-
-# Save NFT_STAKING_ADDRESS as env variable
-echo "NFT_STAKING_ADDRESS=0xdbf955C4f1637b163337483CA73a886e08c18677" >> ./.env
-
-# verify NFT staking contract
-. ./.env && npx hardhat verify --network kovan $NFT_STAKING_ADDRESS
-```
-
 ##### Deploy & Verify KexFarm Contract
 
 ```sh
 # Requires `KIRA_TOKEN_ADDRESS` set in env variables
-npx hardhat run scripts/2_deploy_KexFarm.js --network kovan 
+npx hardhat run scripts/1_deploy_KexFarm.js --network kovan 
 # KexFarm on ROPSTEN: 0x334F7e7C7aBB0A314a9750d8CA076A3561B71432
 # KexFarm on MAINNET: TBD
 
@@ -211,7 +197,7 @@ echo "NFT_FARM_ADDRESS=0xe89841b13b7e23e560D5f1FdD8591BDE466d68c4" >> ./.env
 ```sh
 # Requires `NFT_FARM_ADDRESS` set in env variables
 # The setFarm address funciton is trigerred automatically
-npx hardhat run scripts/3_deploy_KiraNFT.js --network kovan
+npx hardhat run scripts/2_deploy_KiraNFT.js --network kovan
 # KiraNFT on ROPSTEN: 0x07D87E94AE77b50A3FB3E9F1983E39d69cA50F6C
 # KiraNFT on MAINNET: TBD
 
@@ -220,6 +206,20 @@ echo "NFT_MINTING_ADDRESS=0x8D7A7162271f7a124d9BBd305B18deDaEeC5721C" >> ./.env
 
 # Verify NFT minting contract
 . ./.env && npx hardhat verify --network kovan $NFT_MINTING_ADDRESS
+```
+
+##### Deploy & Verify NFTStaking Contract
+
+```sh
+npx hardhat run scripts/3_deploy_NFTStaking.js --network kovan
+# NFTStaking on ROPSTEN: 0x7e4326fC1B72c3B04485dA3b4E63389aC14AE6Fa
+# NFTStaking on MAINNET: TBD
+
+# Save NFT_STAKING_ADDRESS as env variable
+echo "NFT_STAKING_ADDRESS=0x7e4326fC1B72c3B04485dA3b4E63389aC14AE6Fa" >> ./.env
+
+# verify NFT staking contract
+. ./.env && npx hardhat verify --network kovan $NFT_STAKING_ADDRESS $KIRA_TOKEN_ADDRESS $NFT_MINTING_ADDRESS
 ```
 
 ### Quick Deploy
@@ -240,17 +240,17 @@ INFURA_PROJECT_ID="XXX...XXX" && \
  echo "INFURA_PROJECT_ID=$INFURA_PROJECT_ID" >> ./.env &&  \
  echo "KIRA_TOKEN_ADDRESS=$KIRA_TOKEN_ADDRESS" >> ./.env && \
  echo "Deploying 1_deploy_KexFarm.js => " && \
- rm -fv $RESULT_FILE && npx hardhat run scripts/2_deploy_KexFarm.js --network $NETWORK && \
+ rm -fv $RESULT_FILE && npx hardhat run scripts/1_deploy_KexFarm.js --network $NETWORK && \
  NFT_FARM_ADDRESS=$(cat $RESULT_FILE) && echo "NFT_FARM_ADDRESS=$NFT_FARM_ADDRESS" >> ./.env && \
  echo "Veryfying 1_deploy_KexFarm.js => " && sleep 180 && \
  ( npx hardhat verify --network $NETWORK $NFT_FARM_ADDRESS $KIRA_TOKEN_ADDRESS || echo "Already verified" ) && \
  echo "Started 2_deploy_KiraNFT.js => " && \
- rm -fv $RESULT_FILE && npx hardhat run scripts/3_deploy_KiraNFT.js --network $NETWORK && \
+ rm -fv $RESULT_FILE && npx hardhat run scripts/2_deploy_KiraNFT.js --network $NETWORK && \
  NFT_MINTING_ADDRESS=$(cat $RESULT_FILE) && echo "NFT_MINTING_ADDRESS=$NFT_MINTING_ADDRESS" >> ./.env && \
  echo "Veryfying 2_deploy_KiraNFT.js => " && sleep 180 && \
  ( npx hardhat verify --network $NETWORK $NFT_MINTING_ADDRESS || echo "Already verified" ) && \
  echo "Deploying 3_deploy_NFTStaking.js => " && RESULT_FILE="./result.txt" && \
- rm -fv $RESULT_FILE && npx hardhat run scripts/1_deploy_NFTStaking.js --network $NETWORK && \
+ rm -fv $RESULT_FILE && npx hardhat run scripts/3_deploy_NFTStaking.js --network $NETWORK && \
  NFT_STAKING_ADDRESS=$(cat $RESULT_FILE) && echo "NFT_STAKING_ADDRESS=$NFT_STAKING_ADDRESS" >> ./.env && \
  echo "Veryfying 3_deploy_NFTStaking.js => " && sleep 180 && \
  ( npx hardhat verify --network $NETWORK $NFT_STAKING_ADDRESS $KIRA_TOKEN_ADDRESS $NFT_MINTING_ADDRESS || echo "Already verified" ) && \
@@ -319,12 +319,11 @@ There are two ways to get NFTs.
 
 ##### Add pools (ERC1155 vs ERC20 pair) to NFTStaking
 
-To be able to stake KiraNFT to get KEX tokens, we need to add pools to each KiraNFT. Currently we have `n` NFT's, so need to add `n` pools to NFTStaking.
+To be able to stake KiraNFT to get KEX tokens, we need to add pools for each KiraNFT. Currently we have `n` NFT's, so need to add minimum of `n` pools to NFTStaking. 
+
+When pools are created they are auto-enumerated starting from 0, 1, 2 ... and bounded to a specific KEX token address (`KIRA_TOKEN_ADDRESS`) and NFT minting address (`NFT_MINTING_ADDRESS`).
 
 Check `NFTStaking`'s `addPool` function in the above.
 
-* poolId - any integer
-* nftToken - `NFT_MINTING_ADDRESS`
 * nftTokenId - ID of the token that will be accepted as stakeable
-* rewardToken - `KIRA_TOKEN_ADDRESS`
-* rewardPerNFT - 
+* rewardPerNFT - Amount of KEX to reward to the staker

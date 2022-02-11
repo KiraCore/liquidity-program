@@ -7,7 +7,7 @@ import { PrimaryButton } from 'src/components/ui';
 import { useContracts } from 'src/hooks/useContracts';
 import { Card, NFT, Owned } from 'src/types/nftTypes';
 import { QueryDataTypes } from 'src/types/queryDataTypes';
-import { commonCollection, rareCollection, uncommonCollection } from 'src/utils/nfts';
+import { getAllNFT } from 'src/utils/nfts';
 import { useWallet } from 'use-wallet';
 import MiniCollectionSection from './sections/MiniCollection';
 
@@ -16,8 +16,6 @@ type MyCollectionProps = {
 };
 
 const MyCollection = ({ data }: MyCollectionProps) => {
-  const [optStaked, setOptStaked] = useState<boolean>(false);
-
   const { nft, nftStaking } = useContracts();
   const { account } = useWallet();
   const [ownInfo, setOwnInfo] = useState<{ [key: string]: Owned }>({});
@@ -27,46 +25,49 @@ const MyCollection = ({ data }: MyCollectionProps) => {
 
   async function updateInfo() {
     if (!account) return;
-    const unstakedBalances = await Promise.all(commonCollection.nfts.map(({ id }: NFT) => nft.balanceOf(account, id)));
-    const stakedBalances = await Promise.all(commonCollection.nfts.map(({ id }: NFT) => nftStaking.totalStakeOf(id, account)));
+    console.log("MyCollection.txs => updateInfo:")
+
+    const allCollections = getAllNFT();
+    const unstakedBalances = await Promise.all(getAllNFT().map(({ id }: NFT) => nft.balanceOf(account, id)));
+    const stakedBalances = await Promise.all(getAllNFT().map(({ id }: NFT) => nftStaking.totalStakeOf(id, account)));
     const ownInfo: { [key: string]: Owned } = {};
+
+    console.log({unstakedBalances: unstakedBalances, stakedBalances: stakedBalances })
+
     unstakedBalances.forEach((unstakedBalance: number, index: number) => {
-      const id = commonCollection.nfts[index].id;
-      if (ownInfo[id]) ownInfo[id].unstakedBalance = unstakedBalance;
-      else ownInfo[id] = { unstakedBalance };
-    });
+      if (unstakedBalance > 0) {
+        const id = allCollections[index].id;
+        if (ownInfo[id]) ownInfo[id].unstakedBalance = unstakedBalance;
+        else ownInfo[id] = { id: id, unstakedBalance: unstakedBalance };
+      }});
 
     stakedBalances.forEach((stakedBalance: number, index: number) => {
-      const id = commonCollection.nfts[index].id;
-      if (ownInfo[id]) ownInfo[id].stakedBalance = stakedBalance;
-      else ownInfo[id] = { stakedBalance };
-    });
+      if (stakedBalance > 0) {
+        const id = allCollections[index].id;
+        if (ownInfo[id]) ownInfo[id].stakedBalance = stakedBalance;
+        else ownInfo[id] = { id: id, stakedBalance: stakedBalance };
+      }});
 
+    
+    console.log({ownInfo: ownInfo});
     setOwnInfo({ ...ownInfo });
 
-    const commonCards = await Promise.all(commonCollection.nfts.map(({ id }: NFT) => nft.cards(id)));
-    const uncommonCards = await Promise.all(uncommonCollection.nfts.map(({ id }: NFT) => nft.cards(id)));
-    const rareCards = await Promise.all(rareCollection.nfts.map(({ id }: NFT) => nft.cards(id)));
+    const allOwnedCards = await Promise.all(Object.entries(ownInfo).map(info => nft.cards(Number.parseInt(info[0]))));
+    
+    const allPools = await Promise.all(Object.entries(ownInfo).map(
+      info => nftStaking.getPool(Number.parseInt(info[0]), account)
+    ));
 
-    // TODO: Remove, debug only
-    // console.log("MyCollection.txs => updateInfo:")
-    // console.log({commonCards: commonCards, uncommonCards: uncommonCards, rareCards: rareCards})
 
     const cardInfo: { [key: string]: Card } = {};
-
-    [commonCards, uncommonCards, rareCards].forEach(cards  => {
-      cards.forEach(card => {
+    allOwnedCards.forEach(card => {
         let id = card?.getID();
         if (id) {
-          // console.info("MyCollection.txs => updateInfo: Found card ", id, ", upadting info...")
           cardInfo[Number.parseInt(id)] = card;
-        } else {
-          console.warn("MainContext.txs => updateInfo: Could NOT find card id in attributes!")
-          console.warn({card: card})
         }
       });
-    });
 
+    console.log({cardInfo: cardInfo, allPools: allPools});
     setCardInfo({ ...cardInfo });
   }
 
@@ -78,9 +79,11 @@ const MyCollection = ({ data }: MyCollectionProps) => {
     }
   }, [account]);
 
-  const nfts: NFT[] = [...commonCollection.nfts]
+  const nfts = getAllNFT().filter((item: NFT) => Object.entries(ownInfo).find(x => x[0] == item.id.toString()));
+
+  /*const nfts: NFT[] = [...commonCollection.nfts]
     .map((item: NFT) => ({ ...item, stakedBalance: ownInfo[item.id]?.stakedBalance, unstakedBalance: ownInfo[item.id]?.unstakedBalance }))
-    .filter((item: NFT) => !!item.stakedBalance || !!item.unstakedBalance);
+    .filter((item: NFT) => !!item.stakedBalance || !!item.unstakedBalance);*/
 
   const collections = [
     { index: 0, rarity: null, label: 'ALL' },
@@ -111,9 +114,9 @@ const MyCollection = ({ data }: MyCollectionProps) => {
   const options = {
     onStake,
     nfts,
-    staked: optStaked,
     reloadMyCollection: updateInfo,
     cardInfo: cardInfo,
+    ownInfo: ownInfo
   };
 
   return (
@@ -137,18 +140,6 @@ const MyCollection = ({ data }: MyCollectionProps) => {
                 </Tab>
               ))}
             </TabList>
-            <Flex direction="row" alignItems="center" ml={{ base: 'auto', lg: 'unset' }} mr={{ base: 'auto', md: 'unset' }} mt={{ base: '36px', lg: 0 }}>
-              <PrimaryButton
-                text="UNSTAKED"
-                onClick={() => setOptStaked(false)}
-                rest={optStaked ? { ...optStyle.normal, ...optStyle.unselected, ml: 0 } : { ...optStyle.normal, ml: 0 }}
-              />
-              <PrimaryButton
-                text="STAKED"
-                onClick={() => setOptStaked(true)}
-                rest={!optStaked ? { ...optStyle.normal, ...optStyle.unselected } : optStyle.normal}
-              />
-            </Flex>
           </Flex>
 
           <TabPanels>

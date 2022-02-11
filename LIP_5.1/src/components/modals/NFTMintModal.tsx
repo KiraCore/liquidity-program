@@ -6,6 +6,7 @@ import { Input } from '@chakra-ui/input';
 import { Flex, Text } from '@chakra-ui/layout';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from '@chakra-ui/modal';
 import { useToast } from '@chakra-ui/toast';
+import { BigNumber } from 'ethers';
 import { useEffect, useState } from 'react';
 import { useContracts } from 'src/hooks/useContracts';
 import { Card, NFT } from 'src/types/nftTypes';
@@ -56,18 +57,25 @@ const NFTMintModal = ({ isOpen = false, onClose, loadCardInfo, data, nftId, nftI
     setValue(isNaN(v) || v < 0 ? undefined : v);
   };
 
+  const price = Number.parseInt((cardInfo?.value ? cardInfo.value : BigNumber.from(0)).toString());
+  const cost = price * ((value ? value : 0));
+  const balance = (krystalBalance ? krystalBalance : 0);
   const nRemain: number | undefined = card === undefined ? undefined : card.quantity - card.sold;
-  const invalidInput = value !== undefined && nRemain !== undefined && (value > nRemain || value === 0);
+  const invalidInput = value !== undefined && nRemain !== undefined && (balance <= 0 || value > nRemain || value === 0 || cost > balance);
   const disabledMint = !value || !nRemain || invalidInput;
+
+  const onUseAll = () => {
+    setValue((balance > 0 && price > 0) ? Math.floor(balance/price) : 0);
+  };
 
   const onMint = async () => {
     if (value !== undefined && nRemain !== undefined && value <= nRemain && value > 0) {
       setLoading(true);
       try {
-        console.log("NFTMintModal.txs => onMint:");
-        console.log({nftId: nftId, value: value})
+        //console.log("NFTMintModal.txs => onMint:");
+        //console.log({nftId: nftId, value: value})
         const txStake = await nft.purchaseNFT(nftId, value);
-        console.log({txStake: txStake})
+        //console.log({txStake: txStake})
         toast({
           title: 'Pending Transaction',
           description: `Minting ${value} NFT${value > 1 ? 's' : ''} (Id: ${nftId})`,
@@ -128,7 +136,7 @@ const NFTMintModal = ({ isOpen = false, onClose, loadCardInfo, data, nftId, nftI
               Price
             </Text>
             <Text fontSize="16px" lineHeight="26.24px" color="blue.dark">
-              {cardInfo?.value} krystals
+              {price} krystals
             </Text>
           </Flex>
           <Flex alignItems="center" direction="row" mb="12px">
@@ -138,39 +146,54 @@ const NFTMintModal = ({ isOpen = false, onClose, loadCardInfo, data, nftId, nftI
             {krystalBalance === undefined && <Button isLoading variant="ghost" width="fit-content" />}
             {krystalBalance !== undefined && (
               <Text fontSize="16px" lineHeight="26.24px" color="blue.dark">
-                {(+krystalBalance.toFixed(0)).toLocaleString()} krystals
+                {(+balance.toFixed(0)).toLocaleString()} krystals
               </Text>
             )}
           </Flex>
-
-          <Flex
-            bg="gray.septenary"
-            height="46px"
-            px="24px"
-            py="12px"
-            direction="row"
-            alignItems="center"
-            borderRadius="8px"
-            borderColor={invalidInput ? 'red.300' : 'none'}
-            borderWidth="1px"
-          >
-            <Text color="gray.quaternary" fontSize="16px" minWidth="135px">
-              Quantity to Mint:
-            </Text>
-            <FormControl ml="8px">
+          <FormControl>
+            <Flex
+              bg="gray.septenary"
+              height="46px"
+              p="8px"
+              direction="row"
+              alignItems="center"
+              borderRadius="8px"
+              borderColor={invalidInput ? 'red.300' : 'none'}
+              borderWidth="1px"
+            >
               <Input
                 variant="unstyled"
-                textAlign="right"
                 size="md"
                 color="gray.secondary"
                 fontSize="16px"
                 lineHeight="26.24px"
                 type="number"
+                min={0}
                 value={value === undefined ? '' : value}
                 onChange={onInputChange}
+                ml="16px"
               />
-            </FormControl>
-          </Flex>
+              <Text color="gray.quaternary" fontSize="16px" mr="32px" ml="8px">
+                QUANTITY
+              </Text>
+              <Button
+                color="white"
+                bg="gray.quaternary"
+                borderRadius="4px"
+                mr="8px"
+                w="77px"
+                h="30px"
+                fontSize="12px"
+                _hover={{ boxShadow: '0 0 8px rgb(41 142 255 / 80%)' }}
+                onClick={onUseAll}
+              >
+                MAX
+              </Button>
+            </Flex>
+          </FormControl>
+
+
+
           <Flex alignItems="center" direction="row" mt="10px">
             <Text fontSize="16px" lineHeight="26.24px" color="gray.secondary" mr="8px">
               Remaining NFTs:

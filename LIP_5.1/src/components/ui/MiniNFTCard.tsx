@@ -1,7 +1,7 @@
 import { Image } from '@chakra-ui/image';
-import { Box, Flex, Text } from '@chakra-ui/layout';
+import { Box, Flex, Heading, Text } from '@chakra-ui/layout';
 import { IMG_KEX, SVG_INSTANCE } from 'src/assets/images';
-import { Card, NFT } from 'src/types/nftTypes';
+import { Card, Owned } from 'src/types/nftTypes';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { useCallback, useEffect, useState } from 'react';
 import { useToast } from '@chakra-ui/toast';
@@ -13,14 +13,13 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { Button } from '@chakra-ui/button';
 
 type MiniNFTCardProps = {
-  nft: NFT;
   card: Card;
-  staked: boolean;
+  owned: Owned;
   onStake: (nftId: number) => any;
   reloadMyCollection: () => any;
 };
 
-const MiniNFTCard = ({ nft: { id, stakedBalance, unstakedBalance }, card, staked, onStake, reloadMyCollection }: MiniNFTCardProps) => {
+const MiniNFTCard = ({ owned, card, onStake, reloadMyCollection }: MiniNFTCardProps) => {
   const { nftStaking } = useContracts();
   const [loading, setLoading] = useState<boolean>(false);
   const { account } = useWallet();
@@ -28,6 +27,24 @@ const MiniNFTCard = ({ nft: { id, stakedBalance, unstakedBalance }, card, staked
   const [claimable, setClaimable] = useState<BigNumber | undefined>(undefined);
 
   const image = card?.metadata?.image ? card.metadata.image : "/images/loading.png";
+  const stakedBalance = owned.stakedBalance ? owned.stakedBalance : 0 ;
+  const unstakedBalance = owned.unstakedBalance ? owned.unstakedBalance : 0 ;
+  const id = owned.id;
+  const name = card?.getName();
+  const camp = card?.getCamp(); 
+  const gender = card?.getGender();
+  const type = card?.getType();
+
+  const isLoading = !!loading || !name;
+  const canStake = !isLoading && unstakedBalance > 0;
+  const canUnstake = !isLoading && stakedBalance > 0;
+  const canClaim = false;
+
+  const short_description = !isLoading ? `${name} | ${camp}` : "Loading from IPFS...";
+
+  //{(+claimable).toLocaleString()} KEX Claimable
+  //console.log("MiniNFTCard.txs => MiniNFTCard:");
+  //console.log({id: id, stakedBalance: stakedBalance, unstakedBalance: unstakedBalance, card: card });
 
   const reloadClaimable = useCallback(() => {
     if (account) {
@@ -135,67 +152,49 @@ const MiniNFTCard = ({ nft: { id, stakedBalance, unstakedBalance }, card, staked
       <Box height="201px">
         {/* <Image src={image} objectFit="cover" alt={title} height="100%" /> */}
         <LazyLoadImage src={image} height="100%" effect="blur" alt={card?.metadata?.name} style={{ objectFit: 'cover', height: '100%' }} />
+        
       </Box>
 
-      {staked && (
-        <Box py="20px" px="20px">
+      <Box py="8px" px="20px">
+      <Heading as="h4" fontSize="16px" lineHeight="16px" mb="12px" whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">
+          {short_description}
+        </Heading>
+      </Box>
+
+      <Box py="0px" px="20px">
           <Flex direction="row" alignItems="center" mb="8px">
             <Image src={SVG_INSTANCE} width="3" mr="8px" />
             <Text fontSize="12px" color="white">
-              {stakedBalance} {!!stakedBalance && stakedBalance > 1 ? 'instances' : 'instance'}
+              {unstakedBalance} unstaked {unstakedBalance >= 1 ? 'card' : 'cards'}
             </Text>
           </Flex>
           <Flex direction="row" alignItems="center" mb="8px">
-            <Image src={IMG_KEX} width="3" mr="8px" />
-            <Text fontSize="small" color="white" mr="4px">
-              25 KEX /
+            <Image src={SVG_INSTANCE} width="3" mr="8px" />
+            <Text fontSize="12px" color="white">
+              {stakedBalance} staked {stakedBalance >= 1 ? 'card' : 'cards'}
             </Text>
-            <Text fontSize="small" color="gray.secondary">
-              100 kex per month
-            </Text>
-          </Flex>
-          <Flex direction="row" alignItems="center" mb="20px">
-            <Image src={IMG_KEX} width="3" mr="8px" />
-            {claimable === undefined && <Button isLoading variant="ghost" width="fit-content" />}
-            {claimable !== undefined && (
-              <Text fontSize="small" color="white" mr="4px">
-                {(+claimable).toLocaleString()} KEX Claimable
-              </Text>
-            )}
           </Flex>
           <Flex direction="row" alignItems="center" justifyContent="space-between">
-            <OutlinedButton text="UNSTAKE" onClick={onUnstake} rest={{ width: '105px', height: '36px', isLoading: loading, disabled: loading }} />
-            <PrimaryButton
-              text="CLAIM"
-              onClick={onClaim}
-              rest={{ background: 'linear-gradient(to bottom, #8493FF, #344AE6)', width: '105px', height: '36px', isLoading: loading, disabled: loading }}
-            />
+            <OutlinedButton text="UNSTAKE" onClick={onUnstake} rest={{ width: '105px', height: '36px', isLoading: isLoading, disabled: !canUnstake }} />
+            <OutlinedButton text="STAKE" onClick={() => onStake(id)} rest={{ width: '105px', height: '36px', isLoading: isLoading, disabled: !canStake }} />
           </Flex>
-        </Box>
-      )}
-      {!staked && (
-        <Box py="20px" px="24px">
-          <Flex direction="row" alignItems="center" mb="8px">
-            <Image src={SVG_INSTANCE} width="3" mr="8px" />
-            <Text fontSize="12px" color="white">
-              {unstakedBalance} {!!unstakedBalance && unstakedBalance > 1 ? 'instances' : 'instance'}
-            </Text>
-          </Flex>
-          <Flex direction="row" alignItems="center">
+      </Box>
+
+      <Box py="8px" px="25px">
+        <Flex direction="row" alignItems="center" marginBottom="10px" >
             <Box flex="1">
               <Flex direction="row" alignItems="center">
                 <Image src={IMG_KEX} width="3" mr="8px" />
                 <Text fontSize="small" color="white">
-                  25 KEX
+                  ???'??? KEX
                 </Text>
               </Flex>
             </Box>
-            <Box flex="1">
-              <OutlinedButton text="STAKE" onClick={() => onStake(id)} rest={{ width: '100%', height: '36px', fontSize: '12px', lineHeight: '13.2px' }} />
-            </Box>
-          </Flex>
-        </Box>
-      )}
+          <Box flex="1">
+            <OutlinedButton text="CLAIM" onClick={onClaim} rest={{ left: '8px', width: '105px', height: '36px', isLoading: isLoading, disabled: !canClaim }} />
+          </Box>
+        </Flex>
+      </Box>
     </Box>
   );
 };

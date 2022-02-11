@@ -1,25 +1,24 @@
 import { SimpleGrid } from '@chakra-ui/layout';
 import { MiniNFTCard } from 'src/components/ui';
-import { Card, NFT } from 'src/types/nftTypes';
+import { Card, NFT, Owned } from 'src/types/nftTypes';
 
 type MiniCollectionSectionProps = {
   nfts: NFT[];
-  staked: boolean;
   rarity?: string;
   onStake: (nftId: number) => any;
   reloadMyCollection: () => any;
   cardInfo: {
     [key: string]: Card;
   };
+  ownInfo: { [key: string]: Owned };
 };
 
-const MiniCollectionSection = ({ nfts, staked, rarity, cardInfo, onStake, reloadMyCollection }: MiniCollectionSectionProps) => {
+const MiniCollectionSection = ({ nfts, rarity, cardInfo, ownInfo, onStake, reloadMyCollection }: MiniCollectionSectionProps) => {
+  const filter = nfts?.filter((nft: NFT) => (!rarity || rarity === cardInfo[nft.id]?.getRarity()));
   return (
     <SimpleGrid minChildWidth="264px" spacingX="12px" spacingY="35px">
-      {nfts
-        ?.filter((nft: NFT) => (staked ? !!nft.stakedBalance : !!nft.unstakedBalance) && (!rarity || rarity === cardInfo[nft.id]?.getRarity()))
-        .map((nft: NFT) => (
-          <MiniNFTCard nft={nft} key={nft.id} card={cardInfo[nft.id]} staked={staked} onStake={onStake} reloadMyCollection={reloadMyCollection} />
+      {filter.map((nft: NFT) => (
+          <MiniNFTCard key={nft.id} card={cardInfo[nft.id]} owned={ownInfo[nft.id]} onStake={onStake} reloadMyCollection={reloadMyCollection} />
         ))}
     </SimpleGrid>
   );

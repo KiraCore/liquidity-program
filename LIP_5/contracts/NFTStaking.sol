@@ -78,35 +78,28 @@ contract NFTStaking is Context, ERC1155Holder, Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice gets staking pool by NFT id with highest remaining rewards that the staker can claim
+     * @notice gets staking pool by NFT id or the pool with most available rewards
      * @param _nftId is the NFT identifier
      * @param _staker is the staker for whom we are looking for the best pool
      * @return stakingPool
      */
     function getPool(uint256 _nftId, address _staker) public view returns (POOL memory) {
-        POOL memory poolInfoBestClaim = POOL(0,0,0,0,0,0,0);
+        // return undefined pool if nothing is found
         POOL memory poolInfoBestAvailable = POOL(0,0,0,0,0,0,0);
-        uint256 bestClaimRewards = 0;
-        uint256 bestAvailableRewards = 0;
         for (uint i = 0; i < stakingPoolsCount; i++) {
             POOL memory poolInfo = stakingPools[i];
-            if (poolInfo.nftTokenId == _nftId) {
-                uint256 clamableRewards = rewardOf(i, _staker);
-                uint256 availableRewards = poolInfo.totalRewards;
-                if (clamableRewards >= bestClaimRewards) {
-                    poolInfoBestClaim = poolInfo;
-                    bestClaimRewards = clamableRewards;
-                }
-                if (availableRewards >= bestAvailableRewards) {
-                    poolInfoBestAvailable = poolInfo;
-                    bestAvailableRewards = availableRewards;
-                }
-            }
+
+            // ignore all pools not relevant to searched token
+            if (poolInfo.nftTokenId != _nftId) continue;
+
+            uint amount = balances[i][_staker].amount;
+
+            // return immediately first pool if user has anything already staked with the pool that was just found
+            if (amount > 0) return poolInfo;
+            if (poolInfo.totalRewards >= poolInfoBestAvailable.totalRewards) poolInfoBestAvailable = poolInfo;
         }
-      
-      // if there is no rewards to be claimed, get pool with higer number of rewards that can be distributed
-      if (bestClaimRewards == 0) return poolInfoBestAvailable;
-      return poolInfoBestClaim;
+
+      return poolInfoBestAvailable;
     }
 
     /**

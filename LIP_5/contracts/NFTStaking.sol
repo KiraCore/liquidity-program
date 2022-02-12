@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: Unlicense
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.1;
 
 import '@openzeppelin/contracts/utils/Context.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
@@ -121,6 +121,22 @@ contract NFTStaking is Context, ERC1155Holder, Ownable, ReentrancyGuard {
         uint poolId = poolInfo.poolId;
         STAKE memory balance = balances[poolId][_staker];
         return balance;
+    }
+
+    /**
+     * @notice gets the staker balance of for the specific staking pool
+     * @param _staker is the staker for whose stake we are looking for
+     * @param _poolId is the pool identifier
+     * @return stakingBalance
+     */
+    function getBalance(address _staker, uint256 _poolId) public view returns (STAKE memory) {
+        STAKE memory balanceInfo = STAKE({
+            amount: balances[_poolId][_staker].amount,
+            rewardSoFar: balances[_poolId][_staker].rewardSoFar,
+            firstStakedAt: balances[_poolId][_staker].firstStakedAt,
+            lastClaimedAt: balances[_poolId][_staker].lastClaimedAt
+        });
+        return balanceInfo;
     }
 
     /**

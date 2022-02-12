@@ -762,11 +762,11 @@ export const create = (address: string, provider: any) => {
     )});
     
   // WRITE
-  const stake = (nftId: number, amount: number) => contract.stake(nftId, amount);
+  const stake = (poolId: number, amount: number) => contract.stake(poolId, amount);
 
-  const unstake = (nftId: number) => contract.unstake(nftId);
+  const unstake = (poolId: number, amount: number) => contract.unstake(poolId, amount);
 
-  const claimReward = (nftId: number) => contract.claimReward(nftId);
+  const claimReward = (poolId: number) => contract.claimReward(poolId);
 
   return {
     rewardOf,

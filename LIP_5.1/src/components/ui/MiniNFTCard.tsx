@@ -65,7 +65,7 @@ const MiniNFTCard = ({ unstakedBalance, card, pool, balance, kexDecimals, onStak
   const onUnstake = async () => {
     setLoading(true);
     try {
-      const txStake = await nftStaking.unstake(pool.poolId);
+      const txStake = await nftStaking.unstake(pool.poolId,balance.amount);
       toast({
         title: 'Pending Transaction',
         description: `Unstaking NFT (Id: ${nftId})`,
@@ -177,7 +177,7 @@ const MiniNFTCard = ({ unstakedBalance, card, pool, balance, kexDecimals, onStak
             </Text>
           </Flex>
           <Flex direction="row" alignItems="center" justifyContent="space-between">
-            <OutlinedButton text="UNSTAKE" onClick={onUnstake} rest={{ width: '105px', height: '36px', isLoading: isLoading, disabled: !canUnstake }} />
+            <OutlinedButton text="UNSTAKE ALL" onClick={onUnstake} rest={{ width: '105px', height: '36px', isLoading: isLoading, disabled: !canUnstake }} />
             <OutlinedButton text="STAKE" onClick={() => onStake(card, pool)} rest={{ width: '105px', height: '36px', isLoading: isLoading, disabled: !canStake }} />
           </Flex>
       </Box>

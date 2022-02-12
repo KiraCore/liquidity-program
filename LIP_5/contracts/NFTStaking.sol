@@ -84,21 +84,21 @@ contract NFTStaking is Context, ERC1155Holder, Ownable, ReentrancyGuard {
      * @return stakingPool
      */
     function getPool(uint256 _nftId, address _staker) public view returns (POOL memory) {
-        POOL memory poolInfoBestClaim;
-        POOL memory poolInfoBestAvailable;
+        POOL memory poolInfoBestClaim = POOL(0,0,0,0,0,0,0);
+        POOL memory poolInfoBestAvailable = POOL(0,0,0,0,0,0,0);
         uint256 bestClaimRewards = 0;
         uint256 bestAvailableRewards = 0;
         for (uint i = 0; i < stakingPoolsCount; i++) {
-            uint256 poolNftId = stakingPools[i].nftTokenId;
-            if (poolNftId == _nftId) {
+            POOL memory poolInfo = stakingPools[i];
+            if (poolInfo.nftTokenId == _nftId) {
                 uint256 clamableRewards = rewardOf(i, _staker);
-                uint256 availableRewards = stakingPools[i].totalRewards;
+                uint256 availableRewards = poolInfo.totalRewards;
                 if (clamableRewards >= bestClaimRewards) {
-                    poolInfoBestClaim = stakingPools[i];
+                    poolInfoBestClaim = poolInfo;
                     bestClaimRewards = clamableRewards;
                 }
                 if (availableRewards >= bestAvailableRewards) {
-                    poolInfoBestAvailable = stakingPools[i];
+                    poolInfoBestAvailable = poolInfo;
                     bestAvailableRewards = availableRewards;
                 }
             }
@@ -118,9 +118,14 @@ contract NFTStaking is Context, ERC1155Holder, Ownable, ReentrancyGuard {
     function getBalance(uint256 _nftId, address _staker) public view returns (STAKE memory) {
         // get pool that gives max possible rewards at the current time instance
         POOL memory poolInfo = getPool(_nftId, _staker);
+
+        uint poolDefined = poolInfo.rewardPeriod;
+        // if pool is undefined
+        if (poolDefined == 0) return STAKE(0,0,0,0);
+
+        // pool is defined, return balance
         uint poolId = poolInfo.poolId;
-        STAKE memory balance = balances[poolId][_staker];
-        return balance;
+        return balances[poolId][_staker];
     }
 
     /**
@@ -130,13 +135,7 @@ contract NFTStaking is Context, ERC1155Holder, Ownable, ReentrancyGuard {
      * @return stakingBalance
      */
     function getBalance(address _staker, uint256 _poolId) public view returns (STAKE memory) {
-        STAKE memory balanceInfo = STAKE({
-            amount: balances[_poolId][_staker].amount,
-            rewardSoFar: balances[_poolId][_staker].rewardSoFar,
-            firstStakedAt: balances[_poolId][_staker].firstStakedAt,
-            lastClaimedAt: balances[_poolId][_staker].lastClaimedAt
-        });
-        return balanceInfo;
+        return balances[_poolId][_staker];
     }
 
     /**
@@ -148,9 +147,12 @@ contract NFTStaking is Context, ERC1155Holder, Ownable, ReentrancyGuard {
     function getRewards(uint256 _nftId, address _staker) public view returns (uint256) {
         // get pool that gives max possible rewards at the current time instance
         POOL memory poolInfo = getPool(_nftId, _staker);
-        uint poolId = poolInfo.poolId;
-        uint rewards = rewardOf(poolId, _staker);
-        return rewards;
+
+        uint poolDefined = poolInfo.rewardPeriod;
+        // if pool is undefined
+        if(poolDefined == 0) return 0;
+
+        return rewardOf(poolInfo.poolId, _staker);
     }
 
     /**

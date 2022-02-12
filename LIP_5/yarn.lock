@@ -59,7 +59,7 @@
   dependencies:
     "@ethersproject/abi" "^5.0.1"
     "ethers" "^5.0.1"
-
+ 
 "@ethereum-waffle/provider@^3.3.0", "@ethereum-waffle/provider@^3.3.1":
   "integrity" "sha512-ilz6cXK0ylSKCmZktTMpY4gjo0CN6rb86JfN7+RZYk6tKtZA6sXoOe95skWEQkGf1fZk7G817fTzLb0CmFDp1g=="
   "resolved" "https://registry.npmjs.org/@ethereum-waffle/provider/-/provider-3.3.2.tgz"

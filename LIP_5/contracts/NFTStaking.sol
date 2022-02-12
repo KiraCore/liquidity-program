@@ -83,17 +83,29 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
      * @return stakingPool
      */
     function getPool(uint256 _nftId, address _staker) public view returns (POOL memory) {
-        POOL memory poolInfo;
-        uint256 bestRewards = 0;
+        POOL memory poolInfoBestClaim;
+        POOL memory poolInfoBestAvailable;
+        uint256 bestClaimRewards = 0;
+        uint256 bestAvailableRewards = 0;
         for (uint i = 0; i < stakingPoolsCount; i++) {
             uint256 poolNftId = stakingPools[i].nftTokenId;
-            uint256 clamableRewards = rewardOf(i, _staker);
-            if (poolNftId == _nftId && clamableRewards >= bestRewards) {
-                poolInfo = stakingPools[i];
-                bestRewards = clamableRewards;
+            if (poolNftId == _nftId) {
+                uint256 clamableRewards = rewardOf(i, _staker);
+                uint256 availableRewards = stakingPools[i].totalRewards;
+                if (clamableRewards >= bestClaimRewards) {
+                    poolInfoBestClaim = stakingPools[i];
+                    bestClaimRewards = clamableRewards;
+                }
+                if (availableRewards >= bestAvailableRewards) {
+                    poolInfoBestAvailable = stakingPools[i];
+                    bestAvailableRewards = availableRewards;
+                }
             }
         }
-      return poolInfo;
+      
+      // if there is no rewards to be claimed, get pool with higer number of rewards that can be distributed
+      if (bestClaimRewards == 0) return poolInfoBestAvailable;
+      return poolInfoBestClaim;
     }
 
     /**
@@ -182,6 +194,13 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
         // there can be a situation where someone is staking for a very long time and no one is claiming, then sudenly 1 person ruggs everyone
         // to solve this issue we force people to claim every time they accumulate maxPerClaim and thus available rewards don't suddenly go to 0
         if (totalReward > poolInfo.maxPerClaim) totalReward = poolInfo.maxPerClaim;
+
+        // there can be a situation where someone is staking longer than others and claimed multiple times
+        // we should inform everyone about this by decreasing everyone max claim
+        uint256 fairRewardPerNFT = poolInfo.totalRewards.div(poolInfo.totalStakes);
+        uint256 maxFairReward = stakeDetail.amount.mul(fairRewardPerNFT);
+        if (totalReward > maxFairReward) totalReward = maxFairReward;
+
         if (totalReward > poolInfo.totalRewards) totalReward = poolInfo.totalRewards;
         return totalReward;
     }

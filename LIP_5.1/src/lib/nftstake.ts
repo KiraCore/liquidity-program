@@ -6,12 +6,12 @@ const abi = [
     "inputs": [
       {
         "internalType": "contract IERC20",
-        "name": "tokenAddress",
+        "name": "_tokenAddress",
         "type": "address"
       },
       {
         "internalType": "contract IERC1155",
-        "name": "nftTokenAddress",
+        "name": "_nftTokenAddress",
         "type": "address"
       }
     ],
@@ -116,12 +116,22 @@ const abi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "nftTokenId",
+        "name": "_nftTokenId",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "rewardPerNFT",
+        "name": "_rewardPerNFT",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_rewardPeriod",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_maxPerClaim",
         "type": "uint256"
       }
     ],
@@ -134,7 +144,7 @@ const abi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "poolId",
+        "name": "_poolId",
         "type": "uint256"
       }
     ],
@@ -147,7 +157,7 @@ const abi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "nftId",
+        "name": "_nftId",
         "type": "uint256"
       },
       {
@@ -193,7 +203,7 @@ const abi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "poolId",
+        "name": "_poolId",
         "type": "uint256"
       },
       {
@@ -217,7 +227,7 @@ const abi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "poolId",
+        "name": "_poolId",
         "type": "uint256"
       }
     ],
@@ -249,6 +259,16 @@ const abi = [
             "internalType": "uint256",
             "name": "rewardPerNFT",
             "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "rewardPeriod",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxPerClaim",
+            "type": "uint256"
           }
         ],
         "internalType": "struct POOL",
@@ -263,7 +283,7 @@ const abi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "nftId",
+        "name": "_nftId",
         "type": "uint256"
       },
       {
@@ -300,6 +320,16 @@ const abi = [
             "internalType": "uint256",
             "name": "rewardPerNFT",
             "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "rewardPeriod",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxPerClaim",
+            "type": "uint256"
           }
         ],
         "internalType": "struct POOL",
@@ -312,7 +342,7 @@ const abi = [
   },
   {
     "inputs": [],
-    "name": "getPoolRewards",
+    "name": "getReservedRewards",
     "outputs": [
       {
         "internalType": "uint256",
@@ -327,7 +357,7 @@ const abi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "poolId",
+        "name": "_poolId",
         "type": "uint256"
       },
       {
@@ -351,7 +381,31 @@ const abi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "poolId",
+        "name": "_nftId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_staker",
+        "type": "address"
+      }
+    ],
+    "name": "getRewards",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_poolId",
         "type": "uint256"
       }
     ],
@@ -370,12 +424,12 @@ const abi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "poolId",
+        "name": "_poolId",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "amount",
+        "name": "_amount",
         "type": "uint256"
       }
     ],
@@ -486,7 +540,7 @@ const abi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "poolId",
+        "name": "_poolId",
         "type": "uint256"
       },
       {
@@ -510,7 +564,7 @@ const abi = [
     "inputs": [
       {
         "internalType": "contract IERC1155",
-        "name": "nftTokenAddress",
+        "name": "_nftTokenAddress",
         "type": "address"
       }
     ],
@@ -523,7 +577,7 @@ const abi = [
     "inputs": [
       {
         "internalType": "contract IERC20",
-        "name": "tokenAddress",
+        "name": "_tokenAddress",
         "type": "address"
       }
     ],
@@ -536,7 +590,7 @@ const abi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "poolId",
+        "name": "_poolId",
         "type": "uint256"
       },
       {
@@ -586,7 +640,7 @@ const abi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "poolId",
+        "name": "_poolId",
         "type": "uint256"
       },
       {
@@ -623,12 +677,12 @@ const abi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "poolId",
+        "name": "_poolId",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "count",
+        "name": "_count",
         "type": "uint256"
       }
     ],
@@ -683,31 +737,29 @@ export const create = (address: string, provider: any) => {
      rewardPeriod: val[5]?.toNumber() ?? 0,
      maxPerClaim: val[6]?.toNumber() ?? 0,
      isUndefined(): boolean {
-      return ((val[0]?.toNumber() ?? 0) == 0 && 
-        (val[1]?.toNumber() ?? 0) == 0 && 
-        (val[2]?.toNumber() ?? 0) == 0 && 
-        (val[3]?.toNumber() ?? 0) == 0 &&
-        (val[4]?.toNumber() ?? 0) == 0 &&
-        (val[5]?.toNumber() ?? 0) == 0 &&
-        (val[6]?.toNumber() ?? 0) == 0);
+      return ((val[5]?.toNumber() ?? 0) === 0);
     }} as POOL)
   );
 
+  const getRewards = (nftId: number, address: string) => contract["getRewards(uint256,address)"](nftId, address).then((val: BigNumber) => val);
+
   const getBalance = (nftId: number, address: string) => 
    contract["getBalance(uint256,address)"](nftId, address).
-   then((val: BigNumber[]) => ({
-    nftTokenId: nftId,
-    amount: val[0]?.toNumber() ?? 0,
-    rewardSoFar: val[1]?.toNumber() ?? 0,
-    firstStakedAt: val[2]?.toNumber() ?? 0,
-    lastClaimedAt: val[3]?.toNumber() ?? 0,
-    isUndefined(): boolean {
-      return ((val[0]?.toNumber() ?? 0) == 0 && 
-        (val[1]?.toNumber() ?? 0) == 0 && 
-        (val[2]?.toNumber() ?? 0) == 0 && 
-        (val[3]?.toNumber() ?? 0) == 0);
-    }} as BALANCE)
-  );
+   then((val: BigNumber[]) =>{
+     return getRewards(nftId, address).then((rewardsToClaim: BigNumber) => ({
+      nftTokenId: nftId,
+      amount: val[0]?.toNumber() ?? 0,
+      rewardSoFar: val[1]?.toNumber() ?? 0,
+      firstStakedAt: val[2]?.toNumber() ?? 0,
+      lastClaimedAt: val[3]?.toNumber() ?? 0,
+      rewardsToClaim: rewardsToClaim?.toNumber() ?? 0,
+      isUndefined(): boolean {
+        return ((val[0]?.toNumber() ?? 0) === 0 && 
+          (val[1]?.toNumber() ?? 0) === 0 && 
+          (val[2]?.toNumber() ?? 0) === 0 && 
+          (val[3]?.toNumber() ?? 0) === 0);
+      }} as BALANCE)
+    )});
     
   // WRITE
   const stake = (nftId: number, amount: number) => contract.stake(nftId, amount);

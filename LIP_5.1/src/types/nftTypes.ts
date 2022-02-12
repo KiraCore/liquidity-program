@@ -63,4 +63,5 @@ export interface BALANCE {
   rewardSoFar: number;
   firstStakedAt: number;
   lastClaimedAt: number;
+  rewardsToClaim: number;
 }

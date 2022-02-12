@@ -8,6 +8,7 @@ import { useToast } from '@chakra-ui/toast';
 import { useEffect, useState } from 'react';
 import { NFT_STAKING_ADDRESS } from 'src/config';
 import { useContracts } from 'src/hooks/useContracts';
+import { Card, POOL } from 'src/types/nftTypes';
 import { QueryDataTypes } from 'src/types/queryDataTypes';
 import { useWallet } from 'use-wallet';
 import { OutlinedButton, PrimaryButton } from '../ui';
@@ -16,11 +17,14 @@ type StakeNFTModalProps = {
   isOpen?: boolean;
   onClose: () => any;
   data: QueryDataTypes;
-  nftId: number;
+  card: Card;
+  pool: POOL;
   reloadMyCollection: () => any;
 };
 
-const StakeNFTModal = ({ isOpen = false, onClose, data, nftId, reloadMyCollection }: StakeNFTModalProps) => {
+const StakeNFTModal = ({ isOpen = false, onClose, data, card, pool, reloadMyCollection }: StakeNFTModalProps) => {
+  
+  const nftId = pool.nftTokenId;
   const [value, setValue] = useState<number | undefined>(undefined);
 
   const { nftStaking, nft } = useContracts();
@@ -69,7 +73,7 @@ const StakeNFTModal = ({ isOpen = false, onClose, data, nftId, reloadMyCollectio
     if (value !== undefined && balance !== undefined && value <= balance && value > 0) {
       setLoading(true);
       try {
-        const txStake = await nftStaking.stake(nftId, value);
+        const txStake = await nftStaking.stake(pool.poolId, value);
         toast({
           title: 'Pending Transaction',
           description: `Staking ${value} NFT${value > 1 ? 's' : ''} (Id: ${nftId})`,

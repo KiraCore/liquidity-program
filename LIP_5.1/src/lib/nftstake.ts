@@ -1,5 +1,5 @@
 import { BigNumber, Contract, ethers } from 'ethers';
-import { POOL } from 'src/types/nftTypes';
+import { BALANCE, POOL } from 'src/types/nftTypes';
 
 const abi = [
   {
@@ -674,13 +674,40 @@ export const create = (address: string, provider: any) => {
 
   const getPool = (nftId: number, address: string) => 
    contract["getPool(uint256,address)"](nftId, address).
-   then((val: BigNumber[]) => ({ 
+   then((val: BigNumber[]) => ({
      poolId: val[0]?.toNumber() ?? 0,
-     nftTokenId: val[2]?.toNumber() ?? 0,
-     totalStakes: val[3]?.toNumber() ?? 0,
-     totalRewards: val[4]?.toNumber() ?? 0,
-     rewardPerNFT: val[5]?.toNumber() ?? 0
-    } as POOL));
+     nftTokenId: val[1]?.toNumber() ?? 0,
+     totalStakes: val[2]?.toNumber() ?? 0,
+     totalRewards: val[3]?.toNumber() ?? 0,
+     rewardPerNFT: val[4]?.toNumber() ?? 0,
+     rewardPeriod: val[5]?.toNumber() ?? 0,
+     maxPerClaim: val[6]?.toNumber() ?? 0,
+     isUndefined(): boolean {
+      return ((val[0]?.toNumber() ?? 0) == 0 && 
+        (val[1]?.toNumber() ?? 0) == 0 && 
+        (val[2]?.toNumber() ?? 0) == 0 && 
+        (val[3]?.toNumber() ?? 0) == 0 &&
+        (val[4]?.toNumber() ?? 0) == 0 &&
+        (val[5]?.toNumber() ?? 0) == 0 &&
+        (val[6]?.toNumber() ?? 0) == 0);
+    }} as POOL)
+  );
+
+  const getBalance = (nftId: number, address: string) => 
+   contract["getBalance(uint256,address)"](nftId, address).
+   then((val: BigNumber[]) => ({
+    nftTokenId: nftId,
+    amount: val[0]?.toNumber() ?? 0,
+    rewardSoFar: val[1]?.toNumber() ?? 0,
+    firstStakedAt: val[2]?.toNumber() ?? 0,
+    lastClaimedAt: val[3]?.toNumber() ?? 0,
+    isUndefined(): boolean {
+      return ((val[0]?.toNumber() ?? 0) == 0 && 
+        (val[1]?.toNumber() ?? 0) == 0 && 
+        (val[2]?.toNumber() ?? 0) == 0 && 
+        (val[3]?.toNumber() ?? 0) == 0);
+    }} as BALANCE)
+  );
     
   // WRITE
   const stake = (nftId: number, amount: number) => contract.stake(nftId, amount);
@@ -695,6 +722,7 @@ export const create = (address: string, provider: any) => {
     stake,
     unstake,
     claimReward,
-    getPool
+    getPool,
+    getBalance
   };
 };

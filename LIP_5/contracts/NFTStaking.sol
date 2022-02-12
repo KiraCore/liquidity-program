@@ -21,6 +21,8 @@ struct POOL {
     uint256 totalStakes;
     uint256 totalRewards;
     uint256 rewardPerNFT;
+    uint256 rewardPeriod;
+    uint256 maxPerClaim;
 }
 
 contract NFTStaking is Context, ERC1155Holder, Ownable {
@@ -33,18 +35,18 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
     IERC20 private _token;
     IERC1155 private _nftToken;
 
-    constructor(IERC20 tokenAddress, IERC1155 nftTokenAddress) {
-        _token = tokenAddress;
-        _nftToken = nftTokenAddress;
+    constructor(IERC20 _tokenAddress, IERC1155 _nftTokenAddress) {
+        _token = _tokenAddress;
+        _nftToken = _nftTokenAddress;
         stakingPoolsCount = 0;
     }
 
-    function setTokenAddress(IERC20 tokenAddress) external onlyOwner {
-        _token = tokenAddress;
+    function setTokenAddress(IERC20 _tokenAddress) external onlyOwner {
+        _token = _tokenAddress;
     }
 
-    function setNftTokenAddress(IERC1155 nftTokenAddress) external onlyOwner {
-        _nftToken = nftTokenAddress;
+    function setNftTokenAddress(IERC1155 _nftTokenAddress) external onlyOwner {
+        _nftToken = _nftTokenAddress;
     }
 
     event Stake(uint256 indexed poolId, address staker, uint256 amount);
@@ -52,201 +54,224 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
     event Withdraw(uint256 indexed poolId, address staker, uint256 amount);
 
     /**
-     * @notice get pool rewards by specific token
-     * @return sum of all remaining rewards in specific token among all pools
+     * @notice get remaining rewards from all existing pools
+     * @return rewardsTotal
      */
-    function getPoolRewards() public view returns (uint256) {
-        uint total = 0;
+    function getReservedRewards() public view returns (uint256) {
+        uint256 total = 0;
         for (uint i = 0; i < stakingPoolsCount; i++) {
             POOL memory pool = stakingPools[i];
-            uint poolRewards = pool.totalRewards;
-            total = total + poolRewards;
-            assert(total >= poolRewards);
+            uint256 poolRewards = pool.totalRewards;
+            total = total.add(poolRewards);
         }
         return total;
     }
 
     /**
      * @notice get staking pool by id
-     * @param poolId is the staking pool identifier
+     * @param _poolId is the staking pool identifier
      * @return stakingPool
      */
-    function getPool(uint256 poolId) public view returns (POOL memory) {
-      return stakingPools[poolId];
+    function getPool(uint256 _poolId) public view returns (POOL memory) {
+      return stakingPools[_poolId];
     }
 
     /**
-     * @notice gets staking pool by NFT id with highest remaining rewards
-     * @param nftId is the NFT identifier
+     * @notice gets staking pool by NFT id with highest remaining rewards that the staker can claim
+     * @param _nftId is the NFT identifier
      * @param _staker is the staker for whom we are looking for the best pool
      * @return stakingPool
      */
-    function getPool(uint256 nftId, address _staker) public view returns (POOL memory) {
+    function getPool(uint256 _nftId, address _staker) public view returns (POOL memory) {
         POOL memory poolInfo;
+        uint256 bestRewards = 0;
         for (uint i = 0; i < stakingPoolsCount; i++) {
             uint256 poolNftId = stakingPools[i].nftTokenId;
-            uint256 poolRewards = rewardOf(i, _staker);
-            if (poolNftId == nftId) {
+            uint256 clamableRewards = rewardOf(i, _staker);
+            if (poolNftId == _nftId && clamableRewards >= bestRewards) {
                 poolInfo = stakingPools[i];
-                if (poolRewards > 0) {
-                    poolInfo = stakingPools[i];
-                    break;
-                }
+                bestRewards = clamableRewards;
             }
         }
       return poolInfo;
     }
 
     /**
-     * @notice gets staking pool stake
-     * @param nftId is the NFT identifier
+     * @notice gets the staker balance of for the staking pool that can give the most rewards
+     * @param _nftId is the NFT identifier
      * @param _staker is the staker for whose stake we are looking for
-     * @return stakingPool
+     * @return stakingBalance
      */
-    function getBalance(uint256 nftId, address _staker) public view returns (STAKE memory) {
-        POOL memory poolInfo = getPool(nftId, _staker);
+    function getBalance(uint256 _nftId, address _staker) public view returns (STAKE memory) {
+        // get pool that gives max possible rewards at the current time instance
+        POOL memory poolInfo = getPool(_nftId, _staker);
         uint poolId = poolInfo.poolId;
         return balances[poolId][_staker];
     }
 
     /**
+     * @notice gets amount of staker claimable rewards by nft identifier
+     * @param _nftId is the NFT identifier
+     * @param _staker is the staker for whose stake we are looking for
+     * @return claimable rewards amount
+     */
+    function getRewards(uint256 _nftId, address _staker) public view returns (uint256) {
+        // get pool that gives max possible rewards at the current time instance
+        POOL memory poolInfo = getPool(_nftId, _staker);
+        uint poolId = poolInfo.poolId;
+        uint rewards = rewardOf(poolId, _staker);
+        return rewards;
+    }
+
+    /**
      * @notice calculate total stakes of staker
+     * @param _poolId is the pool identifier
      * @param _staker is the address of staker
      * @return _total
      */
-    function totalStakeOf(uint256 poolId, address _staker) public view returns (uint256) {
-        return balances[poolId][_staker].amount;
+    function totalStakeOf(uint256 _poolId, address _staker) public view returns (uint256) {
+        return balances[_poolId][_staker].amount;
     }
 
     /**
      * @notice calculate entire stake amount
+     * @param _poolId is the pool identifier
      * @return _total
      */
-    function getTotalStakes(uint256 poolId) public view returns (uint256) {
-        return stakingPools[poolId].totalStakes;
+    function getTotalStakes(uint256 _poolId) public view returns (uint256) {
+        return stakingPools[_poolId].totalStakes;
     }
 
     /**
      * @notice get the first staked time
+     * @param _poolId is the pool identifier
      * @return firstStakedAt
      */
-    function getFirstStakedAtOf(uint256 poolId, address _staker) public view returns (uint256) {
-        return balances[poolId][_staker].firstStakedAt;
+    function getFirstStakedAtOf(uint256 _poolId, address _staker) public view returns (uint256) {
+        return balances[_poolId][_staker].firstStakedAt;
     }
 
     /**
      * @notice get total claimed reward of staker
+     * @param _poolId is the pool identifier
      * @return rewardSoFar
      */
-    function getRewardSoFarOf(uint256 poolId, address _staker) public view returns (uint256) {
-        return balances[poolId][_staker].rewardSoFar;
+    function getRewardSoFarOf(uint256 _poolId, address _staker) public view returns (uint256) {
+        return balances[_poolId][_staker].rewardSoFar;
     }
 
     /**
      * @notice calculate reward of staker
+     * @param _poolId is the pool identifier
      * @return reward is the reward amount of the staker
      */
-    function rewardOf(uint256 poolId, address _staker) public view returns (uint256) {
-        POOL memory poolInfo = stakingPools[poolId];
-        STAKE memory stakeDetail = balances[poolId][_staker];
+    function rewardOf(uint256 _poolId, address _staker) public view returns (uint256) {
+        STAKE memory stakeDetail = balances[_poolId][_staker];
 
+        // if staker is NOT staking the token anymore then rewards is 0
+        // notice that lastClaimedAt is set at the time of stake event occuring, if user didnt staked anything then timePassed calculations would NOT be valid
         if (stakeDetail.amount == 0) return 0;
 
-        uint256 timePassed;
+        POOL memory poolInfo = stakingPools[_poolId];
+
         uint256 timeNow = block.timestamp;
+        // passed time in seconds since the last claim
+        uint256 timePassed = timeNow - stakeDetail.lastClaimedAt;
+        uint256 totalReward = stakeDetail.amount.mul(poolInfo.rewardPerNFT).mul(timePassed).div(poolInfo.rewardPeriod);
 
-        timePassed = timeNow - stakeDetail.lastClaimedAt;
-
-        uint256 _totalReward = stakeDetail.amount.mul(poolInfo.rewardPerNFT).mul(timePassed).div(30 days);
-
-        if (_totalReward > poolInfo.totalRewards) return poolInfo.totalRewards;
-        return _totalReward;
+        // there can be a situation where someone is staking for a very long time and no one is claiming, then sudenly 1 person ruggs everyone
+        // to solve this issue we force people to claim every time they accumulate maxPerClaim and thus available rewards don't suddenly go to 0
+        if (totalReward > poolInfo.maxPerClaim) totalReward = poolInfo.maxPerClaim;
+        if (totalReward > poolInfo.totalRewards) totalReward = poolInfo.totalRewards;
+        return totalReward;
     }
 
-    function claimReward(uint256 poolId) public {
-        uint256 reward = rewardOf(poolId, _msgSender());
-
-        POOL memory poolInfo = stakingPools[poolId];
-        STAKE storage _stake = balances[poolId][_msgSender()];
+    function claimReward(uint256 _poolId) public {
+        uint256 reward = rewardOf(_poolId, _msgSender());
+        POOL memory poolInfo = stakingPools[_poolId];
+        STAKE storage balance = balances[_poolId][_msgSender()];
 
         _token.transfer(_msgSender(), reward);
-        _stake.lastClaimedAt = block.timestamp;
-        _stake.rewardSoFar = _stake.rewardSoFar.add(reward);
+
+        balance.lastClaimedAt = block.timestamp;
+        balance.rewardSoFar = balance.rewardSoFar.add(reward);
         poolInfo.totalRewards = poolInfo.totalRewards.sub(reward);
 
-        emit Withdraw(poolId, _msgSender(), reward);
+        emit Withdraw(_poolId, _msgSender(), reward);
     }
 
     /**
      * @notice stake NFT
+     * @param _poolId is the pool identifier
      * @param _amount is the NFT count to stake
      */
-    function stake(uint256 poolId, uint256 _amount) external {
-        POOL memory poolInfo = stakingPools[poolId];
+    function stake(uint256 _poolId, uint256 _amount) external {
+        POOL memory poolInfo = stakingPools[_poolId];
 
         _nftToken.safeTransferFrom(_msgSender(), address(this), poolInfo.nftTokenId, _amount, '');
 
-        STAKE storage _stake = balances[poolId][_msgSender()];
+        STAKE storage balance = balances[_poolId][_msgSender()];
 
-        if (_stake.amount > 0) {
-            uint256 reward = rewardOf(poolId, _msgSender());
+        if (balance.amount > 0) {
+            uint256 reward = rewardOf(_poolId, _msgSender());
 
             _token.transfer(_msgSender(), reward);
-            _stake.rewardSoFar = _stake.rewardSoFar.add(reward);
+            balance.rewardSoFar = balance.rewardSoFar.add(reward);
             poolInfo.totalRewards = poolInfo.totalRewards.sub(reward);
 
-            emit Withdraw(poolId, _msgSender(), reward);
+            emit Withdraw(_poolId, _msgSender(), reward);
         }
-        if (_stake.amount == 0) _stake.firstStakedAt = block.timestamp;
+        if (balance.amount == 0) balance.firstStakedAt = block.timestamp;
 
-        _stake.lastClaimedAt = block.timestamp;
-        _stake.amount = _stake.amount.add(_amount);
-        stakingPools[poolId].totalStakes = stakingPools[poolId].totalStakes.add(_amount);
+        balance.lastClaimedAt = block.timestamp;
+        balance.amount = balance.amount.add(_amount);
+        stakingPools[_poolId].totalStakes = stakingPools[_poolId].totalStakes.add(_amount);
 
-        emit Stake(poolId, _msgSender(), _amount);
+        emit Stake(_poolId, _msgSender(), _amount);
     }
 
     /**
      * @notice unstake current staking
+     * @param _poolId is the pool identifier
      */
-    function unstake(uint256 poolId, uint256 count) external {
-        require(balances[poolId][_msgSender()].amount > 0, 'Not staking');
+    function unstake(uint256 _poolId, uint256 _count) external {
+        require(balances[_poolId][_msgSender()].amount > 0, 'Not staking');
 
-        POOL memory poolInfo = stakingPools[poolId];
-        STAKE storage _stake = balances[poolId][_msgSender()];
-        uint256 reward = rewardOf(poolId, _msgSender()).div(_stake.amount).mul(count);
+        POOL memory poolInfo = stakingPools[_poolId];
+        STAKE storage balance = balances[_poolId][_msgSender()];
+        uint256 reward = rewardOf(_poolId, _msgSender()).div(balance.amount).mul(_count);
 
         _token.transfer(_msgSender(), reward);
-        _nftToken.safeTransferFrom(address(this), _msgSender(), poolInfo.nftTokenId, count, '');
+        _nftToken.safeTransferFrom(address(this), _msgSender(), poolInfo.nftTokenId, _count, '');
 
-        poolInfo.totalStakes = poolInfo.totalStakes.sub(count);
+        poolInfo.totalStakes = poolInfo.totalStakes.sub(_count);
         poolInfo.totalRewards = poolInfo.totalRewards.sub(reward);
 
-        _stake.amount = _stake.amount.sub(count);
-        _stake.rewardSoFar = _stake.rewardSoFar.add(reward);
+        balance.amount = balance.amount.sub(_count);
+        balance.rewardSoFar = balance.rewardSoFar.add(reward);
 
-        if (_stake.amount == 0) {
-            _stake.firstStakedAt = 0;
-            _stake.lastClaimedAt = 0;
+        if (balance.amount == 0) {
+            balance.firstStakedAt = 0;
+            balance.lastClaimedAt = 0;
         }
 
-        emit Unstake(poolId, _msgSender(), count);
+        emit Unstake(_poolId, _msgSender(), _count);
     }
 
     /**
-     * @notice function to notify contract how many rewards to assign for the pool
-     * @param poolId is the pool id to contribute reward
-     * @param amount is the amount to put
+     * @notice function to notify contract how many rewards to assign for the specific pool
+     * @param _poolId is the pool id to contribute reward
+     * @param _amount is the amount to put
      */
-    function notifyRewards(uint256 poolId, uint256 amount) public onlyOwner {
-        require(amount > 0, "NFTStaking.notifyRewards: Can't add zero amount!");
+    function notifyRewards(uint256 _poolId, uint256 _amount) public onlyOwner {
+        require(_amount > 0, "NFTStaking.notifyRewards: Can't add zero amount!");
 
-        POOL storage poolInfo = stakingPools[poolId];
+        POOL storage poolInfo = stakingPools[_poolId];
         uint total = _token.balanceOf(address(this));
-        uint reserved = getPoolRewards();
+        uint reserved = getReservedRewards();
 
-        require(total.sub(reserved) >= amount, "NFTStaking.notifyRewards: Can't add more tokens than available");
-        poolInfo.totalRewards = poolInfo.totalRewards.add(amount);
+        require(total.sub(reserved) >= _amount, "NFTStaking.notifyRewards: Can't add more tokens than available");
+        poolInfo.totalRewards = poolInfo.totalRewards.add(_amount);
     }
 
     /**
@@ -261,15 +286,27 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
         poolInfo.totalRewards = poolInfo.totalRewards.sub(amount);
     }
 
+    /**
+     * @notice adds new staking pool
+     * @param _nftTokenId is the token id that can be staked to the pool
+     * @param _rewardPerNFT is the amount of rewards token can receive over the rewar period 
+     * @param _rewardPeriod is the numer of seconds within each nft can earn the amount equal to rewardPerNFT
+     * @param _maxPerClaim each account has restriction regarding max amount per each rewards claim, this way rewards do NOT suddenly disappear when users check their rewards balances
+     */
     function addPool(
-        uint256 nftTokenId,
-        uint256 rewardPerNFT
+        uint256 _nftTokenId,
+        uint256 _rewardPerNFT,
+        uint256 _rewardPeriod,
+        uint256 _maxPerClaim
     ) public onlyOwner {
         uint256 poolId = stakingPoolsCount;
+        require(_rewardPeriod > 0, "NFTStaking.addPool: Rewards period can NOT be 0");
+        require(_maxPerClaim > 0, "NFTStaking.addPool: Rewards max per each claim can NOT be 0");
         require(stakingPools[poolId].rewardPerNFT == 0, 'NFTStaking.addPool: Pool already exists!');
         require(stakingPools[poolId].poolId == 0, 'NFTStaking.addPool: poolId already exists!');
+        require(stakingPools[poolId].rewardPeriod == 0, 'NFTStaking.addPool: Pool already exists!');
 
-        stakingPools[poolId] = POOL(poolId, nftTokenId, 0, 0, rewardPerNFT);
+        stakingPools[poolId] = POOL(poolId, _nftTokenId, 0, 0, _rewardPerNFT, _rewardPeriod, _maxPerClaim);
         stakingPoolsCount++;
     }
 }

@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import StakeNFTModal from 'src/components/modals/StakeNFTModal';
 import { PrimaryButton } from 'src/components/ui';
 import { useContracts } from 'src/hooks/useContracts';
-import { Card, NFT, Owned } from 'src/types/nftTypes';
+import { BALANCE, Card, NFT, Owned, POOL } from 'src/types/nftTypes';
 import { QueryDataTypes } from 'src/types/queryDataTypes';
 import { getAllNFT } from 'src/utils/nfts';
 import { useWallet } from 'use-wallet';
@@ -22,6 +22,8 @@ const MyCollection = ({ data }: MyCollectionProps) => {
   const [isOpenStakeModal, openStakeModal] = useState<boolean>(false);
   const [selectedId, setSelectedId] = useState<number | undefined>(undefined);
   const [cardInfo, setCardInfo] = useState<{ [key: string]: Card }>({});
+  const [poolInfo, setPoolInfo] = useState<{ [key: string]: POOL }>({});
+  const [balanceInfo, setBalanceInfo] = useState<{ [key: string]: BALANCE }>({});
 
   async function updateInfo() {
     if (!account) return;
@@ -53,37 +55,37 @@ const MyCollection = ({ data }: MyCollectionProps) => {
     setOwnInfo({ ...ownInfo });
 
     const allOwnedCards = await Promise.all(Object.entries(ownInfo).map(info => nft.cards(Number.parseInt(info[0]))));
-    
-    const allPools = await Promise.all(Object.entries(ownInfo).map(
+    const allOwnedPools = await Promise.all<POOL>(Object.entries(ownInfo).map(
       info => nftStaking.getPool(Number.parseInt(info[0]), account)
     ));
-
+    const allOwnedBalances = await Promise.all<BALANCE>(Object.entries(ownInfo).map(
+      info => nftStaking.getBalance(Number.parseInt(info[0]), account)
+    ));
 
     const cardInfo: { [key: string]: Card } = {};
-    allOwnedCards.forEach(card => {
-        let id = card?.getID();
-        if (id) {
-          cardInfo[Number.parseInt(id)] = card;
-        }
-      });
+    const poolInfo: { [key: string]: POOL } = {};
+    const balanceInfo: { [key: string]: BALANCE } = {};
+    allOwnedCards.forEach(card => cardInfo[card.getID()] = card);
+    allOwnedPools.forEach(pool => poolInfo[pool.nftTokenId.toString()] = pool);
+    allOwnedBalances.forEach(balance => balanceInfo[balance.nftTokenId.toString()] = balance);
 
-    console.log({cardInfo: cardInfo, allPools: allPools});
+    console.log({allOwnedCards: allOwnedCards, allOwnedPools: allOwnedPools, allOwnedBalances: allOwnedBalances});
     setCardInfo({ ...cardInfo });
+    setPoolInfo({ ...poolInfo });
+    setBalanceInfo({ ...balanceInfo });
   }
 
   useEffect(() => {
     setOwnInfo({});
     setCardInfo({});
+    setPoolInfo({});
+    setBalanceInfo({});
     if (account) {
       updateInfo();
     }
   }, [account]);
 
   const nfts = getAllNFT().filter((item: NFT) => Object.entries(ownInfo).find(x => x[0] == item.id.toString()));
-
-  /*const nfts: NFT[] = [...commonCollection.nfts]
-    .map((item: NFT) => ({ ...item, stakedBalance: ownInfo[item.id]?.stakedBalance, unstakedBalance: ownInfo[item.id]?.unstakedBalance }))
-    .filter((item: NFT) => !!item.stakedBalance || !!item.unstakedBalance);*/
 
   const collections = [
     { index: 0, rarity: null, label: 'ALL' },
@@ -116,7 +118,9 @@ const MyCollection = ({ data }: MyCollectionProps) => {
     nfts,
     reloadMyCollection: updateInfo,
     cardInfo: cardInfo,
-    ownInfo: ownInfo
+    ownInfo: ownInfo,
+    poolInfo: poolInfo,
+    balanceInfo: balanceInfo
   };
 
   return (

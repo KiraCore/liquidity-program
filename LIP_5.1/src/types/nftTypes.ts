@@ -46,14 +46,19 @@ export interface Owned {
 }
 
 export interface POOL {
+  isUndefined(): boolean;
   poolId: number;
   nftTokenId: number;
   totalStakes: number;
   totalRewards: number;
   rewardPerNFT: number;
+  rewardPeriod: number;
+  maxPerClaim: number;
 }
 
 export interface BALANCE {
+  isUndefined(): boolean;
+  nftTokenId: number;
   amount: number;
   rewardSoFar: number;
   firstStakedAt: number;

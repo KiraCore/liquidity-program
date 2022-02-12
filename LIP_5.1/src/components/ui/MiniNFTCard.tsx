@@ -1,7 +1,7 @@
 import { Image } from '@chakra-ui/image';
 import { Box, Flex, Heading, Text } from '@chakra-ui/layout';
 import { IMG_KEX, SVG_INSTANCE } from 'src/assets/images';
-import { Card, Owned } from 'src/types/nftTypes';
+import { BALANCE, Card, Owned, POOL } from 'src/types/nftTypes';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { useCallback, useEffect, useState } from 'react';
 import { useToast } from '@chakra-ui/toast';
@@ -14,12 +14,14 @@ import { Button } from '@chakra-ui/button';
 
 type MiniNFTCardProps = {
   card: Card;
-  owned: Owned;
+  unstakedBalance: Number;
+  pool: POOL,
+  balance: BALANCE;
   onStake: (nftId: number) => any;
   reloadMyCollection: () => any;
 };
 
-const MiniNFTCard = ({ owned, card, onStake, reloadMyCollection }: MiniNFTCardProps) => {
+const MiniNFTCard = ({ unstakedBalance, card, pool, balance, onStake, reloadMyCollection }: MiniNFTCardProps) => {
   const { nftStaking } = useContracts();
   const [loading, setLoading] = useState<boolean>(false);
   const { account } = useWallet();
@@ -27,17 +29,22 @@ const MiniNFTCard = ({ owned, card, onStake, reloadMyCollection }: MiniNFTCardPr
   const [claimable, setClaimable] = useState<BigNumber | undefined>(undefined);
 
   const image = card?.metadata?.image ? card.metadata.image : "/images/loading.png";
-  const stakedBalance = owned.stakedBalance ? owned.stakedBalance : 0 ;
-  const unstakedBalance = owned.unstakedBalance ? owned.unstakedBalance : 0 ;
-  const id = owned.id;
+  
+  const nftId = Number.parseInt(card?.getID());
   const name = card?.getName();
   const camp = card?.getCamp(); 
   const gender = card?.getGender();
   const type = card?.getType();
 
+  const isPoolActive = pool ? pool.isUndefined() : false;
+  const isBalanceActive = balance ? balance.isUndefined() : false; 
+
+  const stakedBalance = isBalanceActive ? balance.amount : 0 ;
+  // const totalRewards = isPoolActive ? balance.
+
   const isLoading = !!loading || !name;
-  const canStake = !isLoading && unstakedBalance > 0;
-  const canUnstake = !isLoading && stakedBalance > 0;
+  const canStake = !isLoading && unstakedBalance > 0 && isPoolActive;
+  const canUnstake = !isLoading && stakedBalance > 0 && isBalanceActive;
   const canClaim = false;
 
   const short_description = !isLoading ? `${name} | ${camp}` : "Loading from IPFS...";
@@ -49,23 +56,23 @@ const MiniNFTCard = ({ owned, card, onStake, reloadMyCollection }: MiniNFTCardPr
   const reloadClaimable = useCallback(() => {
     if (account) {
       setClaimable(undefined);
-      nftStaking.rewardOf(id, account).then((reward: BigNumber) => {
+      nftStaking.rewardOf(nftId, account).then((reward: BigNumber) => {
         setClaimable(reward);
       });
     }
-  }, [id, account, nftStaking]);
+  }, [nftId, account, nftStaking]);
 
   useEffect(() => {
     reloadClaimable();
-  }, [id, account, reloadClaimable]);
+  }, [nftId, account, reloadClaimable]);
 
   const onUnstake = async () => {
     setLoading(true);
     try {
-      const txStake = await nftStaking.unstake(id);
+      const txStake = await nftStaking.unstake(nftId);
       toast({
         title: 'Pending Transaction',
-        description: `Unstaking NFT (Id: ${id})`,
+        description: `Unstaking NFT (Id: ${nftId})`,
         status: 'warning',
         duration: 5000,
         isClosable: true,
@@ -73,7 +80,7 @@ const MiniNFTCard = ({ owned, card, onStake, reloadMyCollection }: MiniNFTCardPr
       await txStake.wait();
       toast({
         title: 'Transaction Done',
-        description: `Unstaked NFT(Id: ${id})`,
+        description: `Unstaked NFT(Id: ${nftId})`,
         status: 'success',
         duration: 5000,
         isClosable: true,
@@ -95,7 +102,7 @@ const MiniNFTCard = ({ owned, card, onStake, reloadMyCollection }: MiniNFTCardPr
   const onClaim = async () => {
     setLoading(true);
     try {
-      const txStake = await nftStaking.claimReward(id);
+      const txStake = await nftStaking.claimReward(nftId);
       toast({
         title: 'Pending Transaction',
         description: `Claiming Rewards`,
@@ -176,7 +183,7 @@ const MiniNFTCard = ({ owned, card, onStake, reloadMyCollection }: MiniNFTCardPr
           </Flex>
           <Flex direction="row" alignItems="center" justifyContent="space-between">
             <OutlinedButton text="UNSTAKE" onClick={onUnstake} rest={{ width: '105px', height: '36px', isLoading: isLoading, disabled: !canUnstake }} />
-            <OutlinedButton text="STAKE" onClick={() => onStake(id)} rest={{ width: '105px', height: '36px', isLoading: isLoading, disabled: !canStake }} />
+            <OutlinedButton text="STAKE" onClick={() => onStake(nftId)} rest={{ width: '105px', height: '36px', isLoading: isLoading, disabled: !canStake }} />
           </Flex>
       </Box>
 

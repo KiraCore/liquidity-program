@@ -59,6 +59,11 @@ const StakeNFTModal = ({ isOpen = false, onClose, data, card, pool, reloadMyColl
     }
   }, [isOpen, nftId]);
 
+
+  const onUseAll = () => {
+    setValue(balance ?? 0);
+  };
+
   const onInputChange = (e: any) => {
     const v = parseFloat(e.target.value);
     setValue(isNaN(v) || v < 0 ? undefined : v);
@@ -144,7 +149,7 @@ const StakeNFTModal = ({ isOpen = false, onClose, data, card, pool, reloadMyColl
       <ModalOverlay />
       <ModalContent borderRadius="20px">
         <ModalHeader color="gray.secondary" px="48px" pt="48px" pb="24px" fontSize="24px" lineHeight="33.6px">
-          Staking Pool ID: {pool?.poolId ?? "???"}
+          Staking Pool | ID: {pool?.poolId ?? "???"}
         </ModalHeader>
         <ModalHeader color="gray.secondary" px="48px" pt="0px" pb="24px" fontSize="18px" lineHeight="0px">
           <Text color="blue.dark">{`${card?.getName()} | ${card?.getRarity()} NFT`}</Text>
@@ -163,6 +168,7 @@ const StakeNFTModal = ({ isOpen = false, onClose, data, card, pool, reloadMyColl
             )}
           </Flex>
 
+          <FormControl>
           <Flex
             bg="gray.septenary"
             height="46px"
@@ -174,13 +180,8 @@ const StakeNFTModal = ({ isOpen = false, onClose, data, card, pool, reloadMyColl
             borderColor={invalidInput ? 'red.300' : 'none'}
             borderWidth="1px"
           >
-            <Text color="gray.quaternary" fontSize="16px" minWidth="135px">
-              Quantity:
-            </Text>
-            <FormControl ml="8px">
-              <Input
+            <Input
                 variant="unstyled"
-                textAlign="right"
                 size="md"
                 color="gray.secondary"
                 fontSize="16px"
@@ -189,8 +190,27 @@ const StakeNFTModal = ({ isOpen = false, onClose, data, card, pool, reloadMyColl
                 value={value === undefined ? '' : value}
                 onChange={onInputChange}
               />
-            </FormControl>
+            <Text color="gray.quaternary" fontSize="16px" minWidth="135px">
+              QUANTITY
+            </Text>
+            <Button
+                color="white"
+                bg="gray.quaternary"
+                borderRadius="4px"
+                mr="8px"
+                w="77px"
+                h="30px"
+                fontSize="12px"
+                _hover={{ boxShadow: '0 0 8px rgb(41 142 255 / 80%)' }}
+                onClick={onUseAll}
+              >
+                MAX
+              </Button>
+            
+              
+            
           </Flex>
+          </FormControl>
           {/* <Flex alignItems="center" direction="row" mt="10px">
             <Text fontSize="16px" lineHeight="26.24px" color="gray.secondary" mr="8px">
               Remaining NFTs:

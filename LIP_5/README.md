@@ -69,11 +69,11 @@ echo "NFT_MINTING_ADDRESS=0x8D7A7162271f7a124d9BBd305B18deDaEeC5721C" >> ./.env
 
 ```sh
 npx hardhat run scripts/3_deploy_NFTStaking.js --network kovan
-# NFTStaking on ROPSTEN: 0x5A5A00559ddFaDb42FD42ec999748Fd7a7db9D4A
+# NFTStaking on ROPSTEN: 0x0C5B4c3E377Af1A7a93Dd3ecd89A7D4645350A9a
 # NFTStaking on MAINNET: TBD
 
 # Save NFT_STAKING_ADDRESS as env variable
-echo "NFT_STAKING_ADDRESS=0x5A5A00559ddFaDb42FD42ec999748Fd7a7db9D4A" >> ./.env
+echo "NFT_STAKING_ADDRESS=0x0C5B4c3E377Af1A7a93Dd3ecd89A7D4645350A9a" >> ./.env
 
 # verify NFT staking contract
 . ./.env && npx hardhat verify --network kovan $NFT_STAKING_ADDRESS $KIRA_TOKEN_ADDRESS $NFT_MINTING_ADDRESS
@@ -196,3 +196,6 @@ First we need to transfer ERC20 KEX directly into the `NFT_STAKING_ADDRESS` cont
 * `_poolId` - Pool identifier to which reward coins should be added
 * `_amount` - Amount of KEX to add to the pool from the still available balance
 
+### Stake Tokens to The Pool
+
+Before any NFT can be staked, token transfers must be approved via KiraNFT contract (`NFT_FARM_ADDRESS`). Trigger function `setApprovalForAll` using 

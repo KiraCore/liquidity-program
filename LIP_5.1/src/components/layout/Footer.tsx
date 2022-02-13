@@ -2,6 +2,7 @@ import { Image } from '@chakra-ui/image';
 import { Divider, Flex, Spacer, Text } from '@chakra-ui/layout';
 import { SVG_TWITTER, SVG_GITHUB, SVG_MEDIUM, SVG_TELEGRAM } from 'src/assets/images';
 import { NavButton, KiraLogo } from 'src/components/ui';
+import { HEADER_MENUS } from 'src/utils/constants';
 
 const Footer = () => {
   return (
@@ -9,30 +10,18 @@ const Footer = () => {
       <Flex alignItems={{ base: 'left', md: 'center' }} direction={{ base: 'column', md: 'row' }} py={{ base: '40px', lg: '64px' }}>
         <KiraLogo />
         <Spacer />
+
         <Flex direction={{ base: 'column', md: 'row' }} mt={{ base: '32px', md: 0 }}>
-          <a href="https://kira.network/about.html">
-            <NavButton text="About" size="md" />
+        {HEADER_MENUS.map(({ label, href }) => (
+          <a href={href}>
+            <NavButton text={label} key={label }size="md"/>
           </a>
-          <a href="/">
-            <NavButton text="NFT" size="md" />
-          </a>
-          <a href="https://kira.network/technology.html">
-            <NavButton text="Technology" size="md" />
-          </a>
-          <a href="https://kira.network/team.html">
-            <NavButton text="Team" size="md" />
-          </a>
-          <a href="https://kira.network/blog.html">
-            <NavButton text="News" size="md" />
-          </a>
-          <a href="https://kira.network/blog.html">
-            <NavButton text="Blog" size="md" last />
-          </a>
+        ))}
         </Flex>
         <Spacer />
-        <a href="mailto:partners@kiracore.com">
+        <a href="mailto:partners@kira.global">
           <Text fontSize="14px" color="gray.senary" letterSpacing="0.05em" cursor="pointer" mt={{ base: '8px', md: 0 }}>
-            partners@kiracore.com &gt;
+            partners@kira.global &gt;
           </Text>
         </a>
       </Flex>
@@ -68,7 +57,7 @@ const Footer = () => {
         </Flex>
         <Spacer order={3} />
         <Text fontSize="12px" color="gray.tertiary" letterSpacing="0.05em" order={4} mt={{ base: '8px', md: 0 }}>
-          2021 Kira Network , Inc. All rights reserved.
+          2022 KIRA, Kira Global Inc. All rights reserved.
         </Text>
       </Flex>
     </Flex>

@@ -34,7 +34,6 @@ const MiniNFTCard = ({ unstakedBalance, card, pool, balance, kexDecimals, onStak
   const nftId = Number.parseInt(card?.getID());
   const name = card?.getName();
   const camp = card?.getCamp(); 
-  const rarity = card?.getRarity(); 
 
   const isPoolActive = (pool?.isUndefined() ?? true) ? false : true;
   const isBalanceActive = (balance?.isUndefined() ?? true) ? false : true; 
@@ -48,15 +47,20 @@ const MiniNFTCard = ({ unstakedBalance, card, pool, balance, kexDecimals, onStak
   const canClaim = !isLoading && rewardsToClaim > 0;
   const claimable = rewardsToClaim/decimalFactor;
 
-  const short_description = !isLoading ? `${name} | ${camp}` : "Loading from IPFS gateway...";
+  const short_description = !isLoading ? `${name} | ${camp}` : "Loading data...";
   
   const long_description = !isLoading ? (isPoolActive ? `${name} | Staking Pool` : "Staking Pool Unavailable") : 
-    "Loading from IPFS gateway, please wait, it might take a while...";
+    "Loading data, please wait, it might take a while...";
 
   const maxPerClaim = pool?.totalRewards ? pool.maxPerClaim/decimalFactor : 0;
-  const maxFairClaim = (pool?.totalStakes ?? 0) > 0 ? (pool.totalRewards/pool.totalStakes)/decimalFactor : 0;
+  const maxFairClaim = stakedBalance * ((pool?.totalStakes ?? 0) > 0 ? (pool.totalRewards/pool.totalStakes)/decimalFactor : 0);
+  const avgRewardRate = (((pool?.rewardPerNFT ?? 0)/decimalFactor)/((pool?.rewardPeriod ?? Number.MAX_SAFE_INTEGER)/3600));
 
-  const poolAttributes = (isLoading || !isPoolActive) ? [] : [
+  const poolAttributes = (isLoading || !isPoolActive) ? 
+  [{ 
+    name: "Token ID",
+    value: `${card?.getID() ?? "???"}`
+  }] : [
     { name: "Pool ID",
       value: `${pool?.poolId ?? "???"}`
     },{ 
@@ -66,14 +70,17 @@ const MiniNFTCard = ({ unstakedBalance, card, pool, balance, kexDecimals, onStak
       name: "Total Staked",
       value: `${pool?.totalStakes ?? "???"}/${card?.sold ?? "???"}`
     },{ 
-      name: "Unclaimed",
+      name: "Rewards Left",
       value: `${((pool?.totalRewards ?? 0)/decimalFactor).toFixed(0).toLocaleString()} KEX`
     },{
       name: "Avg. Rate",
-      value: `${(((pool?.rewardPerNFT ?? 0)/decimalFactor)/((pool?.rewardPeriod ?? Number.MAX_SAFE_INTEGER)/3600)).toFixed(3).toLocaleString()} KEX/h`
+      value: `${avgRewardRate.toFixed(0).toLocaleString()} KEX/h`
     },{ 
-      name: "Max Claim",
+      name: "Max. Claim",
       value: `${Math.min(maxPerClaim,(pool?.totalStakes ?? 0) > 0 ? maxFairClaim : maxPerClaim).toFixed(0).toLocaleString()} KEX`
+    },{ 
+      name: "Your Claims",
+      value: `${((balance?.rewardSoFar ?? 0)/decimalFactor).toFixed(0).toLocaleString()} KEX`
     }
   ];
 
@@ -177,7 +184,7 @@ const MiniNFTCard = ({ unstakedBalance, card, pool, balance, kexDecimals, onStak
         WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
         WebkitMaskComposite: 'destination-out',
         maskComposite: 'exclude',
-      }}
+      }} //285px
       mx="auto"
     >
 
@@ -204,7 +211,7 @@ const MiniNFTCard = ({ unstakedBalance, card, pool, balance, kexDecimals, onStak
           color="white"
           fontWeight="normal"
           lineHeight="150%"
-          mb={{ base: '16px', md: '32px' }}
+          mb={{ base: '16px', md: '16px' }}
           overflow="hidden"
           sx={{
             base: {
@@ -270,8 +277,7 @@ const MiniNFTCard = ({ unstakedBalance, card, pool, balance, kexDecimals, onStak
                 {(isLoading) && <Button isLoading variant="ghost" width="fit-content" color="white" height="16px" />}
                 {(!isLoading) && (
                   <Text fontSize="small" color="white" fontWeight="semibold" mr="8px">
-                    {(claimable < 1) && ((rewardsToClaim/decimalFactor).toFixed(3)).toLocaleString()}
-                    {(claimable >= 1 && claimable < 10) && ((rewardsToClaim/decimalFactor).toFixed(2)).toLocaleString()}
+                    {(claimable < 10) && ((rewardsToClaim/decimalFactor).toFixed(2)).toLocaleString()}
                     {(claimable >= 10 && claimable < 100) && ((rewardsToClaim/decimalFactor).toFixed(1)).toLocaleString()}
                     {(claimable >= 100) && ((rewardsToClaim/decimalFactor).toFixed(0)).toLocaleString()}
                     &nbsp;KEX 

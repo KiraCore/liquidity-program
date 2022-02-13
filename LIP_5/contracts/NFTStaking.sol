@@ -192,7 +192,7 @@ contract NFTStaking is Context, ERC1155Holder, Ownable, ReentrancyGuard {
     function rewardOf(uint256 _poolId, address _staker) public view returns (uint256) {
         STAKE memory balanceInfo = balances[_poolId][_staker];
 
-        // if staker is NOT staking the token anymore then rewards is 0
+        // if staker is NOT staking the token anymore then rewards is always 0 because claim is triggered on withdraw
         // notice that lastClaimedAt is set at the time of stake event occuring, if user didnt staked anything then timePassed calculations would NOT be valid
         if (balanceInfo.amount == 0) return 0;
 
@@ -220,12 +220,12 @@ contract NFTStaking is Context, ERC1155Holder, Ownable, ReentrancyGuard {
     function claimReward(uint256 _poolId) external nonReentrant {
         uint256 reward = rewardOf(_poolId, _msgSender());
         POOL storage poolInfo = stakingPools[_poolId];
-        STAKE storage balance = balances[_poolId][_msgSender()];
+        STAKE storage balanceInfo = balances[_poolId][_msgSender()];
 
         _token.transfer(_msgSender(), reward);
 
-        balance.lastClaimedAt = block.timestamp;
-        balance.rewardSoFar = balance.rewardSoFar.add(reward);
+        balanceInfo.lastClaimedAt = block.timestamp;
+        balanceInfo.rewardSoFar = balanceInfo.rewardSoFar.add(reward);
         poolInfo.totalRewards = poolInfo.totalRewards.sub(reward);
 
         emit Withdraw(_poolId, _msgSender(), reward);
@@ -268,7 +268,7 @@ contract NFTStaking is Context, ERC1155Holder, Ownable, ReentrancyGuard {
      */
     function unstake(uint256 _poolId, uint256 _count) external nonReentrant {
         STAKE storage balance = balances[_poolId][_msgSender()];
-        require(balance.amount > 0, 'Not staking');
+        require((balance.amount >= _count && _count > 0), 'Unsufficient stake');
 
         POOL storage poolInfo = stakingPools[_poolId];
         uint256 reward = rewardOf(_poolId, _msgSender()).div(balance.amount).mul(_count);
@@ -307,16 +307,26 @@ contract NFTStaking is Context, ERC1155Holder, Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice function to claim staking rewards from the contract
+     * @notice function to forecefully remove staking rewards from the pool into owner's wallet
      * @param _poolId is the pool id to contribute reward
      * @param _amount is the amount to claim
      */
-    function withdrawRewards(uint256 _poolId, uint256 _amount) external nonReentrant onlyOwner {
+    function withdrawRewards(uint256 _poolId, uint256 _amount) public nonReentrant onlyOwner {
         POOL storage poolInfo = stakingPools[_poolId];
-        require(poolInfo.totalRewards >= _amount, 'NFTStaking.withdrawRewards: Not enough remaining rewards!');
+        require(poolInfo.totalRewards >= _amount, 'NFTStaking.withdrawRewards(_poolId, _amount): Not enough remaining rewards!');
 
         _token.transfer(_msgSender(), _amount);
         poolInfo.totalRewards = poolInfo.totalRewards.sub(_amount);
+    }
+
+    /**
+     * @notice function to forecefully remove ALL staking rewards from the pool into owner's wallet
+     * @param _poolId is the pool id to contribute reward
+     */
+    function withdrawRewards(uint256 _poolId) external nonReentrant onlyOwner {
+        POOL memory poolInfo = stakingPools[_poolId];
+        require(poolInfo.totalRewards > 0, 'NFTStaking.withdrawRewards(_poolId): Staking pool is already empty');
+        withdrawRewards(_poolId, poolInfo.totalRewards);
     }
 
     /**

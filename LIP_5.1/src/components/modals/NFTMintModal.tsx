@@ -65,7 +65,7 @@ const NFTMintModal = ({ isOpen = false, onClose, loadCardInfo, data, nftId, nftI
   const disabledMint = !value || !nRemain || invalidInput;
 
   const onUseAll = () => {
-    setValue((balance > 0 && price > 0) ? Math.floor(balance/price) : 0);
+    setValue((balance > 0 && price > 0) ? Math.min(Math.floor(balance/price),(nRemain ? nRemain : 0)) : 0);
   };
 
   const onMint = async () => {

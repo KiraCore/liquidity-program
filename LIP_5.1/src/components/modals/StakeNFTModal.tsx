@@ -138,18 +138,22 @@ const StakeNFTModal = ({ isOpen = false, onClose, data, card, pool, reloadMyColl
     }
     setLoading(false);
   };
-
+//<Text color="blue.dark">{`${card?.getName()} | ${card?.getRarity()} NFT`}</Text>
   return (
     <Modal autoFocus blockScrollOnMount isOpen={isOpen} colorScheme="blue" onClose={onClose} isCentered motionPreset="slideInBottom">
       <ModalOverlay />
       <ModalContent borderRadius="20px">
         <ModalHeader color="gray.secondary" px="48px" pt="48px" pb="24px" fontSize="24px" lineHeight="33.6px">
-          Stake NFT (Id: {nftId})
+          Staking Pool ID: {pool?.poolId ?? "???"}
         </ModalHeader>
+        <ModalHeader color="gray.secondary" px="48px" pt="0px" pb="24px" fontSize="18px" lineHeight="0px">
+          <Text color="blue.dark">{`${card?.getName()} | ${card?.getRarity()} NFT`}</Text>
+        </ModalHeader>
+       
         <ModalBody px="48px" py="0px">
           <Flex alignItems="center" direction="row" mb="12px">
             <Text mr="8px" fontSize="16px" lineHeight="26.24px" color="blue.dark">
-              Your NFT (Id: {nftId}) balance:
+              Your Balance:
             </Text>
             {balance === undefined && <Button isLoading variant="ghost" width="fit-content" />}
             {balance !== undefined && (

@@ -126,7 +126,7 @@ const NFTMintModal = ({ isOpen = false, onClose, loadCardInfo, data, nftId, nftI
             <Image src={cardInfo?.metadata?.image} width="72px" height="72px" borderRadius="16px" mr="24px" />
             <Flex direction="column">
               <Text color="gray.secondary">Confirm Minting</Text>
-              <Text color="blue.dark">{cardInfo?.getName()}</Text>
+              <Text color="blue.dark">{`${card?.getName()} | ${card?.getRarity()} NFT`}</Text>
             </Flex>
           </Flex>
         </ModalHeader>

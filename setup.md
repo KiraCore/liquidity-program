@@ -84,10 +84,12 @@ For example, To setup LIP_1's PRIVATE_KEY
 
 ```
 LIP_ID="LIP_1"
-echo "PRIVATE_KEY=0xXXX...XXX" > $HOME/liquidity-program/$LIP_ID/.env
+cd $HOME/liquidity-program/$LIP_ID
+touch ./.env
+echo "PRIVATE_KEY=0xXXX...XXX" >> ./.env
 ```
 
-### `INFURA_APIKEY` & `INFURA_PROJECT_ID`
+### `INFURA_APIKEY`
 
 Sign up for a free api key at https://infura.io/dashboard to deploy to public networks.
 
@@ -97,7 +99,8 @@ Sign up for a free api key at https://infura.io/dashboard to deploy to public ne
 - Use the Project Secret as `INFURA_APIKEY`
 
 ```
-echo "INFURA_APIKEY=XXX...XXX" >> $HOME/liquidity-program/$LIP_ID/.env
+echo "INFURA_APIKEY=XXX...XXX" >> ./.env && . ./.env && \
+ echo "REACT_APP_INFURA_APIKEY=$INFURA_APIKEY" >> ./.env
 ```
 
 ### `INFURA_PROJECT_ID`
@@ -110,7 +113,8 @@ Sign up for a free api key at https://infura.io/dashboard to deploy to public ne
 - Use the Project ID as `INFURA_PROJECT_ID`
 
 ```
-echo "INFURA_PROJECT_ID=XXX...XXX" >> $HOME/liquidity-program/$LIP_ID/.env
+echo "INFURA_PROJECT_ID=XXX...XXX" >> ./.env && . ./.env && \
+ echo "REACT_APP_INFURA_PROJECT_ID=$INFURA_PROJECT_ID" >> ./.env
 ```
 
 ### `ETHERSCAN_APIKEY` & `ETHERSCAN_API_KEY`
@@ -119,9 +123,10 @@ echo "INFURA_PROJECT_ID=XXX...XXX" >> $HOME/liquidity-program/$LIP_ID/.env
 - Note that the naming might be inconsistent, always reffer to the LIP requirements readme
 
 ```
-echo "ETHERSCAN_APIKEY=XXX...XXX" >> $HOME/liquidity-program/$LIP_ID/.env
-
-echo "ETHERSCAN_API_KEY=XXX...XXX" >> $HOME/liquidity-program/$LIP_ID/.env
+echo "ETHERSCAN_APIKEY=XXX...XXX" >> ./.env && . ./.env && \
+ echo "ETHERSCAN_API_KEY=$ETHERSCAN_APIKEY" >> ./.env && \
+ echo "REACT_APP_ETHERSCAN_APIKEY=$ETHERSCAN_APIKEY" >> ./.env && \
+ echo "REACT_APP_ETHERSCAN_API_KEY=$ETHERSCAN_APIKEY" >> ./.env
 ```
 
 ### `KIRA_TOKEN_ADDRESS`
@@ -129,7 +134,8 @@ echo "ETHERSCAN_API_KEY=XXX...XXX" >> $HOME/liquidity-program/$LIP_ID/.env
 - This environment variable should be set when Kira Token ERC20 (LIP_1) is deployed
 
 ```
-echo "KIRA_TOKEN_ADDRESS=0xZZZ...ZZZ" >> $HOME/liquidity-program/$LIP_ID/.env
+echo "KIRA_TOKEN_ADDRESS=0xZZZ...ZZZ" >> ./.env && . ./.env && \
+ echo "REACT_APP_KIRA_TOKEN_ADDRESS=$KIRA_TOKEN_ADDRESS" >> ./.env
 ```
 
 ### `ACCESS_CONTROL_ADDRESS`
@@ -140,13 +146,50 @@ echo "KIRA_TOKEN_ADDRESS=0xZZZ...ZZZ" >> $HOME/liquidity-program/$LIP_ID/.env
 echo "ACCESS_CONTROL_ADDRESS=0xZZZ...ZZZ" >> $HOME/liquidity-program/$LIP_ID/.env
 ```
 
+### `NFT_STAKING_ADDRESS`
+
+- Smart contract which allows to earn KEX ERC20, for staking KIRA NFT tokens, see NFT staking function in LIP_5
+
+```
+echo "NFT_STAKING_ADDRESS=0xZZZ...ZZZ" >> && . ./.env && \
+ echo "REACT_APP_NFT_STAKING_ADDRESS=$NFT_STAKING_ADDRESS" >> ./.env
+```
+
 ### `NFT_FARM_ADDRESS`
 
 - Smart contract which manages NFT farming using stones, see kex farm function in LIP_5
 
 ```
-echo "NFT_FARM_ADDRESS=0xZZZ...ZZZ" >> $HOME/liquidity-program/$LIP_ID/.env
+echo "NFT_FARM_ADDRESS=0xZZZ...ZZZ" >> && . ./.env && \
+ echo "REACT_APP_NFT_FARM_ADDRESS=$NFT_FARM_ADDRESS" >> ./.env
 ```
+
+### `NFT_MINTING_ADDRESS`
+
+- Smart contract which manages NFT minting & metadata, see kira nft function in LIP_5
+
+```
+echo "NFT_MINTING_ADDRESS=0xZZZ...ZZZ" >> && . ./.env && \
+ echo "REACT_APP_NFT_MINTING_ADDRESS=$NFT_MINTING_ADDRESS" >> ./.env
+```
+
+### `ETHEREUM_CHAIN_ID`
+
+- An integer identifying chain id is used in transaction signature process
+
+Some of the known Chain ID values:
+
+* mainnet - `1`
+* ropsten - `3`
+* rinkeby - `4`
+* kovan - `42`
+
+```
+echo "ETHEREUM_CHAIN_ID=XXX" >> && . ./.env && \
+ echo "REACT_APP_ETHEREUM_CHAIN_ID=$ETHEREUM_CHAIN_ID" >> ./.env
+```
+
+
 
 # 3. Testnet used and faucet references
 

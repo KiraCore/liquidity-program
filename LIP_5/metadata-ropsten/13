@@ -1,0 +1,9 @@
+{
+  "image": "ipfs://QmUJdmnMbxwdRKv8u96PPLDL7BZdWEf3GPEQZHLexuHgtq",
+  "name": "KIRA",
+  "description": "KIRA OG",
+  "attributes": [{ "trait_type": "Rarity", "value": "Rare" },
+    { "trait_type": "Type", "value": "Shinigami" },
+    { "trait_type": "Gender", "value": "Male" },
+    { "trait_type": "Camp", "value": "KIRA" }]
+}

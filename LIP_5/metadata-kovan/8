@@ -1,6 +1,9 @@
 {
-  "image": "https://ipfs.io/ipfs/QmcUJXuVhJ5nfTPSsZiEyUeBznrWmM62TBBn1e2GBzEwxy",
+  "image": "ipfs://QmcUJXuVhJ5nfTPSsZiEyUeBznrWmM62TBBn1e2GBzEwxy",
   "name": "Bose",
   "description": "BOSE - KIRA Network",
-  "attributes": [{ "trait_type": "Rarity", "value": "Uncommon" }]
+  "attributes": [{ "trait_type": "Rarity", "value": "Uncommon" },
+    { "trait_type": "Type", "value": "Übermensch" },
+    { "trait_type": "Gender", "value": "Male" },
+    { "trait_type": "Camp", "value": "KIRA" }]
 }

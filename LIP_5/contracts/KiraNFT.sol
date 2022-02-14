@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: Unlicense
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.1;
 
 import '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
@@ -23,9 +23,9 @@ contract KiraNFT is ERC1155, Ownable {
 
     mapping(uint256 => Card) public cards;
 
-    string tokenUri = 'https://ipfs.io/ipfs/QmbRLTnLXSfGsVwwXUifuUTa2BTULHXxLkESQ2m4aVMhJ9/';
+    string tokenUri = 'ipfs://QmRT4JjEUrRqQwC16AP7UVDqe1NpH2FCNEk5X2AezzHj5M/';
 
-    constructor() ERC1155('https://ipfs.io/ipfs/QmbRLTnLXSfGsVwwXUifuUTa2BTULHXxLkESQ2m4aVMhJ9/') {}
+    constructor() ERC1155('ipfs://QmRT4JjEUrRqQwC16AP7UVDqe1NpH2FCNEk5X2AezzHj5M/') {}
 
     function setTokenURI(string calldata _uri) public onlyOwner {
         tokenUri = _uri;

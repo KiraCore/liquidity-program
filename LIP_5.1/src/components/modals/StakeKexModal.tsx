@@ -5,9 +5,9 @@ import { Input } from '@chakra-ui/input';
 import { Flex, Text } from '@chakra-ui/layout';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from '@chakra-ui/modal';
 import { useState } from 'react';
-import { KEX_FARM_CONTRACT_ADDR } from 'src/config';
+import { NFT_FARM_ADDRESS } from 'src/config';
 import { useContracts } from 'src/hooks/useContracts';
-import { FARM_RATE } from 'src/utils/constants';
+import { DAILY_FARM_RATE } from 'src/utils/constants';
 import { ethers } from 'ethers';
 import { OutlinedButton, PrimaryButton } from '../ui';
 import { useToast } from '@chakra-ui/toast';
@@ -26,10 +26,13 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
   const [value, setValue] = useState<number | undefined>(undefined);
   const [isLoading, setLoading] = useState<boolean>(false);
   const toast = useToast();
-  const { kexBalance, krystalBalance, stakedBalance, allowance, updateInfo, loadAllowance } = data;
-
+  const { kexDecimals, kexBalance, krystalBalance, stakedBalance, allowance, updateInfo, loadAllowance } = data;
   const total = stake ? kexBalance : stakedBalance;
-  const krystalsPerHour = value ? (value * 3600 * FARM_RATE) / Math.pow(10, 22) : 0;
+  const krystalsPerHour = value ? (value * DAILY_FARM_RATE) / 24 : 0;
+
+  const unstakedKex = kexBalance ? kexBalance : 0;
+  const stakedKex = stakedBalance ? stakedBalance : 0;
+  const maxStakeReached = stakedKex >= 10000;
 
   const onInputChange = (e: any) => {
     const v = parseFloat(e.target.value);
@@ -37,7 +40,16 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
   };
 
   const onUseAll = () => {
-    setValue(stake ? kexBalance : stakedBalance);
+    if(stake) {
+      if (maxStakeReached) {
+        setValue(0);
+      } else {
+        let delta = 10000 - stakedKex;
+        setValue(unstakedKex > delta ? delta : unstakedKex);
+      }
+    } else {
+      setValue(stakedBalance);
+    }
   };
 
   let ready = false,
@@ -49,7 +61,7 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
     ready = kexBalance !== undefined && allowance !== undefined && !!value && value <= kexBalance;
     invalidInput = value !== undefined && kexBalance !== undefined && (value > kexBalance || value === 0);
     enableApprove = value !== undefined && allowance !== undefined && ready && value > allowance;
-    enableConfirm = value !== undefined && allowance !== undefined && ready && value <= allowance;
+    enableConfirm = value !== undefined && allowance !== undefined && ready && value <= allowance && !maxStakeReached && (stakedKex + value) <= 10000 ;
   } else {
     ready = stakedBalance !== undefined && !!value && value <= stakedBalance;
     invalidInput = value !== undefined && stakedBalance !== undefined && (value > stakedBalance || value === 0);
@@ -60,10 +72,17 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
   const onConfirm = async () => {
     if (!value) return;
 
+    var decimalFactor = Math.pow(10,kexDecimals as number);
+    var fullDenomValue = ethers.BigNumber.from(Math.floor(value * decimalFactor));
+
+    // TODO: DEBUG REMOVE LOGS
+    // console.log("StakeKexModal => onConfirm: ")
+    // console.log({value: value, fullDenomValue: fullDenomValue, decimalFactor: decimalFactor, kexDecimals: kexDecimals})
+
     setLoading(true);
     try {
       if (stake) {
-        const txStake = await stakingPool.stake(ethers.utils.parseEther(value.toString()));
+        const txStake = await stakingPool.stake(fullDenomValue);
         toast({
           title: 'Pending Transaction',
           description: `Staking ${value} KEX`,
@@ -80,7 +99,7 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
           isClosable: true,
         });
       } else {
-        const txWithdraw = await stakingPool.withdraw(ethers.utils.parseEther(value.toString()));
+        const txWithdraw = await stakingPool.withdraw(fullDenomValue);
         toast({
           title: 'Pending Transaction',
           description: `Unstaking ${value} KEX`,
@@ -116,7 +135,7 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
   const onApprove = async () => {
     setLoading(true);
     try {
-      const txApprove = await token.approve(KEX_FARM_CONTRACT_ADDR, ethers.constants.MaxUint256);
+      const txApprove = await token.approve(NFT_FARM_ADDRESS, ethers.constants.MaxUint256);
       toast({
         title: 'Pending Transaction',
         description: 'Approving KEX',
@@ -173,6 +192,14 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
             )}
           </Flex>
 
+          { stake && (
+            <Flex alignItems="center" direction="row" mb="12px">
+              <Text mr="8px" fontSize="14px" lineHeight="26.24px" color="darkred">
+              {"Maximum 10,000 KEX per wallet!"}
+              </Text>
+            </Flex> 
+          )}
+
           <FormControl>
             <Flex
               bg="gray.septenary"
@@ -192,7 +219,7 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
                 lineHeight="26.24px"
                 type="number"
                 min={0}
-                value={value === undefined ? 'lol' : value} // funny dev, right?
+                value={value === undefined ? '' : value}
                 onChange={onInputChange}
                 ml="16px"
               />
@@ -210,7 +237,7 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
                 _hover={{ boxShadow: '0 0 8px rgb(41 142 255 / 80%)' }}
                 onClick={onUseAll}
               >
-                Use all
+                MAX
               </Button>
             </Flex>
           </FormControl>
@@ -219,7 +246,7 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
             <Text fontSize="16px" lineHeight="26.24px" color="gray.secondary" mr="8px">
               {stake ? 'Krystals per hour:' : 'Krystals Received:'}
             </Text>
-            {stake && <Text color="#298DFF">{(+krystalsPerHour.toFixed(3)).toLocaleString()}</Text>}
+            {stake && <Text color="#298DFF">{(+krystalsPerHour.toFixed(1)).toLocaleString()}</Text>}
             {!stake &&
               (krystalBalance === undefined ? (
                 <Button isLoading variant="ghost" width="fit-content" color="blue.dark" height="16px" />

@@ -1,11 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { KEX_FARM_CONTRACT_ADDR } from "src/config";
+import { NFT_FARM_ADDRESS } from "src/config";
 import { QueryDataTypes } from "src/types/queryDataTypes";
 import { useContracts } from "./useContracts";
 
 export function useQueries(account: string | null): QueryDataTypes {
   const { token, stakingPool } = useContracts();
+  const [kexDecimals, setKexDecimals] = useState<number | undefined>(undefined);
   const [kexBalance, setKexBalance] = useState<number | undefined>(undefined);
   const [stakedBalance, setStakedBalance] = useState<number | undefined>(undefined);
   const [allowance, setAllowance] = useState<number | undefined>(undefined);
@@ -13,21 +14,31 @@ export function useQueries(account: string | null): QueryDataTypes {
 
   async function updateInfo() {
     if (account) {
+      const kexDecimals = await token.decimals();
+      setKexDecimals(kexDecimals);
+
+      var decimalFactor = Math.pow(10,kexDecimals);
+
       const kexBalance = await token.balanceOf(account);
-      setKexBalance(kexBalance);
+      setKexBalance(kexBalance/decimalFactor);
 
       const krystalBalance = await stakingPool.rewardedStones(account);
       setKrystalBalance(krystalBalance);
 
       const stakedBalance = await stakingPool.farmed(account);
-      setStakedBalance(stakedBalance);
+      setStakedBalance(stakedBalance/decimalFactor);
 
-      const allowance = await token.allowance(account, KEX_FARM_CONTRACT_ADDR);
-      setAllowance(allowance);
+      const allowance = await token.allowance(account, NFT_FARM_ADDRESS);
+      setAllowance(allowance/decimalFactor);
+
+      // TODO: DEBUG LOG ONLY
+      console.log("useQueries.ts => updateInfo:")
+      console.log({account: account, decimalFactor: decimalFactor, kexBalance: kexBalance, krystalBalance: krystalBalance, stakedBalance: stakedBalance, allowance: allowance})
     }
   }
 
   useEffect(() => {
+    setKexDecimals(undefined);
     setKexBalance(undefined);
     setKrystalBalance(undefined);
     setStakedBalance(undefined);
@@ -37,10 +48,10 @@ export function useQueries(account: string | null): QueryDataTypes {
 
   async function loadAllowance() {
     if (account !== null) {
-      const allowance = await token.allowance(account, KEX_FARM_CONTRACT_ADDR);
+      const allowance = await token.allowance(account, NFT_FARM_ADDRESS);
       setAllowance(allowance);
     }
   }
 
-  return { kexBalance, krystalBalance, stakedBalance, allowance, loadAllowance, updateInfo };
+  return { kexDecimals, kexBalance, krystalBalance, stakedBalance, allowance, loadAllowance, updateInfo };
 }

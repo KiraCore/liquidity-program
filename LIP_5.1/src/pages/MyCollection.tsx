@@ -5,9 +5,9 @@ import { useEffect, useState } from 'react';
 import StakeNFTModal from 'src/components/modals/StakeNFTModal';
 import { PrimaryButton } from 'src/components/ui';
 import { useContracts } from 'src/hooks/useContracts';
-import { NFT, Owned } from 'src/types/nftTypes';
+import { BALANCE, Card, NFT, Owned, POOL } from 'src/types/nftTypes';
 import { QueryDataTypes } from 'src/types/queryDataTypes';
-import { commonCollection } from 'src/utils/nfts';
+import { getAllNFT } from 'src/utils/nfts';
 import { useWallet } from 'use-wallet';
 import MiniCollectionSection from './sections/MiniCollection';
 
@@ -16,50 +16,87 @@ type MyCollectionProps = {
 };
 
 const MyCollection = ({ data }: MyCollectionProps) => {
-  const [optStaked, setOptStaked] = useState<boolean>(false);
-
-  const { nft, nftStaking } = useContracts();
+  const { nft, nftStaking, token } = useContracts();
   const { account } = useWallet();
   const [ownInfo, setOwnInfo] = useState<{ [key: string]: Owned }>({});
   const [isOpenStakeModal, openStakeModal] = useState<boolean>(false);
-  const [selectedId, setSelectedId] = useState<number | undefined>(undefined);
+  const [selectedCard, setSelectedCard] = useState<Card | undefined>(undefined);
+  const [selectedPool, setSelectedPool] = useState<POOL | undefined>(undefined);
+  const [cardInfo, setCardInfo] = useState<{ [key: string]: Card }>({});
+  const [poolInfo, setPoolInfo] = useState<{ [key: string]: POOL }>({});
+  const [balanceInfo, setBalanceInfo] = useState<{ [key: string]: BALANCE }>({});
+  const [kexDecimals, setKexDecimals] = useState<number>(6);
 
   async function updateInfo() {
     if (!account) return;
-    const unstakedBalances = await Promise.all(commonCollection.nfts.map(({ id }: NFT) => nft.balanceOf(account, id)));
-    const stakedBalances = await Promise.all(commonCollection.nfts.map(({ id }: NFT) => nftStaking.totalStakeOf(id, account)));
+    console.log("MyCollection.txs => updateInfo:")
+
+    const allCollections = getAllNFT();
+    const unstakedBalances = await Promise.all(getAllNFT().map(({ id }: NFT) => nft.balanceOf(account, id)));
+    const stakedBalances = await Promise.all<BALANCE>(getAllNFT().map(({ id }: NFT) => nftStaking.getBalance(id, account)));
+    const kexDecimals = await token.decimals();
+    setKexDecimals(kexDecimals);
+
     const ownInfo: { [key: string]: Owned } = {};
+
+    console.log({unstakedBalances: unstakedBalances, stakedBalances: stakedBalances })
+
     unstakedBalances.forEach((unstakedBalance: number, index: number) => {
-      const id = commonCollection.nfts[index].id;
-      if (ownInfo[id]) ownInfo[id].unstakedBalance = unstakedBalance;
-      else ownInfo[id] = { unstakedBalance };
-    });
+      if (unstakedBalance > 0) {
+        const id = allCollections[index].id;
+        if (ownInfo[id]) ownInfo[id].unstakedBalance = unstakedBalance;
+        else ownInfo[id] = { id: id, unstakedBalance: unstakedBalance };
+      }});
 
-    stakedBalances.forEach((stakedBalance: number, index: number) => {
-      const id = commonCollection.nfts[index].id;
-      if (ownInfo[id]) ownInfo[id].stakedBalance = stakedBalance;
-      else ownInfo[id] = { stakedBalance };
-    });
+    stakedBalances.forEach((stakedBalance: BALANCE, index: number) => {
+      if (stakedBalance.amount > 0) {
+        const id = allCollections[index].id;
+        if (ownInfo[id]) ownInfo[id].stakedBalance = stakedBalance.amount;
+        else ownInfo[id] = { id: id, stakedBalance: stakedBalance.amount };
+      }});
 
+    
+    console.log({ownInfo: ownInfo});
     setOwnInfo({ ...ownInfo });
+
+    const allOwnedCards = await Promise.all(Object.entries(ownInfo).map(info => nft.cards(Number.parseInt(info[0]))));
+    const allOwnedPools = await Promise.all<POOL>(Object.entries(ownInfo).map(
+      info => nftStaking.getPool(Number.parseInt(info[0]), account)
+    ));
+    const allOwnedBalances = await Promise.all<BALANCE>(Object.entries(ownInfo).map(
+      info => nftStaking.getBalance(Number.parseInt(info[0]), account)
+    ));
+
+    const cardInfo: { [key: string]: Card } = {};
+    const poolInfo: { [key: string]: POOL } = {};
+    const balanceInfo: { [key: string]: BALANCE } = {};
+    allOwnedCards.forEach(card => cardInfo[card.getID()] = card);
+    allOwnedPools.forEach(pool => poolInfo[pool.nftTokenId.toString()] = pool);
+    allOwnedBalances.forEach(balance => balanceInfo[balance.nftTokenId.toString()] = balance);
+
+    console.log({allOwnedCards: allOwnedCards, allOwnedPools: allOwnedPools, allOwnedBalances: allOwnedBalances});
+    setCardInfo({ ...cardInfo });
+    setPoolInfo({ ...poolInfo });
+    setBalanceInfo({ ...balanceInfo });
   }
 
   useEffect(() => {
     setOwnInfo({});
+    setCardInfo({});
+    setPoolInfo({});
+    setBalanceInfo({});
     if (account) {
       updateInfo();
     }
   }, [account]);
 
-  const nfts: NFT[] = [...commonCollection.nfts]
-    .map((item: NFT) => ({ ...item, stakedBalance: ownInfo[item.id]?.stakedBalance, unstakedBalance: ownInfo[item.id]?.unstakedBalance }))
-    .filter((item: NFT) => !!item.stakedBalance || !!item.unstakedBalance);
+  const nfts = getAllNFT().filter((item: NFT) => Object.entries(ownInfo).find(x => x[0] === item.id.toString()));
 
   const collections = [
-    { index: 0, tier: null, label: 'ALL' },
-    { index: 1, tier: 'Common', label: 'COMMON' },
-    { index: 2, tier: 'Uncommon', label: 'UNCOMMON' },
-    { index: 3, tier: 'Rare', label: 'RARE' },
+    { index: 0, rarity: null, label: 'ALL' },
+    { index: 1, rarity: 'Common', label: 'COMMON' },
+    { index: 2, rarity: 'Uncommon', label: 'UNCOMMON' },
+    { index: 3, rarity: 'Rare', label: 'RARE' },
   ];
 
   const optStyle = {
@@ -76,16 +113,21 @@ const MyCollection = ({ data }: MyCollectionProps) => {
     },
   };
 
-  const onStake = (nftId: number) => {
-    setSelectedId(nftId);
+  const onStake = (card: Card, pool: POOL) => {
+    setSelectedCard(card);
+    setSelectedPool(pool);
     openStakeModal(true);
   };
 
   const options = {
     onStake,
     nfts,
-    staked: optStaked,
     reloadMyCollection: updateInfo,
+    cardInfo: cardInfo,
+    ownInfo: ownInfo,
+    poolInfo: poolInfo,
+    balanceInfo: balanceInfo,
+    kexDecimals: kexDecimals
   };
 
   return (
@@ -102,25 +144,13 @@ const MyCollection = ({ data }: MyCollectionProps) => {
                   _focus={{ boxShadow: 'none' }}
                   _active={{ background: 'initial' }}
                   mr={{ base: '4px', md: '24px' }}
-                  key={collection.tier}
+                  key={collection.rarity}
                   fontSize={{ base: '12px', md: '14px' }}
                 >
                   {collection.label}
                 </Tab>
               ))}
             </TabList>
-            <Flex direction="row" alignItems="center" ml={{ base: 'auto', lg: 'unset' }} mr={{ base: 'auto', md: 'unset' }} mt={{ base: '36px', lg: 0 }}>
-              <PrimaryButton
-                text="UNSTAKED"
-                onClick={() => setOptStaked(false)}
-                rest={optStaked ? { ...optStyle.normal, ...optStyle.unselected, ml: 0 } : { ...optStyle.normal, ml: 0 }}
-              />
-              <PrimaryButton
-                text="STAKED"
-                onClick={() => setOptStaked(true)}
-                rest={!optStaked ? { ...optStyle.normal, ...optStyle.unselected } : optStyle.normal}
-              />
-            </Flex>
           </Flex>
 
           <TabPanels>
@@ -128,19 +158,19 @@ const MyCollection = ({ data }: MyCollectionProps) => {
               <MiniCollectionSection {...options} />
             </TabPanel>
             <TabPanel px="0" py="64px">
-              <MiniCollectionSection {...options} tier="Common" />
+              <MiniCollectionSection {...options} rarity="Common" />
             </TabPanel>
             <TabPanel px="0" py="64px">
-              <MiniCollectionSection {...options} tier="Uncommon" />
+              <MiniCollectionSection {...options} rarity="Uncommon" />
             </TabPanel>
             <TabPanel px="0" py="64px">
-              <MiniCollectionSection {...options} tier="Rare" />
+              <MiniCollectionSection {...options} rarity="Rare" />
             </TabPanel>
           </TabPanels>
         </Tabs>
       </Container>
-      {selectedId !== undefined && (
-        <StakeNFTModal data={data} isOpen={isOpenStakeModal} onClose={() => openStakeModal(false)} nftId={selectedId} reloadMyCollection={updateInfo} />
+      {(selectedCard !== undefined && selectedPool !== undefined)&& (
+        <StakeNFTModal data={data} isOpen={isOpenStakeModal} onClose={() => openStakeModal(false)} card={selectedCard} pool={selectedPool} reloadMyCollection={updateInfo} />
       )}
     </Box>
   );

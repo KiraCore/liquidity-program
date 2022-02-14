@@ -6,8 +6,9 @@ import { Flex, Text } from '@chakra-ui/layout';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from '@chakra-ui/modal';
 import { useToast } from '@chakra-ui/toast';
 import { useEffect, useState } from 'react';
-import { NFT_STAKING_CONTRACT_ADDR } from 'src/config';
+import { NFT_STAKING_ADDRESS } from 'src/config';
 import { useContracts } from 'src/hooks/useContracts';
+import { Card, POOL } from 'src/types/nftTypes';
 import { QueryDataTypes } from 'src/types/queryDataTypes';
 import { useWallet } from 'use-wallet';
 import { OutlinedButton, PrimaryButton } from '../ui';
@@ -16,11 +17,14 @@ type StakeNFTModalProps = {
   isOpen?: boolean;
   onClose: () => any;
   data: QueryDataTypes;
-  nftId: number;
+  card: Card;
+  pool: POOL;
   reloadMyCollection: () => any;
 };
 
-const StakeNFTModal = ({ isOpen = false, onClose, data, nftId, reloadMyCollection }: StakeNFTModalProps) => {
+const StakeNFTModal = ({ isOpen = false, onClose, data, card, pool, reloadMyCollection }: StakeNFTModalProps) => {
+  
+  const nftId = pool.nftTokenId;
   const [value, setValue] = useState<number | undefined>(undefined);
 
   const { nftStaking, nft } = useContracts();
@@ -32,7 +36,7 @@ const StakeNFTModal = ({ isOpen = false, onClose, data, nftId, reloadMyCollectio
 
   async function updateInfo(id: number) {
     if (account) {
-      const approved = await nft.isApprovedForAll(account, NFT_STAKING_CONTRACT_ADDR);
+      const approved = await nft.isApprovedForAll(account, NFT_STAKING_ADDRESS);
       setApproved(approved);
 
       const balance = await nft.balanceOf(account, id);
@@ -42,7 +46,7 @@ const StakeNFTModal = ({ isOpen = false, onClose, data, nftId, reloadMyCollectio
 
   async function loadApproved() {
     if (account) {
-      const approved = await nft.isApprovedForAll(account, NFT_STAKING_CONTRACT_ADDR);
+      const approved = await nft.isApprovedForAll(account, NFT_STAKING_ADDRESS);
       setApproved(approved);
     }
   }
@@ -54,6 +58,11 @@ const StakeNFTModal = ({ isOpen = false, onClose, data, nftId, reloadMyCollectio
       updateInfo(nftId);
     }
   }, [isOpen, nftId]);
+
+
+  const onUseAll = () => {
+    setValue(balance ?? 0);
+  };
 
   const onInputChange = (e: any) => {
     const v = parseFloat(e.target.value);
@@ -69,7 +78,7 @@ const StakeNFTModal = ({ isOpen = false, onClose, data, nftId, reloadMyCollectio
     if (value !== undefined && balance !== undefined && value <= balance && value > 0) {
       setLoading(true);
       try {
-        const txStake = await nftStaking.stake(nftId, value);
+        const txStake = await nftStaking.stake(pool.poolId, value);
         toast({
           title: 'Pending Transaction',
           description: `Staking ${value} NFT${value > 1 ? 's' : ''} (Id: ${nftId})`,
@@ -105,7 +114,7 @@ const StakeNFTModal = ({ isOpen = false, onClose, data, nftId, reloadMyCollectio
   const onApprove = async () => {
     setLoading(true);
     try {
-      const txApprove = await nft.setApprovalForAll(NFT_STAKING_CONTRACT_ADDR, true);
+      const txApprove = await nft.setApprovalForAll(NFT_STAKING_ADDRESS, true);
       toast({
         title: 'Pending Transaction',
         description: 'Approving NFT',
@@ -134,18 +143,22 @@ const StakeNFTModal = ({ isOpen = false, onClose, data, nftId, reloadMyCollectio
     }
     setLoading(false);
   };
-
+//<Text color="blue.dark">{`${card?.getName()} | ${card?.getRarity()} NFT`}</Text>
   return (
     <Modal autoFocus blockScrollOnMount isOpen={isOpen} colorScheme="blue" onClose={onClose} isCentered motionPreset="slideInBottom">
       <ModalOverlay />
       <ModalContent borderRadius="20px">
         <ModalHeader color="gray.secondary" px="48px" pt="48px" pb="24px" fontSize="24px" lineHeight="33.6px">
-          Stake NFT (Id: {nftId})
+          Staking Pool | ID: {pool?.poolId ?? "???"}
         </ModalHeader>
+        <ModalHeader color="gray.secondary" px="48px" pt="0px" pb="24px" fontSize="18px" lineHeight="0px">
+          <Text color="blue.dark">{`${card?.getName()} | ${card?.getRarity()} NFT`}</Text>
+        </ModalHeader>
+       
         <ModalBody px="48px" py="0px">
           <Flex alignItems="center" direction="row" mb="12px">
             <Text mr="8px" fontSize="16px" lineHeight="26.24px" color="blue.dark">
-              Your NFT (Id: {nftId}) balance:
+              Your Balance:
             </Text>
             {balance === undefined && <Button isLoading variant="ghost" width="fit-content" />}
             {balance !== undefined && (
@@ -155,6 +168,7 @@ const StakeNFTModal = ({ isOpen = false, onClose, data, nftId, reloadMyCollectio
             )}
           </Flex>
 
+          <FormControl>
           <Flex
             bg="gray.septenary"
             height="46px"
@@ -166,23 +180,37 @@ const StakeNFTModal = ({ isOpen = false, onClose, data, nftId, reloadMyCollectio
             borderColor={invalidInput ? 'red.300' : 'none'}
             borderWidth="1px"
           >
-            <Text color="gray.quaternary" fontSize="16px" minWidth="135px">
-              Quantity:
-            </Text>
-            <FormControl ml="8px">
-              <Input
+            <Input
                 variant="unstyled"
-                textAlign="right"
                 size="md"
                 color="gray.secondary"
                 fontSize="16px"
                 lineHeight="26.24px"
                 type="number"
-                value={value === undefined ? 'lol' : value} // funny dev, right?
+                value={value === undefined ? '' : value}
                 onChange={onInputChange}
               />
-            </FormControl>
+            <Text color="gray.quaternary" fontSize="16px" minWidth="135px">
+              QUANTITY
+            </Text>
+            <Button
+                color="white"
+                bg="gray.quaternary"
+                borderRadius="4px"
+                mr="8px"
+                w="77px"
+                h="30px"
+                fontSize="12px"
+                _hover={{ boxShadow: '0 0 8px rgb(41 142 255 / 80%)' }}
+                onClick={onUseAll}
+              >
+                MAX
+              </Button>
+            
+              
+            
           </Flex>
+          </FormControl>
           {/* <Flex alignItems="center" direction="row" mt="10px">
             <Text fontSize="16px" lineHeight="26.24px" color="gray.secondary" mr="8px">
               Remaining NFTs:

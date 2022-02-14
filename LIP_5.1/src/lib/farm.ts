@@ -318,11 +318,11 @@ export const create = (address: string, provider: any) => {
   const totalStakeOf = (address: string) => contract.totalStakeOf(address).then((val: any) => val);
   const isCardPayable = (id: number) => contract.isCardPayable(id).then((val: any) => val);
   const rewardedStones = (address: string) =>
-    contract.rewardedStones(address).then((v: BigNumber) => parseFloat(ethers.utils.formatEther(v)));
+    contract.rewardedStones(address).then((v: BigNumber) => parseFloat(ethers.utils.formatUnits(v, 0)));
   const farmed = (address: string) =>
-    contract.farmed(address).then((v: BigNumber) => parseFloat(ethers.utils.formatEther(v)));
-  const minContribution = () => contract.minContribution().then((v: BigNumber) => ethers.utils.formatEther(v));
-  const maxContribution = () => contract.maxContribution().then((v: BigNumber) => ethers.utils.formatEther(v));
+    contract.farmed(address).then((v: BigNumber) => parseFloat(ethers.utils.formatUnits(v, 0)));
+  const minContribution = () => contract.minContribution().then((v: BigNumber) => ethers.utils.formatUnits(v, 0));
+  const maxContribution = () => contract.maxContribution().then((v: BigNumber) => ethers.utils.formatUnits(v, 0));
 
   // WRITE
   const stake = (amount: BigNumber) => contract.deposit(amount);

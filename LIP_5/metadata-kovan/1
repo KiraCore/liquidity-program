@@ -1,7 +1,11 @@
 {
-  "image": "https://ipfs.io/ipfs/QmdGGtLHK6GHrqgX2J8ZUw2s9JcoaV4JUToab9SnCpQuPF",
+  "image": "ipfs://QmdGGtLHK6GHrqgX2J8ZUw2s9JcoaV4JUToab9SnCpQuPF",
   "name": "Samael",
   "description": "KIRA - Male Mage",
-  "attributes": [{ "trait_type": "Rarity", "value": "Common" }],
-  "animation_url": "https://ipfs.io/ipfs/QmVYnqWrAYtYd3E6oGCTXYRbmCnhC4xbKWDpqRC4MUBesG"
+  "attributes": [
+    { "trait_type": "Rarity", "value": "Common" },
+    { "trait_type": "Type", "value": "Mage" },
+    { "trait_type": "Gender", "value": "Male" },
+    { "trait_type": "Camp", "value": "KIRA" }],
+  "animation_url": "ipfs://QmVYnqWrAYtYd3E6oGCTXYRbmCnhC4xbKWDpqRC4MUBesG"
 }

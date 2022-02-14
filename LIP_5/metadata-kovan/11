@@ -1,6 +1,9 @@
 {
-  "image": "https://ipfs.io/ipfs/QmaccYPbG3NRsWxVGCUX2iugHS6atE1cYYK5DrDKgfNZCx",
+  "image": "ipfs://QmaccYPbG3NRsWxVGCUX2iugHS6atE1cYYK5DrDKgfNZCx",
   "name": "Gavin",
   "description": "Gavin - Polkadot Network",
-  "attributes": [{ "trait_type": "Rarity", "value": "Uncommon" }]
+  "attributes": [{ "trait_type": "Rarity", "value": "Uncommon" },
+    { "trait_type": "Type", "value": "Human" },
+    { "trait_type": "Gender", "value": "Male" },
+    { "trait_type": "Camp", "value": "POLKADOT" }]
 }

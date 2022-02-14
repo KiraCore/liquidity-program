@@ -25,7 +25,7 @@ const PRIVATE_KEY = process.env.PRIVATE_KEY;
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
 
 module.exports = {
-  solidity: '0.8.0',
+  solidity: '0.8.1',
   defaultNetwork: 'localhost',
   networks: {
     hardhat: {},
@@ -38,6 +38,10 @@ module.exports = {
     },
     rinkeby: {
       url: `https://rinkeby.infura.io/v3/${INFURA_PROJECT_ID}`,
+      accounts: [`0x${PRIVATE_KEY}`],
+    },
+    ropsten: {
+      url: `https://ropsten.infura.io/v3/${INFURA_PROJECT_ID}`,
       accounts: [`0x${PRIVATE_KEY}`],
     },
     mainnet: {

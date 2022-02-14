@@ -1,13 +1,18 @@
 const hre = require('hardhat');
-const ACCESS_CONTROL_ADDRESS = process.env.ACCESS_CONTROL_ADDRESS;
+const fs = require('fs');
+
+const KIRA_TOKEN_ADDRESS = process.env.KIRA_TOKEN_ADDRESS;
+const NFT_MINTING_ADDRESS = process.env.NFT_MINTING_ADDRESS;
 
 async function main() {
   const NFTStaking = await hre.ethers.getContractFactory('NFTStaking');
+  const nftStaking = await NFTStaking.deploy(KIRA_TOKEN_ADDRESS, NFT_MINTING_ADDRESS);
 
-  nftStaking = await NFTStaking.deploy(ACCESS_CONTROL_ADDRESS);
   await nftStaking.deployed();
 
-  console.log('NFTStaking deployed to: ', nftStaking.address, ', by access control address: ', ACCESS_CONTROL_ADDRESS);
+  console.log('NFTStaking deployed to: ', nftStaking.address, ' and connected with the token address: ', KIRA_TOKEN_ADDRESS);
+
+  fs.writeFileSync("result.txt", nftStaking.address)
 }
 
 main()

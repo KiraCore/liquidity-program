@@ -15,6 +15,6 @@
     "hardhat-gas-reporter": "^1.0.4"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^4.0.0"
+    "@openzeppelin/contracts": "^4.5.0"
   }
 }

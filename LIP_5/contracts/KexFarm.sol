@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.1;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "./Authorizable.sol";
 
 struct Staker {
     uint256 amount;
@@ -12,10 +11,14 @@ struct Staker {
     uint256 timestamp;
 }
 
-contract KexFarm is Ownable, Authorizable {
+// Allow anyone who has KEX to earn Krystals
+// Allow ANYONE who has Krystals to pay for NFT minting
+contract KexFarm is Ownable {
     using SafeMath for uint256;
 
-    uint256 public limit = 10000 * 10**18;
+    // Staking limit is 10'000 KEX
+    // Take into account that KEX has 6 decimals
+    uint256 public limit = 10000 * 10**6;
     uint256 public total;
 
     mapping(address => Staker) public stakers;
@@ -45,7 +48,6 @@ contract KexFarm is Ownable, Authorizable {
 
     function payment(address buyer, uint256 amount)
         external
-        onlyAuthorized
         returns (bool)
     {
         consolidate(buyer);
@@ -60,16 +62,16 @@ contract KexFarm is Ownable, Authorizable {
             return stakers[staker].stones;
         }
 
+        // Earn Rate = 1 Krystal every 24 hours per each 1 KEX staked
         uint256 _seconds =
             block.timestamp.sub(stakers[staker].timestamp).div(1 seconds);
         return
             stakers[staker].stones.add(
                 stakers[staker]
                     .amount
-                    .div(1e18)
                     .mul(_seconds)
-                    .mul(11574074074074075)
-                    .div(1e4)
+                    .div(1e6)
+                    .div(86400)
             );
     }
 

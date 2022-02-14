@@ -1,6 +1,9 @@
 {
-  "image": "https://ipfs.io/ipfs/QmYoWV976sBeuB4KfRj1cUNukvBLHvwC2KmnYpdyCJMsg5",
+  "image": "ipfs://QmYoWV976sBeuB4KfRj1cUNukvBLHvwC2KmnYpdyCJMsg5",
   "name": "Lucy",
   "description": "BOSE - Female Cyborg",
-  "attributes": [{ "trait_type": "Rarity", "value": "Common" }]
+  "attributes": [{ "trait_type": "Rarity", "value": "Common" },
+    { "trait_type": "Type", "value": "Cyborg" },
+    { "trait_type": "Gender", "value": "Female" },
+    { "trait_type": "Camp", "value": "BOSE" }]
 }

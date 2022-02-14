@@ -39,11 +39,11 @@ echo "KIRA_TOKEN_ADDRESS=0x2CDA738623354c93eB974F3C90175F249d611CA4" >> ./.env &
 ```sh
 # Requires `KIRA_TOKEN_ADDRESS` set in env variables
 npx hardhat run scripts/1_deploy_KexFarm.js --network kovan 
-# KexFarm on ROPSTEN: 0x334F7e7C7aBB0A314a9750d8CA076A3561B71432
+# KexFarm on ROPSTEN: 0x635b56D49b30279FC728b98Bf704D07C98CEC5F9
 # KexFarm on MAINNET: TBD
 
 # Save NFT_FARM_ADDRESS as env variable
-echo "NFT_FARM_ADDRESS=0xe89841b13b7e23e560D5f1FdD8591BDE466d68c4" >> ./.env
+echo "NFT_FARM_ADDRESS=0x635b56D49b30279FC728b98Bf704D07C98CEC5F9" >> ./.env
 
 # verify NFT farming contract
 . ./.env && npx hardhat verify --network kovan $NFT_FARM_ADDRESS $KIRA_TOKEN_ADDRESS
@@ -55,11 +55,11 @@ echo "NFT_FARM_ADDRESS=0xe89841b13b7e23e560D5f1FdD8591BDE466d68c4" >> ./.env
 # Requires `NFT_FARM_ADDRESS` set in env variables
 # The setFarm address funciton is trigerred automatically
 npx hardhat run scripts/2_deploy_KiraNFT.js --network kovan
-# KiraNFT on ROPSTEN: 0x07D87E94AE77b50A3FB3E9F1983E39d69cA50F6C
+# KiraNFT on ROPSTEN: 0x87Ba7bDB16066a5892d1824c69d8a09683702A9C
 # KiraNFT on MAINNET: TBD
 
 # Save NFT_MINTING_ADDRESS as env variable
-echo "NFT_MINTING_ADDRESS=0x8D7A7162271f7a124d9BBd305B18deDaEeC5721C" >> ./.env
+echo "NFT_MINTING_ADDRESS=0x87Ba7bDB16066a5892d1824c69d8a09683702A9C" >> ./.env
 
 # Verify NFT minting contract
 . ./.env && npx hardhat verify --network kovan $NFT_MINTING_ADDRESS
@@ -69,7 +69,7 @@ echo "NFT_MINTING_ADDRESS=0x8D7A7162271f7a124d9BBd305B18deDaEeC5721C" >> ./.env
 
 ```sh
 npx hardhat run scripts/3_deploy_NFTStaking.js --network kovan
-# NFTStaking on ROPSTEN: 0x0C5B4c3E377Af1A7a93Dd3ecd89A7D4645350A9a
+# NFTStaking on ROPSTEN: 0x644b52a1555874b4B644eF36EcBd39751C9cA11F
 # NFTStaking on MAINNET: TBD
 
 # Save NFT_STAKING_ADDRESS as env variable
@@ -117,7 +117,9 @@ INFURA_PROJECT_ID="XXX...XXX" && \
 
 -----
 
-## Metadata
+# Testing
+
+## Create Metadata
 
 Metadata is located under `/metadata-<network>` directory. The metadata standards used can be found [here](https://docs.opensea.io/docs/metadata-standards)
 
@@ -131,14 +133,14 @@ Available `trait_types` attributes and the corresponding possible `values`:
 * `Type` - `Hacker`, `Mage`, `Cyborg`, `Human`, `Übermensch`, `OG`, `Shinigami`
 * `Gender` - `Male`, `Female`
 
-The `LIP_5\contracts\KiraNFT.sol` must be updated every time to contain a correct `tokenUri` referencing a **folder** in IPFS. It is also possible to call the contract using `setTokenURI` function and update the metadata if needed.
+The `LIP_5\contracts\KiraNFT.sol` must be updated every time to contain a correct `tokenUri` referencing a **folder** in IPFS. It is also possible to call the contract using `setTokenURI` function and update the metadata if needed. 
+
+NOTE: When metadata is uploaded it must be accessible as a folder, where each individual NFT metadata is a file with an iterative name 1, 2, 3... which will also act as the NFT identifier later on.
 
 * KOVAN METADATA: `ipfs://QmRT4JjEUrRqQwC16AP7UVDqe1NpH2FCNEk5X2AezzHj5M/`
 * MAINNET METADATA: `TBD`
 
-## Testing
-
-### Add NFT Card Information
+## Add NFT Card Information
 
 For each NFT call `NFT_MINTING_ADDRESS` - `KiraNFT`'s `addCard` function and create cards as per the table defined below:
 
@@ -158,7 +160,7 @@ The Krystals are non divisable and their issuance is fixed at `1 krystal` per `1
 |  6 | Azrael   | 10    | 20000  |
 | | | | |
 |  7 | CZ       | 6     | 70000  |
-|  8 | Bose     | 6     | 70000  |
+|  8 | Bose     | 6     | 90000  |
 |  9 | Jae      | 6     | 70000  |
 | 10 | Vitalik  | 6     | 70000  |
 | 11 | Gavin    | 6     | 70000  |
@@ -187,15 +189,68 @@ Check `NFTStaking`'s `addPool` function in the above.
 * `_rewardPeriod` - Time period in seconds over which amount of `_rewardPerNFT` is distributed
 * `_maxPerClaim` - Maximum amount of KEX stakers can claim each time they trigger claim function
 
+
+| pool id | token id |   name   |  reward  |  period |  max c.  |
+|---------|----------|----------|----------|---------|----------|
+|    0    |     1    | Samael   | 500 KEX  | 1 month | 250 KEX  |
+|    1    |     2    | Mikhaela | 500 KEX  | 1 month | 500 KEX  |
+|    2    |     3    | Kali     | 500 KEX  | 1 month | 500 KEX  |
+|    3    |     4    | Lucy     | 500 KEX  | 1 month | 500 KEX  |
+|    4    |     5    | Maalik   | 500 KEX  | 1 month | 250 KEX  |
+|    5    |     6    | Azrael   | 500 KEX  | 1 month | 500 KEX  |
+|         |          |          |          |         |          |
+|    6    |     7    | CZ       | 1000 KEX | 1 month | 500 KEX  |
+|    7    |     8    | Bose     | 1000 KEX | 1 month | 1000 KEX |
+|    8    |     9    | Jae      | 1000 KEX | 1 month | 500 KEX  |
+|    9    |    10    | Vitalik  | 1000 KEX | 1 month | 500 KEX  |
+|   10    |    11    | Gavin    | 1000 KEX | 1 month | 500 KEX  |
+|         |          |          |          |         |          |
+|   11    |    12    | Asmodat  | 2000 KEX | 1 month | 1500 KEX |
+|   12    |    13    | KIRA     | 3000 KEX | 1 month | 2000 KEX |
+|   13    |    14    | Lilith   | 4000 KEX | 1 month | 2500 KEX | 
+
+Example above demonstrates a 84'000 KEX Total Pool Drop
+
 ### Add Funds to Pool
 
-Once staking pools are created we need to add funds to individual pool's and inform the contract about how much tokens each one of those pools can distribute to NFT stakers.
+Once staking pools are created we need to add funds to individual pool's and inform the contract about how many tokens each one of those pools can distribute to NFT stakers.
 
-First we need to transfer ERC20 KEX directly into the `NFT_STAKING_ADDRESS` contract. We can then trigger the `notifyRewards` function:
+First we need to transfer ERC20 KEX directly into the `NFTStaking` (`NFT_STAKING_ADDRESS`) contract. We can then trigger the `notifyRewards` function:
 
 * `_poolId` - Pool identifier to which reward coins should be added
 * `_amount` - Amount of KEX to add to the pool from the still available balance
 
+
+### Stake KEX to Mine Kristals
+
+To get Krystals enabling us to mint NFT's we need to stake KEX to the `KexFarm`, to do that we need to trigger `approve` on the KIRA Token (`KIRA_TOKEN_ADDRESS`) with parameters:
+
+* spender - address which can spend KEX (`KexFarm`)
+* amount - amount that can be spent (e.g. max supply `300000000000000`)
+
+Once spending of funds is approved we can now go to the `KexFarm` (`NFT_FARM_ADDRESS`) contract and trigger deposit function:
+
+* amount - amount of kex to deposit, the 10k KEX is max (`10000000000` ukex)
+
+Once the KEX is deposited our stake balance will start automatically going up.
+
+### Minting KEX
+
+Once we have sufficient number of Kristals to mint our NFT, we can spend them to buy desired NFT from the KiraNFT contract (`NFT_FARM_ADDRESS`) using function `buy` by providing following parameters:
+
+* id - the NFT token identifier
+* count - number of tokens to buy
+ 
 ### Stake Tokens to The Pool
 
-Before any NFT can be staked, token transfers must be approved via KiraNFT contract (`NFT_FARM_ADDRESS`). Trigger function `setApprovalForAll` using 
+Before any NFT can be staked, token transfers must be approved via KiraNFT contract (`NFT_FARM_ADDRESS`). We need to trigger function `setApprovalForAll` by specifying NFTStaking contract (`NFT_STAKING_ADDRESS`) as operator:
+
+* operator - address that will be able to spend/transfer NFT on our behalf
+* approved - true/false to give the contract relevant permissions to spend tokens
+
+Now that NFT transfers are approved we can use NFTStake (`NFT_STAKING_ADDRESS`) contract function `stake` to lock our NFT and start earning KEX:
+
+* _poolId - the staking pool identifier
+* _amount - number of tokens to stake
+
+Analogically we can use function `unstake` which will further claim the rewards on our behalf. We can also trigger `claimRewars` function without need for unstaking.

@@ -22,18 +22,23 @@ contract KexFarm is Ownable {
     uint256 public total;
 
     mapping(address => Staker) public stakers;
+
+    // token used to mint stones
     IERC20 private _token;
+    // contract that mints nfts based on stone amounts
+    IERC20 private _minter;
 
-    constructor(IERC20 _tokenAddr) {
-        _token = _tokenAddr;
+    constructor(IERC20 token) {
+        _token = token;
     }
 
-    function setTokenAddress(IERC20 token_) external onlyOwner {
-        _token = token_;
+    // Ownership is expected to be rejected after deployment
+    function setTokenAddress(IERC20 token) external onlyOwner {
+        _token = token;
     }
-
-    function giveAway(address _address, uint256 stones) external onlyOwner {
-        stakers[_address].stones = stones;
+    // Ownership is expected to be rejected after deployment
+    function setMinterAddress(IERC20 minter) external onlyOwner {
+        _minter = minter;
     }
 
     function farmed(address sender) public view returns (uint256) {
@@ -50,6 +55,10 @@ contract KexFarm is Ownable {
         external
         returns (bool)
     {
+        address memory minter = address(_minter);
+        require(msg.sender == minter, "Insufficient stones!");
+
+
         consolidate(buyer);
         require(stakers[buyer].stones >= amount, "Insufficient stones!");
         stakers[buyer].stones = stakers[buyer].stones.sub(amount);

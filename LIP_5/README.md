@@ -152,7 +152,7 @@ This is a public view function that returns how many KEX has farmed for the cert
 
 ##### `payment`
 
-This is a payment function to buy a NFT using `Krystals` from KiraNFT contract. Only callable from authorized account. We need to add the KiraNFT contract address as authorized.
+This is a payment function to buy a NFT using `Krystals` from KiraNFT contract. Only callable from authorized account. We need to add the KiraNFT contract address as authorized by calling `setMinterAddress` and thus set _minter variable to KiraNFT address.
 
 * `address buyer`: the account to buy NFT using `Krystals`
 * `uint256 amount`: `Krystal` amount
@@ -239,7 +239,7 @@ INFURA_PROJECT_ID="XXX...XXX" && \
  echo "ETHERSCAN_API_KEY=$ETHERSCAN_API_KEY" >> ./.env && \
  echo "INFURA_PROJECT_ID=$INFURA_PROJECT_ID" >> ./.env &&  \
  echo "KIRA_TOKEN_ADDRESS=$KIRA_TOKEN_ADDRESS" >> ./.env && \
- echo "Deploying 1_deploy_KexFarm.js => " && \
+ echo "Deploying 1_deploy_KexFarm.js => " && RESULT_FILE=./result.txt && \
  rm -fv $RESULT_FILE && npx hardhat run scripts/1_deploy_KexFarm.js --network $NETWORK && \
  NFT_FARM_ADDRESS=$(cat $RESULT_FILE) && echo "NFT_FARM_ADDRESS=$NFT_FARM_ADDRESS" >> ./.env && \
  echo "Veryfying 1_deploy_KexFarm.js => " && sleep 180 && \
@@ -258,7 +258,26 @@ INFURA_PROJECT_ID="XXX...XXX" && \
  
 ```
 
------
+
+### Quickly Deploy (alternative)
+
+```sh
+NETWORK="ropsten" && \
+KIRA_TOKEN_ADDRESS="0x2CDA738623354c93eB974F3C90175F249d611CA4" && \
+PRIVATE_KEY="XXX...XXX" && \
+ETHERSCAN_API_KEY="XXX...XXX" && \
+INFURA_PROJECT_ID="XXX...XXX" && \
+ echo "Cloning smartcontracts repo..." && cd $HOME && rm -fvr ./liquidity-program && \
+ git clone https://github.com/KiraCore/liquidity-program.git -b LIP_5 && \
+ cd ./liquidity-program/LIP_5 && touch ./.env && chmod 777 ./.env && yarn && \
+ echo "PRIVATE_KEY=$PRIVATE_KEY" >> ./.env && \
+ echo "ETHERSCAN_API_KEY=$ETHERSCAN_API_KEY" >> ./.env && \
+ echo "INFURA_PROJECT_ID=$INFURA_PROJECT_ID" >> ./.env &&  \
+ echo "KIRA_TOKEN_ADDRESS=$KIRA_TOKEN_ADDRESS" >> ./.env && \
+ echo "Deploying all contracts... => " && RESULT_FILE=./tesult.txt && \
+ rm -fv $RESULT_FILE && npx hardhat run scripts/deploy.js --network $NETWORK
+```
+
 
 ## Metadata
 

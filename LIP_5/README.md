@@ -262,18 +262,15 @@ INFURA_PROJECT_ID="XXX...XXX" && \
 ### Quickly Deploy (alternative)
 
 ```sh
-NETWORK="ropsten" && \
-KIRA_TOKEN_ADDRESS="0x2CDA738623354c93eB974F3C90175F249d611CA4" && \
-PRIVATE_KEY="XXX...XXX" && \
-ETHERSCAN_API_KEY="XXX...XXX" && \
-INFURA_PROJECT_ID="XXX...XXX" && \
+NETWORK="ropsten" && BRANCH="bugfix/LIP_5-audit-v1" && \
  echo "Cloning smartcontracts repo..." && cd $HOME && rm -fvr ./liquidity-program && \
- git clone https://github.com/KiraCore/liquidity-program.git -b LIP_5 && \
+ git clone https://github.com/KiraCore/liquidity-program.git -b "$BRANCH" && \
  cd ./liquidity-program/LIP_5 && touch ./.env && chmod 777 ./.env && yarn && \
- echo "PRIVATE_KEY=$PRIVATE_KEY" >> ./.env && \
- echo "ETHERSCAN_API_KEY=$ETHERSCAN_API_KEY" >> ./.env && \
- echo "INFURA_PROJECT_ID=$INFURA_PROJECT_ID" >> ./.env &&  \
- echo "KIRA_TOKEN_ADDRESS=$KIRA_TOKEN_ADDRESS" >> ./.env && \
+ echo "NETWORK=$NETWORK" >> ./.env && \
+ echo "PRIVATE_KEY=XXX" >> ./.env && \
+ echo "ETHERSCAN_API_KEY=XXX" >> ./.env && \
+ echo "INFURA_PROJECT_ID=XXX" >> ./.env && \
+ echo "KIRA_TOKEN_ADDRESS=XXX" >> ./.env && \
  echo "Deploying all contracts... => " && RESULT_FILE=./tesult.txt && \
  rm -fv $RESULT_FILE && npx hardhat run scripts/deploy.js --network $NETWORK
 ```

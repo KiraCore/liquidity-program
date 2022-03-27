@@ -5,8 +5,8 @@ import '@openzeppelin/contracts/utils/Context.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/token/ERC1155/IERC1155.sol';
 import '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
-import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
+import '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';
 
 struct STAKE {
     uint256 amount;
@@ -24,7 +24,7 @@ struct POOL {
 }
 
 contract NFTStaking is Context, ERC1155Holder, Ownable {
-    using SafeMath for uint256;
+    using SafeERC20 for IERC20;
 
     /// @dev map poolId to staking Pool detail
     uint public stakingPoolsCount;

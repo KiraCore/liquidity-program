@@ -30,4 +30,17 @@ Further elaboration on any logical issues shoudl be provided
 ```
 
 # KNF-03
+* Added `import '@openzeppelin/contracts/security/ReentrancyGuard.sol';`
+* Added `nonReentrant` tag to buy function
+
+# LIK-01
+* Removed all `imports "@openzeppelin/contracts/utils/math/SafeMath.sol";`
+* Removed all instances of `using SafeMath for uint256;`
+
+# LIK-02
+* Added `import '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';`
+* Added `using SafeERC20 for IERC20;`
+
+# NFT-01
+* Ownership is inteded to be rejected once no more changes are necessary after deployment
 

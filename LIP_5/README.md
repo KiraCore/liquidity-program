@@ -224,61 +224,29 @@ echo "NFT_STAKING_ADDRESS=0x7e4326fC1B72c3B04485dA3b4E63389aC14AE6Fa" >> ./.env
 
 ### Quick Deploy
 
-This is a quick & dirty one-line bash command enabling deployment of all contracts at once. At the end of execution a list of all created contracts is displayed. Only `NETWORK`, `KIRA_TOKEN_ADDRESS`, `PRIVATE_KEY`, `ETHERSCAN_API_KEY` and `INFURA_PROJECT_ID` must be specified before the script is tarted.
-
-```sh
-NETWORK="ropsten" && \
-KIRA_TOKEN_ADDRESS="0x2CDA738623354c93eB974F3C90175F249d611CA4" && \
-PRIVATE_KEY="XXX...XXX" && \
-ETHERSCAN_API_KEY="XXX...XXX" && \
-INFURA_PROJECT_ID="XXX...XXX" && \
- echo "Cloning smartcontracts repo..." && cd $HOME && rm -fvr ./liquidity-program && \
- git clone https://github.com/KiraCore/liquidity-program.git -b LIP_5 && \
- cd ./liquidity-program/LIP_5 && touch ./.env && chmod 777 ./.env && yarn && \
- echo "PRIVATE_KEY=$PRIVATE_KEY" >> ./.env && \
- echo "ETHERSCAN_API_KEY=$ETHERSCAN_API_KEY" >> ./.env && \
- echo "INFURA_PROJECT_ID=$INFURA_PROJECT_ID" >> ./.env &&  \
- echo "KIRA_TOKEN_ADDRESS=$KIRA_TOKEN_ADDRESS" >> ./.env && \
- echo "Deploying 1_deploy_KexFarm.js => " && RESULT_FILE=./result.txt && \
- rm -fv $RESULT_FILE && npx hardhat run scripts/1_deploy_KexFarm.js --network $NETWORK && \
- NFT_FARM_ADDRESS=$(cat $RESULT_FILE) && echo "NFT_FARM_ADDRESS=$NFT_FARM_ADDRESS" >> ./.env && \
- echo "Veryfying 1_deploy_KexFarm.js => " && sleep 180 && \
- ( npx hardhat verify --network $NETWORK $NFT_FARM_ADDRESS $KIRA_TOKEN_ADDRESS || echo "Already verified" ) && \
- echo "Started 2_deploy_KiraNFT.js => " && \
- rm -fv $RESULT_FILE && npx hardhat run scripts/2_deploy_KiraNFT.js --network $NETWORK && \
- NFT_MINTING_ADDRESS=$(cat $RESULT_FILE) && echo "NFT_MINTING_ADDRESS=$NFT_MINTING_ADDRESS" >> ./.env && \
- echo "Veryfying 2_deploy_KiraNFT.js => " && sleep 180 && \
- ( npx hardhat verify --network $NETWORK $NFT_MINTING_ADDRESS || echo "Already verified" ) && \
- echo "Deploying 3_deploy_NFTStaking.js => " && RESULT_FILE="./result.txt" && \
- rm -fv $RESULT_FILE && npx hardhat run scripts/3_deploy_NFTStaking.js --network $NETWORK && \
- NFT_STAKING_ADDRESS=$(cat $RESULT_FILE) && echo "NFT_STAKING_ADDRESS=$NFT_STAKING_ADDRESS" >> ./.env && \
- echo "Veryfying 3_deploy_NFTStaking.js => " && sleep 180 && \
- ( npx hardhat verify --network $NETWORK $NFT_STAKING_ADDRESS $KIRA_TOKEN_ADDRESS $NFT_MINTING_ADDRESS || echo "Already verified" ) && \
- rm -fv $RESULT_FILE && cat ./.env && echo "Deployment Suceeded !!!" || echo "Deployment Failed :("
- 
-```
-
-
-### Quickly Deploy (alternative)
+This is a quick & dirty one-line bash command enabling deployment of all contracts at once. At the end of execution a list of all created contracts is displayed. Only `NETWORK`, `KIRA_TOKEN_ADDRESS`, `PRIVATE_KEY`, `ETHERSCAN_API_KEY` and `INFURA_PROJECT_ID` must be specified before the script is started.
 
 ```sh
 # ensure that you run node v16 LTS
 npm install -g n 
 n 16.14.1
 
-NETWORK="ropsten" && BRANCH="bugfix/LIP_5-audit-v1" && \
+NETWORK="ropsten" && \
+ BRANCH="bugfix/LIP_5-audit-v1" && \
+ KIRA_TOKEN_ADDRESS="0x2CDA738623354c93eB974F3C90175F249d611CA4" && \
+ [ -z "$PRIVATE_KEY" ] && PRIVATE_KEY="XXX" && \
+ [ -z "$ETHERSCAN_API_KEY" ] && ETHERSCAN_API_KEY="XXX" && \
+ [ -z "$INFURA_PROJECT_ID" ] && INFURA_PROJECT_ID="XXX" && \
  echo "Cloning smartcontracts repo..." && cd $HOME && rm -fvr ./liquidity-program && \
  git clone https://github.com/KiraCore/liquidity-program.git -b "$BRANCH" && \
  cd ./liquidity-program/LIP_5 && touch ./.env && chmod 777 ./.env && yarn && \
  echo "NETWORK=$NETWORK" >> ./.env && \
- echo "PRIVATE_KEY=XXX" >> ./.env && \
- echo "ETHERSCAN_API_KEY=XXX" >> ./.env && \
- echo "INFURA_PROJECT_ID=XXX" >> ./.env && \
- echo "KIRA_TOKEN_ADDRESS=XXX" >> ./.env && \
- echo "Deploying all contracts... => " && RESULT_FILE=./tesult.txt && \
- rm -fv $RESULT_FILE && npx hardhat run scripts/deploy.js --network $NETWORK
+ echo "KIRA_TOKEN_ADDRESS=$KIRA_TOKEN_ADDRESS" >> ./.env && \
+ echo "PRIVATE_KEY=$PRIVATE_KEY" >> ./.env && \
+ echo "ETHERSCAN_API_KEY=$ETHERSCAN_API_KEY" >> ./.env && \
+ echo "INFURA_PROJECT_ID=$INFURA_PROJECT_ID" >> ./.env && \
+ npx hardhat run scripts/deploy.js --network $NETWORK
 ```
-
 
 ## Metadata
 

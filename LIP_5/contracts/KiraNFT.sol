@@ -3,7 +3,7 @@ pragma solidity ^0.8.1;
 
 import '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
-import '@openzeppelin/contracts/utils/math/SafeMath.sol';
+import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 
 interface IKexFarm {
     function rewardedStones(address staker) external view returns (uint256);
@@ -17,8 +17,7 @@ struct Card {
     uint256 value;
 }
 
-contract KiraNFT is ERC1155, Ownable {
-    using SafeMath for uint256;
+contract KiraNFT is ERC1155, ReentrancyGuard, Ownable {
     IKexFarm _farmer;
 
     mapping(uint256 => Card) public cards;
@@ -105,7 +104,7 @@ contract KiraNFT is ERC1155, Ownable {
         return true;
     }
 
-    function buy(uint256 id, uint256 count) external {
+    function buy(uint256 id, uint256 count) nonReentrant external {
         address sender = msg.sender;
         require(isCardPayable(id, count), 'Card is not payable!');
         uint256 amount = cards[id].value.mul(count);

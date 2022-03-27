@@ -3,7 +3,7 @@ pragma solidity ^0.8.1;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';
 
 struct Staker {
     uint256 amount;
@@ -14,7 +14,7 @@ struct Staker {
 // Allow anyone who has KEX to earn Krystals
 // Allow ANYONE who has Krystals to pay for NFT minting
 contract KexFarm is Ownable {
-    using SafeMath for uint256;
+    using SafeERC20 for IERC20;
 
     // Staking limit is 10'000 KEX
     // Take into account that KEX has 6 decimals

@@ -16,7 +16,12 @@ function execResolve(error, stdout, stderr) {
 }
 
 async function main() {  
+  // setup factories
   const kexFarm_factory = await hre.ethers.getContractFactory('KexFarm');
+  const kiraNFT_factory = await hre.ethers.getContractFactory('KiraNFT');
+  const nftStaking_factory = await hre.ethers.getContractFactory('NFTStaking');
+  // ------------------------------------------------------------------
+
   const kexFarm = await kexFarm_factory.deploy(KIRA_TOKEN_ADDRESS);
   await kexFarm.deployed();
   const NFT_FARM_ADDRESS = kexFarm.address;
@@ -24,28 +29,26 @@ async function main() {
   console.log('KexFarm deployed to:', NFT_FARM_ADDRESS, ' and connected with the token address: ', KIRA_TOKEN_ADDRESS);
   console.log('Waiting 15s for blockchain to catch up...')
   await sleep(15000);
-  console.log("Veryfying contract...")
-  exec("npx hardhat verify --network kovan " + NFT_FARM_ADDRESS + " " + KIRA_TOKEN_ADDRESS, execResolve)
+  console.log("Veryfying KexFarm contract...")
+  exec("echo \"$PWD\" && npx hardhat verify --network kovan " + NFT_FARM_ADDRESS + " " + KIRA_TOKEN_ADDRESS, execResolve)
+  console.log("Finished KexFarm contract verification.")
   // ------------------------------------------------------------------
 
-  const kiraNFT_factory = await hre.ethers.getContractFactory('KiraNFT');
   const kiraNFT = await kiraNFT_factory.deploy();
-
   await kiraNFT.deployed();
-  await kiraNFT.setFarmerAddress(NFT_FARM_ADDRESS);
-
-  // Miner address must be updated after KiraNFT deployment
   const NFT_MINTING_ADDRESS = kiraNFT.address
+
+  await kiraNFT.setFarmerAddress(NFT_FARM_ADDRESS);
   await kexFarm.setMinterAddress(NFT_MINTING_ADDRESS)
 
   console.log('KiraNFT minting deployed to: ', NFT_MINTING_ADDRESS, ' and connected with the stone farming: ', NFT_FARM_ADDRESS);
   console.log('Waiting 15s for blockchain to catch up...')
   await sleep(15000);
-  console.log("Veryfying contract...")
-  exec("npx hardhat verify --network kovan " + NFT_MINTING_ADDRESS, execResolve)
+  console.log("Veryfying KiraNFT contract...")
+  exec("echo \"$PWD\" && npx hardhat verify --network kovan " + NFT_MINTING_ADDRESS, execResolve)
+  console.log("Finished KiraNFT contract verification.")
   // ------------------------------------------------------------------
 
-  const nftStaking_factory = await hre.ethers.getContractFactory('NFTStaking');
   const nftStaking = await nftStaking_factory.deploy(KIRA_TOKEN_ADDRESS, NFT_MINTING_ADDRESS);
   await nftStaking.deployed();
   const NFT_STAKING_ADDRESS = nftStaking.address;
@@ -53,8 +56,9 @@ async function main() {
   console.log('NFTStaking deployed to: ', NFT_STAKING_ADDRESS, ' and connected with the token address: ', KIRA_TOKEN_ADDRESS);
   console.log('Waiting 15s for blockchain to catch up...')
   await sleep(15000);
-  console.log("Veryfying contract...")
-  exec("npx hardhat verify --network kovan " + NFT_STAKING_ADDRESS + " " + KIRA_TOKEN_ADDRESS + " " + NFT_MINTING_ADDRESS, execResolve)
+  console.log("Veryfying NFTStaking contract...")
+  exec("echo \"$PWD\" && npx hardhat verify --network kovan " + NFT_STAKING_ADDRESS + " " + KIRA_TOKEN_ADDRESS + " " + NFT_MINTING_ADDRESS, execResolve)
+  console.log("Finished NFTStaking contract verification.")
   // ------------------------------------------------------------------
 
   // Save resutls

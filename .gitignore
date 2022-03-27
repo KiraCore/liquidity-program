@@ -10,3 +10,5 @@ LIP_3.2/Properties/
 */build
 */package-lock.json
 node_modules/
+*/*.log
+*.log

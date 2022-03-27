@@ -262,6 +262,10 @@ INFURA_PROJECT_ID="XXX...XXX" && \
 ### Quickly Deploy (alternative)
 
 ```sh
+# ensure that you run node v16 LTS
+npm install -g n 
+n 16.14.1
+
 NETWORK="ropsten" && BRANCH="bugfix/LIP_5-audit-v1" && \
  echo "Cloning smartcontracts repo..." && cd $HOME && rm -fvr ./liquidity-program && \
  git clone https://github.com/KiraCore/liquidity-program.git -b "$BRANCH" && \

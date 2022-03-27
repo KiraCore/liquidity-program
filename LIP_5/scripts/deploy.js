@@ -40,7 +40,7 @@ async function main() {
   const kiraNFT = await KiraNFT.deploy();
   await kiraNFT.deployed();
   const NFT_MINTING_ADDRESS = kiraNFT.address
-  fs.appendFileSync(envFile, "NFT_MINTING_ADDRESS="+NFT_MINTING_ADDRESS);
+  fs.appendFileSync(envFile, "\nNFT_MINTING_ADDRESS="+NFT_MINTING_ADDRESS);
 
   await kiraNFT.setFarmerAddress(NFT_FARM_ADDRESS);
   await kexFarm.setMinterAddress(NFT_MINTING_ADDRESS)
@@ -57,7 +57,7 @@ async function main() {
   const nftStaking = await NFTStaking.deploy(KIRA_TOKEN_ADDRESS, NFT_MINTING_ADDRESS);
   await nftStaking.deployed();
   const NFT_STAKING_ADDRESS = nftStaking.address;
-  fs.appendFileSync(envFile, "NFT_STAKING_ADDRESS="+NFT_STAKING_ADDRESS);
+  fs.appendFileSync(envFile, "\nNFT_STAKING_ADDRESS="+NFT_STAKING_ADDRESS);
 
   console.log('NFTStaking deployed to: ', NFT_STAKING_ADDRESS, ' and connected with the token address: ', KIRA_TOKEN_ADDRESS);
   console.log('Waiting 15s for blockchain to catch up...')

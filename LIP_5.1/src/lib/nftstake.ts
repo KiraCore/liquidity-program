@@ -3,711 +3,800 @@ import { BALANCE, POOL } from 'src/types/nftTypes';
 
 const abi = [
   {
-    "inputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "_tokenAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC1155",
-        "name": "_nftTokenAddress",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
+     "inputs":[
+        {
+           "internalType":"contract IERC20",
+           "name":"_tokenAddress",
+           "type":"address"
+        },
+        {
+           "internalType":"contract IERC1155",
+           "name":"_nftTokenAddress",
+           "type":"address"
+        }
+     ],
+     "stateMutability":"nonpayable",
+     "type":"constructor"
   },
   {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "previousOwner",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "OwnershipTransferred",
-    "type": "event"
+     "anonymous":false,
+     "inputs":[
+        {
+           "indexed":true,
+           "internalType":"address",
+           "name":"previousOwner",
+           "type":"address"
+        },
+        {
+           "indexed":true,
+           "internalType":"address",
+           "name":"newOwner",
+           "type":"address"
+        }
+     ],
+     "name":"OwnershipTransferred",
+     "type":"event"
   },
   {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "poolId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "staker",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "Stake",
-    "type": "event"
+     "anonymous":false,
+     "inputs":[
+        {
+           "indexed":true,
+           "internalType":"uint256",
+           "name":"poolId",
+           "type":"uint256"
+        },
+        {
+           "indexed":false,
+           "internalType":"address",
+           "name":"staker",
+           "type":"address"
+        },
+        {
+           "indexed":false,
+           "internalType":"uint256",
+           "name":"amount",
+           "type":"uint256"
+        }
+     ],
+     "name":"Stake",
+     "type":"event"
   },
   {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "poolId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "staker",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "Unstake",
-    "type": "event"
+     "anonymous":false,
+     "inputs":[
+        {
+           "indexed":true,
+           "internalType":"uint256",
+           "name":"poolId",
+           "type":"uint256"
+        },
+        {
+           "indexed":false,
+           "internalType":"address",
+           "name":"staker",
+           "type":"address"
+        },
+        {
+           "indexed":false,
+           "internalType":"uint256",
+           "name":"amount",
+           "type":"uint256"
+        }
+     ],
+     "name":"Unstake",
+     "type":"event"
   },
   {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "poolId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "staker",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "Withdraw",
-    "type": "event"
+     "anonymous":false,
+     "inputs":[
+        {
+           "indexed":true,
+           "internalType":"uint256",
+           "name":"poolId",
+           "type":"uint256"
+        },
+        {
+           "indexed":false,
+           "internalType":"address",
+           "name":"staker",
+           "type":"address"
+        },
+        {
+           "indexed":false,
+           "internalType":"uint256",
+           "name":"amount",
+           "type":"uint256"
+        }
+     ],
+     "name":"Withdraw",
+     "type":"event"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_nftTokenId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_rewardPerNFT",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_rewardPeriod",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_maxPerClaim",
-        "type": "uint256"
-      }
-    ],
-    "name": "addPool",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+     "inputs":[
+        {
+           "internalType":"uint256",
+           "name":"_nftTokenId",
+           "type":"uint256"
+        },
+        {
+           "internalType":"uint256",
+           "name":"_rewardPerNFT",
+           "type":"uint256"
+        },
+        {
+           "internalType":"uint256",
+           "name":"_rewardPeriod",
+           "type":"uint256"
+        },
+        {
+           "internalType":"uint256",
+           "name":"_maxPerClaim",
+           "type":"uint256"
+        }
+     ],
+     "name":"addPool",
+     "outputs":[
+        
+     ],
+     "stateMutability":"nonpayable",
+     "type":"function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_poolId",
-        "type": "uint256"
-      }
-    ],
-    "name": "claimReward",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+     "inputs":[
+        {
+           "internalType":"uint256",
+           "name":"_poolId",
+           "type":"uint256"
+        }
+     ],
+     "name":"claimReward",
+     "outputs":[
+        
+     ],
+     "stateMutability":"nonpayable",
+     "type":"function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_nftId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "_staker",
-        "type": "address"
-      }
-    ],
-    "name": "getBalance",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "amount",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "rewardSoFar",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "firstStakedAt",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "lastClaimedAt",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct STAKE",
-        "name": "",
-        "type": "tuple"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+     "inputs":[
+        {
+           "internalType":"address",
+           "name":"_staker",
+           "type":"address"
+        },
+        {
+           "internalType":"uint256",
+           "name":"_poolId",
+           "type":"uint256"
+        }
+     ],
+     "name":"getBalance",
+     "outputs":[
+        {
+           "components":[
+              {
+                 "internalType":"uint256",
+                 "name":"amount",
+                 "type":"uint256"
+              },
+              {
+                 "internalType":"uint256",
+                 "name":"rewardSoFar",
+                 "type":"uint256"
+              },
+              {
+                 "internalType":"uint256",
+                 "name":"firstStakedAt",
+                 "type":"uint256"
+              },
+              {
+                 "internalType":"uint256",
+                 "name":"lastClaimedAt",
+                 "type":"uint256"
+              }
+           ],
+           "internalType":"struct STAKE",
+           "name":"",
+           "type":"tuple"
+        }
+     ],
+     "stateMutability":"view",
+     "type":"function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_poolId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "_staker",
-        "type": "address"
-      }
-    ],
-    "name": "getFirstStakedAtOf",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+     "inputs":[
+        {
+           "internalType":"uint256",
+           "name":"_nftId",
+           "type":"uint256"
+        },
+        {
+           "internalType":"address",
+           "name":"_staker",
+           "type":"address"
+        }
+     ],
+     "name":"getBalance",
+     "outputs":[
+        {
+           "components":[
+              {
+                 "internalType":"uint256",
+                 "name":"amount",
+                 "type":"uint256"
+              },
+              {
+                 "internalType":"uint256",
+                 "name":"rewardSoFar",
+                 "type":"uint256"
+              },
+              {
+                 "internalType":"uint256",
+                 "name":"firstStakedAt",
+                 "type":"uint256"
+              },
+              {
+                 "internalType":"uint256",
+                 "name":"lastClaimedAt",
+                 "type":"uint256"
+              }
+           ],
+           "internalType":"struct STAKE",
+           "name":"",
+           "type":"tuple"
+        }
+     ],
+     "stateMutability":"view",
+     "type":"function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_poolId",
-        "type": "uint256"
-      }
-    ],
-    "name": "getPool",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "poolId",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "nftTokenId",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "totalStakes",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "totalRewards",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "rewardPerNFT",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "rewardPeriod",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "maxPerClaim",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct POOL",
-        "name": "",
-        "type": "tuple"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+     "inputs":[
+        {
+           "internalType":"uint256",
+           "name":"_poolId",
+           "type":"uint256"
+        },
+        {
+           "internalType":"address",
+           "name":"_staker",
+           "type":"address"
+        }
+     ],
+     "name":"getFirstStakedAtOf",
+     "outputs":[
+        {
+           "internalType":"uint256",
+           "name":"",
+           "type":"uint256"
+        }
+     ],
+     "stateMutability":"view",
+     "type":"function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_nftId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "_staker",
-        "type": "address"
-      }
-    ],
-    "name": "getPool",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "poolId",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "nftTokenId",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "totalStakes",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "totalRewards",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "rewardPerNFT",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "rewardPeriod",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "maxPerClaim",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct POOL",
-        "name": "",
-        "type": "tuple"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+     "inputs":[
+        {
+           "internalType":"uint256",
+           "name":"_poolId",
+           "type":"uint256"
+        }
+     ],
+     "name":"getPool",
+     "outputs":[
+        {
+           "components":[
+              {
+                 "internalType":"uint256",
+                 "name":"poolId",
+                 "type":"uint256"
+              },
+              {
+                 "internalType":"uint256",
+                 "name":"nftTokenId",
+                 "type":"uint256"
+              },
+              {
+                 "internalType":"uint256",
+                 "name":"totalStakes",
+                 "type":"uint256"
+              },
+              {
+                 "internalType":"uint256",
+                 "name":"totalRewards",
+                 "type":"uint256"
+              },
+              {
+                 "internalType":"uint256",
+                 "name":"rewardPerNFT",
+                 "type":"uint256"
+              },
+              {
+                 "internalType":"uint256",
+                 "name":"rewardPeriod",
+                 "type":"uint256"
+              },
+              {
+                 "internalType":"uint256",
+                 "name":"maxPerClaim",
+                 "type":"uint256"
+              }
+           ],
+           "internalType":"struct POOL",
+           "name":"",
+           "type":"tuple"
+        }
+     ],
+     "stateMutability":"view",
+     "type":"function"
   },
   {
-    "inputs": [],
-    "name": "getReservedRewards",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+     "inputs":[
+        {
+           "internalType":"uint256",
+           "name":"_nftId",
+           "type":"uint256"
+        },
+        {
+           "internalType":"address",
+           "name":"_staker",
+           "type":"address"
+        }
+     ],
+     "name":"getPool",
+     "outputs":[
+        {
+           "components":[
+              {
+                 "internalType":"uint256",
+                 "name":"poolId",
+                 "type":"uint256"
+              },
+              {
+                 "internalType":"uint256",
+                 "name":"nftTokenId",
+                 "type":"uint256"
+              },
+              {
+                 "internalType":"uint256",
+                 "name":"totalStakes",
+                 "type":"uint256"
+              },
+              {
+                 "internalType":"uint256",
+                 "name":"totalRewards",
+                 "type":"uint256"
+              },
+              {
+                 "internalType":"uint256",
+                 "name":"rewardPerNFT",
+                 "type":"uint256"
+              },
+              {
+                 "internalType":"uint256",
+                 "name":"rewardPeriod",
+                 "type":"uint256"
+              },
+              {
+                 "internalType":"uint256",
+                 "name":"maxPerClaim",
+                 "type":"uint256"
+              }
+           ],
+           "internalType":"struct POOL",
+           "name":"",
+           "type":"tuple"
+        }
+     ],
+     "stateMutability":"view",
+     "type":"function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_poolId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "_staker",
-        "type": "address"
-      }
-    ],
-    "name": "getRewardSoFarOf",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+     "inputs":[
+        
+     ],
+     "name":"getReservedRewards",
+     "outputs":[
+        {
+           "internalType":"uint256",
+           "name":"",
+           "type":"uint256"
+        }
+     ],
+     "stateMutability":"view",
+     "type":"function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_nftId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "_staker",
-        "type": "address"
-      }
-    ],
-    "name": "getRewards",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+     "inputs":[
+        {
+           "internalType":"uint256",
+           "name":"_poolId",
+           "type":"uint256"
+        },
+        {
+           "internalType":"address",
+           "name":"_staker",
+           "type":"address"
+        }
+     ],
+     "name":"getRewardSoFarOf",
+     "outputs":[
+        {
+           "internalType":"uint256",
+           "name":"",
+           "type":"uint256"
+        }
+     ],
+     "stateMutability":"view",
+     "type":"function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_poolId",
-        "type": "uint256"
-      }
-    ],
-    "name": "getTotalStakes",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+     "inputs":[
+        {
+           "internalType":"uint256",
+           "name":"_nftId",
+           "type":"uint256"
+        },
+        {
+           "internalType":"address",
+           "name":"_staker",
+           "type":"address"
+        }
+     ],
+     "name":"getRewards",
+     "outputs":[
+        {
+           "internalType":"uint256",
+           "name":"",
+           "type":"uint256"
+        }
+     ],
+     "stateMutability":"view",
+     "type":"function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_poolId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "notifyRewards",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+     "inputs":[
+        {
+           "internalType":"uint256",
+           "name":"_poolId",
+           "type":"uint256"
+        }
+     ],
+     "name":"getTotalStakes",
+     "outputs":[
+        {
+           "internalType":"uint256",
+           "name":"",
+           "type":"uint256"
+        }
+     ],
+     "stateMutability":"view",
+     "type":"function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "",
-        "type": "uint256[]"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "",
-        "type": "uint256[]"
-      },
-      {
-        "internalType": "bytes",
-        "name": "",
-        "type": "bytes"
-      }
-    ],
-    "name": "onERC1155BatchReceived",
-    "outputs": [
-      {
-        "internalType": "bytes4",
-        "name": "",
-        "type": "bytes4"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
+     "inputs":[
+        {
+           "internalType":"uint256",
+           "name":"_poolId",
+           "type":"uint256"
+        },
+        {
+           "internalType":"uint256",
+           "name":"_amount",
+           "type":"uint256"
+        }
+     ],
+     "name":"notifyRewards",
+     "outputs":[
+        
+     ],
+     "stateMutability":"nonpayable",
+     "type":"function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bytes",
-        "name": "",
-        "type": "bytes"
-      }
-    ],
-    "name": "onERC1155Received",
-    "outputs": [
-      {
-        "internalType": "bytes4",
-        "name": "",
-        "type": "bytes4"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
+     "inputs":[
+        {
+           "internalType":"address",
+           "name":"",
+           "type":"address"
+        },
+        {
+           "internalType":"address",
+           "name":"",
+           "type":"address"
+        },
+        {
+           "internalType":"uint256[]",
+           "name":"",
+           "type":"uint256[]"
+        },
+        {
+           "internalType":"uint256[]",
+           "name":"",
+           "type":"uint256[]"
+        },
+        {
+           "internalType":"bytes",
+           "name":"",
+           "type":"bytes"
+        }
+     ],
+     "name":"onERC1155BatchReceived",
+     "outputs":[
+        {
+           "internalType":"bytes4",
+           "name":"",
+           "type":"bytes4"
+        }
+     ],
+     "stateMutability":"nonpayable",
+     "type":"function"
   },
   {
-    "inputs": [],
-    "name": "owner",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+     "inputs":[
+        {
+           "internalType":"address",
+           "name":"",
+           "type":"address"
+        },
+        {
+           "internalType":"address",
+           "name":"",
+           "type":"address"
+        },
+        {
+           "internalType":"uint256",
+           "name":"",
+           "type":"uint256"
+        },
+        {
+           "internalType":"uint256",
+           "name":"",
+           "type":"uint256"
+        },
+        {
+           "internalType":"bytes",
+           "name":"",
+           "type":"bytes"
+        }
+     ],
+     "name":"onERC1155Received",
+     "outputs":[
+        {
+           "internalType":"bytes4",
+           "name":"",
+           "type":"bytes4"
+        }
+     ],
+     "stateMutability":"nonpayable",
+     "type":"function"
   },
   {
-    "inputs": [],
-    "name": "renounceOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+     "inputs":[
+        
+     ],
+     "name":"owner",
+     "outputs":[
+        {
+           "internalType":"address",
+           "name":"",
+           "type":"address"
+        }
+     ],
+     "stateMutability":"view",
+     "type":"function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_poolId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "_staker",
-        "type": "address"
-      }
-    ],
-    "name": "rewardOf",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+     "inputs":[
+        
+     ],
+     "name":"renounceOwnership",
+     "outputs":[
+        
+     ],
+     "stateMutability":"nonpayable",
+     "type":"function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "contract IERC1155",
-        "name": "_nftTokenAddress",
-        "type": "address"
-      }
-    ],
-    "name": "setNftTokenAddress",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+     "inputs":[
+        {
+           "internalType":"uint256",
+           "name":"_poolId",
+           "type":"uint256"
+        },
+        {
+           "internalType":"address",
+           "name":"_staker",
+           "type":"address"
+        }
+     ],
+     "name":"rewardOf",
+     "outputs":[
+        {
+           "internalType":"uint256",
+           "name":"",
+           "type":"uint256"
+        }
+     ],
+     "stateMutability":"view",
+     "type":"function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "_tokenAddress",
-        "type": "address"
-      }
-    ],
-    "name": "setTokenAddress",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+     "inputs":[
+        {
+           "internalType":"contract IERC1155",
+           "name":"_nftTokenAddress",
+           "type":"address"
+        }
+     ],
+     "name":"setNftTokenAddress",
+     "outputs":[
+        
+     ],
+     "stateMutability":"nonpayable",
+     "type":"function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_poolId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "stake",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+     "inputs":[
+        {
+           "internalType":"contract IERC20",
+           "name":"_tokenAddress",
+           "type":"address"
+        }
+     ],
+     "name":"setTokenAddress",
+     "outputs":[
+        
+     ],
+     "stateMutability":"nonpayable",
+     "type":"function"
   },
   {
-    "inputs": [],
-    "name": "stakingPoolsCount",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+     "inputs":[
+        {
+           "internalType":"uint256",
+           "name":"_poolId",
+           "type":"uint256"
+        },
+        {
+           "internalType":"uint256",
+           "name":"_amount",
+           "type":"uint256"
+        }
+     ],
+     "name":"stake",
+     "outputs":[
+        
+     ],
+     "stateMutability":"nonpayable",
+     "type":"function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "bytes4",
-        "name": "interfaceId",
-        "type": "bytes4"
-      }
-    ],
-    "name": "supportsInterface",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+     "inputs":[
+        
+     ],
+     "name":"stakingPoolsCount",
+     "outputs":[
+        {
+           "internalType":"uint256",
+           "name":"",
+           "type":"uint256"
+        }
+     ],
+     "stateMutability":"view",
+     "type":"function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_poolId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "_staker",
-        "type": "address"
-      }
-    ],
-    "name": "totalStakeOf",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+     "inputs":[
+        {
+           "internalType":"bytes4",
+           "name":"interfaceId",
+           "type":"bytes4"
+        }
+     ],
+     "name":"supportsInterface",
+     "outputs":[
+        {
+           "internalType":"bool",
+           "name":"",
+           "type":"bool"
+        }
+     ],
+     "stateMutability":"view",
+     "type":"function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "transferOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+     "inputs":[
+        {
+           "internalType":"uint256",
+           "name":"_poolId",
+           "type":"uint256"
+        },
+        {
+           "internalType":"address",
+           "name":"_staker",
+           "type":"address"
+        }
+     ],
+     "name":"totalStakeOf",
+     "outputs":[
+        {
+           "internalType":"uint256",
+           "name":"",
+           "type":"uint256"
+        }
+     ],
+     "stateMutability":"view",
+     "type":"function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_poolId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_count",
-        "type": "uint256"
-      }
-    ],
-    "name": "unstake",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+     "inputs":[
+        {
+           "internalType":"address",
+           "name":"newOwner",
+           "type":"address"
+        }
+     ],
+     "name":"transferOwnership",
+     "outputs":[
+        
+     ],
+     "stateMutability":"nonpayable",
+     "type":"function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "poolId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "withdrawRewards",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+     "inputs":[
+        {
+           "internalType":"uint256",
+           "name":"_poolId",
+           "type":"uint256"
+        },
+        {
+           "internalType":"uint256",
+           "name":"_count",
+           "type":"uint256"
+        }
+     ],
+     "name":"unstake",
+     "outputs":[
+        
+     ],
+     "stateMutability":"nonpayable",
+     "type":"function"
+  },
+  {
+     "inputs":[
+        {
+           "internalType":"uint256",
+           "name":"_poolId",
+           "type":"uint256"
+        },
+        {
+           "internalType":"uint256",
+           "name":"_amount",
+           "type":"uint256"
+        }
+     ],
+     "name":"withdrawRewards",
+     "outputs":[
+        
+     ],
+     "stateMutability":"nonpayable",
+     "type":"function"
+  },
+  {
+     "inputs":[
+        {
+           "internalType":"uint256",
+           "name":"_poolId",
+           "type":"uint256"
+        }
+     ],
+     "name":"withdrawRewards",
+     "outputs":[
+        
+     ],
+     "stateMutability":"nonpayable",
+     "type":"function"
   }
 ];
 

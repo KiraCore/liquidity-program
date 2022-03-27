@@ -39,11 +39,11 @@ echo "KIRA_TOKEN_ADDRESS=0x2CDA738623354c93eB974F3C90175F249d611CA4" >> ./.env &
 ```sh
 # Requires `KIRA_TOKEN_ADDRESS` set in env variables
 npx hardhat run scripts/1_deploy_KexFarm.js --network kovan 
-# KexFarm on ROPSTEN: 0x29DFF8C2A22154bCf442C39f6B1BB5E6EDce7d5F
+# KexFarm on ROPSTEN: 0xa97e2425DE402e55CC230bCa330E02A7Ae0051c4
 # KexFarm on MAINNET: TBD
 
 # Save NFT_FARM_ADDRESS as env variable
-echo "NFT_FARM_ADDRESS=0x29DFF8C2A22154bCf442C39f6B1BB5E6EDce7d5F" >> ./.env
+echo "NFT_FARM_ADDRESS=0xa97e2425DE402e55CC230bCa330E02A7Ae0051c4" >> ./.env
 
 # verify NFT farming contract
 . ./.env && npx hardhat verify --network kovan $NFT_FARM_ADDRESS $KIRA_TOKEN_ADDRESS
@@ -55,11 +55,11 @@ echo "NFT_FARM_ADDRESS=0x29DFF8C2A22154bCf442C39f6B1BB5E6EDce7d5F" >> ./.env
 # Requires `NFT_FARM_ADDRESS` set in env variables
 # The setFarm address funciton is trigerred automatically
 npx hardhat run scripts/2_deploy_KiraNFT.js --network kovan
-# KiraNFT on ROPSTEN: 0x2Bc49Ae2f5a3194dd68eC202c2Af43E3786A61F3
+# KiraNFT on ROPSTEN: 0xad81b3ab9439b71b3F0BD1EA2bBbF5e9D086d0C1
 # KiraNFT on MAINNET: TBD
 
 # Save NFT_MINTING_ADDRESS as env variable
-echo "NFT_MINTING_ADDRESS=0x2Bc49Ae2f5a3194dd68eC202c2Af43E3786A61F3" >> ./.env
+echo "NFT_MINTING_ADDRESS=0xad81b3ab9439b71b3F0BD1EA2bBbF5e9D086d0C1" >> ./.env
 
 # Verify NFT minting contract
 . ./.env && npx hardhat verify --network kovan $NFT_MINTING_ADDRESS
@@ -72,11 +72,11 @@ echo "NFT_MINTING_ADDRESS=0x2Bc49Ae2f5a3194dd68eC202c2Af43E3786A61F3" >> ./.env
 
 ```sh
 npx hardhat run scripts/3_deploy_NFTStaking.js --network kovan
-# NFTStaking on ROPSTEN: 0xacEA0dC3008731945F77bc1182045197672068b1
+# NFTStaking on ROPSTEN: 0xe89841b13b7e23e560D5f1FdD8591BDE466d68c4
 # NFTStaking on MAINNET: TBD
 
 # Save NFT_STAKING_ADDRESS as env variable
-echo "NFT_STAKING_ADDRESS=0x0C5B4c3E377Af1A7a93Dd3ecd89A7D4645350A9a" >> ./.env
+echo "NFT_STAKING_ADDRESS=0xe89841b13b7e23e560D5f1FdD8591BDE466d68c4" >> ./.env
 
 # verify NFT staking contract
 . ./.env && npx hardhat verify --network kovan $NFT_STAKING_ADDRESS $KIRA_TOKEN_ADDRESS $NFT_MINTING_ADDRESS

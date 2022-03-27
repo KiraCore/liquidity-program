@@ -72,7 +72,7 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
      * @return stakingPool
      */
     function getPool(uint256 _poolId) public view returns (POOL memory) {
-      require((_poolId >= 0 && _poolId < stakingPoolsCount), "Invalid poolId range")
+      require((_poolId >= 0 && _poolId < stakingPoolsCount), "Invalid poolId range");
       return stakingPools[_poolId];
     }
 
@@ -127,7 +127,7 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
      * @return stakingBalance
      */
     function getBalance(address _staker, uint256 _poolId) public view returns (STAKE memory) {
-        require((_poolId >= 0 && _poolId < stakingPoolsCount), "Invalid poolId range")
+        require((_poolId >= 0 && _poolId < stakingPoolsCount), "Invalid poolId range");
         return balances[_poolId][_staker];
     }
 
@@ -219,7 +219,7 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
     }
 
     function claimReward(uint256 _poolId) external nonReentrant {
-        require((_poolId >= 0 && _poolId < stakingPoolsCount), "Invalid poolId range")
+        require((_poolId >= 0 && _poolId < stakingPoolsCount), "Invalid poolId range");
         uint256 reward = rewardOf(_poolId, _msgSender());
         POOL storage poolInfo = stakingPools[_poolId];
         STAKE storage balanceInfo = balances[_poolId][_msgSender()];
@@ -239,7 +239,7 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
      * @param _amount is the NFT count to stake
      */
     function stake(uint256 _poolId, uint256 _amount) external nonReentrant {
-        require((_poolId >= 0 && _poolId < stakingPoolsCount), "Invalid poolId range")
+        require((_poolId >= 0 && _poolId < stakingPoolsCount), "Invalid poolId range");
         POOL storage poolInfo = stakingPools[_poolId];
 
         _nftToken.safeTransferFrom(_msgSender(), address(this), poolInfo.nftTokenId, _amount, '');

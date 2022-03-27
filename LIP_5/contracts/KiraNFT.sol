@@ -107,10 +107,10 @@ contract KiraNFT is ERC1155, ReentrancyGuard, Ownable {
     function buy(uint256 id, uint256 count) nonReentrant external {
         address sender = msg.sender;
         require(isCardPayable(id, count), 'Card is not payable!');
-        uint256 amount = cards[id].value.mul(count);
+        uint256 amount = cards[id].value * count;
         require(_farmer.payment(sender, amount), 'Payment problem!');
         _mint(sender, id, count, '');
-        cards[id].sold = cards[id].sold.add(count);
+        cards[id].sold = cards[id].sold + count;
     }
 
     function mint(

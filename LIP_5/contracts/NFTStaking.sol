@@ -26,7 +26,7 @@ struct POOL {
     uint256 maxPerClaim;
 }
 
-contract NFTStaking is Context, ERC1155Holder, Ownable {
+contract NFTStaking is Context, ERC1155Holder, Ownable, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
     /// @dev map poolId to staking Pool detail

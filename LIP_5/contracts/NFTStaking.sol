@@ -7,6 +7,7 @@ import '@openzeppelin/contracts/token/ERC1155/IERC1155.sol';
 import '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
+import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 
 struct STAKE {
     uint256 amount;
@@ -41,11 +42,11 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
         stakingPoolsCount = 0;
     }
 
-    function setTokenAddress(IERC20 _tokenAddress) external nonReentrant onlyOwner {
+    function setTokenAddress(IERC20 _tokenAddress) external onlyOwner {
         _token = _tokenAddress;
     }
 
-    function setNftTokenAddress(IERC1155 _nftTokenAddress) external nonReentrant onlyOwner {
+    function setNftTokenAddress(IERC1155 _nftTokenAddress) external onlyOwner {
         _nftToken = _nftTokenAddress;
     }
 
@@ -298,7 +299,7 @@ contract NFTStaking is Context, ERC1155Holder, Ownable {
      * @param _poolId is the pool id to contribute reward
      * @param _amount is the amount to put
      */
-    function notifyRewards(uint256 _poolId, uint256 _amount) external nonReentrant onlyOwner {
+    function notifyRewards(uint256 _poolId, uint256 _amount) external onlyOwner {
         require(_amount > 0, "NFTStaking.notifyRewards: Can't add zero amount!");
 
         POOL storage poolInfo = stakingPools[_poolId];

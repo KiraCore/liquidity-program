@@ -3,7 +3,7 @@ pragma solidity ^0.8.1;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 struct Staker {
     uint256 amount;
@@ -14,7 +14,7 @@ struct Staker {
 // Allow anyone who has KEX to earn Krystals
 // Allow ANYONE who has Krystals to pay for NFT minting
 contract KexFarm is Ownable {
-    using SafeMath for uint256;
+    using SafeERC20 for IERC20;
 
     // Staking limit is 10'000 KEX
     // Take into account that KEX has 6 decimals
@@ -22,18 +22,23 @@ contract KexFarm is Ownable {
     uint256 public total;
 
     mapping(address => Staker) public stakers;
+
+    // token used to mint stones
     IERC20 private _token;
+    // contract that mints nfts based on stone amounts
+    IERC20 private _minter;
 
-    constructor(IERC20 _tokenAddr) {
-        _token = _tokenAddr;
+    constructor(IERC20 token) {
+        _token = token;
     }
 
-    function setTokenAddress(IERC20 token_) external onlyOwner {
-        _token = token_;
+    // Ownership is expected to be rejected after deployment
+    function setTokenAddress(IERC20 token) external onlyOwner {
+        _token = token;
     }
-
-    function giveAway(address _address, uint256 stones) external onlyOwner {
-        stakers[_address].stones = stones;
+    // Ownership is expected to be rejected after deployment
+    function setMinterAddress(IERC20 minter) external onlyOwner {
+        _minter = minter;
     }
 
     function farmed(address sender) public view returns (uint256) {
@@ -50,9 +55,11 @@ contract KexFarm is Ownable {
         external
         returns (bool)
     {
+        require(msg.sender == address(_minter), "Sender must be a KiraNFT contract!");
+
         consolidate(buyer);
         require(stakers[buyer].stones >= amount, "Insufficient stones!");
-        stakers[buyer].stones = stakers[buyer].stones.sub(amount);
+        stakers[buyer].stones = stakers[buyer].stones - amount;
 
         return true;
     }
@@ -62,17 +69,9 @@ contract KexFarm is Ownable {
             return stakers[staker].stones;
         }
 
-        // Earn Rate = 1 Krystal every 24 hours per each 1 KEX staked
-        uint256 _seconds =
-            block.timestamp.sub(stakers[staker].timestamp).div(1 seconds);
-        return
-            stakers[staker].stones.add(
-                stakers[staker]
-                    .amount
-                    .mul(_seconds)
-                    .div(1e6)
-                    .div(86400)
-            );
+        // Earn Rate = 1 Krystal every 24 hours per each 1 KEX staked (notice that kex has 6 decimals)
+        uint256 _seconds = ( block.timestamp - stakers[staker].timestamp ) / (1 seconds);
+        return stakers[staker].stones + (( stakers[staker].amount * _seconds) / (1e6 * 86400));
     }
 
     function consolidate(address staker) internal {
@@ -83,13 +82,13 @@ contract KexFarm is Ownable {
 
     function deposit(uint256 amount) public {
         address sender = msg.sender;
-        require(stakers[sender].amount.add(amount) <= limit, "Limit 10000 KEX");
-
+        
+        require((stakers[sender].amount + amount) <= limit, "Deposit limit is 10'000 KEX");
         _token.transferFrom(sender, address(this), amount);
+
         consolidate(sender);
-        total = total.add(amount);
-        stakers[sender].amount = stakers[sender].amount.add(amount);
-        // stakers[sender].timestamp = block.timestamp;
+        total += amount;
+        stakers[sender].amount = stakers[sender].amount + amount;
     }
 
     function withdraw(uint256 amount) public {
@@ -99,8 +98,7 @@ contract KexFarm is Ownable {
         require(_token.transfer(sender, amount), "Transfer error!");
 
         consolidate(sender);
-        stakers[sender].amount = stakers[sender].amount.sub(amount);
-        total = total.sub(amount);
-        // stakers[sender].timestamp = block.timestamp;
+        stakers[sender].amount = stakers[sender].amount - amount;
+        total -= amount;
     }
 }

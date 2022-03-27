@@ -21,13 +21,9 @@ function execResolve(error, stdout, stderr) {
 }
 
 async function main() {  
-  // setup factories
-  const kexFarm_factory = await hre.ethers.getContractFactory('KexFarm');
-  const kiraNFT_factory = await hre.ethers.getContractFactory('KiraNFT');
-  const nftStaking_factory = await hre.ethers.getContractFactory('NFTStaking');
-  // ------------------------------------------------------------------
-
-  const kexFarm = await kexFarm_factory.deploy(KIRA_TOKEN_ADDRESS);
+  console.log("deploy.js => main()")
+  const KexFarm = await hre.ethers.getContractFactory('KexFarm');
+  const kexFarm = await KexFarm.deploy(KIRA_TOKEN_ADDRESS);
   await kexFarm.deployed();
   const NFT_FARM_ADDRESS = kexFarm.address;
   fs.appendFileSync(envFile, "\nNFT_FARM_ADDRESS="+NFT_FARM_ADDRESS);
@@ -40,7 +36,8 @@ async function main() {
   console.log("Finished KexFarm contract verification.")
   // ------------------------------------------------------------------
 
-  const kiraNFT = await kiraNFT_factory.deploy();
+  const KiraNFT = await hre.ethers.getContractFactory('KiraNFT');
+  const kiraNFT = await KiraNFT.deploy();
   await kiraNFT.deployed();
   const NFT_MINTING_ADDRESS = kiraNFT.address
   fs.appendFileSync(envFile, "NFT_MINTING_ADDRESS="+NFT_MINTING_ADDRESS);
@@ -56,7 +53,8 @@ async function main() {
   console.log("Finished KiraNFT contract verification.")
   // ------------------------------------------------------------------
 
-  const nftStaking = await nftStaking_factory.deploy(KIRA_TOKEN_ADDRESS, NFT_MINTING_ADDRESS);
+  const NFTStaking = await hre.ethers.getContractFactory('NFTStaking');
+  const nftStaking = await NFTStaking.deploy(KIRA_TOKEN_ADDRESS, NFT_MINTING_ADDRESS);
   await nftStaking.deployed();
   const NFT_STAKING_ADDRESS = nftStaking.address;
   fs.appendFileSync(envFile, "NFT_STAKING_ADDRESS="+NFT_STAKING_ADDRESS);

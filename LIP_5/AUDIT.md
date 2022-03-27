@@ -45,4 +45,10 @@ Further elaboration on any logical issues shoudl be provided
 * Ownership is inteded to be rejected once no more changes are necessary after deployment
 
 # NFT-02
-* 
+* Removed nonReentrant from all onwerOnly (already nonReentrant) funcitons
+
+# NFT-03
+* Added `require((_poolId >= 0 && _poolId < stakingPoolsCount), "Invalid poolId range")`
+
+## NFT-04
+* Eplaced `rewardOf(_poolId, _msgSender()).div(balance.amount).mul(_count);` with `rewardOf(_poolId, _msgSender()).mul(_count).div(balance.amount);`

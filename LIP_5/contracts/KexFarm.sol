@@ -55,9 +55,7 @@ contract KexFarm is Ownable {
         external
         returns (bool)
     {
-        address memory minter = address(_minter);
-        require(msg.sender == minter, "Insufficient stones!");
-
+        require(msg.sender == address(_minter), "Sender must be a KiraNFT contract!");
 
         consolidate(buyer);
         require(stakers[buyer].stones >= amount, "Insufficient stones!");

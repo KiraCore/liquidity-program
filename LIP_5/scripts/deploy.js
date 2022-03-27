@@ -29,8 +29,8 @@ async function main() {
   fs.appendFileSync(envFile, "\nNFT_FARM_ADDRESS="+NFT_FARM_ADDRESS);
 
   console.log('KexFarm deployed to:', NFT_FARM_ADDRESS, ' and connected with the token address: ', KIRA_TOKEN_ADDRESS);
-  console.log('Waiting 15s for blockchain to catch up...')
-  await sleep(15000);
+  console.log('Waiting 60s for blockchain to catch up...')
+  await sleep(60000);
   console.log("Veryfying KexFarm contract...")
   exec("echo \"$PWD\" && . ./.env && npx hardhat verify --network $NETWORK $NFT_FARM_ADDRESS $KIRA_TOKEN_ADDRESS", execResolve)
   console.log("Finished KexFarm contract verification.")
@@ -46,8 +46,8 @@ async function main() {
   await kexFarm.setMinterAddress(NFT_MINTING_ADDRESS)
 
   console.log('KiraNFT minting deployed to: ', NFT_MINTING_ADDRESS, ' and connected with the stone farming: ', NFT_FARM_ADDRESS);
-  console.log('Waiting 15s for blockchain to catch up...')
-  await sleep(15000);
+  console.log('Waiting 60s for blockchain to catch up...')
+  await sleep(60000);
   console.log("Veryfying KiraNFT contract...")
   exec("echo \"$PWD\" && . ./.env && npx hardhat verify --network $NETWORK $NFT_MINTING_ADDRESS", execResolve)
   console.log("Finished KiraNFT contract verification.")
@@ -60,8 +60,8 @@ async function main() {
   fs.appendFileSync(envFile, "\nNFT_STAKING_ADDRESS="+NFT_STAKING_ADDRESS);
 
   console.log('NFTStaking deployed to: ', NFT_STAKING_ADDRESS, ' and connected with the token address: ', KIRA_TOKEN_ADDRESS);
-  console.log('Waiting 15s for blockchain to catch up...')
-  await sleep(15000);
+  console.log('Waiting 60s for blockchain to catch up...')
+  await sleep(60000);
   console.log("Veryfying NFTStaking contract...")
   exec("echo \"$PWD\" && . ./.env && npx hardhat verify --network $NETWORK $NFT_STAKING_ADDRESS $KIRA_TOKEN_ADDRESS $NFT_MINTING_ADDRESS", execResolve)
   console.log("Finished NFTStaking contract verification.")

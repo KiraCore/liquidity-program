@@ -69,9 +69,9 @@ contract KexFarm is Ownable {
             return stakers[staker].stones;
         }
 
-        // Earn Rate = 1 Krystal every 24 hours per each 1 KEX staked
+        // Earn Rate = 1 Krystal every 24 hours per each 1 KEX staked (notice that kex has 6 decimals)
         uint256 _seconds = ( block.timestamp - stakers[staker].timestamp ) / (1 seconds);
-        return (stakers[staker].stones + ((( stakers[staker].amount * _seconds ) / (1e6)) / (86400)));
+        return stakers[staker].stones + (( stakers[staker].amount * _seconds) / (1e6 * 86400));
     }
 
     function consolidate(address staker) internal {
@@ -82,11 +82,12 @@ contract KexFarm is Ownable {
 
     function deposit(uint256 amount) public {
         address sender = msg.sender;
-        require((stakers[sender].amount + amount) <= limit, "Limit 10000 KEX");
-
+        
+        require((stakers[sender].amount + amount) <= limit, "Deposit limit is 10'000 KEX");
         _token.transferFrom(sender, address(this), amount);
+
         consolidate(sender);
-        total = total + amount;
+        total += amount;
         stakers[sender].amount = stakers[sender].amount + amount;
     }
 
@@ -98,6 +99,6 @@ contract KexFarm is Ownable {
 
         consolidate(sender);
         stakers[sender].amount = stakers[sender].amount - amount;
-        total = total - amount;
+        total -= amount;
     }
 }

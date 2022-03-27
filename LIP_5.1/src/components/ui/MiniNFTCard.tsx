@@ -1,7 +1,7 @@
 import { Image } from '@chakra-ui/image';
 import { Box, Flex, Heading, Text } from '@chakra-ui/layout';
 import { IMG_KEX, SVG_INSTANCE } from 'src/assets/images';
-import { Card, Owned } from 'src/types/nftTypes';
+import { BALANCE, Card, Owned, POOL } from 'src/types/nftTypes';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { useCallback, useEffect, useState } from 'react';
 import { useToast } from '@chakra-ui/toast';
@@ -11,61 +11,100 @@ import PrimaryButton from './PrimaryButton';
 import { useWallet } from 'use-wallet';
 import { BigNumber } from '@ethersproject/bignumber';
 import { Button } from '@chakra-ui/button';
+import { ListItem, UnorderedList } from '@chakra-ui/react';
 
 type MiniNFTCardProps = {
   card: Card;
-  owned: Owned;
-  onStake: (nftId: number) => any;
+  unstakedBalance: Number;
+  pool: POOL;
+  balance: BALANCE;
+  kexDecimals: number;
+  onStake: (card: Card, pool: POOL) => any;
   reloadMyCollection: () => any;
 };
 
-const MiniNFTCard = ({ owned, card, onStake, reloadMyCollection }: MiniNFTCardProps) => {
+const MiniNFTCard = ({ unstakedBalance, card, pool, balance, kexDecimals, onStake, reloadMyCollection }: MiniNFTCardProps) => {
   const { nftStaking } = useContracts();
   const [loading, setLoading] = useState<boolean>(false);
-  const { account } = useWallet();
   const toast = useToast();
-  const [claimable, setClaimable] = useState<BigNumber | undefined>(undefined);
+  const decimalFactor = Math.pow(10,kexDecimals);
 
   const image = card?.metadata?.image ? card.metadata.image : "/images/loading.png";
-  const stakedBalance = owned.stakedBalance ? owned.stakedBalance : 0 ;
-  const unstakedBalance = owned.unstakedBalance ? owned.unstakedBalance : 0 ;
-  const id = owned.id;
+  
+  const nftId = Number.parseInt(card?.getID());
   const name = card?.getName();
   const camp = card?.getCamp(); 
-  const gender = card?.getGender();
-  const type = card?.getType();
 
+  const isPoolActive = (pool?.isUndefined() ?? true) ? false : true;
+  const isBalanceActive = (balance?.isUndefined() ?? true) ? false : true; 
+
+  const stakedBalance = isBalanceActive ? balance.amount : 0 ;
+  const rewardsToClaim = (isBalanceActive ? balance.rewardsToClaim : 0);
+  
   const isLoading = !!loading || !name;
-  const canStake = !isLoading && unstakedBalance > 0;
-  const canUnstake = !isLoading && stakedBalance > 0;
-  const canClaim = false;
+  const canStake = !isLoading && unstakedBalance > 0 && isPoolActive;
+  const canUnstake = !isLoading && stakedBalance > 0 && isBalanceActive;
+  const canClaim = !isLoading && rewardsToClaim > 0;
+  const claimable = rewardsToClaim/decimalFactor;
 
-  const short_description = !isLoading ? `${name} | ${camp}` : "Loading from IPFS...";
+  const short_description = !isLoading ? `${name} | ${camp}` : "Loading data...";
+  
+  const long_description = !isLoading ? (isPoolActive ? `${name} | Staking Pool` : "Staking Pool Unavailable") : 
+    "Loading data, please wait, it might take a while...";
 
-  //{(+claimable).toLocaleString()} KEX Claimable
-  //console.log("MiniNFTCard.txs => MiniNFTCard:");
-  //console.log({id: id, stakedBalance: stakedBalance, unstakedBalance: unstakedBalance, card: card });
+  const maxPerClaim = pool?.totalRewards ? pool.maxPerClaim/decimalFactor : 0;
+  const maxFairClaim = stakedBalance * ((pool?.totalStakes ?? 0) > 0 ? (pool.totalRewards/pool.totalStakes)/decimalFactor : 0);
+  const avgRewardRate = (((pool?.rewardPerNFT ?? 0)/decimalFactor)/((pool?.rewardPeriod ?? Number.MAX_SAFE_INTEGER)/3600));
 
-  const reloadClaimable = useCallback(() => {
-    if (account) {
-      setClaimable(undefined);
-      nftStaking.rewardOf(id, account).then((reward: BigNumber) => {
-        setClaimable(reward);
-      });
+  const poolAttributes = (isLoading || !isPoolActive) ? 
+  [{ 
+    name: "Token ID",
+    value: `${card?.getID() ?? "???"}`
+  }] : [
+    { name: "Pool ID",
+      value: `${pool?.poolId ?? "???"}`
+    },{ 
+      name: "Token ID",
+      value: `${pool?.nftTokenId ?? "???"}`
+    },{ 
+      name: "Total Staked",
+      value: `${pool?.totalStakes ?? "???"}/${card?.sold ?? "???"}`
+    },{ 
+      name: "Rewards Left",
+      value: `${((pool?.totalRewards ?? 0)/decimalFactor).toFixed(0).toLocaleString()} KEX`
+    },{
+      name: "Avg. Rate",
+      value: `${avgRewardRate.toFixed(0).toLocaleString()} KEX/h`
+    },{ 
+      name: "Max. Claim",
+      value: `${Math.min(maxPerClaim,(pool?.totalStakes ?? 0) > 0 ? maxFairClaim : maxPerClaim).toFixed(0).toLocaleString()} KEX`
+    },{ 
+      name: "Your Claims",
+      value: `${((balance?.rewardSoFar ?? 0)/decimalFactor).toFixed(0).toLocaleString()} KEX`
     }
-  }, [id, account, nftStaking]);
+  ];
 
-  useEffect(() => {
-    reloadClaimable();
-  }, [id, account, reloadClaimable]);
+  console.log("MiniNFTCard.txs => MiniNFTCard:");
+  console.log({
+    id: card?.getID(), 
+    isLoading: isLoading,
+    canStake: canStake,
+    canUnstake: canUnstake,
+    stakedBalance: stakedBalance, 
+    unstakedBalance: unstakedBalance, 
+    isPoolActive: isPoolActive,
+    isBalanceActive: isBalanceActive,
+    card: card,
+    pool: pool });
+
 
   const onUnstake = async () => {
     setLoading(true);
     try {
-      const txStake = await nftStaking.unstake(id);
+      const txStake = await nftStaking.unstake(pool.poolId,balance.amount);
       toast({
         title: 'Pending Transaction',
-        description: `Unstaking NFT (Id: ${id})`,
+        description: `Unstaking NFT (Id: ${nftId})`,
         status: 'warning',
         duration: 5000,
         isClosable: true,
@@ -73,7 +112,7 @@ const MiniNFTCard = ({ owned, card, onStake, reloadMyCollection }: MiniNFTCardPr
       await txStake.wait();
       toast({
         title: 'Transaction Done',
-        description: `Unstaked NFT(Id: ${id})`,
+        description: `Unstaked NFT(Id: ${nftId})`,
         status: 'success',
         duration: 5000,
         isClosable: true,
@@ -95,7 +134,7 @@ const MiniNFTCard = ({ owned, card, onStake, reloadMyCollection }: MiniNFTCardPr
   const onClaim = async () => {
     setLoading(true);
     try {
-      const txStake = await nftStaking.claimReward(id);
+      const txStake = await nftStaking.claimReward(pool.poolId);
       toast({
         title: 'Pending Transaction',
         description: `Claiming Rewards`,
@@ -113,7 +152,6 @@ const MiniNFTCard = ({ owned, card, onStake, reloadMyCollection }: MiniNFTCardPr
       });
 
       reloadMyCollection();
-      reloadClaimable();
     } catch (e: any) {
       toast({
         title: 'Transaction Failed',
@@ -146,12 +184,63 @@ const MiniNFTCard = ({ owned, card, onStake, reloadMyCollection }: MiniNFTCardPr
         WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
         WebkitMaskComposite: 'destination-out',
         maskComposite: 'exclude',
-      }}
+      }} //285px
       mx="auto"
     >
+
+      <Box
+        position="absolute"
+        left="0px"
+        top="0px"
+        w="calc(100% - 4px)"
+        height={{ base: '320px', md: '285px' }}
+        margin="2px"
+        bg="#060817"
+        opacity={0}
+        _hover={{
+          opacity: 0.94,
+        }}
+        transition="opacity 0.5s"
+        color="white"
+        padding={{ base: '18px', md: '24px' }}
+        display="flex"
+        flexDir="column"
+      >
+      <Text
+          fontSize="14px"
+          color="white"
+          fontWeight="normal"
+          lineHeight="150%"
+          mb={{ base: '16px', md: '16px' }}
+          overflow="hidden"
+          sx={{
+            base: {
+              display: '-webkit-box',
+              '-webkit-line-clamp': '2',
+              '-webkit-box-orient': 'vertical',
+            },
+            md: {
+              display: '-webkit-box',
+              '-webkit-line-clamp': '4',
+              '-webkit-box-orient': 'vertical',
+            },
+          }}
+        >
+          {long_description}
+        </Text>
+        <UnorderedList listStyleType="none" ml="0">
+          {poolAttributes?.map((attr) => (
+            <ListItem display="flex" mb="8px" fontSize="14px" key={attr.name}>
+              <Text fontWeight="600">{attr.name}:&nbsp;</Text>
+              {attr.value}
+            </ListItem>
+          ))}
+        </UnorderedList>
+      </Box>
+
       <Box height="201px">
         {/* <Image src={image} objectFit="cover" alt={title} height="100%" /> */}
-        <LazyLoadImage src={image} height="100%" effect="blur" alt={card?.metadata?.name} style={{ objectFit: 'cover', height: '100%' }} />
+        <LazyLoadImage src={image} height="100%" effect="blur" alt={card?.getName()} style={{ objectFit: 'cover', height: '100%' }} />
         
       </Box>
 
@@ -175,8 +264,8 @@ const MiniNFTCard = ({ owned, card, onStake, reloadMyCollection }: MiniNFTCardPr
             </Text>
           </Flex>
           <Flex direction="row" alignItems="center" justifyContent="space-between">
-            <OutlinedButton text="UNSTAKE" onClick={onUnstake} rest={{ width: '105px', height: '36px', isLoading: isLoading, disabled: !canUnstake }} />
-            <OutlinedButton text="STAKE" onClick={() => onStake(id)} rest={{ width: '105px', height: '36px', isLoading: isLoading, disabled: !canStake }} />
+            <OutlinedButton text="UNSTAKE ALL" onClick={onUnstake} rest={{ width: '105px', height: '36px', isLoading: isLoading, disabled: !canUnstake }} />
+            <OutlinedButton text="STAKE" onClick={() => onStake(card, pool)} rest={{ width: '105px', height: '36px', isLoading: isLoading, disabled: !canStake }} />
           </Flex>
       </Box>
 
@@ -185,9 +274,15 @@ const MiniNFTCard = ({ owned, card, onStake, reloadMyCollection }: MiniNFTCardPr
             <Box flex="1">
               <Flex direction="row" alignItems="center">
                 <Image src={IMG_KEX} width="3" mr="8px" />
-                <Text fontSize="small" color="white">
-                  ???'??? KEX
-                </Text>
+                {(isLoading) && <Button isLoading variant="ghost" width="fit-content" color="white" height="16px" />}
+                {(!isLoading) && (
+                  <Text fontSize="small" color="white" fontWeight="semibold" mr="8px">
+                    {(claimable < 10) && ((rewardsToClaim/decimalFactor).toFixed(2)).toLocaleString()}
+                    {(claimable >= 10 && claimable < 100) && ((rewardsToClaim/decimalFactor).toFixed(1)).toLocaleString()}
+                    {(claimable >= 100) && ((rewardsToClaim/decimalFactor).toFixed(0)).toLocaleString()}
+                    &nbsp;KEX 
+                  </Text>
+                )}
               </Flex>
             </Box>
           <Box flex="1">

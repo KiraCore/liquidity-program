@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import StakeNFTModal from 'src/components/modals/StakeNFTModal';
 import { PrimaryButton } from 'src/components/ui';
 import { useContracts } from 'src/hooks/useContracts';
-import { Card, NFT, Owned } from 'src/types/nftTypes';
+import { BALANCE, Card, NFT, Owned, POOL } from 'src/types/nftTypes';
 import { QueryDataTypes } from 'src/types/queryDataTypes';
 import { getAllNFT } from 'src/utils/nfts';
 import { useWallet } from 'use-wallet';
@@ -16,12 +16,16 @@ type MyCollectionProps = {
 };
 
 const MyCollection = ({ data }: MyCollectionProps) => {
-  const { nft, nftStaking } = useContracts();
+  const { nft, nftStaking, token } = useContracts();
   const { account } = useWallet();
   const [ownInfo, setOwnInfo] = useState<{ [key: string]: Owned }>({});
   const [isOpenStakeModal, openStakeModal] = useState<boolean>(false);
-  const [selectedId, setSelectedId] = useState<number | undefined>(undefined);
+  const [selectedCard, setSelectedCard] = useState<Card | undefined>(undefined);
+  const [selectedPool, setSelectedPool] = useState<POOL | undefined>(undefined);
   const [cardInfo, setCardInfo] = useState<{ [key: string]: Card }>({});
+  const [poolInfo, setPoolInfo] = useState<{ [key: string]: POOL }>({});
+  const [balanceInfo, setBalanceInfo] = useState<{ [key: string]: BALANCE }>({});
+  const [kexDecimals, setKexDecimals] = useState<number>(6);
 
   async function updateInfo() {
     if (!account) return;
@@ -29,7 +33,10 @@ const MyCollection = ({ data }: MyCollectionProps) => {
 
     const allCollections = getAllNFT();
     const unstakedBalances = await Promise.all(getAllNFT().map(({ id }: NFT) => nft.balanceOf(account, id)));
-    const stakedBalances = await Promise.all(getAllNFT().map(({ id }: NFT) => nftStaking.totalStakeOf(id, account)));
+    const stakedBalances = await Promise.all<BALANCE>(getAllNFT().map(({ id }: NFT) => nftStaking.getBalance(id, account)));
+    const kexDecimals = await token.decimals();
+    setKexDecimals(kexDecimals);
+
     const ownInfo: { [key: string]: Owned } = {};
 
     console.log({unstakedBalances: unstakedBalances, stakedBalances: stakedBalances })
@@ -41,11 +48,11 @@ const MyCollection = ({ data }: MyCollectionProps) => {
         else ownInfo[id] = { id: id, unstakedBalance: unstakedBalance };
       }});
 
-    stakedBalances.forEach((stakedBalance: number, index: number) => {
-      if (stakedBalance > 0) {
+    stakedBalances.forEach((stakedBalance: BALANCE, index: number) => {
+      if (stakedBalance.amount > 0) {
         const id = allCollections[index].id;
-        if (ownInfo[id]) ownInfo[id].stakedBalance = stakedBalance;
-        else ownInfo[id] = { id: id, stakedBalance: stakedBalance };
+        if (ownInfo[id]) ownInfo[id].stakedBalance = stakedBalance.amount;
+        else ownInfo[id] = { id: id, stakedBalance: stakedBalance.amount };
       }});
 
     
@@ -53,37 +60,37 @@ const MyCollection = ({ data }: MyCollectionProps) => {
     setOwnInfo({ ...ownInfo });
 
     const allOwnedCards = await Promise.all(Object.entries(ownInfo).map(info => nft.cards(Number.parseInt(info[0]))));
-    
-    const allPools = await Promise.all(Object.entries(ownInfo).map(
+    const allOwnedPools = await Promise.all<POOL>(Object.entries(ownInfo).map(
       info => nftStaking.getPool(Number.parseInt(info[0]), account)
     ));
-
+    const allOwnedBalances = await Promise.all<BALANCE>(Object.entries(ownInfo).map(
+      info => nftStaking.getBalance(Number.parseInt(info[0]), account)
+    ));
 
     const cardInfo: { [key: string]: Card } = {};
-    allOwnedCards.forEach(card => {
-        let id = card?.getID();
-        if (id) {
-          cardInfo[Number.parseInt(id)] = card;
-        }
-      });
+    const poolInfo: { [key: string]: POOL } = {};
+    const balanceInfo: { [key: string]: BALANCE } = {};
+    allOwnedCards.forEach(card => cardInfo[card.getID()] = card);
+    allOwnedPools.forEach(pool => poolInfo[pool.nftTokenId.toString()] = pool);
+    allOwnedBalances.forEach(balance => balanceInfo[balance.nftTokenId.toString()] = balance);
 
-    console.log({cardInfo: cardInfo, allPools: allPools});
+    console.log({allOwnedCards: allOwnedCards, allOwnedPools: allOwnedPools, allOwnedBalances: allOwnedBalances});
     setCardInfo({ ...cardInfo });
+    setPoolInfo({ ...poolInfo });
+    setBalanceInfo({ ...balanceInfo });
   }
 
   useEffect(() => {
     setOwnInfo({});
     setCardInfo({});
+    setPoolInfo({});
+    setBalanceInfo({});
     if (account) {
       updateInfo();
     }
   }, [account]);
 
-  const nfts = getAllNFT().filter((item: NFT) => Object.entries(ownInfo).find(x => x[0] == item.id.toString()));
-
-  /*const nfts: NFT[] = [...commonCollection.nfts]
-    .map((item: NFT) => ({ ...item, stakedBalance: ownInfo[item.id]?.stakedBalance, unstakedBalance: ownInfo[item.id]?.unstakedBalance }))
-    .filter((item: NFT) => !!item.stakedBalance || !!item.unstakedBalance);*/
+  const nfts = getAllNFT().filter((item: NFT) => Object.entries(ownInfo).find(x => x[0] === item.id.toString()));
 
   const collections = [
     { index: 0, rarity: null, label: 'ALL' },
@@ -106,8 +113,9 @@ const MyCollection = ({ data }: MyCollectionProps) => {
     },
   };
 
-  const onStake = (nftId: number) => {
-    setSelectedId(nftId);
+  const onStake = (card: Card, pool: POOL) => {
+    setSelectedCard(card);
+    setSelectedPool(pool);
     openStakeModal(true);
   };
 
@@ -116,7 +124,10 @@ const MyCollection = ({ data }: MyCollectionProps) => {
     nfts,
     reloadMyCollection: updateInfo,
     cardInfo: cardInfo,
-    ownInfo: ownInfo
+    ownInfo: ownInfo,
+    poolInfo: poolInfo,
+    balanceInfo: balanceInfo,
+    kexDecimals: kexDecimals
   };
 
   return (
@@ -158,8 +169,8 @@ const MyCollection = ({ data }: MyCollectionProps) => {
           </TabPanels>
         </Tabs>
       </Container>
-      {selectedId !== undefined && (
-        <StakeNFTModal data={data} isOpen={isOpenStakeModal} onClose={() => openStakeModal(false)} nftId={selectedId} reloadMyCollection={updateInfo} />
+      {(selectedCard !== undefined && selectedPool !== undefined)&& (
+        <StakeNFTModal data={data} isOpen={isOpenStakeModal} onClose={() => openStakeModal(false)} card={selectedCard} pool={selectedPool} reloadMyCollection={updateInfo} />
       )}
     </Box>
   );

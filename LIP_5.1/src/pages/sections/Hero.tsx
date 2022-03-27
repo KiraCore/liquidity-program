@@ -35,7 +35,7 @@ const HeroSection = ({ data }: HeroSectionProps) => {
             The first network that hosts, powers and secures DeFi applications with value of real assets at stake.
           </Text>
           <PrimaryButton
-            text="FARM CRYSTALS"
+            text="FARM KRISTALS"
             onClick={onFarm}
             rest={{ width: '200px', display: { base: 'none', md: 'inherit' }, mt: { md: '36px', lg: '72px' } }}
           />

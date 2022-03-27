@@ -1,4 +1,4 @@
-import { NFT, NFTCollection } from "src/types/nftTypes";
+import { NFTCollection } from "src/types/nftTypes";
 
 export const commonCollection: NFTCollection = {
   title: 'Common Collection',

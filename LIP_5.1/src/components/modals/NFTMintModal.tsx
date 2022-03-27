@@ -65,7 +65,7 @@ const NFTMintModal = ({ isOpen = false, onClose, loadCardInfo, data, nftId, nftI
   const disabledMint = !value || !nRemain || invalidInput;
 
   const onUseAll = () => {
-    setValue((balance > 0 && price > 0) ? Math.floor(balance/price) : 0);
+    setValue((balance > 0 && price > 0) ? Math.min(Math.floor(balance/price),(nRemain ? nRemain : 0)) : 0);
   };
 
   const onMint = async () => {
@@ -126,7 +126,7 @@ const NFTMintModal = ({ isOpen = false, onClose, loadCardInfo, data, nftId, nftI
             <Image src={cardInfo?.metadata?.image} width="72px" height="72px" borderRadius="16px" mr="24px" />
             <Flex direction="column">
               <Text color="gray.secondary">Confirm Minting</Text>
-              <Text color="blue.dark">{cardInfo?.getName()}</Text>
+              <Text color="blue.dark">{`${card?.getName()} | ${card?.getRarity()} NFT`}</Text>
             </Flex>
           </Flex>
         </ModalHeader>

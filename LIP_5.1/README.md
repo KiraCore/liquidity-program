@@ -20,11 +20,20 @@ For testing, set the `REACT_APP_INFURA_NETWORK` to `kovan`, `rinkeby` or `ropste
 
 In the project directory, you can run:
 
-### `yarn install`
+```
+yarn install
+```
 
 Installs all necessary dependencies for the project.
 
-### `yarn start`
+```
+# on linux
+yarn start
+
+# on windows
+# NOTE: make absolutely sure you have .env file in the root directory
+yarn start-win
+```
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
@@ -32,7 +41,7 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
 
-### `yarn build`
+`yarn build`
 
 Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
@@ -61,7 +70,7 @@ cd $HOME/liquidity-program/LIP_5.1 && \
  echo "REACT_APP_ETHEREUM_CHAIN_ID=3"  >> ./.env && \
  echo "REACT_APP_INFURA_NETWORK=ropsten" >> ./.env && \
  echo "REACT_APP_KIRA_TOKEN_ADDRESS=0x2CDA738623354c93eB974F3C90175F249d611CA4" >> ./.env && \
- echo "REACT_APP_NFT_STAKING_ADDRESS=0x7e4326fC1B72c3B04485dA3b4E63389aC14AE6Fa" >> ./.env && \
- echo "REACT_APP_NFT_FARM_ADDRESS=0x334F7e7C7aBB0A314a9750d8CA076A3561B71432" >> ./.env && \
- echo "REACT_APP_NFT_MINTING_ADDRESS=0x07D87E94AE77b50A3FB3E9F1983E39d69cA50F6C" >> ./.env 
+ echo "REACT_APP_NFT_STAKING_ADDRESS=0x644b52a1555874b4B644eF36EcBd39751C9cA11F" >> ./.env && \
+ echo "REACT_APP_NFT_FARM_ADDRESS=0x635b56D49b30279FC728b98Bf704D07C98CEC5F9" >> ./.env && \
+ echo "REACT_APP_NFT_MINTING_ADDRESS=0x87Ba7bDB16066a5892d1824c69d8a09683702A9C" >> ./.env 
 ```

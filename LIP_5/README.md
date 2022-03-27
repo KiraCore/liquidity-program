@@ -6,162 +6,19 @@ LIP_5 is a collection of smart contracts for KEX staking & KIRA NFT farming.
 
 Before you begin, check Common Guide's [Dependency Setup Section](../setup.md#1.-Dependency-Setup)
 
-```
-yarn
-```
-
 ## Environmental variables
+
+Ensure following environmental variables are present in the `./.env` file
 
 ```
 INFURA_PROJECT_ID=
 PRIVATE_KEY=
 ETHERSCAN_API_KEY=
-NFT_STAKING_ADDRESS=
 ```
 
 - `INFURA_PROJECT_ID`: You can signup on infura.io and can get the project id on settings page.
 - `PRIVATE_KEY`: Private key of the deployer account
 - `ETHERSCAN_API_KEY`: You can signup on etherscan.io and can get the api key. This key will be used to verify the smart contracts on etherscan.
-- `NFT_STAKING_ADDRESS`: Smart contract which allows to earn KEX ERC20, for staking KIRA NFT tokens
-
-## Smart contracts
-
-### KiraNFT
-
-KiraNFT is an ERC1155 NFT smart contract.
-
-`tokenUri`: this is the base url for token metadata of each id.
-
-##### `mint`
-
-Only the owner can mint NFT.
-
-* `address account`: mint NFTs to the address
-* `uint256 id`: the token id
-* `uint256 amount`: the amount of token
-
-##### `mintBatch`
-
-Only the owner can mint NFT.
-
-* `address account`: mint NFTs to the address
-* `uint256[] memory ids`: the token ids
-* `uint256[] memory amounts`: the amounts of tokens
-
-##### `addCard`
-
-Only the owner can call `addCard` to set the NFT price and count.
-
-* `uint256 id`: the token id
-* `uint24 quantity`: the number of the instance for the token id
-* `uint256 amount`: the number of `Crystal` to buy one NFT token for the token id
-
-
-##### `addCardBatch`
-
-The batch of the `addCard`
-
-##### `setFarmerAddress`
-
-Only the owner can call `setFarmerAddress`. This just updates the farmer (`KexFarm`) contract address for KiraNFT.
-
-##### `buy`
-
-There is a public function that any user can call to buy the NFT with `Krystal`s through the `farmer`. It will decrease the `Krystal`s from user's account on farmer contract. Instead, it mints the NFT to the caller.
-
-* `uint256 id`: the token id
-* `uint256 count`: the number of the instance to buy
-
-### NFTStaking
-
-Staking ERC1155 and get rewards as ERC20.
-
-##### `addPool`
-
-Only owner can create a pool with the following parameters.
-
-* `uint256 poolId`: the id of a staking pool
-* `IERC1155 nftToken`: NFT token contract address (only ERC1155)
-* `uint256 nftTokenId`: NFT token id
-* `IERC20 rewardToken`: ERC20 reward token address. Users stake their NFTs and will get rewards as this token
-* `uint256 rewardPerNFT`: reward amount that user gets when he/she stakes one NFT per 30 days. The reward is calculated based on this parameter and the passed staking time.
-
-##### `addRewards`
-
-Only owner can add reward tokens to staking pools.
-
-* `uint256 poolId`: the id of a staking pool
-* `uint256 amount`: the amount of ERC20 reward tokens. This will send the amount of ERC20 tokens from the manager's account to the pool's contract.
-
-##### `withdrawRewards`
-
-Only owner can withdraw reward tokens from staking pools.
-
-* `uint256 poolId`: the id of a staking pool
-* `uint256 amount`: the amount of ERC20 reward tokens. This will send the amount of ERC20 tokens from the pool's contract to the manager's account.
-
-##### `stake`
-
-This is a public function that any user can call for staking their NFTs. It transfers the NFT token from user's account to the staking pool.
-If the user already staked to this pool, it distributes the current rewards to the user and starts staking from the fresh with the updated NFT token count.
-
-* `uint256 poolId`: the id of a staking pool
-* `uint256 count`: the amount of NFT token that user wants to stake. The NFT should be the pool's ERC1155 token & the token id.
-
-##### `unstake`
-
-This is a public function that any user can call for unstaking their NFTs. It transfers the NFT token from the staking pool to the user's account.
-It distributes the current rewards to the user and starts staking from the fresh with the updated NFT token count.
-
-* `uint256 poolId`: the id of a staking pool
-* `uint256 count`: the amount of NFT token that user wants to unstake. The NFT should be the pool's ERC1155 token & the token id.
-
-##### `claimReward`
-
-This is a public function that any user can call for claiming their staking rewards. It calculates the reward amount based on the passed staking time and the pool's reward speed.
-
-* `uint256 poolId`: the id of a staking pool
-
-The smart contract also contains the view functions to query the current staking pool information.
-
-### KexFarm
-
-This is a smart contract that users can stake their ERC20 token and get `Krystals` which will be used to buy NFTs.
-
-##### `setTokenAddress`
-
-Only the admin can set the ERC20 token address which users will stake.
-
-##### `deposit`
-
-This is a public function that users can call for depositing their ERC20 tokens to stake. It will transfer the ERC20 tokens from the user to the smart contract and update the staking balance for the caller.
-
-* `uint256 amount`: amount of ERC20 token to deposit
-
-##### `withdraw`
-
-This is a public function that users can call for withdrawing their ERC20 tokens to unstake. It will transfer the ERC20 tokens the smart contract to the user and update the staking balance for the caller.
-
-* `uint256 amount`: amount of ERC20 token to withdraw
-
-##### `farmed`
-
-This is a public view function that returns how many KEX has farmed for the certain account
-
-* `address sender`: the account to check the farmed balance
-
-##### `payment`
-
-This is a payment function to buy a NFT using `Krystals` from KiraNFT contract. Only callable from authorized account. We need to add the KiraNFT contract address as authorized by calling `setMinterAddress` and thus set _minter variable to KiraNFT address.
-
-* `address buyer`: the account to buy NFT using `Krystals`
-* `uint256 amount`: `Krystal` amount
-
-##### `rewardedStones`
-
-This is a public function to calculate & update the rewards for an account. The calculation is based on the passed seconds since the last update.
-
------
 
 ### Deployment guides
 
@@ -182,11 +39,11 @@ echo "KIRA_TOKEN_ADDRESS=0x2CDA738623354c93eB974F3C90175F249d611CA4" >> ./.env &
 ```sh
 # Requires `KIRA_TOKEN_ADDRESS` set in env variables
 npx hardhat run scripts/1_deploy_KexFarm.js --network kovan 
-# KexFarm on ROPSTEN: 0x334F7e7C7aBB0A314a9750d8CA076A3561B71432
+# KexFarm on ROPSTEN: 0x635b56D49b30279FC728b98Bf704D07C98CEC5F9
 # KexFarm on MAINNET: TBD
 
 # Save NFT_FARM_ADDRESS as env variable
-echo "NFT_FARM_ADDRESS=0xe89841b13b7e23e560D5f1FdD8591BDE466d68c4" >> ./.env
+echo "NFT_FARM_ADDRESS=0x635b56D49b30279FC728b98Bf704D07C98CEC5F9" >> ./.env
 
 # verify NFT farming contract
 . ./.env && npx hardhat verify --network kovan $NFT_FARM_ADDRESS $KIRA_TOKEN_ADDRESS
@@ -198,11 +55,11 @@ echo "NFT_FARM_ADDRESS=0xe89841b13b7e23e560D5f1FdD8591BDE466d68c4" >> ./.env
 # Requires `NFT_FARM_ADDRESS` set in env variables
 # The setFarm address funciton is trigerred automatically
 npx hardhat run scripts/2_deploy_KiraNFT.js --network kovan
-# KiraNFT on ROPSTEN: 0x07D87E94AE77b50A3FB3E9F1983E39d69cA50F6C
+# KiraNFT on ROPSTEN: 0x87Ba7bDB16066a5892d1824c69d8a09683702A9C
 # KiraNFT on MAINNET: TBD
 
 # Save NFT_MINTING_ADDRESS as env variable
-echo "NFT_MINTING_ADDRESS=0x8D7A7162271f7a124d9BBd305B18deDaEeC5721C" >> ./.env
+echo "NFT_MINTING_ADDRESS=0x87Ba7bDB16066a5892d1824c69d8a09683702A9C" >> ./.env
 
 # Verify NFT minting contract
 . ./.env && npx hardhat verify --network kovan $NFT_MINTING_ADDRESS
@@ -212,11 +69,11 @@ echo "NFT_MINTING_ADDRESS=0x8D7A7162271f7a124d9BBd305B18deDaEeC5721C" >> ./.env
 
 ```sh
 npx hardhat run scripts/3_deploy_NFTStaking.js --network kovan
-# NFTStaking on ROPSTEN: 0x7e4326fC1B72c3B04485dA3b4E63389aC14AE6Fa
+# NFTStaking on ROPSTEN: 0x644b52a1555874b4B644eF36EcBd39751C9cA11F
 # NFTStaking on MAINNET: TBD
 
 # Save NFT_STAKING_ADDRESS as env variable
-echo "NFT_STAKING_ADDRESS=0x7e4326fC1B72c3B04485dA3b4E63389aC14AE6Fa" >> ./.env
+echo "NFT_STAKING_ADDRESS=0x0C5B4c3E377Af1A7a93Dd3ecd89A7D4645350A9a" >> ./.env
 
 # verify NFT staking contract
 . ./.env && npx hardhat verify --network kovan $NFT_STAKING_ADDRESS $KIRA_TOKEN_ADDRESS $NFT_MINTING_ADDRESS
@@ -248,7 +105,9 @@ NETWORK="ropsten" && \
  npx hardhat run scripts/deploy.js --network $NETWORK
 ```
 
-## Metadata
+# Testing
+
+## Create Metadata
 
 Metadata is located under `/metadata-<network>` directory. The metadata standards used can be found [here](https://docs.opensea.io/docs/metadata-standards)
 
@@ -262,14 +121,14 @@ Available `trait_types` attributes and the corresponding possible `values`:
 * `Type` - `Hacker`, `Mage`, `Cyborg`, `Human`, `Übermensch`, `OG`, `Shinigami`
 * `Gender` - `Male`, `Female`
 
-The `LIP_5\contracts\KiraNFT.sol` must be updated every time to contain a correct `tokenUri` referencing a **folder** in IPFS. It is also possible to call the contract using `setTokenURI` function and update the metadata if needed.
+The `LIP_5\contracts\KiraNFT.sol` must be updated every time to contain a correct `tokenUri` referencing a **folder** in IPFS. It is also possible to call the contract using `setTokenURI` function and update the metadata if needed. 
+
+NOTE: When metadata is uploaded it must be accessible as a folder, where each individual NFT metadata is a file with an iterative name 1, 2, 3... which will also act as the NFT identifier later on.
 
 * KOVAN METADATA: `ipfs://QmRT4JjEUrRqQwC16AP7UVDqe1NpH2FCNEk5X2AezzHj5M/`
 * MAINNET METADATA: `TBD`
 
-## Testing
-
-### Add NFT Card Information
+## Add NFT Card Information
 
 For each NFT call `NFT_MINTING_ADDRESS` - `KiraNFT`'s `addCard` function and create cards as per the table defined below:
 
@@ -277,7 +136,7 @@ For each NFT call `NFT_MINTING_ADDRESS` - `KiraNFT`'s `addCard` function and cre
 - `count` - the number of NFT's to exit (`quantity`)
 - `price` - a number of `Kristals` needed to acquire a token (`amount`)
 
-The krystals are non divisable and their issuance is fixed at `1 krystal` per `1 KEX` per `24 hours`. The maximum amount that can be staked by individual is fixed to `10'000` KEX. Effectively the maximum number of krystals that can be created every day is `10'000`.
+The Krystals are non divisable and their issuance is fixed at `1 krystal` per `1 KEX` per `24 hours`. The maximum amount that can be staked by individual is fixed to `10'000` KEX. Effectively the maximum number of Krystals that can be created every day is `10'000`.
 
 | id | name     | count | price  |
 |----|----------|-------|--------|
@@ -289,7 +148,7 @@ The krystals are non divisable and their issuance is fixed at `1 krystal` per `1
 |  6 | Azrael   | 10    | 20000  |
 | | | | |
 |  7 | CZ       | 6     | 70000  |
-|  8 | Bose     | 6     | 70000  |
+|  8 | Bose     | 6     | 90000  |
 |  9 | Jae      | 6     | 70000  |
 | 10 | Vitalik  | 6     | 70000  |
 | 11 | Gavin    | 6     | 70000  |
@@ -298,20 +157,88 @@ The krystals are non divisable and their issuance is fixed at `1 krystal` per `1
 | 13 | KIRA     | 3     | 280000 |
 | 14 | Lilith   | 3     | 560000 |
 
-#### Get NFTs
+### Get NFTs
 
 There are two ways to get NFTs.
 
 - With a deployer account, we can mint NFTs to any accounts for testing purpose.
-- We can use KexFarm. To do this, we can send the KEX tokens to a testing user and then farm Crystals from KEX. After getting some Crystals, we can buy NFTs.
+- We can use KexFarm. To do this, we far Krystals from staking KEX. After getting some Krystals, we can buy NFTs.
 
-##### Add pools (ERC1155 vs ERC20 pair) to NFTStaking
+### Add Pools
 
-To be able to stake KiraNFT to get KEX tokens, we need to add pools for each KiraNFT. Currently we have `n` NFT's, so need to add minimum of `n` pools to NFTStaking. 
+To be able to stake `KiraNFT` token to get `KEX` tokens, we need to add pools for each `KiraNFT`. Currently we have `n` NFT's, so need to add minimum of `n` pools to NFTStaking. 
 
 When pools are created they are auto-enumerated starting from 0, 1, 2 ... and bounded to a specific KEX token address (`KIRA_TOKEN_ADDRESS`) and NFT minting address (`NFT_MINTING_ADDRESS`).
 
 Check `NFTStaking`'s `addPool` function in the above.
 
-* nftTokenId - ID of the token that will be accepted as stakeable
-* rewardPerNFT - Amount of KEX to reward to the staker
+* `_nftTokenId` - ID of the token that will be accepted as stake
+* `_rewardPerNFT` - Amount of KEX to reward to the staker per each staked NFT over time period of `rewardPeriod`
+* `_rewardPeriod` - Time period in seconds over which amount of `_rewardPerNFT` is distributed
+* `_maxPerClaim` - Maximum amount of KEX stakers can claim each time they trigger claim function
+
+
+| pool id | token id |   name   |  reward  |  period |  max c.  |
+|---------|----------|----------|----------|---------|----------|
+|    0    |     1    | Samael   | 500 KEX  | 1 month | 250 KEX  |
+|    1    |     2    | Mikhaela | 500 KEX  | 1 month | 500 KEX  |
+|    2    |     3    | Kali     | 500 KEX  | 1 month | 500 KEX  |
+|    3    |     4    | Lucy     | 500 KEX  | 1 month | 500 KEX  |
+|    4    |     5    | Maalik   | 500 KEX  | 1 month | 250 KEX  |
+|    5    |     6    | Azrael   | 500 KEX  | 1 month | 500 KEX  |
+|         |          |          |          |         |          |
+|    6    |     7    | CZ       | 1000 KEX | 1 month | 500 KEX  |
+|    7    |     8    | Bose     | 1000 KEX | 1 month | 1000 KEX |
+|    8    |     9    | Jae      | 1000 KEX | 1 month | 500 KEX  |
+|    9    |    10    | Vitalik  | 1000 KEX | 1 month | 500 KEX  |
+|   10    |    11    | Gavin    | 1000 KEX | 1 month | 500 KEX  |
+|         |          |          |          |         |          |
+|   11    |    12    | Asmodat  | 2000 KEX | 1 month | 1500 KEX |
+|   12    |    13    | KIRA     | 3000 KEX | 1 month | 2000 KEX |
+|   13    |    14    | Lilith   | 4000 KEX | 1 month | 2500 KEX | 
+
+Example above demonstrates a 84'000 KEX Total Pool Drop
+
+### Add Funds to Pool
+
+Once staking pools are created we need to add funds to individual pool's and inform the contract about how many tokens each one of those pools can distribute to NFT stakers.
+
+First we need to transfer ERC20 KEX directly into the `NFTStaking` (`NFT_STAKING_ADDRESS`) contract. We can then trigger the `notifyRewards` function:
+
+* `_poolId` - Pool identifier to which reward coins should be added
+* `_amount` - Amount of KEX to add to the pool from the still available balance
+
+
+### Stake KEX to Mine Kristals
+
+To get Krystals enabling us to mint NFT's we need to stake KEX to the `KexFarm`, to do that we need to trigger `approve` on the KIRA Token (`KIRA_TOKEN_ADDRESS`) with parameters:
+
+* spender - address which can spend KEX (`KexFarm`)
+* amount - amount that can be spent (e.g. max supply `300000000000000`)
+
+Once spending of funds is approved we can now go to the `KexFarm` (`NFT_FARM_ADDRESS`) contract and trigger deposit function:
+
+* amount - amount of kex to deposit, the 10k KEX is max (`10000000000` ukex)
+
+Once the KEX is deposited our stake balance will start automatically going up.
+
+### Minting KEX
+
+Once we have sufficient number of Kristals to mint our NFT, we can spend them to buy desired NFT from the KiraNFT contract (`NFT_FARM_ADDRESS`) using function `buy` by providing following parameters:
+
+* id - the NFT token identifier
+* count - number of tokens to buy
+ 
+### Stake Tokens to The Pool
+
+Before any NFT can be staked, token transfers must be approved via KiraNFT contract (`NFT_FARM_ADDRESS`). We need to trigger function `setApprovalForAll` by specifying NFTStaking contract (`NFT_STAKING_ADDRESS`) as operator:
+
+* operator - address that will be able to spend/transfer NFT on our behalf
+* approved - true/false to give the contract relevant permissions to spend tokens
+
+Now that NFT transfers are approved we can use NFTStake (`NFT_STAKING_ADDRESS`) contract function `stake` to lock our NFT and start earning KEX:
+
+* _poolId - the staking pool identifier
+* _amount - number of tokens to stake
+
+Analogically we can use function `unstake` which will further claim the rewards on our behalf. We can also trigger `claimRewars` function without need for unstaking.

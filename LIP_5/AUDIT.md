@@ -44,3 +44,5 @@ Further elaboration on any logical issues shoudl be provided
 # NFT-01
 * Ownership is inteded to be rejected once no more changes are necessary after deployment
 
+# NFT-02
+* 

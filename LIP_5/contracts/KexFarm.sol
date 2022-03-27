@@ -59,7 +59,7 @@ contract KexFarm is Ownable {
 
         consolidate(buyer);
         require(stakers[buyer].stones >= amount, "Insufficient stones!");
-        stakers[buyer].stones = stakers[buyer].stones.sub(amount);
+        stakers[buyer].stones = stakers[buyer].stones - amount;
 
         return true;
     }
@@ -70,16 +70,8 @@ contract KexFarm is Ownable {
         }
 
         // Earn Rate = 1 Krystal every 24 hours per each 1 KEX staked
-        uint256 _seconds =
-            block.timestamp.sub(stakers[staker].timestamp).div(1 seconds);
-        return
-            stakers[staker].stones.add(
-                stakers[staker]
-                    .amount
-                    .mul(_seconds)
-                    .div(1e6)
-                    .div(86400)
-            );
+        uint256 _seconds = ( block.timestamp - stakers[staker].timestamp ) / (1 seconds);
+        return (stakers[staker].stones + ((( stakers[staker].amount * _seconds ) / (1e6)) / (86400)));
     }
 
     function consolidate(address staker) internal {
@@ -90,13 +82,12 @@ contract KexFarm is Ownable {
 
     function deposit(uint256 amount) public {
         address sender = msg.sender;
-        require(stakers[sender].amount.add(amount) <= limit, "Limit 10000 KEX");
+        require((stakers[sender].amount + amount) <= limit, "Limit 10000 KEX");
 
         _token.transferFrom(sender, address(this), amount);
         consolidate(sender);
-        total = total.add(amount);
-        stakers[sender].amount = stakers[sender].amount.add(amount);
-        // stakers[sender].timestamp = block.timestamp;
+        total = total + amount;
+        stakers[sender].amount = stakers[sender].amount + amount;
     }
 
     function withdraw(uint256 amount) public {
@@ -106,8 +97,7 @@ contract KexFarm is Ownable {
         require(_token.transfer(sender, amount), "Transfer error!");
 
         consolidate(sender);
-        stakers[sender].amount = stakers[sender].amount.sub(amount);
-        total = total.sub(amount);
-        // stakers[sender].timestamp = block.timestamp;
+        stakers[sender].amount = stakers[sender].amount - amount;
+        total = total - amount;
     }
 }

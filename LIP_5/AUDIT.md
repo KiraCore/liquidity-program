@@ -5,19 +5,18 @@
 ## KFL-01
 * Removed `giveAway` from KexFarm, there is no need to give-away any stones
 * Kept `setTokenAddress`, the KEX Address might need to be updated after deployment, the ownership will be rejected afterwards
-* Updated commit hash: b8ad711da0d4af45389dec67cdca2e7b439d3e4e
+* Updated commit hash: 12d624b26d421f20c4a81aa8ced6cb290ea72488
 
 ## KFL-02
 * Added require cecheck to ensure that only specific aller can interact with payment() function
 * Added `setMinterAddress` so that it is possible to define KiraNFT contract address after deployed.
 * The `setMinterAddress` can only be called by the owner and it is NOTED that the ownership will be rejected after initial setup, similar to KFL-01 suggestions
-* Updated commit hash: b8ad711da0d4af45389dec67cdca2e7b439d3e4e
+* Updated commit hash: 12d624b26d421f20c4a81aa8ced6cb290ea72488
 
-### KNF-01
+## KNF-01
 * Ownership is inteded to be rejected once no more changes are necessary after deployment
-* Updated commit hash: b8ad711da0d4af45389dec67cdca2e7b439d3e4e
 
-### KFL-02
+## KFL-02
 ```
 We are using IPFS mutable file system, the CID once suffixed with the path corresponding to the NFT token ID gives you correct metadata and there are no different CID hashes.
 
@@ -31,35 +30,33 @@ And so on...
 As it is evident you can see the root CID does not change at all, but the metadata changes.
 Further elaboration on any logical issues shoudl be provided
 ```
-* Updated commit hash: b8ad711da0d4af45389dec67cdca2e7b439d3e4e
 
-# KNF-03
+## KNF-03
 * Added `import '@openzeppelin/contracts/security/ReentrancyGuard.sol';`
 * Added `nonReentrant` tag to buy function
-* Updated commit hash: b8ad711da0d4af45389dec67cdca2e7b439d3e4e
+* Updated commit hash: 12d624b26d421f20c4a81aa8ced6cb290ea72488
 
-# LIK-01
+## LIK-01
 * Removed all `imports "@openzeppelin/contracts/utils/math/SafeMath.sol";`
 * Removed all instances of `using SafeMath for uint256;`
-* Updated commit hash: b8ad711da0d4af45389dec67cdca2e7b439d3e4e
+* Updated commit hash: 12d624b26d421f20c4a81aa8ced6cb290ea72488
 
-# LIK-02
+## LIK-02
 * Added `import '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';`
 * Added `using SafeERC20 for IERC20;`
-* Updated commit hash: b8ad711da0d4af45389dec67cdca2e7b439d3e4e
+* Updated commit hash: 12d624b26d421f20c4a81aa8ced6cb290ea72488
 
-# NFT-01
+## NFT-01
 * Ownership is inteded to be rejected once no more changes are necessary after deployment
-* Updated commit hash: b8ad711da0d4af45389dec67cdca2e7b439d3e4e
 
-# NFT-02
+## NFT-02
 * Removed nonReentrant from all onwerOnly (already nonReentrant) funcitons
-* Updated commit hash: b8ad711da0d4af45389dec67cdca2e7b439d3e4e
+* Updated commit hash: 12d624b26d421f20c4a81aa8ced6cb290ea72488
 
-# NFT-03
+## NFT-03
 * Added `require((_poolId >= 0 && _poolId < stakingPoolsCount), "Invalid poolId range")`
-* Updated commit hash: b8ad711da0d4af45389dec67cdca2e7b439d3e4e
+* Updated commit hash: 12d624b26d421f20c4a81aa8ced6cb290ea72488
 
 ## NFT-04
 * Replaced `rewardOf(_poolId, _msgSender()).div(balance.amount).mul(_count);` with `(rewardOf(_poolId, _msgSender()) * _count) / balance.amount;`
-* Updated commit hash: b8ad711da0d4af45389dec67cdca2e7b439d3e4e
+* Updated commit hash: 12d624b26d421f20c4a81aa8ced6cb290ea72488

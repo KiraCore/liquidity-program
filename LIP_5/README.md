@@ -40,6 +40,7 @@ echo "KIRA_TOKEN_ADDRESS=0x2CDA738623354c93eB974F3C90175F249d611CA4" >> ./.env &
 # Requires `KIRA_TOKEN_ADDRESS` set in env variables
 npx hardhat run scripts/1_deploy_KexFarm.js --network kovan 
 # KexFarm on ROPSTEN: 0xa97e2425DE402e55CC230bCa330E02A7Ae0051c4
+# KexFarm on KOVAN: 0x7Eb825Ac87E575dBaCda6568F6DB5401122c596d
 # KexFarm on MAINNET: TBD
 
 # Save NFT_FARM_ADDRESS as env variable
@@ -56,6 +57,7 @@ echo "NFT_FARM_ADDRESS=0xa97e2425DE402e55CC230bCa330E02A7Ae0051c4" >> ./.env
 # The setFarm address funciton is trigerred automatically
 npx hardhat run scripts/2_deploy_KiraNFT.js --network kovan
 # KiraNFT on ROPSTEN: 0xad81b3ab9439b71b3F0BD1EA2bBbF5e9D086d0C1
+# KiraNFT on KOVAN: 0x265bAF84E0ebE8D0B4e40eB7d7A68baefD3939E3
 # KiraNFT on MAINNET: TBD
 
 # Save NFT_MINTING_ADDRESS as env variable
@@ -73,6 +75,7 @@ echo "NFT_MINTING_ADDRESS=0xad81b3ab9439b71b3F0BD1EA2bBbF5e9D086d0C1" >> ./.env
 ```sh
 npx hardhat run scripts/3_deploy_NFTStaking.js --network kovan
 # NFTStaking on ROPSTEN: 0xe89841b13b7e23e560D5f1FdD8591BDE466d68c4
+# NFTStaking on KOVAN: 0x55201A61Feb6072936f0955dDA589f38325f25fF
 # NFTStaking on MAINNET: TBD
 
 # Save NFT_STAKING_ADDRESS as env variable

@@ -14,7 +14,7 @@ REACT_APP_INFURA_NETWORK=
 ```
 
 You can get infura key from https://infura.io.
-For testing, set the `REACT_APP_INFURA_NETWORK` to `kovan`, `rinkeby` or `ropsten`. For the production, use `mainnet`.
+For testing, set the `REACT_APP_INFURA_NETWORK` to `kovan` (`42`), `rinkeby` or `ropsten` (`3`). For the production, use `mainnet`.
 
 ## Scripts
 

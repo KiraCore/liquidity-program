@@ -5,6 +5,7 @@ import { Image } from '@chakra-ui/image';
 import { Input } from '@chakra-ui/input';
 import { Flex, Text } from '@chakra-ui/layout';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from '@chakra-ui/modal';
+import { NFT_MINTING_ADDRESS } from 'src/config';
 import { useToast } from '@chakra-ui/toast';
 import { BigNumber } from 'ethers';
 import { useEffect, useState } from 'react';
@@ -72,10 +73,10 @@ const NFTMintModal = ({ isOpen = false, onClose, loadCardInfo, data, nftId, nftI
     if (value !== undefined && nRemain !== undefined && value <= nRemain && value > 0) {
       setLoading(true);
       try {
-        //console.log("NFTMintModal.txs => onMint:");
-        //console.log({nftId: nftId, value: value})
+        console.log("NFTMintModal.txs => onMint:");
+        console.log({nftId: nftId, value: value, NFT_MINTING_ADDRESS: NFT_MINTING_ADDRESS})
         const txStake = await nft.purchaseNFT(nftId, value);
-        //console.log({txStake: txStake})
+        console.log({txStake: txStake})
         toast({
           title: 'Pending Transaction',
           description: `Minting ${value} NFT${value > 1 ? 's' : ''} (Id: ${nftId})`,
@@ -96,6 +97,8 @@ const NFTMintModal = ({ isOpen = false, onClose, loadCardInfo, data, nftId, nftI
         onClose();
         loadCardInfo();
       } catch (e: any) {
+        console.error("NFT Minting failed, see detailed error below:");
+        console.error(e);
         toast({
           title: 'Transaction Failed',
           description: e.message,
@@ -103,8 +106,6 @@ const NFTMintModal = ({ isOpen = false, onClose, loadCardInfo, data, nftId, nftI
           duration: 5000,
           isClosable: true,
         });
-        console.error("NFT Minting failed, see detailed error below:");
-        console.error(e);
       }
       setLoading(false);
     }

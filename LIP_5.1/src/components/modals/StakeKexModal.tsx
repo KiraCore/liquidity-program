@@ -75,14 +75,13 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
     var decimalFactor = Math.pow(10,kexDecimals as number);
     var fullDenomValue = ethers.BigNumber.from(Math.floor(value * decimalFactor));
 
-    // TODO: DEBUG REMOVE LOGS
-    // console.log("StakeKexModal => onConfirm: ")
-    // console.log({value: value, fullDenomValue: fullDenomValue, decimalFactor: decimalFactor, kexDecimals: kexDecimals})
-
     setLoading(true);
     try {
       if (stake) {
+        console.log("StakeKexModal.txs => onStake:");
+        console.log({fullDenomValue: fullDenomValue, NFT_FARM_ADDRESS: NFT_FARM_ADDRESS})
         const txStake = await stakingPool.stake(fullDenomValue);
+        console.log({txStake: txStake})
         toast({
           title: 'Pending Transaction',
           description: `Staking ${value} KEX`,
@@ -90,6 +89,7 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
           duration: 5000,
           isClosable: true,
         });
+        console.log("Awaiting txStake...");
         await txStake.wait();
         toast({
           title: 'Transaction Done',
@@ -99,7 +99,10 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
           isClosable: true,
         });
       } else {
+        console.log("StakeKexModal.txs => onWithdraw:");
+        console.log({fullDenomValue: fullDenomValue, NFT_FARM_ADDRESS: NFT_FARM_ADDRESS})
         const txWithdraw = await stakingPool.withdraw(fullDenomValue);
+        console.log({txWithdraw: txWithdraw})
         toast({
           title: 'Pending Transaction',
           description: `Unstaking ${value} KEX`,
@@ -107,6 +110,7 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
           duration: 5000,
           isClosable: true,
         });
+        console.log("Awaiting txWithdraw...");
         await txWithdraw.wait();
         toast({
           title: 'Transaction Done',
@@ -120,6 +124,8 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
       updateInfo();
       onClose();
     } catch (e: any) {
+      console.error("KEX Stake or Withdrawl failed, see detailed error below:");
+      console.error(e);
       toast({
         title: 'Transaction Failed',
         description: e.message,
@@ -127,7 +133,6 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
         duration: 5000,
         isClosable: true,
       });
-      console.error(e);
     }
     setLoading(false);
   };
@@ -135,7 +140,10 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
   const onApprove = async () => {
     setLoading(true);
     try {
+      console.log("StakeKexModal.txs => approve:");
+      console.log({amount: ethers.constants.MaxUint256, NFT_FARM_ADDRESS: NFT_FARM_ADDRESS})
       const txApprove = await token.approve(NFT_FARM_ADDRESS, ethers.constants.MaxUint256);
+      console.log({txApprove: txApprove})
       toast({
         title: 'Pending Transaction',
         description: 'Approving KEX',
@@ -143,6 +151,7 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
         duration: 5000,
         isClosable: true,
       });
+      console.log("Awaiting txApprove...");
       await txApprove.wait();
       toast({
         title: 'Transaction Done',
@@ -153,6 +162,8 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
       });
       loadAllowance();
     } catch (e: any) {
+      console.error("KEX Approve failed, see detailed error below:");
+      console.error(e);
       toast({
         title: 'Transaction Failed',
         description: e.message,
@@ -160,7 +171,6 @@ const StakeKexModal = ({ isOpen = false, onClose, stake = true, data }: StakeKex
         duration: 5000,
         isClosable: true,
       });
-      console.error(e);
     }
     setLoading(false);
   };

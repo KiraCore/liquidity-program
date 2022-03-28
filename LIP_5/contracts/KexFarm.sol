@@ -34,10 +34,12 @@ contract KexFarm is Ownable {
 
     // Ownership is expected to be rejected after deployment
     function setTokenAddress(IERC20 token) external onlyOwner {
+        require(address(_token) != address(token), "This token address is already set, no need to change");
         _token = token;
     }
     // Ownership is expected to be rejected after deployment
     function setMinterAddress(IERC20 minter) external onlyOwner {
+        require(address(_minter) != address(minter), "This minter address is already set, no need to change");
         _minter = minter;
     }
 

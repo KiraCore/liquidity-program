@@ -97,7 +97,7 @@ contract KexFarm is Ownable {
         address sender = msg.sender;
 
         require(stakers[sender].amount >= amount, "Insufficient amount!");
-        require(_token.safeTransfer(sender, amount), "Transfer error!");
+        _token.safeTransfer(sender, amount);
 
         consolidate(sender);
         stakers[sender].amount = stakers[sender].amount - amount;

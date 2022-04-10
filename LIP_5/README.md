@@ -39,12 +39,12 @@ echo "KIRA_TOKEN_ADDRESS=0x2CDA738623354c93eB974F3C90175F249d611CA4" >> ./.env &
 ```sh
 # Requires `KIRA_TOKEN_ADDRESS` set in env variables
 npx hardhat run scripts/1_deploy_KexFarm.js --network kovan 
-# KexFarm on ROPSTEN: 0xa97e2425DE402e55CC230bCa330E02A7Ae0051c4
+# KexFarm on ROPSTEN: 0x5983F1525762486f63308B6bfC0247636c015789
 # KexFarm on KOVAN: 0x7Eb825Ac87E575dBaCda6568F6DB5401122c596d
 # KexFarm on MAINNET: TBD
 
 # Save NFT_FARM_ADDRESS as env variable
-echo "NFT_FARM_ADDRESS=0xa97e2425DE402e55CC230bCa330E02A7Ae0051c4" >> ./.env
+echo "NFT_FARM_ADDRESS=0x5983F1525762486f63308B6bfC0247636c015789" >> ./.env
 
 # verify NFT farming contract
 . ./.env && npx hardhat verify --network kovan $NFT_FARM_ADDRESS $KIRA_TOKEN_ADDRESS
@@ -56,12 +56,12 @@ echo "NFT_FARM_ADDRESS=0xa97e2425DE402e55CC230bCa330E02A7Ae0051c4" >> ./.env
 # Requires `NFT_FARM_ADDRESS` set in env variables
 # The setFarm address funciton is trigerred automatically
 npx hardhat run scripts/2_deploy_KiraNFT.js --network kovan
-# KiraNFT on ROPSTEN: 0xad81b3ab9439b71b3F0BD1EA2bBbF5e9D086d0C1
+# KiraNFT on ROPSTEN: 0x7Eb825Ac87E575dBaCda6568F6DB5401122c596d
 # KiraNFT on KOVAN: 0x265bAF84E0ebE8D0B4e40eB7d7A68baefD3939E3
 # KiraNFT on MAINNET: TBD
 
 # Save NFT_MINTING_ADDRESS as env variable
-echo "NFT_MINTING_ADDRESS=0xad81b3ab9439b71b3F0BD1EA2bBbF5e9D086d0C1" >> ./.env
+echo "NFT_MINTING_ADDRESS=0x7Eb825Ac87E575dBaCda6568F6DB5401122c596d" >> ./.env
 
 # Verify NFT minting contract
 . ./.env && npx hardhat verify --network kovan $NFT_MINTING_ADDRESS
@@ -74,12 +74,12 @@ echo "NFT_MINTING_ADDRESS=0xad81b3ab9439b71b3F0BD1EA2bBbF5e9D086d0C1" >> ./.env
 
 ```sh
 npx hardhat run scripts/3_deploy_NFTStaking.js --network kovan
-# NFTStaking on ROPSTEN: 0xe89841b13b7e23e560D5f1FdD8591BDE466d68c4
+# NFTStaking on ROPSTEN: 0xFdD2c7686284E63EFe56fD0894D465F3E59f5BDb
 # NFTStaking on KOVAN: 0x55201A61Feb6072936f0955dDA589f38325f25fF
 # NFTStaking on MAINNET: TBD
 
 # Save NFT_STAKING_ADDRESS as env variable
-echo "NFT_STAKING_ADDRESS=0xe89841b13b7e23e560D5f1FdD8591BDE466d68c4" >> ./.env
+echo "NFT_STAKING_ADDRESS=0xFdD2c7686284E63EFe56fD0894D465F3E59f5BDb" >> ./.env
 
 # verify NFT staking contract
 . ./.env && npx hardhat verify --network kovan $NFT_STAKING_ADDRESS $KIRA_TOKEN_ADDRESS $NFT_MINTING_ADDRESS
@@ -95,7 +95,7 @@ npm install -g n
 n 16.14.1
 
 NETWORK="ropsten" && \
- BRANCH="bugfix/LIP_5-audit-v1" && \
+ BRANCH="bugfix/LIP_5-audit-v3" && \
  KIRA_TOKEN_ADDRESS="0x2CDA738623354c93eB974F3C90175F249d611CA4" && \
  [ -z "$PRIVATE_KEY" ] && PRIVATE_KEY="XXX" && \
  [ -z "$ETHERSCAN_API_KEY" ] && ETHERSCAN_API_KEY="XXX" && \

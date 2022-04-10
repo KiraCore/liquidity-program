@@ -95,7 +95,7 @@ npm install -g n
 n 16.14.1
 
 NETWORK="ropsten" && \
- BRANCH="bugfix/LIP_5-audit-v1" && \
+ BRANCH="bugfix/LIP_5-audit-v3" && \
  KIRA_TOKEN_ADDRESS="0x2CDA738623354c93eB974F3C90175F249d611CA4" && \
  [ -z "$PRIVATE_KEY" ] && PRIVATE_KEY="XXX" && \
  [ -z "$ETHERSCAN_API_KEY" ] && ETHERSCAN_API_KEY="XXX" && \

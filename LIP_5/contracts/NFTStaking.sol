@@ -225,7 +225,7 @@ contract NFTStaking is Context, ERC1155Holder, Ownable, ReentrancyGuard {
         POOL storage poolInfo = stakingPools[_poolId];
         STAKE storage balanceInfo = balances[_poolId][_msgSender()];
 
-        _token.transfer(_msgSender(), reward);
+        _token.safeTransfer(_msgSender(), reward);
 
         balanceInfo.lastClaimedAt = block.timestamp;
         balanceInfo.rewardSoFar = balanceInfo.rewardSoFar + reward;
@@ -250,7 +250,7 @@ contract NFTStaking is Context, ERC1155Holder, Ownable, ReentrancyGuard {
         if (balance.amount > 0) {
             uint256 reward = rewardOf(_poolId, _msgSender());
 
-            _token.transfer(_msgSender(), reward);
+            _token.safeTransfer(_msgSender(), reward);
             balance.rewardSoFar = balance.rewardSoFar + reward;
             poolInfo.totalRewards = poolInfo.totalRewards - reward;
 
@@ -277,7 +277,7 @@ contract NFTStaking is Context, ERC1155Holder, Ownable, ReentrancyGuard {
         POOL storage poolInfo = stakingPools[_poolId];
         uint256 reward = (rewardOf(_poolId, _msgSender()) * _count) / balance.amount;
 
-        _token.transfer(_msgSender(), reward);
+        _token.safeTransfer(_msgSender(), reward);
         _nftToken.safeTransferFrom(address(this), _msgSender(), poolInfo.nftTokenId, _count, '');
 
         poolInfo.totalStakes = poolInfo.totalStakes - _count;
@@ -319,7 +319,7 @@ contract NFTStaking is Context, ERC1155Holder, Ownable, ReentrancyGuard {
         POOL storage poolInfo = stakingPools[_poolId];
         require(poolInfo.totalRewards >= _amount, 'NFTStaking.withdrawRewards(_poolId, _amount): Not enough remaining rewards!');
 
-        _token.transfer(_msgSender(), _amount);
+        _token.safeTransfer(_msgSender(), _amount);
         poolInfo.totalRewards = poolInfo.totalRewards - _amount;
     }
 

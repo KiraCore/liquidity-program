@@ -86,7 +86,7 @@ contract KexFarm is Ownable {
         address sender = msg.sender;
         
         require((stakers[sender].amount + amount) <= limit, "Deposit limit is 10'000 KEX");
-        _token.transferFrom(sender, address(this), amount);
+        _token.safeTransferFrom(sender, address(this), amount);
 
         consolidate(sender);
         total += amount;
@@ -97,7 +97,7 @@ contract KexFarm is Ownable {
         address sender = msg.sender;
 
         require(stakers[sender].amount >= amount, "Insufficient amount!");
-        require(_token.transfer(sender, amount), "Transfer error!");
+        require(_token.safeTransfer(sender, amount), "Transfer error!");
 
         consolidate(sender);
         stakers[sender].amount = stakers[sender].amount - amount;

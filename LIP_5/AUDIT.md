@@ -44,7 +44,8 @@ Further elaboration on any logical issues shoudl be provided
 ## LIK-02
 * Added `import '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';`
 * Added `using SafeERC20 for IERC20;`
-* Updated commit hash: 12d624b26d421f20c4a81aa8ced6cb290ea72488
+* Replaced `transfer` & `transferFrom` with `safeTransfer` & `safeTransferFrom`
+* Updated commit hash: 
 
 ## NFT-01
 * Ownership is inteded to be rejected once no more changes are necessary after deployment

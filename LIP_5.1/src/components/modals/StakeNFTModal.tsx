@@ -78,7 +78,10 @@ const StakeNFTModal = ({ isOpen = false, onClose, data, card, pool, reloadMyColl
     if (value !== undefined && balance !== undefined && value <= balance && value > 0) {
       setLoading(true);
       try {
+        console.log("StakeNFTModal.txs => onStake:");
+        console.log({pool: pool, value: value, NFT_STAKING_ADDRESS: NFT_STAKING_ADDRESS})
         const txStake = await nftStaking.stake(pool.poolId, value);
+        console.log({txStake: txStake})
         toast({
           title: 'Pending Transaction',
           description: `Staking ${value} NFT${value > 1 ? 's' : ''} (Id: ${nftId})`,
@@ -86,6 +89,7 @@ const StakeNFTModal = ({ isOpen = false, onClose, data, card, pool, reloadMyColl
           duration: 5000,
           isClosable: true,
         });
+        console.log("Awaiting txStake...");
         await txStake.wait();
         toast({
           title: 'Transaction Done',
@@ -98,6 +102,8 @@ const StakeNFTModal = ({ isOpen = false, onClose, data, card, pool, reloadMyColl
         onClose();
         reloadMyCollection();
       } catch (e: any) {
+        console.error("NFT Staking failed, see detailed error below:");
+        console.error(e);
         toast({
           title: 'Transaction Failed',
           description: e.message,
@@ -105,7 +111,6 @@ const StakeNFTModal = ({ isOpen = false, onClose, data, card, pool, reloadMyColl
           duration: 5000,
           isClosable: true,
         });
-        console.error(e);
       }
       setLoading(false);
     }
@@ -114,7 +119,10 @@ const StakeNFTModal = ({ isOpen = false, onClose, data, card, pool, reloadMyColl
   const onApprove = async () => {
     setLoading(true);
     try {
+      console.log("StakeNFTModal.txs => onApprove:");
+      console.log({approved: true, NFT_STAKING_ADDRESS: NFT_STAKING_ADDRESS})
       const txApprove = await nft.setApprovalForAll(NFT_STAKING_ADDRESS, true);
+      console.log({txApprove: txApprove})
       toast({
         title: 'Pending Transaction',
         description: 'Approving NFT',
@@ -122,6 +130,7 @@ const StakeNFTModal = ({ isOpen = false, onClose, data, card, pool, reloadMyColl
         duration: 5000,
         isClosable: true,
       });
+      console.log("Awaiting txApprove...");
       await txApprove.wait();
       toast({
         title: 'Transaction Done',
@@ -132,6 +141,8 @@ const StakeNFTModal = ({ isOpen = false, onClose, data, card, pool, reloadMyColl
       });
       loadApproved();
     } catch (e: any) {
+      console.error("NFT Staking approval failed, see detailed error below:");
+      console.error(e);
       toast({
         title: 'Transaction Failed',
         description: e.message,
@@ -139,7 +150,6 @@ const StakeNFTModal = ({ isOpen = false, onClose, data, card, pool, reloadMyColl
         duration: 5000,
         isClosable: true,
       });
-      console.error(e);
     }
     setLoading(false);
   };

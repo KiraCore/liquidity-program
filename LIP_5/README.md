@@ -39,11 +39,12 @@ echo "KIRA_TOKEN_ADDRESS=0x2CDA738623354c93eB974F3C90175F249d611CA4" >> ./.env &
 ```sh
 # Requires `KIRA_TOKEN_ADDRESS` set in env variables
 npx hardhat run scripts/1_deploy_KexFarm.js --network kovan 
-# KexFarm on ROPSTEN: 0x635b56D49b30279FC728b98Bf704D07C98CEC5F9
+# KexFarm on ROPSTEN: 0x5983F1525762486f63308B6bfC0247636c015789
+# KexFarm on KOVAN: 0x7Eb825Ac87E575dBaCda6568F6DB5401122c596d
 # KexFarm on MAINNET: TBD
 
 # Save NFT_FARM_ADDRESS as env variable
-echo "NFT_FARM_ADDRESS=0x635b56D49b30279FC728b98Bf704D07C98CEC5F9" >> ./.env
+echo "NFT_FARM_ADDRESS=0x5983F1525762486f63308B6bfC0247636c015789" >> ./.env
 
 # verify NFT farming contract
 . ./.env && npx hardhat verify --network kovan $NFT_FARM_ADDRESS $KIRA_TOKEN_ADDRESS
@@ -55,25 +56,30 @@ echo "NFT_FARM_ADDRESS=0x635b56D49b30279FC728b98Bf704D07C98CEC5F9" >> ./.env
 # Requires `NFT_FARM_ADDRESS` set in env variables
 # The setFarm address funciton is trigerred automatically
 npx hardhat run scripts/2_deploy_KiraNFT.js --network kovan
-# KiraNFT on ROPSTEN: 0x87Ba7bDB16066a5892d1824c69d8a09683702A9C
+# KiraNFT on ROPSTEN: 0x7Eb825Ac87E575dBaCda6568F6DB5401122c596d
+# KiraNFT on KOVAN: 0x265bAF84E0ebE8D0B4e40eB7d7A68baefD3939E3
 # KiraNFT on MAINNET: TBD
 
 # Save NFT_MINTING_ADDRESS as env variable
-echo "NFT_MINTING_ADDRESS=0x87Ba7bDB16066a5892d1824c69d8a09683702A9C" >> ./.env
+echo "NFT_MINTING_ADDRESS=0x7Eb825Ac87E575dBaCda6568F6DB5401122c596d" >> ./.env
 
 # Verify NFT minting contract
 . ./.env && npx hardhat verify --network kovan $NFT_MINTING_ADDRESS
+
+# IMPORTANT:
+# Open Etherscan and call KexFarm contracts setMinterAddress function and provide NFT_MINTING_ADDRESS as param
 ```
 
 ##### Deploy & Verify NFTStaking Contract
 
 ```sh
 npx hardhat run scripts/3_deploy_NFTStaking.js --network kovan
-# NFTStaking on ROPSTEN: 0x644b52a1555874b4B644eF36EcBd39751C9cA11F
+# NFTStaking on ROPSTEN: 0xFdD2c7686284E63EFe56fD0894D465F3E59f5BDb
+# NFTStaking on KOVAN: 0x55201A61Feb6072936f0955dDA589f38325f25fF
 # NFTStaking on MAINNET: TBD
 
 # Save NFT_STAKING_ADDRESS as env variable
-echo "NFT_STAKING_ADDRESS=0x0C5B4c3E377Af1A7a93Dd3ecd89A7D4645350A9a" >> ./.env
+echo "NFT_STAKING_ADDRESS=0xFdD2c7686284E63EFe56fD0894D465F3E59f5BDb" >> ./.env
 
 # verify NFT staking contract
 . ./.env && npx hardhat verify --network kovan $NFT_STAKING_ADDRESS $KIRA_TOKEN_ADDRESS $NFT_MINTING_ADDRESS
@@ -81,41 +87,29 @@ echo "NFT_STAKING_ADDRESS=0x0C5B4c3E377Af1A7a93Dd3ecd89A7D4645350A9a" >> ./.env
 
 ### Quick Deploy
 
-This is a quick & dirty one-line bash command enabling deployment of all contracts at once. At the end of execution a list of all created contracts is displayed. Only `NETWORK`, `KIRA_TOKEN_ADDRESS`, `PRIVATE_KEY`, `ETHERSCAN_API_KEY` and `INFURA_PROJECT_ID` must be specified before the script is tarted.
+This is a quick & dirty one-line bash command enabling deployment of all contracts at once. At the end of execution a list of all created contracts is displayed. Only `NETWORK`, `KIRA_TOKEN_ADDRESS`, `PRIVATE_KEY`, `ETHERSCAN_API_KEY` and `INFURA_PROJECT_ID` must be specified before the script is started.
 
 ```sh
+# ensure that you run node v16 LTS
+npm install -g n 
+n 16.14.1
+
 NETWORK="ropsten" && \
-KIRA_TOKEN_ADDRESS="0x2CDA738623354c93eB974F3C90175F249d611CA4" && \
-PRIVATE_KEY="XXX...XXX" && \
-ETHERSCAN_API_KEY="XXX...XXX" && \
-INFURA_PROJECT_ID="XXX...XXX" && \
+ BRANCH="bugfix/LIP_5-audit-v3" && \
+ KIRA_TOKEN_ADDRESS="0x2CDA738623354c93eB974F3C90175F249d611CA4" && \
+ [ -z "$PRIVATE_KEY" ] && PRIVATE_KEY="XXX" && \
+ [ -z "$ETHERSCAN_API_KEY" ] && ETHERSCAN_API_KEY="XXX" && \
+ [ -z "$INFURA_PROJECT_ID" ] && INFURA_PROJECT_ID="XXX" && \
  echo "Cloning smartcontracts repo..." && cd $HOME && rm -fvr ./liquidity-program && \
- git clone https://github.com/KiraCore/liquidity-program.git -b LIP_5 && \
+ git clone https://github.com/KiraCore/liquidity-program.git -b "$BRANCH" && \
  cd ./liquidity-program/LIP_5 && touch ./.env && chmod 777 ./.env && yarn && \
+ echo "NETWORK=$NETWORK" >> ./.env && \
+ echo "KIRA_TOKEN_ADDRESS=$KIRA_TOKEN_ADDRESS" >> ./.env && \
  echo "PRIVATE_KEY=$PRIVATE_KEY" >> ./.env && \
  echo "ETHERSCAN_API_KEY=$ETHERSCAN_API_KEY" >> ./.env && \
- echo "INFURA_PROJECT_ID=$INFURA_PROJECT_ID" >> ./.env &&  \
- echo "KIRA_TOKEN_ADDRESS=$KIRA_TOKEN_ADDRESS" >> ./.env && \
- echo "Deploying 1_deploy_KexFarm.js => " && RESULT_FILE=./result.tmp && \
- rm -fv $RESULT_FILE && npx hardhat run scripts/1_deploy_KexFarm.js --network $NETWORK && \
- NFT_FARM_ADDRESS=$(cat $RESULT_FILE) && echo "NFT_FARM_ADDRESS=$NFT_FARM_ADDRESS" >> ./.env && \
- echo "Veryfying 1_deploy_KexFarm.js => " && sleep 180 && \
- ( npx hardhat verify --network $NETWORK $NFT_FARM_ADDRESS $KIRA_TOKEN_ADDRESS || echo "Already verified" ) && \
- echo "Started 2_deploy_KiraNFT.js => " && \
- rm -fv $RESULT_FILE && npx hardhat run scripts/2_deploy_KiraNFT.js --network $NETWORK && \
- NFT_MINTING_ADDRESS=$(cat $RESULT_FILE) && echo "NFT_MINTING_ADDRESS=$NFT_MINTING_ADDRESS" >> ./.env && \
- echo "Veryfying 2_deploy_KiraNFT.js => " && sleep 180 && \
- ( npx hardhat verify --network $NETWORK $NFT_MINTING_ADDRESS || echo "Already verified" ) && \
- echo "Deploying 3_deploy_NFTStaking.js => " && \
- rm -fv $RESULT_FILE && npx hardhat run scripts/3_deploy_NFTStaking.js --network $NETWORK && \
- NFT_STAKING_ADDRESS=$(cat $RESULT_FILE) && echo "NFT_STAKING_ADDRESS=$NFT_STAKING_ADDRESS" >> ./.env && \
- echo "Veryfying 3_deploy_NFTStaking.js => " && sleep 180 && \
- ( npx hardhat verify --network $NETWORK $NFT_STAKING_ADDRESS $KIRA_TOKEN_ADDRESS $NFT_MINTING_ADDRESS || echo "Already verified" ) && \
- rm -fv $RESULT_FILE && cat ./.env && echo "Deployment Suceeded !!!" || echo "Deployment Failed :("
- 
+ echo "INFURA_PROJECT_ID=$INFURA_PROJECT_ID" >> ./.env && \
+ npx hardhat run scripts/deploy.js --network $NETWORK
 ```
-
------
 
 # Testing
 

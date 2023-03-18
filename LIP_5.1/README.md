@@ -14,7 +14,7 @@ REACT_APP_INFURA_NETWORK=
 ```
 
 You can get infura key from https://infura.io.
-For testing, set the `REACT_APP_INFURA_NETWORK` to `kovan`, `rinkeby` or `ropsten`. For the production, use `mainnet`.
+For testing, set the `REACT_APP_INFURA_NETWORK` to `kovan` (`42`), `rinkeby` or `ropsten` (`3`). For the production, use `mainnet`.
 
 ## Scripts
 
@@ -70,7 +70,9 @@ cd $HOME/liquidity-program/LIP_5.1 && \
  echo "REACT_APP_ETHEREUM_CHAIN_ID=3"  >> ./.env && \
  echo "REACT_APP_INFURA_NETWORK=ropsten" >> ./.env && \
  echo "REACT_APP_KIRA_TOKEN_ADDRESS=0x2CDA738623354c93eB974F3C90175F249d611CA4" >> ./.env && \
- echo "REACT_APP_NFT_STAKING_ADDRESS=0x644b52a1555874b4B644eF36EcBd39751C9cA11F" >> ./.env && \
- echo "REACT_APP_NFT_FARM_ADDRESS=0x635b56D49b30279FC728b98Bf704D07C98CEC5F9" >> ./.env && \
- echo "REACT_APP_NFT_MINTING_ADDRESS=0x87Ba7bDB16066a5892d1824c69d8a09683702A9C" >> ./.env 
+ echo "REACT_APP_NFT_STAKING_ADDRESS=0xe89841b13b7e23e560D5f1FdD8591BDE466d68c4" >> ./.env && \
+ echo "REACT_APP_NFT_FARM_ADDRESS=0xa97e2425DE402e55CC230bCa330E02A7Ae0051c4" >> ./.env && \
+ echo "REACT_APP_NFT_MINTING_ADDRESS=0xad81b3ab9439b71b3F0BD1EA2bBbF5e9D086d0C1" >> ./.env 
+
+# NOTE: Remember to keep contract metadata up to date!
 ```

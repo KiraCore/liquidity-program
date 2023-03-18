@@ -5,8 +5,8 @@ import '@openzeppelin/contracts/utils/Context.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/token/ERC1155/IERC1155.sol';
 import '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
-import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
+import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 
 struct STAKE {
@@ -27,7 +27,7 @@ struct POOL {
 }
 
 contract NFTStaking is Context, ERC1155Holder, Ownable, ReentrancyGuard {
-    using SafeMath for uint256;
+    using SafeERC20 for IERC20;
 
     /// @dev map poolId to staking Pool detail
     uint public stakingPoolsCount;
@@ -42,11 +42,11 @@ contract NFTStaking is Context, ERC1155Holder, Ownable, ReentrancyGuard {
         stakingPoolsCount = 0;
     }
 
-    function setTokenAddress(IERC20 _tokenAddress) external nonReentrant onlyOwner {
+    function setTokenAddress(IERC20 _tokenAddress) external onlyOwner {
         _token = _tokenAddress;
     }
 
-    function setNftTokenAddress(IERC1155 _nftTokenAddress) external nonReentrant onlyOwner {
+    function setNftTokenAddress(IERC1155 _nftTokenAddress) external onlyOwner {
         _nftToken = _nftTokenAddress;
     }
 
@@ -62,7 +62,7 @@ contract NFTStaking is Context, ERC1155Holder, Ownable, ReentrancyGuard {
         uint256 total = 0;
         for (uint i = 0; i < stakingPoolsCount; i++) {
             uint256 poolRewards = stakingPools[i].totalRewards;
-            total = total.add(poolRewards);
+            total = total + poolRewards;
         }
         return total;
     }
@@ -73,6 +73,7 @@ contract NFTStaking is Context, ERC1155Holder, Ownable, ReentrancyGuard {
      * @return stakingPool
      */
     function getPool(uint256 _poolId) public view returns (POOL memory) {
+      require((_poolId >= 0 && _poolId < stakingPoolsCount), "Invalid poolId range");
       return stakingPools[_poolId];
     }
 
@@ -127,6 +128,7 @@ contract NFTStaking is Context, ERC1155Holder, Ownable, ReentrancyGuard {
      * @return stakingBalance
      */
     function getBalance(address _staker, uint256 _poolId) public view returns (STAKE memory) {
+        require((_poolId >= 0 && _poolId < stakingPoolsCount), "Invalid poolId range");
         return balances[_poolId][_staker];
     }
 
@@ -201,7 +203,7 @@ contract NFTStaking is Context, ERC1155Holder, Ownable, ReentrancyGuard {
         uint256 timeNow = block.timestamp;
         // passed time in seconds since the last claim
         uint256 timePassed = timeNow - balanceInfo.lastClaimedAt;
-        uint256 totalReward = balanceInfo.amount.mul(poolInfo.rewardPerNFT).mul(timePassed).div(poolInfo.rewardPeriod);
+        uint256 totalReward = (balanceInfo.amount * poolInfo.rewardPerNFT * timePassed) / poolInfo.rewardPeriod;
 
         // there can be a situation where someone is staking for a very long time and no one is claiming, then sudenly 1 person ruggs everyone
         // to solve this issue we force people to claim every time they accumulate maxPerClaim and thus available rewards don't suddenly go to 0
@@ -209,8 +211,8 @@ contract NFTStaking is Context, ERC1155Holder, Ownable, ReentrancyGuard {
 
         // there can be a situation where someone is staking longer than others and claimed multiple times
         // we should inform everyone about this by decreasing everyone max claim
-        uint256 fairRewardPerNFT = poolInfo.totalRewards.div(poolInfo.totalStakes);
-        uint256 maxFairReward = balanceInfo.amount.mul(fairRewardPerNFT);
+        uint256 fairRewardPerNFT = poolInfo.totalRewards / poolInfo.totalStakes;
+        uint256 maxFairReward = balanceInfo.amount * fairRewardPerNFT;
         if (totalReward > maxFairReward) totalReward = maxFairReward;
 
         if (totalReward > poolInfo.totalRewards) totalReward = poolInfo.totalRewards;
@@ -218,15 +220,16 @@ contract NFTStaking is Context, ERC1155Holder, Ownable, ReentrancyGuard {
     }
 
     function claimReward(uint256 _poolId) external nonReentrant {
+        require((_poolId >= 0 && _poolId < stakingPoolsCount), "Invalid poolId range");
         uint256 reward = rewardOf(_poolId, _msgSender());
         POOL storage poolInfo = stakingPools[_poolId];
         STAKE storage balanceInfo = balances[_poolId][_msgSender()];
 
-        _token.transfer(_msgSender(), reward);
+        _token.safeTransfer(_msgSender(), reward);
 
         balanceInfo.lastClaimedAt = block.timestamp;
-        balanceInfo.rewardSoFar = balanceInfo.rewardSoFar.add(reward);
-        poolInfo.totalRewards = poolInfo.totalRewards.sub(reward);
+        balanceInfo.rewardSoFar = balanceInfo.rewardSoFar + reward;
+        poolInfo.totalRewards = poolInfo.totalRewards - reward;
 
         emit Withdraw(_poolId, _msgSender(), reward);
     }
@@ -237,6 +240,7 @@ contract NFTStaking is Context, ERC1155Holder, Ownable, ReentrancyGuard {
      * @param _amount is the NFT count to stake
      */
     function stake(uint256 _poolId, uint256 _amount) external nonReentrant {
+        require((_poolId >= 0 && _poolId < stakingPoolsCount), "Invalid poolId range");
         POOL storage poolInfo = stakingPools[_poolId];
 
         _nftToken.safeTransferFrom(_msgSender(), address(this), poolInfo.nftTokenId, _amount, '');
@@ -246,17 +250,17 @@ contract NFTStaking is Context, ERC1155Holder, Ownable, ReentrancyGuard {
         if (balance.amount > 0) {
             uint256 reward = rewardOf(_poolId, _msgSender());
 
-            _token.transfer(_msgSender(), reward);
-            balance.rewardSoFar = balance.rewardSoFar.add(reward);
-            poolInfo.totalRewards = poolInfo.totalRewards.sub(reward);
+            _token.safeTransfer(_msgSender(), reward);
+            balance.rewardSoFar = balance.rewardSoFar + reward;
+            poolInfo.totalRewards = poolInfo.totalRewards - reward;
 
             emit Withdraw(_poolId, _msgSender(), reward);
         }
         if (balance.amount == 0) balance.firstStakedAt = block.timestamp;
 
         balance.lastClaimedAt = block.timestamp;
-        balance.amount = balance.amount.add(_amount);
-        stakingPools[_poolId].totalStakes = stakingPools[_poolId].totalStakes.add(_amount);
+        balance.amount = balance.amount + _amount;
+        stakingPools[_poolId].totalStakes = stakingPools[_poolId].totalStakes + _amount;
 
         emit Stake(_poolId, _msgSender(), _amount);
     }
@@ -271,16 +275,16 @@ contract NFTStaking is Context, ERC1155Holder, Ownable, ReentrancyGuard {
         require((balance.amount >= _count && _count > 0), 'Unsufficient stake');
 
         POOL storage poolInfo = stakingPools[_poolId];
-        uint256 reward = rewardOf(_poolId, _msgSender()).div(balance.amount).mul(_count);
+        uint256 reward = (rewardOf(_poolId, _msgSender()) * _count) / balance.amount;
 
-        _token.transfer(_msgSender(), reward);
+        _token.safeTransfer(_msgSender(), reward);
         _nftToken.safeTransferFrom(address(this), _msgSender(), poolInfo.nftTokenId, _count, '');
 
-        poolInfo.totalStakes = poolInfo.totalStakes.sub(_count);
-        poolInfo.totalRewards = poolInfo.totalRewards.sub(reward);
+        poolInfo.totalStakes = poolInfo.totalStakes - _count;
+        poolInfo.totalRewards = poolInfo.totalRewards - reward;
 
-        balance.amount = balance.amount.sub(_count);
-        balance.rewardSoFar = balance.rewardSoFar.add(reward);
+        balance.amount = balance.amount - _count;
+        balance.rewardSoFar = balance.rewardSoFar + reward;
 
         if (balance.amount == 0) {
             balance.firstStakedAt = 0;
@@ -295,15 +299,15 @@ contract NFTStaking is Context, ERC1155Holder, Ownable, ReentrancyGuard {
      * @param _poolId is the pool id to contribute reward
      * @param _amount is the amount to put
      */
-    function notifyRewards(uint256 _poolId, uint256 _amount) external nonReentrant onlyOwner {
+    function notifyRewards(uint256 _poolId, uint256 _amount) external onlyOwner {
         require(_amount > 0, "NFTStaking.notifyRewards: Can't add zero amount!");
 
         POOL storage poolInfo = stakingPools[_poolId];
         uint total = _token.balanceOf(address(this));
         uint reserved = getReservedRewards();
 
-        require(total.sub(reserved) >= _amount, "NFTStaking.notifyRewards: Can't add more tokens than available");
-        poolInfo.totalRewards = poolInfo.totalRewards.add(_amount);
+        require(total - reserved >= _amount, "NFTStaking.notifyRewards: Can't add more tokens than available");
+        poolInfo.totalRewards = poolInfo.totalRewards + _amount;
     }
 
     /**
@@ -311,19 +315,19 @@ contract NFTStaking is Context, ERC1155Holder, Ownable, ReentrancyGuard {
      * @param _poolId is the pool id to contribute reward
      * @param _amount is the amount to claim
      */
-    function withdrawRewards(uint256 _poolId, uint256 _amount) public nonReentrant onlyOwner {
+    function withdrawRewards(uint256 _poolId, uint256 _amount) public onlyOwner {
         POOL storage poolInfo = stakingPools[_poolId];
         require(poolInfo.totalRewards >= _amount, 'NFTStaking.withdrawRewards(_poolId, _amount): Not enough remaining rewards!');
 
-        _token.transfer(_msgSender(), _amount);
-        poolInfo.totalRewards = poolInfo.totalRewards.sub(_amount);
+        _token.safeTransfer(_msgSender(), _amount);
+        poolInfo.totalRewards = poolInfo.totalRewards - _amount;
     }
 
     /**
      * @notice function to forecefully remove ALL staking rewards from the pool into owner's wallet
      * @param _poolId is the pool id to contribute reward
      */
-    function withdrawRewards(uint256 _poolId) external nonReentrant onlyOwner {
+    function withdrawRewards(uint256 _poolId) external onlyOwner {
         POOL memory poolInfo = stakingPools[_poolId];
         require(poolInfo.totalRewards > 0, 'NFTStaking.withdrawRewards(_poolId): Staking pool is already empty');
         withdrawRewards(_poolId, poolInfo.totalRewards);
@@ -341,7 +345,7 @@ contract NFTStaking is Context, ERC1155Holder, Ownable, ReentrancyGuard {
         uint256 _rewardPerNFT,
         uint256 _rewardPeriod,
         uint256 _maxPerClaim
-    ) external nonReentrant onlyOwner {
+    ) external onlyOwner {
         uint256 poolId = stakingPoolsCount;
         require((_rewardPeriod >= 3600 && _rewardPeriod <= 31556925), "NFTStaking.addPool: Rewards period must be within 1h & 1Y");
         require(_maxPerClaim > 0, "NFTStaking.addPool: Rewards max per each claim can NOT be 0");
